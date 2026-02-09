@@ -33,6 +33,8 @@ import {
 import { useCart } from "@/providers/cart-provider";
 import { useCheckout } from "@/hooks/use-cart";
 import { trackConversion } from "@/lib/conversion-tracking";
+import { useTranslations } from "next-intl";
+import { formatPrice } from "@/lib/format";
 
 // =============================================================================
 // Checkout Page — Premium Pre-Checkout Experience

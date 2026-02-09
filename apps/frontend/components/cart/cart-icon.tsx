@@ -115,7 +115,7 @@ function HoverPreview({
       {/* Arrow pointer */}
       <div className="absolute -top-1.5 right-4 w-3 h-3 bg-white dark:bg-neutral-900 border-l border-t border-neutral-200 dark:border-neutral-700 rotate-45" />
 
-      <div className="relative bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl shadow-black/10 dark:shadow-black/40 overflow-hidden">
+      <div className="relative bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl shadow-black/10 dark:shadow-black/40 overflow-hidden" aria-label="Cart preview">
         {/* Header */}
         <div className="px-4 pt-4 pb-2 flex items-center justify-between">
           <h3 className="text-sm font-bold text-neutral-900 dark:text-white">

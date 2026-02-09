@@ -301,7 +301,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <div className="absolute bottom-3 end-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0" aria-hidden="true">
               <div className="glass rounded-lg px-3 py-1.5">
                 <span className="text-sm font-bold text-white">
-                  {formatPrice(product.price, product.currency)}
+                  {formatPrice(convertPrice(product.price), currency)}
                 </span>
               </div>
             </div>
@@ -357,13 +357,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   </span>
                 ) : (
                   <span className="text-lg font-bold text-neutral-900 dark:text-white">
-                    {formatPrice(product.price, product.currency)}
+                    {formatPrice(convertPrice(product.price), currency)}
                   </span>
                 )}
                 {product.compareAtPrice &&
                   product.compareAtPrice > product.price && (
                     <span className="text-sm text-neutral-400 line-through">
-                      {formatPrice(product.compareAtPrice, product.currency)}
+                      {formatPrice(convertPrice(product.compareAtPrice), currency)}
                     </span>
                   )}
               </div>

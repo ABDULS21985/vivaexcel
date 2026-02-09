@@ -972,7 +972,7 @@ export function StoreListingClient({
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder={t("search.placeholder")}
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full pl-11 pr-10 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7] transition-all"
@@ -999,7 +999,7 @@ export function StoreListingClient({
             className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors"
           >
             <Filter className="h-4 w-4" />
-            Filters
+            {t("filters.title")}
             {hasActiveFilters && (
               <span className="w-2 h-2 bg-[#1E4DB7] rounded-full" />
             )}

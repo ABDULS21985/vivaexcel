@@ -43,44 +43,59 @@ export function generateStaticParams() {
 // Metadata
 // =============================================================================
 
-export const metadata: Metadata = {
-  title: "Digital Products Store | KTBlog",
-  description:
-    "Browse premium digital products including PowerPoint templates, design systems, startup kits, solution templates, and more. Professional quality, instant download.",
-  keywords: [
-    "digital products",
-    "templates",
-    "PowerPoint templates",
-    "design system",
-    "startup kit",
-    "web templates",
-    "code templates",
-    "solution templates",
-    "digital downloads",
-  ],
-  openGraph: {
+const FILTER_PARAMS = ["category", "sort", "search", "page", "type", "tag", "minPrice", "maxPrice", "rating"];
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const hasFilters = FILTER_PARAMS.some((param) => resolvedSearchParams[param] !== undefined);
+
+  return {
     title: "Digital Products Store | KTBlog",
     description:
-      "Browse premium digital products including PowerPoint templates, design systems, startup kits, and more.",
-    url: "https://drkatangablog.com/store",
-    siteName: "KTBlog",
-    type: "website",
-    images: [
-      {
-        url: "https://drkatangablog.com/api/og?title=Digital+Products+Store&type=default",
-        width: 1200,
-        height: 630,
-        alt: "KTBlog Digital Products Store",
-      },
+      "Browse premium digital products including PowerPoint templates, design systems, startup kits, solution templates, and more. Professional quality, instant download.",
+    keywords: [
+      "digital products",
+      "templates",
+      "PowerPoint templates",
+      "design system",
+      "startup kit",
+      "web templates",
+      "code templates",
+      "solution templates",
+      "digital downloads",
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Digital Products Store | KTBlog",
-    description:
-      "Browse premium digital products including templates, design systems, and starter kits.",
-  },
-};
+    openGraph: {
+      title: "Digital Products Store | KTBlog",
+      description:
+        "Browse premium digital products including PowerPoint templates, design systems, startup kits, and more.",
+      url: "https://drkatangablog.com/store",
+      siteName: "KTBlog",
+      type: "website",
+      images: [
+        {
+          url: "https://drkatangablog.com/api/og?title=Digital+Products+Store&type=default",
+          width: 1200,
+          height: 630,
+          alt: "KTBlog Digital Products Store",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Digital Products Store | KTBlog",
+      description:
+        "Browse premium digital products including templates, design systems, and starter kits.",
+    },
+    alternates: {
+      canonical: "https://drkatangablog.com/store",
+    },
+    ...(hasFilters ? { robots: { index: false, follow: true } } : {}),
+  };
+}
 
 // =============================================================================
 // Types
@@ -134,6 +149,18 @@ export default async function StorePage({ params }: Props) {
     })
     .slice(0, 8);
 
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: products.map((product, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: product.title,
+      url: `https://drkatangablog.com/store/${product.slug}`,
+      ...(product.featuredImage && { image: product.featuredImage }),
+    })),
+  };
+
   return (
     <>
       <JsonLd
@@ -142,6 +169,7 @@ export default async function StorePage({ params }: Props) {
           { name: "Digital Products Store", url: "/store" },
         ])}
       />
+      <JsonLd data={itemListSchema} />
 
       <div className="min-h-screen bg-white dark:bg-neutral-950">
         {/* =================================================================
