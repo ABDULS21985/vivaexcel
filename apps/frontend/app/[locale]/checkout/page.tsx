@@ -433,17 +433,17 @@ export default function CheckoutPage() {
               transition={{ delay: 0.1, ...EASE_OUT }}
               className="bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl border border-white/20 dark:border-neutral-700/30 rounded-2xl p-6 space-y-5 shadow-lg shadow-neutral-200/20 dark:shadow-black/20"
             >
-              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Payment Summary</h3>
+              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">{t("paymentSummary")}</h3>
 
-              <CouponSection couponCode={couponCode} setCouponCode={setCouponCode} couponError={couponError} couponSuccess={couponSuccess} />
+              <CouponSection couponCode={couponCode} setCouponCode={setCouponCode} couponError={couponError} couponSuccess={couponSuccess} t={t} />
 
               <AnimatePresence>
-                {couponSuccess && <CountdownTimer seconds={timerSeconds} expired={timerExpired} />}
+                {couponSuccess && <CountdownTimer seconds={timerSeconds} expired={timerExpired} t={t} />}
               </AnimatePresence>
 
               <div className="space-y-3 pt-2 border-t border-neutral-100 dark:border-neutral-800">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-neutral-500 dark:text-neutral-400">Subtotal</span>
+                  <span className="text-neutral-500 dark:text-neutral-400">{t("summary.subtotal")}</span>
                   <motion.span key={summary.subtotal} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-neutral-900 dark:text-white font-medium">
                     {formatPrice(summary.subtotal, { currency: summary.currency })}
                   </motion.span>
@@ -452,7 +452,7 @@ export default function CheckoutPage() {
                 <AnimatePresence>
                   {summary.discountAmount > 0 && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="flex items-center justify-between text-sm overflow-hidden">
-                      <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><Sparkles className="w-3 h-3" /> Discount</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><Sparkles className="w-3 h-3" /> {t("summary.discount")}</span>
                       <span className="text-emerald-600 dark:text-emerald-400 font-medium">-{formatPrice(summary.discountAmount, { currency: summary.currency })}</span>
                     </motion.div>
                   )}

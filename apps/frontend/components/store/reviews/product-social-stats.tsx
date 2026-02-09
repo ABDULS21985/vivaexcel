@@ -97,7 +97,7 @@ function CompactStats({
       <span className="font-semibold text-neutral-800 dark:text-neutral-200">
         {averageRating.toFixed(1)}
       </span>
-      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
       <span className="text-neutral-400 dark:text-neutral-500">
         ({totalReviews})
       </span>
@@ -106,7 +106,7 @@ function CompactStats({
 
       {isTrending && (
         <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-[#F59A23]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[#F59A23]">
-          <TrendingUp className="h-3 w-3" />
+          <TrendingUp className="h-3 w-3" aria-hidden="true" />
           Trending
         </span>
       )}
@@ -131,7 +131,7 @@ function StatBlock({
 }) {
   return (
     <div className="group flex flex-col items-center gap-1 px-4 py-2 transition-transform duration-200 hover:scale-105 cursor-default">
-      <Icon className="h-5 w-5 text-neutral-400 dark:text-neutral-500 mb-0.5" />
+      <Icon className="h-5 w-5 text-neutral-400 dark:text-neutral-500 mb-0.5" aria-hidden="true" />
       <span className="text-lg font-bold text-neutral-800 dark:text-neutral-100 tabular-nums">
         {formatted ?? value}
       </span>
@@ -194,7 +194,7 @@ function ExpandedStats({
         <>
           <Divider />
           <div className="group flex flex-col items-center gap-1 px-4 py-2 transition-transform duration-200 hover:scale-105 cursor-default">
-            <TrendingUp className="h-5 w-5 text-[#F59A23] mb-0.5" />
+            <TrendingUp className="h-5 w-5 text-[#F59A23] mb-0.5" aria-hidden="true" />
             <span className="text-lg font-bold text-[#F59A23]">
               🔥
             </span>

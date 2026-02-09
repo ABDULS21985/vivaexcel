@@ -153,7 +153,7 @@ export function RelatedProducts({
 
             {/* Subtitle */}
             <p className="mt-1.5 text-sm text-neutral-500 dark:text-neutral-400">
-              Based on what other customers viewed
+              {t("sections.basedOnViews")}
             </p>
           </div>
 
@@ -164,7 +164,7 @@ export function RelatedProducts({
                 href="/store"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-[#1E4DB7] hover:text-[#143A8F] dark:text-blue-400 dark:hover:text-blue-300 transition-colors group mr-2"
               >
-                View All
+                {t("cta.viewAll")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             )}
@@ -266,7 +266,7 @@ export function RelatedProducts({
               href="/store"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#1E4DB7] hover:bg-[#143A8F] text-white font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg"
             >
-              View All Products
+              {t("cta.viewAllProducts")}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

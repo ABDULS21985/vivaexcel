@@ -220,7 +220,7 @@ export function SocialProofBanner({
 
             {/* Dots indicator — desktop only */}
             {proofItems.length > 1 && (
-              <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
+              <div className="hidden sm:flex items-center gap-1 flex-shrink-0" aria-hidden="true">
                 {proofItems.map((item, i) => (
                   <span
                     key={item.key}
