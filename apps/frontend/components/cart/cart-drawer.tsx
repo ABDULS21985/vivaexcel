@@ -28,6 +28,7 @@ import {
 } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
 import type { CartItem } from "@/providers/cart-provider";
+import { useFormat } from "@/hooks/use-format";
 import { useAnnouncer } from "@/components/ui/accessibility";
 
 // =============================================================================
@@ -255,6 +256,7 @@ interface CartItemRowProps {
 }
 
 function CartItemRow({ item, onRemove, isRemoving }: CartItemRowProps) {
+  const t = useTranslations("cart");
   return (
     <motion.div
       layout="position"
@@ -331,7 +333,7 @@ function CartItemRow({ item, onRemove, isRemoving }: CartItemRowProps) {
           "opacity-0 group-hover:opacity-100 sm:opacity-60 sm:group-hover:opacity-100",
           isRemoving && "opacity-50 pointer-events-none",
         )}
-        aria-label={`Remove ${item.product.title} from cart`}
+        aria-label={t("removeItem", { title: item.product.title })}
       >
         {isRemoving ? (
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -440,6 +442,8 @@ function RecentlyViewedCard({
 // -----------------------------------------------------------------------------
 
 function CartEmptyState({ onClose }: { onClose: () => void }) {
+  const tCart = useTranslations("cart");
+  const tStore = useTranslations("store");
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -457,10 +461,10 @@ function CartEmptyState({ onClose }: { onClose: () => void }) {
         </motion.div>
 
         <h3 className="text-lg font-bold text-neutral-900 dark:text-white mt-6 mb-1.5">
-          Your cart is empty
+          {tCart("empty")}
         </h3>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6 max-w-[260px] leading-relaxed">
-          Looks like you haven&apos;t added anything yet. Explore our curated collection of premium digital products.
+          {tCart("emptyDescription")}
         </p>
 
         <Button
@@ -469,7 +473,7 @@ function CartEmptyState({ onClose }: { onClose: () => void }) {
           onClick={onClose}
         >
           <Link href="/store">
-            Browse Products
+            {tStore("cta.browseStore")}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </Button>
@@ -480,7 +484,7 @@ function CartEmptyState({ onClose }: { onClose: () => void }) {
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-4 h-4 text-[#F59A23]" />
           <h4 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-            Recently Viewed
+            {tCart("recentlyViewed")}
           </h4>
         </div>
         <div className="space-y-2">
@@ -498,6 +502,7 @@ function CartEmptyState({ onClose }: { onClose: () => void }) {
 // -----------------------------------------------------------------------------
 
 function CouponSection() {
+  const t = useTranslations("cart");
   const [isOpen, setIsOpen] = useState(false);
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -525,7 +530,7 @@ function CouponSection() {
         className="flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-[#1E4DB7] dark:hover:text-blue-400 transition-colors"
       >
         <Tag className="w-3.5 h-3.5" />
-        <span>{isOpen ? "Hide coupon" : "Have a coupon?"}</span>
+        <span>{isOpen ? t("coupon.remove") : t("coupon.label")}</span>
       </button>
 
       <AnimatePresence>

@@ -480,7 +480,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="text-center space-y-1.5">
-                <p className="text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-wide font-medium">Also available at checkout</p>
+                <p className="text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-wide font-medium">{t("alsoAvailable")}</p>
                 <div className="flex items-center justify-center gap-3">
                   <span className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 text-[10px] font-semibold rounded-md">Apple Pay</span>
                   <span className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 text-[10px] font-semibold rounded-md">Google Pay</span>
@@ -489,17 +489,17 @@ export default function CheckoutPage() {
 
               <div className="flex items-center justify-center gap-1.5 text-xs text-neutral-400 dark:text-neutral-500">
                 <Lock className="w-3 h-3" />
-                <span>Secured by Stripe. We never store your card details.</span>
+                <span>{t("securedByStripe")}</span>
               </div>
 
               <div className="text-center">
                 <Link href="/store" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-[#1E4DB7] dark:hover:text-blue-400 transition-colors underline underline-offset-4">
-                  Continue Shopping
+                  {t("cancel.continueShopping")}
                 </Link>
               </div>
             </motion.div>
 
-            <TrustSignals />
+            <TrustSignals t={t} />
           </div>
         </div>
       </div>

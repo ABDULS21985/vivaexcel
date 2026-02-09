@@ -1247,10 +1247,12 @@
       "store": "Store",
       "checkout": "Checkout"
     },
+    "alsoAvailable": "Also available at checkout",
     "item": {
       "remove": "Remove {title}",
       "variant": "Variant: {name}",
-      "unitPrice": "Unit price: {price}"
+      "unitPrice": "Unit price: {price}",
+      "count": "{count, plural, one {# item} other {# items}}"
     },
     "coupon": {
       "haveACoupon": "Have a coupon?",
@@ -1259,6 +1261,8 @@
       "applied": "Coupon applied! You save {amount}",
       "invalid": "Invalid coupon code",
       "expired": "This coupon has expired",
+      "hide": "Hide coupon",
+      "countdown": "Complete within {time} to lock discount",
       "remove": "Remove coupon"
     },
     "summary": {
@@ -1272,7 +1276,9 @@
       "sslEncrypted": "SSL Encrypted",
       "sslEncryptedDesc": "Industry-standard security",
       "moneyBack": "Money Back",
-      "moneyBackDesc": "30-day guarantee"
+      "moneyBackDesc": "30-day guarantee",
+      "testimonialQuote": "\u201cExcellent products, instant delivery! The quality exceeded my expectations.\u201d",
+      "testimonialAuthor": "\u2014 Sarah M., Verified Buyer"
     },
     "empty": {
       "title": "Your cart is empty",

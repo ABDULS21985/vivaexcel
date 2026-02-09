@@ -146,7 +146,7 @@ export function ReviewHighlights({
         {/* Cons */}
         <div>
           <div className="flex items-center gap-1.5 mb-2">
-            <ThumbsDown className="h-3.5 w-3.5 text-red-500" />
+            <ThumbsDown className="h-3.5 w-3.5 text-red-500" aria-hidden="true" />
             <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
               Top Mentioned Cons
             </span>
