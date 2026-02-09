@@ -37,7 +37,7 @@ export class EmailService {
     this.frontendUrl =
       this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     this.supportEmail =
-      this.configService.get<string>('SUPPORT_EMAIL') || 'support@katangablog.com';
+      this.configService.get<string>('SUPPORT_EMAIL') || 'support@drkatangablog.com';
     this.brandName =
       this.configService.get<string>('BRAND_NAME') || 'KatangaBlog';
   }

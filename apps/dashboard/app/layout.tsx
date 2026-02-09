@@ -68,7 +68,7 @@ export const metadata: Metadata = {
       follow: false,
     },
   },
-  metadataBase: new URL('https://dashboard.katangablog.com'),
+  metadataBase: new URL('https://dashboard.drkatangablog.com'),
 };
 
 export default function RootLayout({

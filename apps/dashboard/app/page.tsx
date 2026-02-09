@@ -131,7 +131,7 @@ export default function DashboardHome() {
                             New Post
                         </Button>
                     </Link>
-                    <a href="https://katangablog.com" target="_blank" rel="noopener noreferrer">
+                    <a href="https://drkatangablog.com" target="_blank" rel="noopener noreferrer">
                         <Button variant="outline">
                             <Globe className="h-4 w-4 mr-2" />
                             View Site
