@@ -9,10 +9,10 @@ import { OrderItem } from '../../entities/order-item.entity';
 import { PaginatedResponse } from '../../common/interfaces/response.interface';
 import {
   ReviewStatus,
-  ReviewSortBy,
-  ReportStatus,
   VoteType,
+  ReportStatus,
 } from './enums/review.enums';
+import { ReviewSortBy } from './dto/review-query.dto';
 
 export interface ReviewQueryOptions {
   cursor?: string;
@@ -250,7 +250,7 @@ export class ReviewsRepository {
     const qb = this.reviewRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.user', 'user')
-      .where('review.status = :status', { status: ReviewStatus.PENDING });
+      .where('review.status = :status', { status: ReviewStatus.PENDING_MODERATION });
 
     if (cursor) {
       const decodedCursor = this.decodeCursor(cursor);

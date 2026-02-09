@@ -4,3 +4,4 @@ export { ProductInfo } from "./product-info";
 export { RelatedProducts } from "./related-products";
 export { StoreListingClient } from "./store-listing-client";
 export * from "./solutions";
+export * from "./reviews";
