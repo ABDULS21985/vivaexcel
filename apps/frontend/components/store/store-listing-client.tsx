@@ -1161,12 +1161,12 @@ export function StoreListingClient({
                 <Search className="h-10 w-10 text-neutral-400" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
-                No products found
+                {t("empty.title")}
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400 max-w-md mx-auto mb-6">
                 {hasActiveFilters
-                  ? "We could not find any products matching your filters. Try adjusting your search criteria or browse all products."
-                  : "No products are currently available. Check back soon for new additions."}
+                  ? t("empty.filteredDescription")
+                  : t("empty.defaultDescription")}
               </p>
               {hasActiveFilters && (
                 <motion.button
@@ -1176,7 +1176,7 @@ export function StoreListingClient({
                   whileTap={{ scale: 0.98 }}
                 >
                   <X className="h-4 w-4" />
-                  Clear All Filters
+                  {t("filters.clearAllFilters")}
                 </motion.button>
               )}
             </motion.div>

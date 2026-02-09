@@ -70,7 +70,7 @@ const EASE_OUT = { duration: 0.3, ease: "easeOut" as const };
 // Countdown Timer
 // -----------------------------------------------------------------------------
 
-function CountdownTimer({ seconds, expired }: { seconds: number; expired: boolean }) {
+function CountdownTimer({ seconds, expired, t }: { seconds: number; expired: boolean; t: ReturnType<typeof useTranslations> }) {
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;
 
@@ -83,7 +83,7 @@ function CountdownTimer({ seconds, expired }: { seconds: number; expired: boolea
       >
         <AlertCircle className="w-4 h-4 text-red-500" />
         <span className="text-sm font-medium text-red-600 dark:text-red-400">
-          Discount expired
+          {t("coupon.expired")}
         </span>
       </motion.div>
     );
@@ -97,11 +97,7 @@ function CountdownTimer({ seconds, expired }: { seconds: number; expired: boolea
     >
       <Timer className="w-4 h-4 text-amber-600 dark:text-amber-400" />
       <span className="text-sm text-amber-700 dark:text-amber-300">
-        Complete within{" "}
-        <span className="font-bold font-mono">
-          {String(minutes).padStart(2, "0")}:{String(secs).padStart(2, "0")}
-        </span>{" "}
-        to lock discount
+        {t("coupon.countdown", { time: `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}` })}
       </span>
     </motion.div>
   );

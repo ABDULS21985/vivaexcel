@@ -202,6 +202,7 @@ function SortDropdown({
         "
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-label="Sort reviews"
       >
         {currentLabel}
         <ChevronDown
@@ -400,7 +401,7 @@ export function ReviewList({
   // Render
   // ---------------------------------------------------------------------------
   return (
-    <div className="w-full">
+    <div className="w-full" aria-label="Customer reviews">
       {/* ------------------------------------------------------------------ */}
       {/* Header: Total count + Sort dropdown                                */}
       {/* ------------------------------------------------------------------ */}
@@ -439,6 +440,7 @@ export function ReviewList({
               key={filter.label}
               type="button"
               onClick={() => handleRatingFilter(filter.value)}
+              aria-pressed={isActive}
               className={`
                 snap-start shrink-0
                 px-4 py-1.5 text-sm font-medium rounded-full
