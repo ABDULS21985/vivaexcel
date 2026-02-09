@@ -44,16 +44,6 @@ import { formatPrice } from "@/lib/format";
 // Helpers
 // -----------------------------------------------------------------------------
 
-function formatPrice(price: number, currency: string = "USD"): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
-
 const TYPE_BADGE_COLORS: Record<string, string> = {
   powerpoint: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   document: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
@@ -417,7 +407,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <p className="text-sm font-bold text-neutral-900 dark:text-white flex-shrink-0">
-                    {formatPrice(item.unitPrice, item.product.currency)}
+                    {formatPrice(item.unitPrice, { currency: item.product.currency })}
                   </p>
 
                   <motion.button
@@ -456,7 +446,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-neutral-500 dark:text-neutral-400">Subtotal</span>
                   <motion.span key={summary.subtotal} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-neutral-900 dark:text-white font-medium">
-                    {formatPrice(summary.subtotal, summary.currency)}
+                    {formatPrice(summary.subtotal, { currency: summary.currency })}
                   </motion.span>
                 </div>
 
@@ -464,7 +454,7 @@ export default function CheckoutPage() {
                   {summary.discountAmount > 0 && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="flex items-center justify-between text-sm overflow-hidden">
                       <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><Sparkles className="w-3 h-3" /> Discount</span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">-{formatPrice(summary.discountAmount, summary.currency)}</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">-{formatPrice(summary.discountAmount, { currency: summary.currency })}</span>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -472,7 +462,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-between pt-3 border-t border-neutral-100 dark:border-neutral-800">
                   <span className="text-base font-semibold text-neutral-900 dark:text-white">Total</span>
                   <motion.span key={summary.total} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-xl font-bold text-neutral-900 dark:text-white">
-                    {formatPrice(summary.total, summary.currency)}
+                    {formatPrice(summary.total, { currency: summary.currency })}
                   </motion.span>
                 </div>
               </div>

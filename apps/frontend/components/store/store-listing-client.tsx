@@ -1017,7 +1017,7 @@ export function StoreListingClient({
                   ? "bg-[#1E4DB7] text-white"
                   : "text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
               }`}
-              aria-label="Grid view"
+              aria-label={t("view.grid")}
             >
               <Grid3X3 className="h-4 w-4" />
             </button>
@@ -1028,7 +1028,7 @@ export function StoreListingClient({
                   ? "bg-[#1E4DB7] text-white"
                   : "text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
               }`}
-              aria-label="List view"
+              aria-label={t("view.list")}
             >
               <List className="h-4 w-4" />
             </button>
@@ -1069,10 +1069,10 @@ export function StoreListingClient({
           {isLoadingResults ? (
             <span className="flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Searching...
+              {t("search.searching")}
             </span>
           ) : (
-            `${totalResults} ${totalResults === 1 ? "product" : "products"} found`
+            t("search.resultsCount", { count: totalResults })
           )}
         </span>
       </div>
@@ -1137,7 +1137,7 @@ export function StoreListingClient({
                       className="flex items-center gap-3 text-neutral-500 dark:text-neutral-400"
                     >
                       <Loader2 className="h-5 w-5 animate-spin text-[#1E4DB7]" />
-                      <span className="text-sm font-medium">Loading more products...</span>
+                      <span className="text-sm font-medium">{t("search.loadingMore")}</span>
                     </motion.div>
                   )}
                 </div>
@@ -1146,7 +1146,7 @@ export function StoreListingClient({
               {/* Showing Count */}
               <div className="flex justify-center mt-8">
                 <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                  Showing {displayProducts.length} of {totalResults} products
+                  {t("search.showingCount", { shown: displayProducts.length, total: totalResults })}
                 </p>
               </div>
             </>

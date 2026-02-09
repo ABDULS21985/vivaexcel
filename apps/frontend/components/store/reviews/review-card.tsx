@@ -192,9 +192,9 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
       {/* ================================================================= */}
       {/* Title                                                            */}
       {/* ================================================================= */}
-      <h4 className="font-bold text-neutral-900 dark:text-white text-base mb-2">
+      <h3 className="font-bold text-neutral-900 dark:text-white text-base mb-2">
         {review.title}
-      </h4>
+      </h3>
 
       {/* ================================================================= */}
       {/* Body with truncation + expand/collapse animation                 */}
@@ -336,7 +336,8 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
                     : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400"
               }
             `}
-            aria-label="Mark as helpful"
+            aria-label={`Helpful (${review.helpfulCount})`}
+            aria-pressed={review.userVote === "HELPFUL"}
           >
             <ThumbsUp className="h-3.5 w-3.5" />
             <AnimatePresence mode="wait">
@@ -368,7 +369,8 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
                     : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400"
               }
             `}
-            aria-label="Mark as not helpful"
+            aria-label={`Not helpful (${review.notHelpfulCount})`}
+            aria-pressed={review.userVote === "NOT_HELPFUL"}
           >
             <ThumbsDown className="h-3.5 w-3.5" />
             <AnimatePresence mode="wait">

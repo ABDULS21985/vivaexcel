@@ -71,6 +71,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | KTBlog Store`,
       description,
     },
+    alternates: {
+      canonical: `https://drkatangablog.com/store/category/${slug}`,
+    },
   };
 }
 
@@ -99,6 +102,18 @@ export default async function StoreCategoryPage({ params }: Props) {
   const products = productsResponse.items;
   const activeCategories = allCategories.filter((c) => c.isActive !== false);
 
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: products.map((product, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: product.title,
+      url: `https://drkatangablog.com/store/${product.slug}`,
+      ...(product.featuredImage && { image: product.featuredImage }),
+    })),
+  };
+
   return (
     <>
       <JsonLd
@@ -108,6 +123,7 @@ export default async function StoreCategoryPage({ params }: Props) {
           { name: category.name, url: `/store/category/${slug}` },
         ])}
       />
+      <JsonLd data={itemListSchema} />
 
       <div className="min-h-screen bg-white dark:bg-neutral-950">
         {/* Hero Section */}
