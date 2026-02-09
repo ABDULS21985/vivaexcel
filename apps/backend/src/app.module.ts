@@ -49,6 +49,8 @@ import { CheckoutModule } from './modules/checkout/checkout.module';
 import { PresentationsModule } from './modules/presentations/presentations.module';
 import { SolutionDocumentsModule } from './modules/solution-documents/solution-documents.module';
 import { TemplatesModule } from './modules/templates/templates.module';
+import { PromotionsModule } from './modules/promotions/promotions.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -132,6 +134,8 @@ import { AppService } from './app.service';
     PresentationsModule,
     SolutionDocumentsModule,
     TemplatesModule,
+    PromotionsModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [

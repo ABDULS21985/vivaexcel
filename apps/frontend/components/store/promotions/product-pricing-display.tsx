@@ -1,18 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FlashSaleCountdown } from "./flash-sale-countdown";
+import { Tag, Zap, Crown } from "lucide-react";
 
 // =============================================================================
 // Types
 // =============================================================================
 
-interface ProductPricingDisplayProps {
-  currentPrice: number;
-  originalPrice?: number;
-  discountBadge?: string;
-  saleEndsAt?: string;
+interface PricingInfo {
+  originalPrice: number;
+  salePrice?: number;
+  discountPercent?: number;
   currency?: string;
+  promotionType?: "flash-sale" | "bundle" | "loyalty" | "coupon";
+  promotionLabel?: string;
+}
+
+interface ProductPricingDisplayProps {
+  pricing: PricingInfo;
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
@@ -31,34 +37,35 @@ function formatPrice(price: number, currency: string = "USD"): string {
 }
 
 // =============================================================================
-// Animation Variants
+// Size Configs
 // =============================================================================
 
-const containerVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15,
-      staggerChildren: 0.08,
-    },
+const sizeConfig = {
+  sm: {
+    original: "text-xs",
+    sale: "text-sm font-bold",
+    badge: "text-[9px] px-1.5 py-0.5",
+    gap: "gap-1.5",
+  },
+  md: {
+    original: "text-sm",
+    sale: "text-lg font-bold",
+    badge: "text-[10px] px-2 py-0.5",
+    gap: "gap-2",
+  },
+  lg: {
+    original: "text-base",
+    sale: "text-2xl font-bold",
+    badge: "text-xs px-2.5 py-1",
+    gap: "gap-2.5",
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, x: -10 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 120,
-      damping: 15,
-    },
-  },
+const promoIcons = {
+  "flash-sale": Zap,
+  bundle: Tag,
+  loyalty: Crown,
+  coupon: Tag,
 };
 
 // =============================================================================
@@ -66,83 +73,68 @@ const itemVariants = {
 // =============================================================================
 
 export function ProductPricingDisplay({
-  currentPrice,
-  originalPrice,
-  discountBadge,
-  saleEndsAt,
-  currency = "USD",
+  pricing,
+  size = "md",
   className = "",
 }: ProductPricingDisplayProps) {
-  const hasDiscount = originalPrice !== undefined && originalPrice > currentPrice;
-  const computedDiscountPercent = hasDiscount
-    ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
-    : 0;
-  const badgeText =
-    discountBadge || (hasDiscount ? `${computedDiscountPercent}% OFF` : null);
+  const config = sizeConfig[size];
+  const hasSale =
+    pricing.salePrice !== undefined && pricing.salePrice < pricing.originalPrice;
+  const discountPercent =
+    pricing.discountPercent ??
+    (hasSale
+      ? Math.round(
+          ((pricing.originalPrice - pricing.salePrice!) / pricing.originalPrice) *
+            100,
+        )
+      : 0);
+  const PromoIcon = pricing.promotionType
+    ? promoIcons[pricing.promotionType]
+    : null;
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className={`space-y-3 ${className}`}
-    >
-      {/* Price Row */}
-      <div className="flex items-baseline gap-3 flex-wrap">
-        {/* Current Price */}
-        <motion.span
-          variants={itemVariants}
-          className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white"
-        >
-          {formatPrice(currentPrice, currency)}
-        </motion.span>
-
-        {/* Original Price (Strikethrough) */}
-        {hasDiscount && (
+    <div className={`flex items-center flex-wrap ${config.gap} ${className}`}>
+      {/* Sale price */}
+      {hasSale ? (
+        <>
           <motion.span
-            variants={itemVariants}
-            className="text-lg text-neutral-400 dark:text-neutral-500 line-through"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className={`${config.sale} text-red-600 dark:text-red-400`}
           >
-            {formatPrice(originalPrice, currency)}
+            {formatPrice(pricing.salePrice!, pricing.currency)}
           </motion.span>
-        )}
-
-        {/* Discount Badge */}
-        {badgeText && (
-          <motion.span
-            variants={itemVariants}
-            className="inline-flex items-center px-2.5 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold rounded-lg"
+          <span
+            className={`${config.original} text-neutral-400 dark:text-neutral-500 line-through`}
           >
-            {badgeText}
-          </motion.span>
-        )}
-      </div>
-
-      {/* Savings Detail */}
-      {hasDiscount && (
-        <motion.p
-          variants={itemVariants}
-          className="text-sm text-emerald-600 dark:text-emerald-400 font-medium"
-        >
-          You save {formatPrice(originalPrice - currentPrice, currency)}
-        </motion.p>
-      )}
-
-      {/* Sale Countdown */}
-      {saleEndsAt && (
-        <motion.div
-          variants={itemVariants}
-          className="flex items-center gap-3 p-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl"
-        >
-          <div className="flex-shrink-0">
-            <span className="text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400">
-              Sale ends in
+            {formatPrice(pricing.originalPrice, pricing.currency)}
+          </span>
+          {discountPercent > 0 && (
+            <span
+              className={`${config.badge} inline-flex items-center gap-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-bold rounded-full`}
+            >
+              {PromoIcon && <PromoIcon className="h-3 w-3" />}
+              -{discountPercent}%
             </span>
-          </div>
-          <FlashSaleCountdown endsAt={saleEndsAt} size="sm" />
-        </motion.div>
+          )}
+        </>
+      ) : (
+        <span
+          className={`${config.sale} text-neutral-900 dark:text-white`}
+        >
+          {formatPrice(pricing.originalPrice, pricing.currency)}
+        </span>
       )}
-    </motion.div>
+
+      {/* Promotion label */}
+      {pricing.promotionLabel && (
+        <span
+          className={`${config.badge} inline-flex items-center gap-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-semibold rounded-full`}
+        >
+          {pricing.promotionLabel}
+        </span>
+      )}
+    </div>
   );
 }
 
