@@ -884,6 +884,31 @@ export function StoreListingClient({
   }, []);
 
   // ---------------------------------------------------------------------------
+  // Listen for hero search & category pill custom events
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    const onHeroSearch = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (typeof detail === "string") {
+        handleSearchChange(detail);
+      }
+    };
+    const onHeroCategory = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (typeof detail === "string") {
+        handleCategoryChange(detail);
+      }
+    };
+
+    window.addEventListener("store-search", onHeroSearch);
+    window.addEventListener("store-filter-category", onHeroCategory);
+    return () => {
+      window.removeEventListener("store-search", onHeroSearch);
+      window.removeEventListener("store-filter-category", onHeroCategory);
+    };
+  }, [handleSearchChange, handleCategoryChange]);
+
+  // ---------------------------------------------------------------------------
   // IntersectionObserver for infinite scroll
   // ---------------------------------------------------------------------------
   useEffect(() => {

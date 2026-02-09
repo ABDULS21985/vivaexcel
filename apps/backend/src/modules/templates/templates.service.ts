@@ -18,7 +18,6 @@ import { CompatibilityCheckDto } from './dto/compatibility-check.dto';
 import {
   WebTemplate,
   Framework,
-  WebTemplateStatus,
 } from '../../entities/web-template.entity';
 import { TemplateLicense } from '../../entities/template-license.entity';
 import { TemplateDemo } from '../../entities/template-demo.entity';
