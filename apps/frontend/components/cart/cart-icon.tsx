@@ -157,7 +157,7 @@ function HoverPreview({
               "transition-all duration-200",
             )}
           >
-            View Cart
+            {t("viewCart")}
           </button>
         </div>
       </div>
@@ -170,6 +170,7 @@ function HoverPreview({
 // -----------------------------------------------------------------------------
 
 export function CartIcon() {
+  const t = useTranslations("cart");
   const { items, summary, toggleCart } = useCart();
   const badgeControls = useAnimation();
   const iconControls = useAnimation();
@@ -206,7 +207,7 @@ export function CartIcon() {
     if (items.length > prevItemsLengthRef.current && items.length > 0) {
       const newestItem = items[items.length - 1];
       if (newestItem) {
-        toast.success("Added to cart!", {
+        toast.success(t("addedToCart"), {
           description: newestItem.product.title,
         });
       }
@@ -259,7 +260,7 @@ export function CartIcon() {
           "hover:bg-neutral-100 dark:hover:bg-neutral-800",
           "transition-colors",
         )}
-        aria-label={`Shopping cart${summary.itemCount > 0 ? `, ${summary.itemCount} item${summary.itemCount === 1 ? "" : "s"}` : ""}`}
+        aria-label={t("ariaLabel", { count: summary.itemCount })}
       >
         <ShoppingBag className="w-[18px] h-[18px]" />
 

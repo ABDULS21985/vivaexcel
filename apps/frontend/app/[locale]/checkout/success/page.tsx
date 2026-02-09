@@ -470,7 +470,7 @@ export default function CheckoutSuccessPage() {
         >
           <div className="flex items-center gap-2 mb-4">
             <Download className="w-5 h-5 text-[#1E4DB7]" />
-            <h2 className="text-xl font-bold">Your Downloads</h2>
+            <h2 className="text-xl font-bold">{t("success.yourDownloads")}</h2>
           </div>
 
           {itemsWithDownloads.length > 0 ? (
@@ -492,8 +492,7 @@ export default function CheckoutSuccessPage() {
                     <div>
                       <p className="font-medium mb-1">{item.productTitle}</p>
                       <p className="text-sm text-neutral-400">
-                        Downloads remaining: {remainingDownloads}/
-                        {activeToken.maxDownloads}
+                        {t("success.downloadsRemaining", { remaining: remainingDownloads, max: activeToken.maxDownloads })}
                       </p>
                     </div>
                     <a
@@ -503,7 +502,7 @@ export default function CheckoutSuccessPage() {
                       className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] hover:from-[#143A8F] hover:to-[#0d2661] text-white font-semibold rounded-lg transition-all shadow-lg shadow-[#1E4DB7]/25 hover:shadow-xl hover:shadow-[#1E4DB7]/40"
                     >
                       <Download className="w-4 h-4" />
-                      Download Now
+                      {t("success.downloadNow")}
                     </a>
                   </div>
                 );
@@ -516,13 +515,13 @@ export default function CheckoutSuccessPage() {
                   className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Download All Items
+                  {t("success.downloadAll")}
                 </button>
               )}
             </div>
           ) : (
             <p className="text-neutral-400 text-center py-4">
-              No downloads are currently available for this order.
+              {t("success.noDownloads")}
             </p>
           )}
         </motion.div>
@@ -534,7 +533,7 @@ export default function CheckoutSuccessPage() {
           transition={{ delay: 0.5, duration: 0.5 }}
           className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-6"
         >
-          <h2 className="text-xl font-bold mb-4">What's Next?</h2>
+          <h2 className="text-xl font-bold mb-4">{t("success.whatsNext")}</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {/* Rate purchase */}
             {order.items[0] && (
@@ -543,9 +542,9 @@ export default function CheckoutSuccessPage() {
                 className="flex flex-col items-center text-center p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors group"
               >
                 <Star className="w-8 h-8 text-[#F59A23] mb-2 group-hover:scale-110 transition-transform" />
-                <p className="font-medium mb-1">Rate Your Purchase</p>
+                <p className="font-medium mb-1">{t("success.ratePurchase")}</p>
                 <p className="text-sm text-neutral-400">
-                  Share your experience
+                  {t("success.shareExperience")}
                 </p>
               </Link>
             )}

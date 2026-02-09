@@ -297,7 +297,7 @@ function VideoPlayer({ url, thumbnail }: { url: string; thumbnail?: string }) {
                 {isPlaying ? (
                   <Pause className="h-4 w-4 text-white" />
                 ) : (
-                  <Play className="h-4 w-4 text-white ml-0.5" />
+                  <Play className="h-4 w-4 text-white ms-0.5" />
                 )}
               </button>
               <button
@@ -841,14 +841,14 @@ export function ProductGallery({ product }: ProductGalleryProps) {
           <>
             <button
               onClick={scrollPrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover/gallery:opacity-100 hover:bg-white dark:hover:bg-neutral-900 transition-all duration-300"
+              className="absolute start-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover/gallery:opacity-100 hover:bg-white dark:hover:bg-neutral-900 transition-all duration-300"
               aria-label="Previous image"
             >
               <ChevronLeft className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
             </button>
             <button
               onClick={scrollNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover/gallery:opacity-100 hover:bg-white dark:hover:bg-neutral-900 transition-all duration-300"
+              className="absolute end-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover/gallery:opacity-100 hover:bg-white dark:hover:bg-neutral-900 transition-all duration-300"
               aria-label="Next image"
             >
               <ChevronRight className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
@@ -858,7 +858,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
 
         {/* Slide Counter Badge */}
         {galleryItems.length > 1 && (
-          <div className="absolute bottom-3 right-3 z-10 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full">
+          <div className="absolute bottom-3 end-3 z-10 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full">
             <span className="text-white text-xs font-medium">
               {selectedIndex + 1} / {galleryItems.length}
             </span>
@@ -867,7 +867,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
 
         {/* Content type badge */}
         {currentItem && currentItem.type !== "image" && (
-          <div className="absolute top-3 left-3 z-10">
+          <div className="absolute top-3 start-3 z-10">
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-full">
               {getPreviewIcon(currentItem.type)}
               <span className="text-xs text-white font-medium">
