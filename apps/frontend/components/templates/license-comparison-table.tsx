@@ -1,24 +1,24 @@
 'use client';
 
-import { TemplateLicenseType, LICENSE_TYPE_LABELS } from '../../types/web-template';
+import { LicenseType, LICENSE_TYPE_LABELS } from '@/types/web-template';
 
 interface LicenseComparisonTableProps {
   basePrice: number;
   currency?: string;
-  currentLicense?: TemplateLicenseType;
-  onSelect?: (license: TemplateLicenseType) => void;
+  currentLicense?: LicenseType;
+  onSelect?: (license: LicenseType) => void;
 }
 
 const LICENSE_TIERS = [
   {
-    type: TemplateLicenseType.SINGLE_USE,
+    type: LicenseType.SINGLE_USE,
     multiplier: 1,
     activations: 1,
     support: '6 months',
     features: ['Single project', 'Free updates for 6 months', 'Basic support'],
   },
   {
-    type: TemplateLicenseType.MULTI_USE,
+    type: LicenseType.MULTI_USE,
     multiplier: 2.5,
     activations: 5,
     support: '12 months',
@@ -31,7 +31,7 @@ const LICENSE_TIERS = [
     popular: true,
   },
   {
-    type: TemplateLicenseType.EXTENDED,
+    type: LicenseType.EXTENDED,
     multiplier: 5,
     activations: 25,
     support: '24 months',
@@ -45,7 +45,7 @@ const LICENSE_TIERS = [
     ],
   },
   {
-    type: TemplateLicenseType.UNLIMITED,
+    type: LicenseType.UNLIMITED,
     multiplier: 10,
     activations: 999,
     support: 'Lifetime',

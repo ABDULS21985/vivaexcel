@@ -7,7 +7,7 @@ import {
   WebTemplate,
   WebTemplateFilters,
   TemplateType,
-  TemplateFramework,
+  Framework,
   TEMPLATE_TYPE_LABELS,
   FRAMEWORK_LABELS,
   TEMPLATE_FEATURES,
@@ -35,7 +35,7 @@ export function TemplateListingClient({
 }: TemplateListingClientProps) {
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState<TemplateType | ''>('');
-  const [selectedFramework, setSelectedFramework] = useState<TemplateFramework | ''>('');
+  const [selectedFramework, setSelectedFramework] = useState<Framework | ''>('');
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<{ min?: number; max?: number }>({});
   const [sort, setSort] = useState('createdAt:DESC');
@@ -198,7 +198,7 @@ export function TemplateListingClient({
         {Object.entries(FRAMEWORK_LABELS).map(([key, label]) => (
           <button
             key={key}
-            onClick={() => setSelectedFramework(key as TemplateFramework)}
+            onClick={() => setSelectedFramework(key as Framework)}
             className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
               selectedFramework === key
                 ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'

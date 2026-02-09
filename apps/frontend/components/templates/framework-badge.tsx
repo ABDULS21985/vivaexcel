@@ -1,13 +1,13 @@
 'use client';
 
 import {
-  TemplateFramework,
+  Framework,
   FRAMEWORK_LABELS,
   FRAMEWORK_COLORS,
 } from '../../types/web-template';
 
 interface FrameworkBadgeProps {
-  framework: TemplateFramework;
+  framework: Framework;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
 }

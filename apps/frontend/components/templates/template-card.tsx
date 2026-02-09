@@ -123,8 +123,8 @@ export function TemplateCard({ template, index = 0 }: TemplateCardProps) {
           {/* Stats row */}
           <div className="mt-2 flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
             <span className="flex items-center gap-1">
-              {renderStars(template.averageRating)}
-              <span className="ml-0.5">({template.totalReviews})</span>
+              {renderStars(template.averageRating ?? 0)}
+              <span className="ml-0.5">({template.totalReviews ?? 0})</span>
             </span>
           </div>
 

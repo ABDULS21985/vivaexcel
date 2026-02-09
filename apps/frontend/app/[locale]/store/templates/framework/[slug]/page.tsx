@@ -3,25 +3,25 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { fetchTemplatesByFramework } from '../../../../../../lib/template-api';
 import { TemplateCard } from '../../../../../../components/templates/template-card';
-import { TemplateFramework, FRAMEWORK_LABELS } from '../../../../../../types/web-template';
+import { Framework, FRAMEWORK_LABELS } from '../../../../../../types/web-template';
 
 interface Props {
   params: Promise<{ locale: string; slug: string }>;
 }
 
-const FRAMEWORK_SLUG_MAP: Record<string, TemplateFramework> = {
-  nextjs: TemplateFramework.NEXTJS,
-  react: TemplateFramework.REACT,
-  vue: TemplateFramework.VUE,
-  nuxt: TemplateFramework.NUXT,
-  svelte: TemplateFramework.SVELTE,
-  astro: TemplateFramework.ASTRO,
-  angular: TemplateFramework.ANGULAR,
-  'html-css': TemplateFramework.HTML_CSS,
-  tailwind: TemplateFramework.TAILWIND,
-  bootstrap: TemplateFramework.BOOTSTRAP,
-  wordpress: TemplateFramework.WORDPRESS,
-  shopify: TemplateFramework.SHOPIFY,
+const FRAMEWORK_SLUG_MAP: Record<string, Framework> = {
+  nextjs: Framework.NEXTJS,
+  react: Framework.REACT,
+  vue: Framework.VUE,
+  nuxt: Framework.NUXT,
+  svelte: Framework.SVELTE,
+  astro: Framework.ASTRO,
+  angular: Framework.ANGULAR,
+  'html-css': Framework.HTML_CSS,
+  tailwind: Framework.TAILWIND,
+  bootstrap: Framework.BOOTSTRAP,
+  wordpress: Framework.WORDPRESS,
+  shopify: Framework.SHOPIFY,
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
