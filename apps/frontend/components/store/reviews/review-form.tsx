@@ -155,7 +155,11 @@ function StepProgress({
   completedSteps: Set<number>;
 }) {
   return (
-    <div className="flex items-center justify-center w-full px-4 mb-6">
+    <div
+      className="flex items-center justify-center w-full px-4 mb-6"
+      role="navigation"
+      aria-label={`Step ${currentStep} of ${TOTAL_STEPS}: ${STEP_LABELS[currentStep - 1]}`}
+    >
       {Array.from({ length: TOTAL_STEPS }, (_, i) => {
         const stepNum = i + 1;
         const isActive = stepNum === currentStep;
@@ -691,6 +695,7 @@ export function ReviewForm({
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Summarize your experience"
           maxLength={TITLE_MAX}
+          aria-invalid={!!stepErrors.title}
           className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-white"
         />
         <div className="flex items-center justify-between mt-1">
@@ -723,6 +728,7 @@ export function ReviewForm({
           placeholder="Tell others about your experience... (minimum 20 characters)"
           rows={5}
           maxLength={BODY_MAX}
+          aria-invalid={!!stepErrors.body}
           className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-white resize-y"
         />
         <div className="flex items-center justify-between mt-1">

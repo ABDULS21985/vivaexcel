@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Star, Download, TrendingUp, Award, Eye } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { SrOnly } from "@/components/ui/accessibility";
@@ -129,6 +130,7 @@ export function ProductCardSkeleton() {
 // =============================================================================
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const t = useTranslations("store");
   const { currency, convertPrice } = useCurrency();
   const { formatPrice } = useFormat();
   const typeLabel = DIGITAL_PRODUCT_TYPE_LABELS[product.type] || "Product";

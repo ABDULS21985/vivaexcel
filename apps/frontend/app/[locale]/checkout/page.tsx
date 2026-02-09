@@ -107,11 +107,11 @@ function CountdownTimer({ seconds, expired, t }: { seconds: number; expired: boo
 // Trust Signals
 // -----------------------------------------------------------------------------
 
-function TrustSignals() {
+function TrustSignals({ t }: { t: ReturnType<typeof useTranslations> }) {
   const signals = [
-    { icon: Shield, label: "Secure Payment", desc: "256-bit SSL" },
-    { icon: CreditCard, label: "SSL Encrypted", desc: "Stripe powered" },
-    { icon: RefreshCw, label: "Money Back", desc: "30-day guarantee" },
+    { icon: Shield, label: t("trust.securePayment"), desc: t("trust.securePaymentDesc") },
+    { icon: CreditCard, label: t("trust.sslEncrypted"), desc: t("trust.sslEncryptedDesc") },
+    { icon: RefreshCw, label: t("trust.moneyBack"), desc: t("trust.moneyBackDesc") },
   ];
 
   return (
@@ -140,10 +140,10 @@ function TrustSignals() {
         <Quote className="w-5 h-5 text-[#F59A23] flex-shrink-0 mt-0.5" />
         <div>
           <p className="text-sm italic text-neutral-600 dark:text-neutral-300 leading-relaxed">
-            &ldquo;Excellent products, instant delivery! The quality exceeded my expectations.&rdquo;
+            {t("trust.testimonialQuote")}
           </p>
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1.5 font-medium">
-            — Sarah M., Verified Buyer
+            {t("trust.testimonialAuthor")}
           </p>
         </div>
       </div>

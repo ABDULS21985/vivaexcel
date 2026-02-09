@@ -152,7 +152,7 @@ function SortDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-52 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-xl z-50 overflow-hidden"
+            className="absolute end-0 mt-2 w-52 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-xl z-50 overflow-hidden"
           >
             {sortOptions.map((option) => (
               <button
@@ -161,7 +161,7 @@ function SortDropdown({
                   onChange(option.value);
                   setOpen(false);
                 }}
-                className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                className={`w-full text-start px-4 py-2.5 text-sm transition-colors ${
                   value === option.value
                     ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                     : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700"
@@ -449,7 +449,7 @@ function FilterContent({
         <div className="space-y-1.5">
           <button
             onClick={() => onCategoryChange("")}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+            className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
               selectedCategory === ""
                 ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -461,7 +461,7 @@ function FilterContent({
             <button
               key={cat.id}
               onClick={() => onCategoryChange(cat.slug)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+              className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
                 selectedCategory === cat.slug
                   ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                   : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -481,7 +481,7 @@ function FilterContent({
         <div className="space-y-1.5">
           <button
             onClick={() => onTypeChange("")}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+            className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
               selectedType === ""
                 ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -494,7 +494,7 @@ function FilterContent({
               <button
                 key={value}
                 onClick={() => onTypeChange(value)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
                   selectedType === value
                     ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                     : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -551,7 +551,7 @@ function FilterContent({
         <div className="space-y-1.5">
           <button
             onClick={() => onRatingChange(0)}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+            className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
               selectedRating === 0
                 ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -563,7 +563,7 @@ function FilterContent({
             <button
               key={opt.value}
               onClick={() => onRatingChange(opt.value)}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+              className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
                 selectedRating === opt.value
                   ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                   : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -969,7 +969,7 @@ export function StoreListingClient({
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
         {/* Search Bar */}
         <div className="relative flex-1 max-w-lg">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+          <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
           <input
             type="text"
             placeholder={t("search.placeholder")}
