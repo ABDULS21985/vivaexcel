@@ -199,3 +199,15 @@ export {
     type ComplianceFramework,
     type TemplateFormat,
 } from "./use-solution-documents";
+
+export {
+    useWebTemplates,
+    useWebTemplate,
+    useCreateWebTemplate,
+    useUpdateWebTemplate,
+    useDeleteWebTemplate,
+    usePublishWebTemplate,
+    useArchiveWebTemplate,
+    useTemplateLicenses,
+    webTemplateKeys,
+} from "./use-web-templates";
