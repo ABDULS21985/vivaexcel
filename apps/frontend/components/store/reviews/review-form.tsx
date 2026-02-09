@@ -55,15 +55,7 @@ interface FormState {
 
 const TOTAL_STEPS = 4;
 
-const RATING_LABELS: Record<number, string> = {
-  1: "Poor",
-  2: "Fair",
-  3: "Good",
-  4: "Great",
-  5: "Excellent",
-};
-
-const STEP_LABELS = ["Rating", "Details", "Pros & Cons", "Images"];
+// RATING_LABELS and STEP_LABELS are now derived from translations inside the component
 
 const MAX_IMAGES = 5;
 const TITLE_MAX = 200;
@@ -151,15 +143,19 @@ function clearDraft(productId: string): void {
 function StepProgress({
   currentStep,
   completedSteps,
+  stepLabels,
+  stepAriaLabel,
 }: {
   currentStep: number;
   completedSteps: Set<number>;
+  stepLabels: string[];
+  stepAriaLabel: string;
 }) {
   return (
     <div
       className="flex items-center justify-center w-full px-4 mb-6"
       role="navigation"
-      aria-label={`Step ${currentStep} of ${TOTAL_STEPS}: ${STEP_LABELS[currentStep - 1]}`}
+      aria-label={stepAriaLabel}
     >
       {Array.from({ length: TOTAL_STEPS }, (_, i) => {
         const stepNum = i + 1;
@@ -200,7 +196,7 @@ function StepProgress({
                   }
                 `}
               >
-                {STEP_LABELS[i]}
+                {stepLabels[i]}
               </span>
             </div>
 
@@ -279,6 +275,21 @@ export function ReviewForm({
   const updateMutation = useUpdateReview();
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
 
+  // Translation-based labels
+  const RATING_LABELS: Record<number, string> = {
+    1: t("rating.labels.1"),
+    2: t("rating.labels.2"),
+    3: t("rating.labels.3"),
+    4: t("rating.labels.4"),
+    5: t("rating.labels.5"),
+  };
+  const STEP_LABELS = [
+    t("form.steps.rating"),
+    t("form.steps.details"),
+    t("form.steps.prosAndCons"),
+    t("form.steps.images"),
+  ];
+
   // ---------------------------------------------------------------------------
   // Initialize form from existing review or localStorage draft
   // ---------------------------------------------------------------------------
@@ -348,22 +359,22 @@ export function ReviewForm({
 
       if (step === 1) {
         if (rating === 0) {
-          errors.rating = "Please select a rating";
+          errors.rating = t("rating.rateProduct");
         }
       }
 
       if (step === 2) {
         if (!title.trim()) {
-          errors.title = "Title is required";
+          errors.title = t("form.titleLabel");
         } else if (title.trim().length > TITLE_MAX) {
-          errors.title = `Title must be ${TITLE_MAX} characters or less`;
+          errors.title = t("form.titleMax", { count: title.trim().length, max: TITLE_MAX });
         }
         if (!body.trim()) {
-          errors.body = "Review body is required";
+          errors.body = t("form.bodyLabel");
         } else if (body.trim().length < BODY_MIN) {
-          errors.body = `Review must be at least ${BODY_MIN} characters`;
+          errors.body = t("form.bodyMin", { min: BODY_MIN });
         } else if (body.trim().length > BODY_MAX) {
-          errors.body = `Review must be ${BODY_MAX} characters or less`;
+          errors.body = t("form.bodyCount", { count: body.trim().length, max: BODY_MAX });
         }
       }
 
@@ -613,7 +624,7 @@ export function ReviewForm({
               transition={{ delay: 0.3 }}
               className="text-lg font-semibold text-neutral-900 dark:text-white text-center"
             >
-              Thank you for your review!
+              {t("form.success")}
             </motion.p>
             <motion.p
               initial={{ opacity: 0 }}
@@ -621,7 +632,7 @@ export function ReviewForm({
               transition={{ delay: 0.5 }}
               className="text-sm text-neutral-500 dark:text-neutral-400 text-center"
             >
-              Your feedback helps other customers make better decisions.
+              {t("form.successDescription")}
             </motion.p>
           </div>
         </DialogContent>
@@ -636,7 +647,7 @@ export function ReviewForm({
   const renderStep1 = () => (
     <div className="flex flex-col items-center gap-6 py-6">
       <p className="text-lg font-medium text-neutral-800 dark:text-neutral-200 text-center">
-        How would you rate this product?
+        {t("rating.rateProduct")}
       </p>
 
       <StarRating value={rating} onChange={setRating} size="lg" />
@@ -670,7 +681,7 @@ export function ReviewForm({
           disabled={rating === 0}
           className="bg-[#1E4DB7] hover:bg-[#143A8F] text-white gap-1"
         >
-          Next
+          {t("form.next")}
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
@@ -689,13 +700,13 @@ export function ReviewForm({
           htmlFor="review-title"
           className="text-neutral-700 dark:text-neutral-300 mb-2 block"
         >
-          Title <span className="text-red-500">*</span>
+          {t("form.titleLabel")} <span className="text-red-500">*</span>
         </Label>
         <Input
           id="review-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Summarize your experience"
+          placeholder={t("form.titlePlaceholder")}
           maxLength={TITLE_MAX}
           aria-invalid={!!stepErrors.title}
           className="dark:bg-neutral-800 dark:border-neutral-700 dark:text-white"
@@ -721,13 +732,13 @@ export function ReviewForm({
           htmlFor="review-body"
           className="text-neutral-700 dark:text-neutral-300 mb-2 block"
         >
-          Review <span className="text-red-500">*</span>
+          {t("form.bodyLabel")} <span className="text-red-500">*</span>
         </Label>
         <Textarea
           id="review-body"
           value={body}
           onChange={(e) => setBody(e.target.value)}
-          placeholder="Tell others about your experience... (minimum 20 characters)"
+          placeholder={t("form.bodyPlaceholder")}
           rows={5}
           maxLength={BODY_MAX}
           aria-invalid={!!stepErrors.body}
@@ -763,14 +774,14 @@ export function ReviewForm({
           className="gap-1"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back
+          {t("form.back")}
         </Button>
         <Button
           type="button"
           onClick={handleNext}
           className="bg-[#1E4DB7] hover:bg-[#143A8F] text-white gap-1"
         >
-          Next
+          {t("form.next")}
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
@@ -902,7 +913,7 @@ export function ReviewForm({
           className="gap-1"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back
+          {t("form.back")}
         </Button>
         <div className="flex items-center gap-3">
           <button
@@ -1038,7 +1049,7 @@ export function ReviewForm({
           className="gap-1"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back
+          {t("form.back")}
         </Button>
         <div className="flex items-center gap-3">
           {images.length === 0 && (

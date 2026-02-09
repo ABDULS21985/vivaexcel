@@ -327,7 +327,7 @@ function CartItemRow({ item, onRemove, isRemoving }: CartItemRowProps) {
         onClick={() => onRemove(item.id)}
         disabled={isRemoving}
         className={cn(
-          "absolute top-4 right-0 flex items-center justify-center w-8 h-8 rounded-lg",
+          "absolute top-4 end-0 flex items-center justify-center w-8 h-8 rounded-lg",
           "text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-900/20",
           "transition-colors duration-200 flex-shrink-0",
           "opacity-0 group-hover:opacity-100 sm:opacity-60 sm:group-hover:opacity-100",
@@ -420,6 +420,8 @@ function RecentlyViewedCard({
 }: {
   product: (typeof RECENTLY_VIEWED_PRODUCTS)[0];
 }) {
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   return (
     <div className="flex items-center gap-3 p-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-100 dark:border-neutral-800 transition-colors cursor-pointer">
       <div className="w-10 h-10 rounded-lg bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center flex-shrink-0">
@@ -430,7 +432,7 @@ function RecentlyViewedCard({
           {product.title}
         </p>
         <p className="text-xs font-semibold text-[#1E4DB7] dark:text-blue-400">
-          {formatPrice(product.price, product.currency)}
+          {formatPrice(convertPrice(product.price), currency)}
         </p>
       </div>
     </div>
@@ -619,6 +621,8 @@ function CrossSellCard({
 }: {
   product: (typeof CROSS_SELL_PRODUCTS)[0];
 }) {
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -634,7 +638,7 @@ function CrossSellCard({
           {product.title}
         </p>
         <p className="text-xs font-bold text-[#1E4DB7] dark:text-blue-400">
-          {formatPrice(product.price, product.currency)}
+          {formatPrice(convertPrice(product.price), currency)}
         </p>
       </div>
       <motion.button
@@ -653,7 +657,9 @@ function CrossSellCard({
 // Savings Badge
 // -----------------------------------------------------------------------------
 
-function SavingsBadge({ amount, currency }: { amount: number; currency: string }) {
+function SavingsBadge({ amount, currency: _currency }: { amount: number; currency: string }) {
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -663,7 +669,7 @@ function SavingsBadge({ amount, currency }: { amount: number; currency: string }
     >
       <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
       <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-        You&apos;re saving {formatPrice(amount, currency)}!
+        You&apos;re saving {formatPrice(convertPrice(amount), currency)}!
       </span>
     </motion.div>
   );
@@ -714,7 +720,6 @@ function ShimmerButton({
 export function CartDrawer() {
   const tCart = useTranslations("cart");
   const tStore = useTranslations("store");
-  const { formatPrice: fmtPrice } = useFormat();
   const { items, summary, isLoading, isOpen, closeCart, removeFromCart } =
     useCart();
   const [removingId, setRemovingId] = useState<string | null>(null);

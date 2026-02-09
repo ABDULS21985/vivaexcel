@@ -756,7 +756,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
         className="relative rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-3 shadow-lg group/gallery"
         aria-roledescription="carousel"
         aria-label="Product image gallery"
-        onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+        onKeyDown={(e) => {
           if (e.key === "ArrowLeft") {
             e.preventDefault();
             scrollPrev();

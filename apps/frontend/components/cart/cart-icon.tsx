@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Link } from "@/i18n/routing";
 import { cn } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
+import { useCurrency } from "@/providers/currency-provider";
 import { useFormat } from "@/hooks/use-format";
 
 // =============================================================================
