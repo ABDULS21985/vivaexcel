@@ -9,3 +9,8 @@ export { ProductPricingDisplay } from "./product-pricing-display";
 export { BundleDealCard } from "./bundle-deal-card";
 export { LoyaltyProgressBar } from "./loyalty-progress-bar";
 export { PromotionBadge } from "./promotion-badge";
+
+// Re-export types
+export type { FlashSale } from "./flash-sale-banner";
+export type { BundleDeal } from "./bundle-deal-card";
+export type { LoyaltyTier } from "./loyalty-progress-bar";

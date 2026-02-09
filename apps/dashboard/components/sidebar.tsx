@@ -27,6 +27,7 @@ import {
     Projector,
     Globe,
     Star,
+    Store,
 } from "lucide-react";
 import { cn } from "@ktblog/ui/components";
 import { useAuthContext } from "../contexts/auth-context";
@@ -98,6 +99,11 @@ const navItems: NavItem[] = [
         label: "Reviews",
         href: "/reviews",
         icon: <Star className="h-5 w-5" />,
+    },
+    {
+        label: "Sellers",
+        href: "/sellers",
+        icon: <Store className="h-5 w-5" />,
     },
     {
         label: "Comments",

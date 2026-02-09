@@ -51,6 +51,7 @@ import { SolutionDocumentsModule } from './modules/solution-documents/solution-d
 import { TemplatesModule } from './modules/templates/templates.module';
 import { PromotionsModule } from './modules/promotions/promotions.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { SellersModule } from './modules/sellers/sellers.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -136,6 +137,7 @@ import { AppService } from './app.service';
     TemplatesModule,
     PromotionsModule,
     ReviewsModule,
+    SellersModule,
   ],
   controllers: [AppController],
   providers: [

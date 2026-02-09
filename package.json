@@ -17,6 +17,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@nestjs/event-emitter": "^3.0.1",
     "@types/jszip": "^3.4.0",
     "jszip": "^3.10.1",
     "pdf-parse": "^2.4.5"

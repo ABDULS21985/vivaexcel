@@ -34,3 +34,6 @@ export * from './template-demo.entity';
 export * from './review.entity';
 export * from './review-vote.entity';
 export * from './review-report.entity';
+export * from './seller-profile.entity';
+export * from './seller-payout.entity';
+export * from './seller-application.entity';
