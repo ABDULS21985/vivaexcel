@@ -476,7 +476,7 @@ function FilterContent({
       {/* Type Filter */}
       <div>
         <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
-          Product Type
+          {t("filters.productType")}
         </h3>
         <div className="space-y-1.5">
           <button
@@ -487,7 +487,7 @@ function FilterContent({
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
             }`}
           >
-            All Types
+            {t("filters.allTypes")}
           </button>
           {Object.entries(DIGITAL_PRODUCT_TYPE_LABELS).map(
             ([value, label]) => (
@@ -510,7 +510,7 @@ function FilterContent({
       {/* Price Range */}
       <div>
         <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
-          Price Range
+          {t("filters.priceRange")}
         </h3>
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
@@ -519,7 +519,7 @@ function FilterContent({
             </span>
             <input
               type="number"
-              placeholder="Min"
+              placeholder={t("filters.min")}
               value={minPrice}
               onChange={(e) => onMinPriceChange(e.target.value)}
               className="w-full pl-7 pr-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
@@ -533,7 +533,7 @@ function FilterContent({
             </span>
             <input
               type="number"
-              placeholder="Max"
+              placeholder={t("filters.max")}
               value={maxPrice}
               onChange={(e) => onMaxPriceChange(e.target.value)}
               className="w-full pl-7 pr-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
@@ -546,7 +546,7 @@ function FilterContent({
       {/* Rating Filter */}
       <div>
         <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
-          Minimum Rating
+          {t("filters.minimumRating")}
         </h3>
         <div className="space-y-1.5">
           <button
@@ -557,7 +557,7 @@ function FilterContent({
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
             }`}
           >
-            Any Rating
+            {t("filters.anyRating")}
           </button>
           {RATING_OPTIONS.map((opt) => (
             <button
@@ -577,7 +577,7 @@ function FilterContent({
                   />
                 ))}
               </div>
-              <span>& up</span>
+              <span>{t("filters.andUp")}</span>
             </button>
           ))}
         </div>
@@ -595,6 +595,7 @@ export function StoreListingClient({
   categories,
   initialCategorySlug,
 }: StoreListingClientProps) {
+  const t = useTranslations("store");
   const gridRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
 

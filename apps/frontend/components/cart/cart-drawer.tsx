@@ -27,6 +27,7 @@ import {
 } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
 import type { CartItem } from "@/providers/cart-provider";
+import { useAnnouncer } from "@/components/ui/accessibility";
 
 // =============================================================================
 // Premium Cart Drawer
@@ -545,6 +546,7 @@ function CouponSection() {
                     if (status !== "idle" && status !== "loading") setStatus("idle");
                   }}
                   placeholder="Enter code"
+                  aria-label="Coupon code"
                   className={cn(
                     "h-9 text-sm rounded-lg pr-8",
                     status === "success" && "border-emerald-500 focus-visible:ring-emerald-500",
@@ -708,19 +710,24 @@ export function CartDrawer() {
     useCart();
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const { announce, AnnouncerRegion } = useAnnouncer();
 
   const handleRemove = useCallback(
     async (itemId: string) => {
+      const removedItem = items.find((i) => i.id === itemId);
       try {
         setRemovingId(itemId);
         await removeFromCart(itemId);
+        if (removedItem) {
+          announce(`${removedItem.product.title} removed from cart`);
+        }
       } catch {
         // Item remains in list on failure
       } finally {
         setRemovingId(null);
       }
     },
-    [removeFromCart],
+    [removeFromCart, items, announce],
   );
 
   const handleCheckoutClick = useCallback(() => {
@@ -731,6 +738,7 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
+      <AnnouncerRegion />
       <SheetContent
         side="right"
         className={cn(

@@ -129,6 +129,8 @@ export function ProductCardSkeleton() {
 // =============================================================================
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   const typeLabel = DIGITAL_PRODUCT_TYPE_LABELS[product.type] || "Product";
   const typeColor = DIGITAL_PRODUCT_TYPE_COLORS[product.type] || "#1E4DB7";
   const discount = product.compareAtPrice
@@ -258,7 +260,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
 
             {/* Type Badge (top-left) */}
-            <div className="absolute top-3 left-3 z-10">
+            <div className="absolute top-3 start-3 z-10">
               <span
                 className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white rounded-lg shadow-lg"
                 style={{
@@ -271,7 +273,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
 
             {/* Featured / Bestseller Badges (top-right) */}
-            <div className="absolute top-3 right-3 z-10 flex flex-col gap-1.5">
+            <div className="absolute top-3 end-3 z-10 flex flex-col gap-1.5">
               {product.isFeatured && (
                 <span className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-[#F59A23] to-[#E86A1D] text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg">
                   <TrendingUp className="h-3 w-3" />
@@ -288,7 +290,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
             {/* Discount Badge */}
             {discount > 0 && (
-              <div className="absolute bottom-3 left-3 z-10">
+              <div className="absolute bottom-3 start-3 z-10">
                 <span className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
                   -{discount}%
                 </span>
@@ -296,7 +298,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             )}
 
             {/* Glassmorphism Price Tag (bottom-right, hover reveal) */}
-            <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0" aria-hidden="true">
+            <div className="absolute bottom-3 end-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0" aria-hidden="true">
               <div className="glass rounded-lg px-3 py-1.5">
                 <span className="text-sm font-bold text-white">
                   {formatPrice(product.price, product.currency)}
