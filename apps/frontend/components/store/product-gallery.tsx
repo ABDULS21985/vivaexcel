@@ -936,6 +936,8 @@ export function ProductGallery({ product }: ProductGalleryProps) {
               <button
                 key={item.id}
                 onClick={() => onThumbClick(idx)}
+                aria-label={`View image ${idx + 1} of ${galleryItems.length}`}
+                aria-current={selectedIndex === idx ? "true" : undefined}
                 className={`flex-[0_0_auto] relative w-20 h-20 rounded-xl overflow-hidden transition-all duration-300 ${
                   selectedIndex === idx
                     ? "ring-2 ring-offset-2 ring-offset-white dark:ring-offset-neutral-950 ring-[#1E4DB7] shadow-lg shadow-[#1E4DB7]/20 scale-105"

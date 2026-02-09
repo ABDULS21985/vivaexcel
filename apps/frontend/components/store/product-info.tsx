@@ -34,6 +34,7 @@ import {
   DIGITAL_PRODUCT_TYPE_COLORS,
   DigitalProductType,
 } from "@/types/digital-product";
+import { SrOnly } from "@/components/ui/accessibility";
 
 // =============================================================================
 // Types
@@ -478,7 +479,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
           {product.averageRating > 0 && (
             <div className="flex items-center gap-2">
               <AnimatedStarRating rating={product.averageRating} />
-              <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+              <SrOnly>{product.averageRating.toFixed(1)} out of 5 stars</SrOnly>
+              <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-300" aria-hidden="true">
                 {product.averageRating.toFixed(1)}
               </span>
               {product.totalReviews > 0 && (
@@ -539,7 +541,10 @@ export function ProductInfo({ product }: ProductInfoProps) {
         {/* Animated Price Display                                            */}
         {/* ================================================================= */}
         <div className="space-y-2">
-          <div className="flex items-baseline gap-3 flex-wrap">
+          <div
+            className="flex items-baseline gap-3 flex-wrap"
+            aria-label={`Price: ${formatPrice(activePrice, product.currency)}${product.compareAtPrice && product.compareAtPrice > activePrice ? `, was ${formatPrice(product.compareAtPrice, product.currency)}, save ${discount}%` : ''}`}
+          >
             {activePrice === 0 ? (
               /* Free badge with animated gradient */
               <motion.span
@@ -604,7 +609,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
             <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
               Choose a plan
             </label>
-            <div className="grid gap-3">
+            <div className="grid gap-3" role="radiogroup" aria-label="Select variant">
               {sortedVariants.map((variant) => {
                 const isSelected = selectedVariant?.id === variant.id;
                 const isRecommended = variant.id === recommendedVariantId;
@@ -612,6 +617,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 return (
                   <motion.button
                     key={variant.id}
+                    role="radio"
+                    aria-checked={isSelected}
                     onClick={() => setSelectedVariant(variant)}
                     className={`relative text-left rounded-xl border-2 p-4 transition-colors duration-200 ${
                       isSelected
@@ -743,12 +750,13 @@ export function ProductInfo({ product }: ProductInfoProps) {
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="bg-neutral-50 dark:bg-neutral-800/50">
-                              <th className="text-left px-3 py-2 text-neutral-600 dark:text-neutral-400 font-medium">
+                              <th scope="col" className="text-left px-3 py-2 text-neutral-600 dark:text-neutral-400 font-medium">
                                 Feature
                               </th>
                               {sortedVariants.map((v) => (
                                 <th
                                   key={v.id}
+                                  scope="col"
                                   className="text-center px-3 py-2 text-neutral-700 dark:text-neutral-300 font-semibold"
                                 >
                                   {v.name}
@@ -766,7 +774,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                                     : "bg-neutral-50/50 dark:bg-neutral-800/20"
                                 }
                               >
-                                <td className="px-3 py-2 text-neutral-600 dark:text-neutral-400">
+                                <td scope="row" className="px-3 py-2 text-neutral-600 dark:text-neutral-400">
                                   {feature}
                                 </td>
                                 {sortedVariants.map((v) => (

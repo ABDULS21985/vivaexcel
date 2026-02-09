@@ -7,6 +7,8 @@ import { Star, Download, TrendingUp, Award, Eye } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { SrOnly } from "@/components/ui/accessibility";
 import { formatPrice as formatPriceLib } from "@/lib/format";
+import { useCurrency } from "@/providers/currency-provider";
+import { useFormat } from "@/hooks/use-format";
 import type { DigitalProduct } from "@/types/digital-product";
 import {
   DIGITAL_PRODUCT_TYPE_LABELS,
@@ -25,16 +27,6 @@ interface ProductCardProps {
 // =============================================================================
 // Helpers
 // =============================================================================
-
-function formatPrice(price: number, currency: string = "USD"): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
 
 function formatDownloads(count: number): string {
   if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M`;

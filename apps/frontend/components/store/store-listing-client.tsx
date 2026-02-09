@@ -190,6 +190,7 @@ function MobileFilterSheet({
   onClose: () => void;
   children: React.ReactNode;
 }) {
+  const t = useTranslations("store");
   return (
     <AnimatePresence>
       {isOpen && (
@@ -214,7 +215,7 @@ function MobileFilterSheet({
             </div>
             <div className="flex items-center justify-between px-5 pb-4 border-b border-neutral-200 dark:border-neutral-700">
               <h2 className="text-lg font-bold text-neutral-900 dark:text-white">
-                Filters
+                {t("filters.title")}
               </h2>
               <button
                 onClick={onClose}
@@ -264,6 +265,7 @@ function ActiveFilterChips({
   onClearRating: () => void;
   onClearAll: () => void;
 }) {
+  const tStore = useTranslations("store");
   const chips: { key: string; label: string; onRemove: () => void }[] = [];
 
   if (searchQuery.trim()) {
@@ -313,7 +315,7 @@ function ActiveFilterChips({
   if (selectedRating > 0) {
     chips.push({
       key: "rating",
-      label: `${selectedRating}+ Stars`,
+      label: tStore("filters.starsAndUp", { count: selectedRating }),
       onRemove: onClearRating,
     });
   }
@@ -340,7 +342,7 @@ function ActiveFilterChips({
           <button
             onClick={chip.onRemove}
             className="ml-0.5 p-0.5 rounded-full hover:bg-white/20 transition-colors"
-            aria-label={`Remove ${chip.label} filter`}
+            aria-label={tStore("filters.removeFilter", { label: chip.label })}
           >
             <X className="h-3 w-3" />
           </button>
@@ -351,7 +353,7 @@ function ActiveFilterChips({
           onClick={onClearAll}
           className="text-xs text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors ml-1"
         >
-          Clear all
+          {tStore("filters.clearAll")}
         </button>
       )}
     </motion.div>
@@ -425,6 +427,7 @@ function FilterContent({
   onClearFilters: () => void;
   hasActiveFilters: boolean;
 }) {
+  const t = useTranslations("store");
   return (
     <div className="space-y-6">
       {/* Clear Filters */}
@@ -434,14 +437,14 @@ function FilterContent({
           className="flex items-center gap-2 text-sm text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors"
         >
           <X className="h-4 w-4" />
-          Clear all filters
+          {t("filters.clearAll")}
         </button>
       )}
 
       {/* Category Filter */}
       <div>
         <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
-          Category
+          {t("filters.category")}
         </h3>
         <div className="space-y-1.5">
           <button
@@ -452,7 +455,7 @@ function FilterContent({
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
             }`}
           >
-            All Categories
+            {t("filters.allCategories")}
           </button>
           {categories.map((cat) => (
             <button
