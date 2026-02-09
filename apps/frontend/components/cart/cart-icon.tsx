@@ -4,10 +4,12 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import { ShoppingBag } from "lucide-react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Link } from "@/i18n/routing";
 import { cn } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
+import { useFormat } from "@/hooks/use-format";
 
 // =============================================================================
 // Cart Icon with Hover Preview & Toast Notifications
@@ -17,20 +19,6 @@ import { useCart } from "@/providers/cart-provider";
 // - Shake/wiggle animation when items are added
 // - Hover mini-cart preview dropdown (desktop only)
 // - Sonner toast notifications on item addition
-
-// -----------------------------------------------------------------------------
-// Helpers
-// -----------------------------------------------------------------------------
-
-function formatPrice(price: number, currency: string = "USD"): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
 
 // -----------------------------------------------------------------------------
 // Mini Cart Preview Item
@@ -50,6 +38,7 @@ interface PreviewItemProps {
 }
 
 function PreviewItem({ item }: PreviewItemProps) {
+  const { formatPrice } = useFormat();
   return (
     <Link
       href={`/store/${item.product.slug}`}
@@ -101,6 +90,8 @@ function HoverPreview({
   itemCount,
   onOpenCart,
 }: HoverPreviewProps) {
+  const t = useTranslations("cart");
+  const { formatPrice } = useFormat();
   const previewItems = items.slice(0, 3);
   const remainingCount = itemCount - previewItems.length;
 
@@ -119,10 +110,10 @@ function HoverPreview({
         {/* Header */}
         <div className="px-4 pt-4 pb-2 flex items-center justify-between">
           <h3 className="text-sm font-bold text-neutral-900 dark:text-white">
-            Cart Preview
+            {t("preview")}
           </h3>
           <span className="text-xs font-medium text-neutral-400 dark:text-neutral-500">
-            {itemCount} {itemCount === 1 ? "item" : "items"}
+            {t("item", { count: itemCount })}
           </span>
         </div>
 
@@ -133,7 +124,7 @@ function HoverPreview({
           ))}
           {remainingCount > 0 && (
             <p className="text-xs text-neutral-400 dark:text-neutral-500 text-center py-1.5">
-              +{remainingCount} more {remainingCount === 1 ? "item" : "items"}
+              {t("moreItems", { count: remainingCount })}
             </p>
           )}
         </div>
@@ -145,7 +136,7 @@ function HoverPreview({
         <div className="px-4 py-3 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              Subtotal
+              {t("subtotal")}
             </span>
             <span className="text-sm font-bold text-neutral-900 dark:text-white">
               {formatPrice(subtotal, currency)}

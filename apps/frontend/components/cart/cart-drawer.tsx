@@ -29,7 +29,7 @@ import {
 import { useCart } from "@/providers/cart-provider";
 import type { CartItem } from "@/providers/cart-provider";
 import { useFormat } from "@/hooks/use-format";
-import { useAnnouncer } from "@/components/ui/accessibility";
+import { useAnnouncer, LiveRegion } from "@/components/ui/accessibility";
 
 // =============================================================================
 // Premium Cart Drawer
@@ -719,7 +719,7 @@ export function CartDrawer() {
     useCart();
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const { announce, AnnouncerRegion } = useAnnouncer();
+  const { announcement, announce } = useAnnouncer();
 
   const handleRemove = useCallback(
     async (itemId: string) => {
@@ -747,7 +747,7 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
-      <AnnouncerRegion />
+      <LiveRegion>{announcement}</LiveRegion>
       <SheetContent
         side="right"
         className={cn(
@@ -778,7 +778,7 @@ export function CartDrawer() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <SheetTitle className="text-lg font-bold text-neutral-900 dark:text-white">
-                  Your Cart
+                  {tCart("drawerTitle")}
                 </SheetTitle>
                 <CountBadge count={summary.itemCount} />
               </div>
@@ -827,7 +827,7 @@ export function CartDrawer() {
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="w-4 h-4 text-[#F59A23]" />
                     <h4 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                      You might also like
+                      {tCart("youMightAlsoLike")}
                     </h4>
                   </div>
                   <div className="space-y-2">
@@ -846,7 +846,7 @@ export function CartDrawer() {
                 {/* Subtotal */}
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-neutral-500 dark:text-neutral-400">
-                    Subtotal
+                    {tCart("subtotal")}
                   </span>
                   <AnimatedPrice
                     value={summary.subtotal}
@@ -866,7 +866,7 @@ export function CartDrawer() {
                       className="flex items-center justify-between overflow-hidden"
                     >
                       <span className="text-sm text-emerald-600 dark:text-emerald-400">
-                        Discount
+                        {tCart("discount")}
                       </span>
                       <AnimatedPrice
                         value={-summary.discountAmount}
@@ -883,7 +883,7 @@ export function CartDrawer() {
                 {/* Total */}
                 <div className="flex items-center justify-between">
                   <span className="text-base font-semibold text-neutral-900 dark:text-white">
-                    Total
+                    {tCart("total")}
                   </span>
                   <AnimatedPrice
                     value={summary.total}
@@ -913,7 +913,7 @@ export function CartDrawer() {
                   }}
                 >
                   <Link href="/checkout">
-                    Checkout
+                    {tCart("proceedToCheckout")}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </ShimmerButton>
@@ -923,7 +923,7 @@ export function CartDrawer() {
                   onClick={closeCart}
                   className="w-full flex items-center justify-center gap-1.5 h-10 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-[#1E4DB7] dark:hover:text-blue-400 transition-colors rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-900"
                 >
-                  Continue Shopping
+                  {tStore("cta.continueShopping")}
                 </button>
               </div>
             </>

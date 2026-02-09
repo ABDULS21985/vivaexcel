@@ -110,7 +110,9 @@ function SortDropdown({
 }) {
   const t = useTranslations("store");
   const [open, setOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const sortOptions: { value: SortOption; label: string }[] = [
     { value: "newest", label: t("sort.newest") },
@@ -121,21 +123,79 @@ function SortDropdown({
   ];
 
   const currentLabel = sortOptions.find((o) => o.value === value)?.label || t("sort.label");
+  const currentSelectedIndex = sortOptions.findIndex((o) => o.value === value);
+
+  const openDropdown = useCallback(() => {
+    setOpen(true);
+    setFocusedIndex(currentSelectedIndex >= 0 ? currentSelectedIndex : 0);
+  }, [currentSelectedIndex]);
+
+  const closeDropdown = useCallback(() => {
+    setOpen(false);
+    setFocusedIndex(-1);
+    triggerRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
+        setFocusedIndex(-1);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleTriggerKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openDropdown();
+      }
+    },
+    [openDropdown],
+  );
+
+  const handleListboxKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setFocusedIndex((prev) => (prev + 1) % sortOptions.length);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setFocusedIndex((prev) => (prev - 1 + sortOptions.length) % sortOptions.length);
+          break;
+        case "Enter":
+        case " ":
+          e.preventDefault();
+          if (focusedIndex >= 0 && focusedIndex < sortOptions.length) {
+            onChange(sortOptions[focusedIndex].value);
+          }
+          closeDropdown();
+          break;
+        case "Escape":
+          e.preventDefault();
+          closeDropdown();
+          break;
+      }
+    },
+    [focusedIndex, onChange, closeDropdown, sortOptions],
+  );
+
+  const focusedOptionId = focusedIndex >= 0 ? `sort-option-${sortOptions[focusedIndex].value}` : undefined;
+
   return (
     <div ref={ref} className="relative">
       <button
-        onClick={() => setOpen(!open)}
+        ref={triggerRef}
+        onClick={() => (open ? closeDropdown() : openDropdown())}
+        onKeyDown={handleTriggerKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Sort products"
         className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors"
       >
         <SlidersHorizontal className="h-4 w-4" />
@@ -152,20 +212,28 @@ function SortDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute end-0 mt-2 w-52 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-xl z-50 overflow-hidden"
+            role="listbox"
+            aria-label="Sort options"
+            aria-activedescendant={focusedOptionId}
+            tabIndex={0}
+            onKeyDown={handleListboxKeyDown}
+            className="absolute right-0 mt-2 w-52 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-xl z-50 overflow-hidden"
           >
-            {sortOptions.map((option) => (
+            {sortOptions.map((option, index) => (
               <button
                 key={option.value}
+                id={`sort-option-${option.value}`}
+                role="option"
+                aria-selected={value === option.value}
                 onClick={() => {
                   onChange(option.value);
-                  setOpen(false);
+                  closeDropdown();
                 }}
-                className={`w-full text-start px-4 py-2.5 text-sm transition-colors ${
+                className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                   value === option.value
                     ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                     : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700"
-                }`}
+                } ${focusedIndex === index ? "ring-2 ring-inset ring-[#1E4DB7]" : ""}`}
               >
                 {option.label}
               </button>
@@ -207,6 +275,9 @@ function MobileFilterSheet({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Filter products"
             className="fixed left-0 right-0 bottom-0 max-h-[85vh] bg-white dark:bg-neutral-900 z-50 overflow-y-auto shadow-2xl lg:hidden rounded-t-3xl"
           >
             {/* Drag handle */}
@@ -219,6 +290,7 @@ function MobileFilterSheet({
               </h2>
               <button
                 onClick={onClose}
+                aria-label="Close filters"
                 className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               >
                 <X className="h-5 w-5 text-neutral-500" />
@@ -341,7 +413,7 @@ function ActiveFilterChips({
           {chip.label}
           <button
             onClick={chip.onRemove}
-            className="ms-0.5 p-0.5 rounded-full hover:bg-white/20 transition-colors"
+            className="ml-0.5 p-0.5 rounded-full hover:bg-white/20 transition-colors"
             aria-label={tStore("filters.removeFilter", { label: chip.label })}
           >
             <X className="h-3 w-3" />
@@ -351,7 +423,7 @@ function ActiveFilterChips({
       {chips.length > 1 && (
         <button
           onClick={onClearAll}
-          className="text-xs text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors ms-1"
+          className="text-xs text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors ml-1"
         >
           {tStore("filters.clearAll")}
         </button>
@@ -383,7 +455,7 @@ function ScrollToTopButton() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-8 end-8 z-50 w-12 h-12 bg-[#1E4DB7] text-white rounded-full shadow-lg shadow-[#1E4DB7]/30 flex items-center justify-center hover:bg-[#143A8F] transition-colors"
+          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-[#1E4DB7] text-white rounded-full shadow-lg shadow-[#1E4DB7]/30 flex items-center justify-center hover:bg-[#143A8F] transition-colors"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
@@ -442,14 +514,15 @@ function FilterContent({
       )}
 
       {/* Category Filter */}
-      <div>
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
+      <div role="group" aria-labelledby="filter-category">
+        <h3 id="filter-category" className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
           {t("filters.category")}
         </h3>
         <div className="space-y-1.5">
           <button
             onClick={() => onCategoryChange("")}
-            className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
+            aria-pressed={selectedCategory === ""}
+            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
               selectedCategory === ""
                 ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -461,7 +534,8 @@ function FilterContent({
             <button
               key={cat.id}
               onClick={() => onCategoryChange(cat.slug)}
-              className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
+              aria-pressed={selectedCategory === cat.slug}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                 selectedCategory === cat.slug
                   ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                   : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -474,14 +548,15 @@ function FilterContent({
       </div>
 
       {/* Type Filter */}
-      <div>
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
+      <div role="group" aria-labelledby="filter-type">
+        <h3 id="filter-type" className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
           {t("filters.productType")}
         </h3>
         <div className="space-y-1.5">
           <button
             onClick={() => onTypeChange("")}
-            className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
+            aria-pressed={selectedType === ""}
+            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
               selectedType === ""
                 ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -490,12 +565,13 @@ function FilterContent({
             {t("filters.allTypes")}
           </button>
           {Object.entries(DIGITAL_PRODUCT_TYPE_LABELS).map(
-            ([value, label]) => (
+            ([typeValue, label]) => (
               <button
-                key={value}
-                onClick={() => onTypeChange(value)}
-                className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
-                  selectedType === value
+                key={typeValue}
+                onClick={() => onTypeChange(typeValue)}
+                aria-pressed={selectedType === typeValue}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                  selectedType === typeValue
                     ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                     : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 }`}
@@ -508,13 +584,13 @@ function FilterContent({
       </div>
 
       {/* Price Range */}
-      <div>
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
+      <div role="group" aria-labelledby="filter-price">
+        <h3 id="filter-price" className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
           {t("filters.priceRange")}
         </h3>
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <span className="absolute start-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
               $
             </span>
             <input
@@ -522,13 +598,14 @@ function FilterContent({
               placeholder={t("filters.min")}
               value={minPrice}
               onChange={(e) => onMinPriceChange(e.target.value)}
-              className="w-full ps-7 pe-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
+              aria-label="Minimum price"
+              className="w-full pl-7 pr-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
               min="0"
             />
           </div>
           <span className="text-neutral-400">-</span>
           <div className="relative flex-1">
-            <span className="absolute start-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
               $
             </span>
             <input
@@ -536,7 +613,8 @@ function FilterContent({
               placeholder={t("filters.max")}
               value={maxPrice}
               onChange={(e) => onMaxPriceChange(e.target.value)}
-              className="w-full ps-7 pe-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
+              aria-label="Maximum price"
+              className="w-full pl-7 pr-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
               min="0"
             />
           </div>
@@ -544,14 +622,15 @@ function FilterContent({
       </div>
 
       {/* Rating Filter */}
-      <div>
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
+      <div role="group" aria-labelledby="filter-rating">
+        <h3 id="filter-rating" className="text-sm font-semibold text-neutral-900 dark:text-white mb-3">
           {t("filters.minimumRating")}
         </h3>
         <div className="space-y-1.5">
           <button
             onClick={() => onRatingChange(0)}
-            className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
+            aria-pressed={selectedRating === 0}
+            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
               selectedRating === 0
                 ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -563,7 +642,8 @@ function FilterContent({
             <button
               key={opt.value}
               onClick={() => onRatingChange(opt.value)}
-              className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+              aria-pressed={selectedRating === opt.value}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
                 selectedRating === opt.value
                   ? "bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
                   : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
@@ -969,13 +1049,15 @@ export function StoreListingClient({
       <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
         {/* Search Bar */}
         <div className="relative flex-1 max-w-lg">
-          <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
           <input
             type="text"
+            role="searchbox"
+            aria-label="Search products"
             placeholder={t("search.placeholder")}
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full ps-11 pe-10 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7] transition-all"
+            className="w-full pl-11 pr-10 py-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7] transition-all"
           />
           <AnimatePresence>
             {searchQuery && (
@@ -984,7 +1066,7 @@ export function StoreListingClient({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 onClick={() => handleSearchChange("")}
-                className="absolute end-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
               >
                 <X className="h-4 w-4 text-neutral-400" />
               </motion.button>
@@ -1069,10 +1151,10 @@ export function StoreListingClient({
           {isLoadingResults ? (
             <span className="flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              {t("search.searching")}
+              Searching...
             </span>
           ) : (
-            t("search.resultsCount", { count: totalResults })
+            `${totalResults} ${totalResults === 1 ? "product" : "products"} found`
           )}
         </span>
       </div>
@@ -1137,7 +1219,7 @@ export function StoreListingClient({
                       className="flex items-center gap-3 text-neutral-500 dark:text-neutral-400"
                     >
                       <Loader2 className="h-5 w-5 animate-spin text-[#1E4DB7]" />
-                      <span className="text-sm font-medium">{t("search.loadingMore")}</span>
+                      <span className="text-sm font-medium">Loading more products...</span>
                     </motion.div>
                   )}
                 </div>
@@ -1146,7 +1228,7 @@ export function StoreListingClient({
               {/* Showing Count */}
               <div className="flex justify-center mt-8">
                 <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                  {t("search.showingCount", { shown: displayProducts.length, total: totalResults })}
+                  Showing {displayProducts.length} of {totalResults} products
                 </p>
               </div>
             </>
@@ -1161,12 +1243,12 @@ export function StoreListingClient({
                 <Search className="h-10 w-10 text-neutral-400" />
               </div>
               <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
-                {t("empty.title")}
+                No products found
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400 max-w-md mx-auto mb-6">
                 {hasActiveFilters
-                  ? t("empty.filteredDescription")
-                  : t("empty.defaultDescription")}
+                  ? "We could not find any products matching your filters. Try adjusting your search criteria or browse all products."
+                  : "No products are currently available. Check back soon for new additions."}
               </p>
               {hasActiveFilters && (
                 <motion.button
@@ -1176,7 +1258,7 @@ export function StoreListingClient({
                   whileTap={{ scale: 0.98 }}
                 >
                   <X className="h-4 w-4" />
-                  {t("filters.clearAllFilters")}
+                  Clear All Filters
                 </motion.button>
               )}
             </motion.div>

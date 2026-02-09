@@ -176,7 +176,7 @@ function ZoomableImage({
         priority={priority}
       />
       {/* Zoom hint */}
-      <div className="absolute bottom-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute bottom-4 end-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-full">
           <ZoomIn className="h-3.5 w-3.5 text-white" />
           <span className="text-xs text-white font-medium">
@@ -267,7 +267,7 @@ function VideoPlayer({ url, thumbnail }: { url: string; thumbnail?: string }) {
             whileTap={{ scale: 0.95 }}
             className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30"
           >
-            <Play className="h-8 w-8 text-white ml-1" />
+            <Play className="h-8 w-8 text-white ms-1" />
           </motion.div>
         </div>
       )}

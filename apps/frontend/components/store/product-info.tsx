@@ -322,6 +322,8 @@ function getLiveDemoUrl(product: DigitalProduct): string | null {
 export function ProductInfo({ product }: ProductInfoProps) {
   const router = useRouter();
   const { addToCart, openCart } = useCart();
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   const [selectedVariant, setSelectedVariant] =
     useState<DigitalProductVariant | null>(
       product.variants?.length ? product.variants[0] : null,
@@ -535,7 +537,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <div className="space-y-2">
           <div
             className="flex items-baseline gap-3 flex-wrap"
-            aria-label={`Price: ${formatPrice(activePrice, product.currency)}${product.compareAtPrice && product.compareAtPrice > activePrice ? `, was ${formatPrice(product.compareAtPrice, product.currency)}, save ${discount}%` : ''}`}
+            aria-label={`Price: ${formatPrice(convertPrice(activePrice), currency)}${product.compareAtPrice && product.compareAtPrice > activePrice ? `, was ${formatPrice(convertPrice(product.compareAtPrice), currency)}, save ${discount}%` : ''}`}
           >
             {activePrice === 0 ? (
               /* Free badge with animated gradient */
@@ -561,8 +563,8 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 className="text-3xl md:text-4xl font-extrabold text-neutral-900 dark:text-white tabular-nums"
               >
                 {formatPrice(
-                  Math.round(animatedPrice * 100) / 100,
-                  product.currency,
+                  convertPrice(Math.round(animatedPrice * 100) / 100),
+                  currency,
                 )}
               </motion.span>
             )}
@@ -570,7 +572,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
             {product.compareAtPrice &&
               product.compareAtPrice > activePrice && (
                 <span className="text-lg text-neutral-400 line-through">
-                  {formatPrice(product.compareAtPrice, product.currency)}
+                  {formatPrice(convertPrice(product.compareAtPrice), currency)}
                 </span>
               )}
 
@@ -612,7 +614,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                     role="radio"
                     aria-checked={isSelected}
                     onClick={() => setSelectedVariant(variant)}
-                    className={`relative text-left rounded-xl border-2 p-4 transition-colors duration-200 ${
+                    className={`relative text-start rounded-xl border-2 p-4 transition-colors duration-200 ${
                       isSelected
                         ? "border-transparent bg-white dark:bg-neutral-800/80"
                         : "border-neutral-200 dark:border-neutral-700 bg-white/50 dark:bg-neutral-800/30 hover:border-neutral-300 dark:hover:border-neutral-600"
@@ -642,7 +644,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                   >
                     {/* Most Popular badge */}
                     {isRecommended && (
-                      <span className="absolute -top-2.5 left-4 inline-flex items-center gap-1 px-2.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-md">
+                      <span className="absolute -top-2.5 start-4 inline-flex items-center gap-1 px-2.5 py-0.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-md">
                         <Sparkles className="h-2.5 w-2.5" />
                         Most Popular
                       </span>
@@ -685,7 +687,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
                         {/* Feature bullets */}
                         {variant.features && variant.features.length > 0 && (
-                          <ul className="mt-2.5 ml-7 space-y-1.5">
+                          <ul className="mt-2.5 ms-7 space-y-1.5">
                             {variant.features.map((feature, i) => (
                               <li
                                 key={i}
@@ -700,7 +702,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                       </div>
 
                       <span className="text-lg font-bold text-neutral-900 dark:text-white flex-shrink-0">
-                        {formatPrice(variant.price, product.currency)}
+                        {formatPrice(convertPrice(variant.price), currency)}
                       </span>
                     </div>
                   </motion.button>
@@ -742,7 +744,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
                         <table className="w-full text-sm">
                           <thead>
                             <tr className="bg-neutral-50 dark:bg-neutral-800/50">
-                              <th scope="col" className="text-left px-3 py-2 text-neutral-600 dark:text-neutral-400 font-medium">
+                              <th scope="col" className="text-start px-3 py-2 text-neutral-600 dark:text-neutral-400 font-medium">
                                 Feature
                               </th>
                               {sortedVariants.map((v) => (

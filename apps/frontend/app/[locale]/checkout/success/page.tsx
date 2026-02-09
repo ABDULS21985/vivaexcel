@@ -21,6 +21,8 @@ import { useCheckoutSuccess } from "@/hooks/use-cart";
 import { ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from "@/types/order";
 import { toast } from "sonner";
 import { trackConversion } from "@/lib/conversion-tracking";
+import { useTranslations } from "next-intl";
+import { formatPrice, formatDateTime } from "@/lib/format";
 
 // =============================================================================
 // Premium Checkout Success Page
@@ -31,26 +33,6 @@ import { trackConversion } from "@/lib/conversion-tracking";
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
-
-function formatPrice(price: number, currency: string = "USD"): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
-
-function formatDate(dateStr: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(dateStr));
-}
 
 // Resolve the full download URL for a token
 function getDownloadUrl(token: string): string {
@@ -185,13 +167,12 @@ function SuccessCheckmark() {
 // Order Timeline
 // -----------------------------------------------------------------------------
 
-const timelineSteps = [
-  { label: "Order Placed", key: "placed" },
-  { label: "Payment Confirmed", key: "confirmed" },
-  { label: "Ready to Download", key: "ready" },
-];
-
-function OrderTimeline() {
+function OrderTimeline({ t }: { t: ReturnType<typeof useTranslations> }) {
+  const timelineSteps = [
+    { label: t("success.timeline.orderPlaced"), key: "placed" },
+    { label: t("success.timeline.paymentConfirmed"), key: "confirmed" },
+    { label: t("success.timeline.readyToDownload"), key: "ready" },
+  ];
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -272,6 +253,7 @@ function LoadingSkeleton() {
 // -----------------------------------------------------------------------------
 
 export default function CheckoutSuccessPage() {
+  const t = useTranslations("checkout");
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id") || "";
 
@@ -303,7 +285,7 @@ export default function CheckoutSuccessPage() {
   const handleCopyLink = useCallback(() => {
     const url = window.location.origin + "/store";
     navigator.clipboard.writeText(url);
-    toast.success("Link copied to clipboard!");
+    toast.success(t("success.linkCopied"));
   }, []);
 
   // Download all items
@@ -327,13 +309,13 @@ export default function CheckoutSuccessPage() {
           <Package className="w-10 h-10 text-neutral-300 dark:text-neutral-600" />
         </div>
         <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
-          No session found
+          {t("success.noSession")}
         </h1>
         <p className="text-neutral-500 dark:text-neutral-400 mb-6">
-          It looks like you arrived here without completing a checkout.
+          {t("success.noSessionDescription")}
         </p>
         <Button asChild>
-          <Link href="/store">Browse Products</Link>
+          <Link href="/store">{t("success.browseProducts")}</Link>
         </Button>
       </div>
     );
@@ -350,18 +332,17 @@ export default function CheckoutSuccessPage() {
           <Package className="w-10 h-10 text-red-400" />
         </div>
         <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
-          Something went wrong
+          {t("success.errorTitle")}
         </h1>
         <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-md">
-          We could not verify your payment. If you were charged, please contact
-          support and we will resolve this immediately.
+          {t("success.errorDescription")}
         </p>
         <div className="flex gap-3">
           <Button asChild variant="outline">
-            <Link href="/store">Back to Store</Link>
+            <Link href="/store">{t("success.backToStore")}</Link>
           </Button>
           <Button asChild>
-            <Link href="/contact">Contact Support</Link>
+            <Link href="/contact">{t("success.contactSupport")}</Link>
           </Button>
         </div>
       </div>
@@ -391,15 +372,15 @@ export default function CheckoutSuccessPage() {
         >
           <SuccessCheckmark />
           <h1 className="text-3xl md:text-4xl font-bold mb-3">
-            Thank you for your purchase!
+            {t("success.title")}
           </h1>
           <p className="text-neutral-400 text-lg">
-            Your order has been confirmed and is ready for download.
+            {t("success.description")}
           </p>
         </motion.div>
 
         {/* Order Timeline */}
-        <OrderTimeline />
+        <OrderTimeline t={t} />
 
         {/* Order Details Card */}
         <motion.div
@@ -411,17 +392,17 @@ export default function CheckoutSuccessPage() {
           {/* Order header */}
           <div className="px-6 py-4 border-b border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <p className="text-sm text-neutral-400 mb-1">Order Number</p>
+              <p className="text-sm text-neutral-400 mb-1">{t("success.orderNumber")}</p>
               <div className="flex items-center gap-2">
                 <p className="text-lg font-bold">{order.orderNumber}</p>
                 <button
                   onClick={handleCopyOrderNumber}
                   className="p-1.5 hover:bg-white/10 rounded-md transition-colors"
-                  title="Copy order number"
+                  title={t("success.copyOrderNumber")}
                 >
                   {copiedOrderNumber ? (
                     <span className="text-xs text-green-400 font-medium">
-                      Copied!
+                      {t("success.copied")}
                     </span>
                   ) : (
                     <Copy className="w-4 h-4 text-neutral-400" />
@@ -440,7 +421,7 @@ export default function CheckoutSuccessPage() {
                 {ORDER_STATUS_LABELS[order.status] || order.status}
               </span>
               <p className="text-sm text-neutral-400">
-                {formatDate(order.createdAt)}
+                {formatDateTime(order.createdAt)}
               </p>
             </div>
           </div>
@@ -461,7 +442,7 @@ export default function CheckoutSuccessPage() {
                       {item.productTitle}
                     </p>
                     <p className="text-sm text-neutral-400">
-                      {formatPrice(item.price, item.currency)}
+                      {formatPrice(item.price, { currency: item.currency })}
                     </p>
                   </div>
                 </div>
@@ -472,9 +453,9 @@ export default function CheckoutSuccessPage() {
           {/* Total */}
           <div className="px-6 py-4 border-t border-white/10 bg-white/5">
             <div className="flex items-center justify-between">
-              <span className="text-base font-semibold">Total Paid</span>
+              <span className="text-base font-semibold">{t("success.totalPaid")}</span>
               <span className="text-2xl font-bold">
-                {formatPrice(order.total, order.currency)}
+                {formatPrice(order.total, { currency: order.currency })}
               </span>
             </div>
           </div>

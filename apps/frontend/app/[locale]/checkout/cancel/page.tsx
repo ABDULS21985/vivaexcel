@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 // Shown when the user cancels payment on the Stripe Checkout page.
 
 export default function CheckoutCancelPage() {
+  const t = useTranslations("checkout");
   const { openCart } = useCart();
 
   return (
@@ -35,11 +36,10 @@ export default function CheckoutCancelPage() {
 
         {/* Message */}
         <h1 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white mb-3">
-          Payment Cancelled
+          {t("cancel.title")}
         </h1>
         <p className="text-neutral-500 dark:text-neutral-400 mb-8 leading-relaxed">
-          Your payment was not completed and you have not been charged.
-          Your cart items are still saved if you would like to try again.
+          {t("cancel.description")}
         </p>
 
         {/* Actions */}
@@ -50,13 +50,13 @@ export default function CheckoutCancelPage() {
             className="gap-2 bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] hover:from-[#143A8F] hover:to-[#1E4DB7] text-white"
           >
             <ShoppingCart className="w-4 h-4" />
-            Return to Cart
+            {t("cancel.returnToCart")}
           </Button>
 
           <Button asChild variant="outline" className="gap-2">
             <Link href="/store">
               <ArrowLeft className="w-4 h-4" />
-              Continue Shopping
+              {t("cancel.continueShopping")}
             </Link>
           </Button>
         </div>
