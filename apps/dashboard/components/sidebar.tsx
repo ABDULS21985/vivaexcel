@@ -29,6 +29,7 @@ import {
     Star,
     Store,
     Truck,
+    TrendingUp,
 } from "lucide-react";
 import { cn } from "@ktblog/ui/components";
 import { useAuthContext } from "../contexts/auth-context";
@@ -140,6 +141,11 @@ const navItems: NavItem[] = [
         label: "Analytics",
         href: "/analytics",
         icon: <BarChart className="h-5 w-5" />,
+    },
+    {
+        label: "Marketplace",
+        href: "/analytics/marketplace",
+        icon: <TrendingUp className="h-5 w-5" />,
     },
     {
         label: "Settings",
