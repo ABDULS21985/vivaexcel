@@ -138,6 +138,18 @@ export interface WebTemplate {
   creator?: WebTemplateCreator;
   demos?: TemplateDemo[];
   licenses?: TemplateLicense[];
+  // Extended fields available from the API
+  isFeatured?: boolean;
+  category?: { id: string; name: string; slug: string };
+  tags?: { id: string; name: string; slug: string }[];
+  averageRating?: number;
+  totalReviews?: number;
+  downloadCount?: number;
+  viewCount?: number;
+  currency?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -157,6 +169,7 @@ export interface WebTemplateFilters {
   minPrice?: number;
   maxPrice?: number;
   hasTypeScript?: boolean;
+  isFeatured?: boolean;
   features?: string[];
   sortBy?: string;
   sortOrder?: "ASC" | "DESC";
@@ -232,3 +245,58 @@ export const TEMPLATE_FEATURES: string[] = [
   "Analytics",
   "CMS",
 ];
+
+// Aliases used by various components
+export type TemplateFramework = Framework;
+export type TemplateLicenseType = LicenseType;
+
+// Category & tag types (mirrors DigitalProductCategory / DigitalProductTag)
+export interface TemplateCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: string;
+  parentId?: string;
+  isActive?: boolean;
+}
+
+export interface TemplateTag {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+// Re-export ApiResponseWrapper for template-api.ts convenience
+export type { ApiResponseWrapper } from "./digital-product";
+
+// Framework colors
+export const FRAMEWORK_COLORS: Record<Framework, string> = {
+  [Framework.NEXTJS]: "#000000",
+  [Framework.REACT]: "#61DAFB",
+  [Framework.VUE]: "#4FC08D",
+  [Framework.NUXT]: "#00DC82",
+  [Framework.SVELTE]: "#FF3E00",
+  [Framework.ASTRO]: "#BC52EE",
+  [Framework.ANGULAR]: "#DD0031",
+  [Framework.HTML_CSS]: "#E34F26",
+  [Framework.TAILWIND]: "#06B6D4",
+  [Framework.BOOTSTRAP]: "#7952B3",
+  [Framework.WORDPRESS]: "#21759B",
+  [Framework.SHOPIFY]: "#96BF48",
+};
+
+// Template type colors
+export const TEMPLATE_TYPE_COLORS: Record<TemplateType, string> = {
+  [TemplateType.LANDING_PAGE]: "#1E4DB7",
+  [TemplateType.SAAS_BOILERPLATE]: "#7C3AED",
+  [TemplateType.ECOMMERCE_THEME]: "#059669",
+  [TemplateType.PORTFOLIO]: "#EC4899",
+  [TemplateType.BLOG_THEME]: "#F59A23",
+  [TemplateType.ADMIN_DASHBOARD]: "#D24726",
+  [TemplateType.MOBILE_APP_TEMPLATE]: "#06B6D4",
+  [TemplateType.EMAIL_TEMPLATE]: "#6366F1",
+  [TemplateType.STARTUP_KIT]: "#059669",
+  [TemplateType.COMPONENT_LIBRARY]: "#8B5CF6",
+};

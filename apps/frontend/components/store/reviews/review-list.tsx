@@ -377,8 +377,8 @@ export function ReviewList({
   );
 
   const handleVote = useCallback(
-    (reviewId: string, vote: VoteType) => {
-      voteMutation.mutate({ reviewId, vote });
+    (reviewId: string, vote: string) => {
+      voteMutation.mutate({ reviewId, vote: vote as VoteType });
     },
     [voteMutation],
   );

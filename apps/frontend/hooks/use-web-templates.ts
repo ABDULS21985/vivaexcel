@@ -6,6 +6,7 @@ import type {
   WebTemplatesResponse,
   TemplateDemo,
   TemplateLicense,
+  TemplateCategory,
   CompatibilityCheckRequest,
   Framework,
 } from "@/types/web-template";

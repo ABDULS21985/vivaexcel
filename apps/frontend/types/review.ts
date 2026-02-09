@@ -139,6 +139,28 @@ export interface ReviewQueryParams {
 }
 
 // -----------------------------------------------------------------------------
+// Top Reviewers
+// -----------------------------------------------------------------------------
+
+export interface TopReviewer {
+  userId: string;
+  name: string;
+  avatar?: string;
+  totalReviews: number;
+  helpfulVotes: number;
+  averageRating: number;
+}
+
+// -----------------------------------------------------------------------------
+// Seller Response
+// -----------------------------------------------------------------------------
+
+export interface SellerResponsePayload {
+  reviewId: string;
+  response: string;
+}
+
+// -----------------------------------------------------------------------------
 // Social Proof
 // -----------------------------------------------------------------------------
 

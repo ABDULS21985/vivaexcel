@@ -18,7 +18,11 @@ interface SocialProofBannerProps {
 }
 
 interface SocialProofApiResponse {
-  recentPurchases: number;
+  status: string;
+  data: {
+    count: number;
+    recentBuyerNames: string[];
+  };
 }
 
 // =============================================================================
@@ -127,12 +131,12 @@ export function SocialProofBanner({
     async function poll() {
       try {
         const data = await apiGet<SocialProofApiResponse>(
-          `/reviews/product/${productId}/social-proof`,
+          `/reviews/recent-purchases/${productId}`,
           undefined,
           { skipAuth: true },
         );
-        if (mounted && data?.recentPurchases != null) {
-          setLivePurchases(data.recentPurchases);
+        if (mounted && data?.data?.count != null) {
+          setLivePurchases(data.data.count);
         }
       } catch {
         // Silently ignore polling errors

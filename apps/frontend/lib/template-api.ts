@@ -1,10 +1,9 @@
-import {
+import type {
   WebTemplate,
   WebTemplateFilters,
   WebTemplatesResponse,
   TemplateCategory,
   TemplateTag,
-  ApiResponseWrapper,
 } from '../types/web-template';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
@@ -16,7 +15,7 @@ interface PaginatedApiResponse<T> {
     meta: {
       total: number;
       hasNextPage: boolean;
-      nextCursor: string | null;
+      nextCursor?: string;
     };
   };
 }

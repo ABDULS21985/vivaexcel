@@ -11,3 +11,5 @@ export { ReviewSummary } from "./review-summary";
 export { TrustBadges } from "./trust-badges";
 export { SocialProofBanner } from "./social-proof-banner";
 export { RecentPurchaseToast } from "./recent-purchase-toast";
+export { ProductSocialStats } from "./product-social-stats";
+export { ReviewHighlights } from "./review-highlights";

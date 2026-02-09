@@ -10,7 +10,6 @@ import {
   ChevronLeft,
   ChevronRight,
   AlertCircle,
-  ImageIcon,
 } from "lucide-react";
 import { Button } from "ktblog-ui/components";
 import { Input } from "ktblog-ui/components";
@@ -104,7 +103,7 @@ const successCheckVariants = {
   animate: {
     scale: 1,
     opacity: 1,
-    transition: { type: "spring", stiffness: 200, damping: 15 },
+    transition: { type: "spring" as const, stiffness: 200, damping: 15 },
   },
 };
 

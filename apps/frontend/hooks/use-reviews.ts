@@ -10,6 +10,8 @@ import type {
   VoteOnReviewPayload,
   ReportReviewPayload,
   RecentPurchasesData,
+  TopReviewer,
+  SellerResponsePayload,
 } from "@/types/review";
 
 // =============================================================================
@@ -80,6 +82,8 @@ export const reviewKeys = {
     [...reviewKeys.all, "stats", productId] as const,
   recentPurchases: (productId: string) =>
     [...reviewKeys.all, "recent-purchases", productId] as const,
+  topReviewers: (limit?: number) =>
+    [...reviewKeys.all, "top-reviewers", limit] as const,
 };
 
 // =============================================================================
@@ -206,9 +210,43 @@ export function useRecentPurchases(productId: string) {
     queryKey: reviewKeys.recentPurchases(productId),
     queryFn: () =>
       apiGet<ApiResponseWrapper<RecentPurchasesData>>(
-        `/reviews/product/${productId}/recent-purchases`,
+        `/reviews/recent-purchases/${productId}`,
       ).then((res) => res.data),
     enabled: !!productId,
     staleTime: 10 * 60 * 1000,
+  });
+}
+
+/**
+ * Fetch the top reviewers leaderboard.
+ */
+export function useTopReviewers(limit?: number) {
+  return useQuery({
+    queryKey: reviewKeys.topReviewers(limit),
+    queryFn: () =>
+      apiGet<ApiResponseWrapper<{ items: TopReviewer[] }>>(
+        "/reviews/top-reviewers",
+        { limit },
+      ).then((res) => res.data?.items ?? []),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+/**
+ * Submit a seller response to a review (product owner only).
+ */
+export function useSellerResponse() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ reviewId, response }: SellerResponsePayload) =>
+      apiPost<ApiResponse<Review>>(`/reviews/${reviewId}/respond`, {
+        response,
+      }).then((res) => transformReview(res.data)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.lists(),
+      });
+    },
   });
 }
