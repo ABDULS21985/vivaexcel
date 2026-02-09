@@ -36,3 +36,13 @@ export { UserForm } from "./forms/user-form";
 export type { UserFormData } from "./forms/user-form";
 
 export { StatusModal } from "./modals/status-modal";
+
+// AI components
+export { AiAssistantPanel } from "./ai/ai-assistant-panel";
+export type { AiAssistantPanelProps } from "./ai/ai-assistant-panel";
+
+export { SeoScoreCard } from "./ai/seo-score-card";
+export type { SeoScoreCardProps, SeoChecklistItem } from "./ai/seo-score-card";
+
+export { ContentAnalysisCard } from "./ai/content-analysis";
+export type { ContentAnalysisCardProps } from "./ai/content-analysis";

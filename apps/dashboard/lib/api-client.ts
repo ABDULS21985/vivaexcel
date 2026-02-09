@@ -459,4 +459,13 @@ export const queryKeys = {
         details: () => [...queryKeys.media.all, "detail"] as const,
         detail: (id: string) => [...queryKeys.media.details(), id] as const,
     },
+    // AI
+    ai: {
+        all: ["ai"] as const,
+        titles: () => [...queryKeys.ai.all, "titles"] as const,
+        metaDescription: () => [...queryKeys.ai.all, "meta-description"] as const,
+        excerpt: () => [...queryKeys.ai.all, "excerpt"] as const,
+        outline: () => [...queryKeys.ai.all, "outline"] as const,
+        analysis: () => [...queryKeys.ai.all, "analysis"] as const,
+    },
 };

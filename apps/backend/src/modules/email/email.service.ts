@@ -3,7 +3,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 
 export interface UserEmailData {
-  id: string;
+  id?: string;
   email: string;
   name: string;
 }
@@ -28,6 +28,7 @@ export class EmailService {
   private readonly logger = new Logger(EmailService.name);
   private readonly frontendUrl: string;
   private readonly supportEmail: string;
+  private readonly brandName: string;
 
   constructor(
     private readonly mailerService: MailerService,
@@ -36,7 +37,9 @@ export class EmailService {
     this.frontendUrl =
       this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     this.supportEmail =
-      this.configService.get<string>('SUPPORT_EMAIL') || 'support@digiweb.com';
+      this.configService.get<string>('SUPPORT_EMAIL') || 'support@vivaexcel.com';
+    this.brandName =
+      this.configService.get<string>('BRAND_NAME') || 'VivaExcel Blog';
   }
 
   /**
@@ -51,7 +54,7 @@ export class EmailService {
     try {
       await this.mailerService.sendMail({
         to: user.email,
-        subject: 'Verify Your Email Address - DigiWeb',
+        subject: `Verify Your Email Address - ${this.brandName}`,
         template: 'email-verification',
         context: {
           name: user.name,
@@ -59,6 +62,7 @@ export class EmailService {
           expiresIn: '24 hours',
           supportEmail: this.supportEmail,
           year: new Date().getFullYear(),
+          brandName: this.brandName,
         },
       });
 
@@ -85,7 +89,7 @@ export class EmailService {
     try {
       await this.mailerService.sendMail({
         to: user.email,
-        subject: 'Reset Your Password - DigiWeb',
+        subject: `Reset Your Password - ${this.brandName}`,
         template: 'password-reset',
         context: {
           name: user.name,
@@ -93,6 +97,7 @@ export class EmailService {
           expiresIn: '15 minutes',
           supportEmail: this.supportEmail,
           year: new Date().getFullYear(),
+          brandName: this.brandName,
         },
       });
 
@@ -117,7 +122,7 @@ export class EmailService {
     try {
       await this.mailerService.sendMail({
         to: user.email,
-        subject: 'Welcome to DigiWeb!',
+        subject: `Welcome to ${this.brandName}!`,
         template: 'welcome',
         context: {
           name: user.name,
@@ -125,6 +130,7 @@ export class EmailService {
           dashboardUrl,
           supportEmail: this.supportEmail,
           year: new Date().getFullYear(),
+          brandName: this.brandName,
         },
       });
 
@@ -148,7 +154,7 @@ export class EmailService {
     try {
       await this.mailerService.sendMail({
         to: contact.email,
-        subject: 'We Received Your Message - DigiWeb',
+        subject: `We Received Your Message - ${this.brandName}`,
         template: 'contact-confirmation',
         context: {
           name: contact.name,
@@ -156,6 +162,7 @@ export class EmailService {
           message: contact.message,
           supportEmail: this.supportEmail,
           year: new Date().getFullYear(),
+          brandName: this.brandName,
         },
       });
 
@@ -185,13 +192,15 @@ export class EmailService {
     try {
       await this.mailerService.sendMail({
         to: subscriber.email,
-        subject: 'Welcome to the DigiWeb Newsletter!',
+        subject: `Welcome to the ${this.brandName} Newsletter!`,
         template: 'newsletter-welcome',
         context: {
           name,
           unsubscribeUrl,
           supportEmail: this.supportEmail,
           year: new Date().getFullYear(),
+          brandName: this.brandName,
+          blogUrl: this.frontendUrl,
         },
       });
 
@@ -200,6 +209,164 @@ export class EmailService {
     } catch (error) {
       this.logger.error(
         `Failed to send newsletter welcome email to ${subscriber.email}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Send a newsletter email with dynamic content
+   */
+  async sendNewsletterEmail(
+    to: string,
+    subject: string,
+    content: string,
+    recipientName: string,
+    preheaderText?: string,
+    unsubscribeToken?: string,
+  ): Promise<boolean> {
+    const unsubscribeUrl = unsubscribeToken
+      ? `${this.frontendUrl}/newsletter/unsubscribe?token=${unsubscribeToken}`
+      : `${this.frontendUrl}/newsletter/unsubscribe?email=${encodeURIComponent(to)}`;
+
+    try {
+      await this.mailerService.sendMail({
+        to,
+        subject,
+        template: 'newsletter',
+        context: {
+          name: recipientName,
+          content,
+          preheaderText: preheaderText || '',
+          unsubscribeUrl,
+          supportEmail: this.supportEmail,
+          year: new Date().getFullYear(),
+          brandName: this.brandName,
+          blogUrl: this.frontendUrl,
+        },
+      });
+
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to send newsletter email to ${to}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Send new post notification email
+   */
+  async sendNewPostNotification(
+    to: string,
+    recipientName: string,
+    post: {
+      title: string;
+      excerpt: string;
+      slug: string;
+      coverImage?: string;
+      authorName?: string;
+    },
+    unsubscribeToken?: string,
+  ): Promise<boolean> {
+    const postUrl = `${this.frontendUrl}/blog/${post.slug}`;
+    const unsubscribeUrl = unsubscribeToken
+      ? `${this.frontendUrl}/newsletter/unsubscribe?token=${unsubscribeToken}`
+      : `${this.frontendUrl}/newsletter/unsubscribe?email=${encodeURIComponent(to)}`;
+
+    try {
+      await this.mailerService.sendMail({
+        to,
+        subject: `New Post: ${post.title}`,
+        template: 'new-post',
+        context: {
+          name: recipientName,
+          postTitle: post.title,
+          postExcerpt: post.excerpt,
+          postUrl,
+          coverImage: post.coverImage || '',
+          authorName: post.authorName || 'The Team',
+          unsubscribeUrl,
+          supportEmail: this.supportEmail,
+          year: new Date().getFullYear(),
+          brandName: this.brandName,
+        },
+      });
+
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to send new post notification to ${to}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Send subscription confirmed email (paid tier)
+   */
+  async sendSubscriptionConfirmed(
+    user: { email: string; name: string },
+    tierName: string,
+  ): Promise<boolean> {
+    const dashboardUrl = `${this.frontendUrl}/dashboard`;
+
+    try {
+      await this.mailerService.sendMail({
+        to: user.email,
+        subject: `Welcome to ${tierName}! - ${this.brandName}`,
+        template: 'subscription-confirmed',
+        context: {
+          name: user.name,
+          tierName,
+          dashboardUrl,
+          supportEmail: this.supportEmail,
+          year: new Date().getFullYear(),
+          brandName: this.brandName,
+        },
+      });
+
+      this.logger.log(`Subscription confirmed email sent to ${user.email}`);
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to send subscription confirmed email to ${user.email}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Send payment failed notification
+   */
+  async sendPaymentFailed(
+    user: { email: string; name: string },
+    billingUrl: string,
+  ): Promise<boolean> {
+    try {
+      await this.mailerService.sendMail({
+        to: user.email,
+        subject: `Payment Issue - ${this.brandName}`,
+        template: 'payment-failed',
+        context: {
+          name: user.name,
+          billingUrl,
+          supportEmail: this.supportEmail,
+          year: new Date().getFullYear(),
+          brandName: this.brandName,
+        },
+      });
+
+      this.logger.log(`Payment failed email sent to ${user.email}`);
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to send payment failed email to ${user.email}`,
         error instanceof Error ? error.stack : String(error),
       );
       return false;
@@ -231,7 +398,7 @@ export class EmailService {
               ${content}
             </div>
             <footer style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 12px;">
-              <p>&copy; ${new Date().getFullYear()} DigiWeb. All rights reserved.</p>
+              <p>&copy; ${new Date().getFullYear()} ${this.brandName}. All rights reserved.</p>
               <p>Questions? Contact us at <a href="mailto:${this.supportEmail}">${this.supportEmail}</a></p>
             </footer>
           </body>
@@ -274,7 +441,7 @@ export class EmailService {
             <title>New Contact Submission</title>
           </head>
           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <h2 style="color: #2563eb;">New Contact Form Submission</h2>
+            <h2 style="color: #1E4DB7;">New Contact Form Submission</h2>
             <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
               <p><strong>Name:</strong> ${contact.name}</p>
               <p><strong>Email:</strong> <a href="mailto:${contact.email}">${contact.email}</a></p>
