@@ -29,9 +29,9 @@ export function generateStaticParams() {
 // =============================================================================
 
 export const metadata: Metadata = {
-    title: "Blog & Insights | KatangaBlog",
+    title: "Blog & Insights | KTBlog",
     description:
-        "Explore thought leadership, industry insights, and expert analysis on digital transformation, cybersecurity, AI, blockchain, and enterprise technology from KatangaBlog.",
+        "Explore thought leadership, industry insights, and expert analysis on digital transformation, cybersecurity, AI, blockchain, and enterprise technology from KTBlog.",
     keywords: [
         "technology blog",
         "digital transformation insights",
@@ -44,24 +44,24 @@ export const metadata: Metadata = {
         "data analytics",
     ],
     openGraph: {
-        title: "Blog & Insights | KatangaBlog",
+        title: "Blog & Insights | KTBlog",
         description:
             "Explore thought leadership, industry insights, and expert analysis on digital transformation, cybersecurity, AI, blockchain, and enterprise technology.",
-        url: "https://katangablog.com/blogs",
-        siteName: "KatangaBlog",
+        url: "https://drkatangablog.com/blogs",
+        siteName: "KTBlog",
         type: "website",
         images: [
             {
-                url: "https://katangablog.com/og-blog.jpg",
+                url: "https://drkatangablog.com/og-blog.jpg",
                 width: 1200,
                 height: 630,
-                alt: "KatangaBlog Blog & Insights",
+                alt: "KTBlog Blog & Insights",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Blog & Insights | KatangaBlog",
+        title: "Blog & Insights | KTBlog",
         description:
             "Explore thought leadership and expert analysis on digital transformation, cybersecurity, AI, and blockchain.",
     },

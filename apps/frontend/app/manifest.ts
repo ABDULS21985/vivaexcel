@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "KatangaBlog",
-    short_name: "KatangaBlog",
+    name: "KTBlog",
+    short_name: "KTBlog",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
     start_url: "/",

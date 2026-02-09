@@ -82,7 +82,7 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="text-[var(--muted-foreground)] text-sm">
-              Sign in to your KatangaBlog account
+              Sign in to your KTBlog account
             </p>
           </div>
 

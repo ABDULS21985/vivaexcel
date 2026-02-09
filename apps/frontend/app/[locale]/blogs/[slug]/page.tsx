@@ -51,21 +51,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (!post) {
         return {
-            title: "Blog Post Not Found | KatangaBlog",
+            title: "Blog Post Not Found | KTBlog",
         };
     }
 
-    const postUrl = `https://katangablog.com/blogs/${slug}`;
+    const postUrl = `https://drkatangablog.com/blogs/${slug}`;
 
     return {
-        title: `${post.title} | KatangaBlog`,
+        title: `${post.title} | KTBlog`,
         description: post.excerpt,
         keywords: [
             post.category.name.toLowerCase(),
             ...post.tags.map((tag) => tag.name.toLowerCase()),
             "blog",
             "insights",
-            "katangablog",
+            "ktblog",
         ],
         openGraph: {
             title: post.title,
@@ -113,15 +113,15 @@ function generateArticleSchema(post: BlogPostWithRelations) {
         },
         publisher: {
             "@type": "Organization",
-            name: "KatangaBlog",
+            name: "KTBlog",
             logo: {
                 "@type": "ImageObject",
-                url: "https://katangablog.com/logo/katangablog.png",
+                url: "https://drkatangablog.com/logo/ktblog.png",
             },
         },
         mainEntityOfPage: {
             "@type": "WebPage",
-            "@id": `https://katangablog.com/blogs/${post.slug}`,
+            "@id": `https://drkatangablog.com/blogs/${post.slug}`,
         },
         articleSection: post.category.name,
         keywords: post.tags.map((t) => t.name).join(", "),
@@ -144,7 +144,7 @@ export default async function BlogDetailPage({ params }: Props) {
     }
 
     const relatedPosts = getRelatedPosts(post.slug, 3);
-    const shareUrl = `https://katangablog.com/blogs/${slug}`;
+    const shareUrl = `https://drkatangablog.com/blogs/${slug}`;
 
     return (
         <>

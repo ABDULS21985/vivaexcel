@@ -1,9 +1,9 @@
 import Script from "next/script";
 import type { BlogPostWithRelations, BlogCategory, BlogAuthor } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://katangablog.com";
-const SITE_NAME = "KatangaBlog";
-const LOGO_URL = `${SITE_URL}/logo/katangablog.png`;
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://drkatangablog.com";
+const SITE_NAME = "KTBlog";
+const LOGO_URL = `${SITE_URL}/logo/ktblog.png`;
 
 // ============================================================================
 // ArticleStructuredData — JSON-LD for individual blog posts
@@ -161,11 +161,11 @@ export function OrganizationStructuredData() {
       height: 512,
     },
     description:
-      "KatangaBlog is a best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
+      "KTBlog is a best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
     sameAs: [
-      "https://www.linkedin.com/company/katangablog",
-      "https://twitter.com/katangablog",
-      "https://www.facebook.com/katangablog",
+      "https://www.linkedin.com/company/ktblog",
+      "https://twitter.com/ktblog",
+      "https://www.facebook.com/ktblog",
     ],
     contactPoint: {
       "@type": "ContactPoint",

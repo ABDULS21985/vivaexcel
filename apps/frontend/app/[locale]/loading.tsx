@@ -16,7 +16,7 @@ export default function Loading() {
 
       {/* Brand text */}
       <p className="text-lg font-semibold text-foreground tracking-tight">
-        KatangaBlog
+        KTBlog
       </p>
       <p className="text-sm text-muted-foreground mt-1">Loading...</p>
     </div>

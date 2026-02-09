@@ -11,12 +11,12 @@ export function generateStaticParams() {
 export const metadata: Metadata = {
   title: `Contact | ${SITE_NAME}`,
   description:
-    "Get in touch with the KatangaBlog team. We would love to hear from you — whether it is feedback, partnership inquiries, or just saying hello.",
+    "Get in touch with the KTBlog team. We would love to hear from you — whether it is feedback, partnership inquiries, or just saying hello.",
   openGraph: {
     title: `Contact | ${SITE_NAME}`,
     description:
-      "Reach out to the KatangaBlog team. We typically respond within 24 hours.",
-    url: "https://katangablog.com/contact",
+      "Reach out to the KTBlog team. We typically respond within 24 hours.",
+    url: "https://drkatangablog.com/contact",
   },
 };
 

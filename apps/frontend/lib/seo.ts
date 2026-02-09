@@ -5,9 +5,9 @@ import type {
   BlogAuthor,
 } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://katangablog.com";
-const SITE_NAME = "KatangaBlog";
-const TWITTER_HANDLE = "@katangablog";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://drkatangablog.com";
+const SITE_NAME = "KTBlog";
+const TWITTER_HANDLE = "@ktblog";
 const DEFAULT_LOCALE = "en_US";
 
 // Supported locales
@@ -88,7 +88,7 @@ const defaultKeywords = [
   "digital transformation",
   "tutorials",
   "insights",
-  "KatangaBlog",
+  "KTBlog",
 ];
 
 // ============================================================================
@@ -302,24 +302,24 @@ export function generateTagMetadata(tagName: string, tagSlug: string): Metadata 
 
 export const staticPageMetadata = {
   home: generatePageMetadata({
-    title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
+    title: "KTBlog — Insights, Tutorials & Expert Knowledge",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
     path: "/",
   }),
 
   about: generatePageMetadata({
-    title: "About Us - KatangaBlog",
+    title: "About Us - KTBlog",
     description:
-      "Learn about KatangaBlog, our mission to deliver expert insights and thought leadership on technology, AI, cybersecurity, and digital transformation.",
+      "Learn about KTBlog, our mission to deliver expert insights and thought leadership on technology, AI, cybersecurity, and digital transformation.",
     path: "/about",
     keywords: ["about us", "mission", "team"],
   }),
 
   contact: generatePageMetadata({
-    title: "Contact Us - KatangaBlog",
+    title: "Contact Us - KTBlog",
     description:
-      "Get in touch with KatangaBlog. We would love to hear from you about collaboration, guest posts, or partnership opportunities.",
+      "Get in touch with KTBlog. We would love to hear from you about collaboration, guest posts, or partnership opportunities.",
     path: "/contact",
     keywords: ["contact", "get in touch", "support"],
   }),
@@ -327,7 +327,7 @@ export const staticPageMetadata = {
   blog: generatePageMetadata({
     title: "Blog - All Articles & Insights",
     description:
-      "Browse all articles, tutorials, and expert insights on KatangaBlog. Covering technology, AI, cybersecurity, and digital transformation.",
+      "Browse all articles, tutorials, and expert insights on KTBlog. Covering technology, AI, cybersecurity, and digital transformation.",
     path: "/blogs",
     keywords: [
       "blog",
@@ -339,9 +339,9 @@ export const staticPageMetadata = {
   }),
 
   membership: generatePageMetadata({
-    title: "Membership - KatangaBlog",
+    title: "Membership - KTBlog",
     description:
-      "Join KatangaBlog membership for exclusive content, early access to articles, and premium features.",
+      "Join KTBlog membership for exclusive content, early access to articles, and premium features.",
     path: "/membership",
     keywords: ["membership", "premium", "exclusive content"],
   }),

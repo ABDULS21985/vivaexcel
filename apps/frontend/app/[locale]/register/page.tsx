@@ -76,7 +76,7 @@ export default function RegisterPage() {
               Create your account
             </h1>
             <p className="text-[var(--muted-foreground)] text-sm">
-              Join KatangaBlog and unlock premium content
+              Join KTBlog and unlock premium content
             </p>
           </div>
 

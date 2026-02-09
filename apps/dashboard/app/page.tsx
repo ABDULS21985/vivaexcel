@@ -74,7 +74,7 @@ export default function DashboardHome() {
         <div className="min-h-screen">
             <PageHeader
                 title="Dashboard"
-                description="Welcome back! Here's an overview of your KatangaBlog."
+                description="Welcome back! Here's an overview of your KTBlog."
             />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

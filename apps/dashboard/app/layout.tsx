@@ -56,10 +56,10 @@ const aptos = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "KatangaBlog \u2014 Dashboard",
-    template: "%s | KatangaBlog Dashboard"
+    default: "KTBlog \u2014 Dashboard",
+    template: "%s | KTBlog Dashboard"
   },
-  description: "Admin dashboard for KatangaBlog. Manage posts, subscribers, memberships, and analytics.",
+  description: "Admin dashboard for KTBlog. Manage posts, subscribers, memberships, and analytics.",
   robots: {
     index: false,
     follow: false,

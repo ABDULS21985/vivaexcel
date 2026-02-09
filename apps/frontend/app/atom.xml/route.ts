@@ -1,7 +1,7 @@
 import { getAllPublishedPosts } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://katangablog.com";
-const SITE_TITLE = "KatangaBlog";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://drkatangablog.com";
+const SITE_TITLE = "KTBlog";
 const SITE_DESCRIPTION =
   "Expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.";
 
@@ -54,7 +54,7 @@ export async function GET() {
   </author>
   <generator>Next.js</generator>
   <icon>${SITE_URL}/favicon.ico</icon>
-  <logo>${SITE_URL}/logo/katangablog.png</logo>
+  <logo>${SITE_URL}/logo/ktblog.png</logo>
 ${entries}
 </feed>`;
 

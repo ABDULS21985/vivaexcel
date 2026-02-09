@@ -1,7 +1,7 @@
 // =============================================================================
 // Sample Blog Posts Data
 // =============================================================================
-// Static sample data for the KatangaBlog platform
+// Static sample data for the KTBlog platform
 
 import type { BlogPost, BlogCategory, BlogPostStatus } from "@/types/blog";
 

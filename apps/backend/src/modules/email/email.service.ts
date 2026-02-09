@@ -39,7 +39,7 @@ export class EmailService {
     this.supportEmail =
       this.configService.get<string>('SUPPORT_EMAIL') || 'support@drkatangablog.com';
     this.brandName =
-      this.configService.get<string>('BRAND_NAME') || 'KatangaBlog';
+      this.configService.get<string>('BRAND_NAME') || 'KTBlog';
   }
 
   /**

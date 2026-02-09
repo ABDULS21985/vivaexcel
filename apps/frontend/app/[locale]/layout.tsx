@@ -56,19 +56,19 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
+  title: "KTBlog — Insights, Tutorials & Expert Knowledge",
   description:
     "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
   openGraph: {
-    title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
+    title: "KTBlog — Insights, Tutorials & Expert Knowledge",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
     type: "website",
-    siteName: "KatangaBlog",
+    siteName: "KTBlog",
   },
   twitter: {
     card: "summary_large_image",
-    title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
+    title: "KTBlog — Insights, Tutorials & Expert Knowledge",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
   },
@@ -105,13 +105,13 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link
           rel="alternate"
           type="application/rss+xml"
-          title="KatangaBlog RSS Feed"
+          title="KTBlog RSS Feed"
           href="/rss.xml"
         />
         <link
           rel="alternate"
           type="application/atom+xml"
-          title="KatangaBlog Atom Feed"
+          title="KTBlog Atom Feed"
           href="/atom.xml"
         />
 

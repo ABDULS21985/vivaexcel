@@ -138,7 +138,7 @@ export function PostCard({ post, className = "" }: PostCardProps) {
           ) : (
             <div className="flex items-center gap-1.5 text-xs text-neutral-500">
               <User className="h-3.5 w-3.5" />
-              <span>KatangaBlog</span>
+              <span>KTBlog</span>
             </div>
           )}
 

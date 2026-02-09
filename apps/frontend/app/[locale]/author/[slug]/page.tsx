@@ -53,16 +53,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const author = getBlogAuthorBySlug(slug);
 
     if (!author) {
-        return { title: "Author Not Found | KatangaBlog" };
+        return { title: "Author Not Found | KTBlog" };
     }
 
     return {
-        title: `${author.name} - Author | KatangaBlog`,
+        title: `${author.name} - Author | KTBlog`,
         description: author.bio,
         openGraph: {
-            title: `${author.name} - Author | KatangaBlog`,
+            title: `${author.name} - Author | KTBlog`,
             description: author.bio,
-            url: `https://katangablog.com/author/${slug}`,
+            url: `https://drkatangablog.com/author/${slug}`,
             type: "profile",
         },
     };
@@ -128,7 +128,7 @@ export default async function AuthorPage({ params }: Props) {
                 name: author.name,
                 jobTitle: author.role,
                 description: author.bio,
-                url: `https://katangablog.com/author/${slug}`,
+                url: `https://drkatangablog.com/author/${slug}`,
                 sameAs: [
                     author.socialLinks?.linkedin,
                     author.socialLinks?.twitter,

@@ -1,6 +1,6 @@
-export const SITE_NAME = 'KatangaBlog';
+export const SITE_NAME = 'KTBlog';
 export const SITE_DESCRIPTION = 'Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.';
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://katangablog.com';
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://drkatangablog.com';
 export const SITE_LOGO = '/images/logo.svg';
 
 export const CATEGORIES = [
@@ -20,7 +20,7 @@ export const MEMBERSHIP_TIERS = [
 ];
 
 export const SOCIAL_LINKS = {
-  twitter: 'https://twitter.com/katangablog',
-  linkedin: 'https://linkedin.com/company/katangablog',
-  github: 'https://github.com/katangablog',
+  twitter: 'https://twitter.com/ktblog',
+  linkedin: 'https://linkedin.com/company/ktblog',
+  github: 'https://github.com/ktblog',
 };

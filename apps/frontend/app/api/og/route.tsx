@@ -6,7 +6,7 @@ export const runtime = "edge";
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
 
-  const title = searchParams.get("title") || "KatangaBlog";
+  const title = searchParams.get("title") || "KTBlog";
   const author = searchParams.get("author") || "";
   const category = searchParams.get("category") || "";
   const date = searchParams.get("date") || "";
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
                 letterSpacing: "-0.02em",
               }}
             >
-              KatangaBlog
+              KTBlog
             </span>
           </div>
 
