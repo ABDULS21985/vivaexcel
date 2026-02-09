@@ -4,10 +4,12 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { ShoppingCart, Check, AlertCircle, Loader2, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
+import { useFormat } from "@/hooks/use-format";
 
 // =============================================================================
 // Add to Cart Button
@@ -203,6 +205,9 @@ export function AddToCartButton({
   showFlyAnimation = true,
   disabled = false,
 }: AddToCartButtonProps) {
+  const tStore = useTranslations("store");
+  const tCart = useTranslations("cart");
+  const { formatPrice } = useFormat();
   const { addToCart } = useCart();
   const [buttonState, setButtonState] = useState<ButtonState>("idle");
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -237,7 +242,7 @@ export function AddToCartButton({
       setButtonState("success");
 
       // Fire toast
-      toast.success("Added to cart!", {
+      toast.success(tCart("addedToCart"), {
         description: productTitle,
       });
 
@@ -254,8 +259,8 @@ export function AddToCartButton({
     } catch {
       setButtonState("error");
 
-      toast.error("Failed to add to cart", {
-        description: "Please try again.",
+      toast.error(tCart("failedToAdd"), {
+        description: tCart("tryAgain"),
       });
 
       // Hold error state for 2 seconds then revert
@@ -279,24 +284,16 @@ export function AddToCartButton({
 
   const isInteractive = buttonState === "idle" && !disabled;
 
-  const formattedPrice =
-    price === 0
-      ? "Free"
-      : new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency,
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 2,
-        }).format(price);
+  const formattedPrice = formatPrice(price, currency);
 
   const ariaLabel =
     buttonState === "loading"
-      ? `Adding ${productTitle} to cart`
+      ? tStore("cta.adding")
       : buttonState === "success"
-        ? `${productTitle} added to cart`
+        ? tStore("cta.addedToCartAnnouncement", { title: productTitle })
         : buttonState === "error"
-          ? `Failed to add ${productTitle} to cart`
-          : `Add ${productTitle} to cart - ${formattedPrice}`;
+          ? tCart("failedToAdd")
+          : tStore("cta.addToCartAriaLabel", { title: productTitle });
 
   // ---------------------------------------------------------------------------
   // Render
@@ -351,7 +348,7 @@ export function AddToCartButton({
               transition={SPRING_TRANSITION}
             >
               <Loader2 className={cn(ICON_SIZES[size], "animate-spin")} />
-              <span>Adding...</span>
+              <span>{tStore("cta.adding")}</span>
             </motion.span>
           )}
 
@@ -366,7 +363,7 @@ export function AddToCartButton({
               transition={SPRING_TRANSITION}
             >
               <Check className={ICON_SIZES[size]} strokeWidth={2.5} />
-              <span>Added!</span>
+              <span>{tStore("cta.addedToCart")}</span>
             </motion.span>
           )}
 
@@ -381,7 +378,7 @@ export function AddToCartButton({
               transition={SPRING_TRANSITION}
             >
               <AlertCircle className={ICON_SIZES[size]} />
-              <span>Failed</span>
+              <span>{tCart("failedToAdd")}</span>
             </motion.span>
           )}
 
@@ -396,7 +393,7 @@ export function AddToCartButton({
               transition={SPRING_TRANSITION}
             >
               <ShoppingCart className={ICON_SIZES[size]} />
-              <span>Add to Cart</span>
+              <span>{tStore("cta.addToCart")}</span>
             </motion.span>
           )}
         </AnimatePresence>

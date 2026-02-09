@@ -552,14 +552,14 @@ export default function CheckoutSuccessPage() {
             {/* Share */}
             <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white/5 border border-white/10">
               <Share2 className="w-8 h-8 text-blue-400 mb-2" />
-              <p className="font-medium mb-2">Share with Friends</p>
+              <p className="font-medium mb-2">{t("success.shareWithFriends")}</p>
               <div className="flex gap-2">
                 <a
                   href={`https://twitter.com/intent/tweet?text=Just%20purchased%20amazing%20products%20from%20VivaExcel!&url=${encodeURIComponent(window.location.origin + "/store")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition-colors"
-                  title="Share on Twitter"
+                  title={t("success.shareOnTwitter")}
                 >
                   <ExternalLink className="w-4 h-4" />
                 </a>
@@ -568,14 +568,14 @@ export default function CheckoutSuccessPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 transition-colors"
-                  title="Share on LinkedIn"
+                  title={t("success.shareOnLinkedIn")}
                 >
                   <ExternalLink className="w-4 h-4" />
                 </a>
                 <button
                   onClick={handleCopyLink}
                   className="p-2 rounded-lg bg-neutral-600/20 hover:bg-neutral-600/30 text-neutral-300 transition-colors"
-                  title="Copy link"
+                  title={t("success.copyLink")}
                 >
                   <Copy className="w-4 h-4" />
                 </button>
@@ -588,8 +588,8 @@ export default function CheckoutSuccessPage() {
               className="flex flex-col items-center text-center p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors group"
             >
               <ShoppingBag className="w-8 h-8 text-[#F59A23] mb-2 group-hover:scale-110 transition-transform" />
-              <p className="font-medium mb-1">Browse More Products</p>
-              <p className="text-sm text-neutral-400">Discover more tools</p>
+              <p className="font-medium mb-1">{t("success.browseMore")}</p>
+              <p className="text-sm text-neutral-400">{t("success.discoverMore")}</p>
             </Link>
           </div>
         </motion.div>
@@ -603,7 +603,9 @@ export default function CheckoutSuccessPage() {
         >
           <Mail className="w-4 h-4" />
           <p>
-            Confirmation sent to <span className="font-medium text-white">{order.billingEmail}</span>
+            {t.rich("success.confirmationSent", {
+              email: order.billingEmail,
+            })}
           </p>
         </motion.div>
       </div>

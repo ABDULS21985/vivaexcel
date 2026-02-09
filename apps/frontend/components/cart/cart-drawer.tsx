@@ -28,6 +28,7 @@ import {
 } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
 import type { CartItem } from "@/providers/cart-provider";
+import { useCurrency } from "@/providers/currency-provider";
 import { useFormat } from "@/hooks/use-format";
 import { useAnnouncer, LiveRegion } from "@/components/ui/accessibility";
 
@@ -98,16 +99,6 @@ const RECENTLY_VIEWED_PRODUCTS = [
 // Helpers
 // -----------------------------------------------------------------------------
 
-function formatPrice(price: number, currency: string = "USD"): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
-
 const TYPE_BADGE_COLORS: Record<string, string> = {
   powerpoint: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
   document: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
@@ -141,22 +132,27 @@ function formatTypeLabel(type: string): string {
 
 function AnimatedPrice({
   value,
-  currency = "USD",
+  currency: currencyProp,
   className,
 }: {
   value: number;
   currency?: string;
   className?: string;
 }) {
-  const springValue = useSpring(value, { stiffness: 100, damping: 20 });
+  const { currency: activeCurrency, convertPrice } = useCurrency();
+  const { formatPrice: fmtPrice } = useFormat();
+  const displayCurrency = currencyProp || activeCurrency;
+  const convertedValue = convertPrice(value);
+
+  const springValue = useSpring(convertedValue, { stiffness: 100, damping: 20 });
   const display = useTransform(springValue, (latest) =>
-    formatPrice(Math.max(0, latest), currency),
+    fmtPrice(Math.max(0, latest), displayCurrency),
   );
-  const [rendered, setRendered] = useState(formatPrice(value, currency));
+  const [rendered, setRendered] = useState(fmtPrice(convertedValue, displayCurrency));
 
   useEffect(() => {
-    springValue.set(value);
-  }, [value, springValue]);
+    springValue.set(convertedValue);
+  }, [convertedValue, springValue]);
 
   useEffect(() => {
     const unsubscribe = display.on("change", (v) => setRendered(v));
@@ -194,6 +190,8 @@ function CountBadge({ count }: { count: number }) {
 // -----------------------------------------------------------------------------
 
 function ProgressIncentive({ total }: { total: number }) {
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   const progress = Math.min((total / PREMIUM_THRESHOLD) * 100, 100);
   const remaining = Math.max(PREMIUM_THRESHOLD - total, 0);
   const isComplete = total >= PREMIUM_THRESHOLD;
@@ -216,7 +214,7 @@ function ProgressIncentive({ total }: { total: number }) {
             <>
               Unlock Premium Support at{" "}
               <span className="text-[#1E4DB7] dark:text-blue-400">
-                {formatPrice(PREMIUM_THRESHOLD)}
+                {formatPrice(convertPrice(PREMIUM_THRESHOLD), currency)}
               </span>
               !
             </>
@@ -238,7 +236,7 @@ function ProgressIncentive({ total }: { total: number }) {
       </div>
       {!isComplete && (
         <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1.5">
-          Add <span className="font-semibold text-neutral-700 dark:text-neutral-300">{formatPrice(remaining)}</span> more to qualify
+          Add <span className="font-semibold text-neutral-700 dark:text-neutral-300">{formatPrice(convertPrice(remaining), currency)}</span> more to qualify
         </p>
       )}
     </motion.div>
@@ -257,6 +255,8 @@ interface CartItemRowProps {
 
 function CartItemRow({ item, onRemove, isRemoving }: CartItemRowProps) {
   const t = useTranslations("cart");
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   return (
     <motion.div
       layout="position"
@@ -289,7 +289,7 @@ function CartItemRow({ item, onRemove, isRemoving }: CartItemRowProps) {
       </div>
 
       {/* Details */}
-      <div className="flex-1 min-w-0 pr-8">
+      <div className="flex-1 min-w-0 pe-8">
         <Link
           href={`/store/${item.product.slug}`}
           className="text-sm font-semibold text-neutral-900 dark:text-white hover:text-[#1E4DB7] dark:hover:text-blue-400 transition-colors line-clamp-1"
@@ -315,7 +315,7 @@ function CartItemRow({ item, onRemove, isRemoving }: CartItemRowProps) {
 
         <div className="flex items-center gap-2 mt-1.5">
           <span className="text-sm font-bold text-neutral-900 dark:text-white">
-            {formatPrice(item.unitPrice, item.product.currency)}
+            {formatPrice(convertPrice(item.unitPrice), currency)}
           </span>
         </div>
       </div>

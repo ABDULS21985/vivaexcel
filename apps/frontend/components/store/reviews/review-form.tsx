@@ -24,6 +24,7 @@ import {
 } from "ktblog-ui/components";
 import { useCreateReview, useUpdateReview } from "@/hooks/use-reviews";
 import { trackConversion } from "@/lib/conversion-tracking";
+import { useTranslations } from "next-intl";
 import type { Review } from "@/types/review";
 import { StarRating } from "./star-rating";
 
@@ -234,6 +235,7 @@ export function ReviewForm({
   onOpenChange,
   onSuccess,
 }: ReviewFormProps) {
+  const t = useTranslations("reviews");
   const isEditing = !!existingReview;
 
   // ---------------------------------------------------------------------------

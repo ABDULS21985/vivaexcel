@@ -162,10 +162,10 @@ export function RelatedProducts({
             {showViewAll && (
               <Link
                 href="/store"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-[#1E4DB7] hover:text-[#143A8F] dark:text-blue-400 dark:hover:text-blue-300 transition-colors group mr-2"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#1E4DB7] hover:text-[#143A8F] dark:text-blue-400 dark:hover:text-blue-300 transition-colors group me-2"
               >
                 {t("cta.viewAll")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 rtl-flip transition-transform group-hover:translate-x-1" />
               </Link>
             )}
 
@@ -267,7 +267,7 @@ export function RelatedProducts({
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#1E4DB7] hover:bg-[#143A8F] text-white font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg"
             >
               {t("cta.viewAllProducts")}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 rtl-flip" />
             </Link>
           </div>
         )}

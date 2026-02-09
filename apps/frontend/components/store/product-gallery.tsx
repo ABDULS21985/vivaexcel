@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -630,7 +630,7 @@ function Lightbox({
                   (currentIndex - 1 + items.length) % items.length,
                 )
               }
-              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+              className="absolute start-2 sm:start-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
             >
               <ChevronLeft className="h-6 w-6 text-white" />
             </button>
@@ -638,7 +638,7 @@ function Lightbox({
               onClick={() =>
                 onNavigate((currentIndex + 1) % items.length)
               }
-              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+              className="absolute end-2 sm:end-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
             >
               <ChevronRight className="h-6 w-6 text-white" />
             </button>
@@ -879,7 +879,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
 
         {/* Presentation auto-cycle controls */}
         {isPresentation && galleryItems.filter((i) => i.type === "image").length > 1 && (
-          <div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+          <div className="absolute top-3 end-3 z-10 flex items-center gap-2">
             <button
               onClick={(e) => {
                 e.stopPropagation();
