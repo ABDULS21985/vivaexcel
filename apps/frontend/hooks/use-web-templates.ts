@@ -259,3 +259,17 @@ export function useTemplateCompatibility(params: CompatibilityCheckRequest) {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
+
+/**
+ * Fetch template categories (reuses digital product categories endpoint).
+ */
+export function useTemplateCategories() {
+  return useQuery({
+    queryKey: [...WEB_TEMPLATES_QUERY_KEYS.all, "categories"] as const,
+    queryFn: () =>
+      apiGet<ApiResponseWrapper<TemplateCategory[]>>(
+        "/digital-product-categories",
+      ).then((res) => res.data ?? []),
+    staleTime: 5 * 60 * 1000,
+  });
+}

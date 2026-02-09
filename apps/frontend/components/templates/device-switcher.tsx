@@ -1,5 +1,7 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 type DeviceType = 'desktop' | 'tablet' | 'mobile';
 
 interface DeviceSwitcherProps {
@@ -7,7 +9,7 @@ interface DeviceSwitcherProps {
   onDeviceChange: (device: DeviceType) => void;
 }
 
-const devices: { type: DeviceType; label: string; icon: JSX.Element }[] = [
+const devices: { type: DeviceType; label: string; icon: ReactNode }[] = [
   {
     type: 'desktop',
     label: 'Desktop',
