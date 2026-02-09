@@ -87,29 +87,17 @@ export class LicenseController {
   async activateLicense(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: ActivateLicenseDto,
+    @CurrentUser('sub') userId: string,
     @Req() req: Request,
   ) {
-    // Look up the license by ID to get the license key
-    const licenseDetails = await this.licenseService.getLicenseDetails(
-      id,
-      (req as any).user?.sub,
-    );
-    const licenseKey = licenseDetails.data?.licenseKey;
-
-    if (!licenseKey) {
-      return {
-        status: 'error',
-        message: 'License not found',
-      };
-    }
-
     const ipAddress =
       (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
       req.socket.remoteAddress ||
       '0.0.0.0';
 
-    return this.licenseService.activateLicense(
-      licenseKey,
+    return this.licenseService.activateLicenseById(
+      id,
+      userId,
       body.domain,
       body.machineId,
       ipAddress,
@@ -130,18 +118,7 @@ export class LicenseController {
     @Param('activationId', ParseUUIDPipe) activationId: string,
     @CurrentUser('sub') userId: string,
   ) {
-    // Look up the license by ID to get the license key
-    const licenseDetails = await this.licenseService.getLicenseDetails(id, userId);
-    const licenseKey = licenseDetails.data?.licenseKey;
-
-    if (!licenseKey) {
-      return {
-        status: 'error',
-        message: 'License not found',
-      };
-    }
-
-    return this.licenseService.deactivateLicense(licenseKey, activationId, userId);
+    return this.licenseService.deactivateLicenseById(id, activationId, userId);
   }
 
   @Post(':id/revoke')
@@ -156,18 +133,6 @@ export class LicenseController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: RevokeLicenseDto,
   ) {
-    // Look up the license by ID to get the license key
-    // Admin can view any license, so we pass a dummy check via repository directly
-    const license = await this.licenseService.getLicenseDetails(id, '').catch(async () => {
-      // If ForbiddenException, admin still needs access — try direct approach
-      return null;
-    });
-
-    // For admin, we need to find the license key differently since they may not own it
-    // We'll use the repository through the service's internal method
-    // Workaround: use the validate endpoint pattern
-    // Since this is admin-only, we retrieve the license key via a direct query pattern
-    // The service will handle finding by key
-    return this.licenseService.revokeLicense(id, body.reason);
+    return this.licenseService.revokeLicenseById(id, body.reason);
   }
 }
