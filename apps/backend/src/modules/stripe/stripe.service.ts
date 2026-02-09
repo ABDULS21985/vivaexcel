@@ -14,6 +14,7 @@ import { Subscription, SubscriptionStatus } from '../../entities/subscription.en
 import { User } from '../../entities/user.entity';
 import { EmailService } from '../email/email.service';
 import { CheckoutService } from '../checkout/checkout.service';
+import { StripeConnectService } from '../sellers/services/stripe-connect.service';
 
 @Injectable()
 export class StripeService {
@@ -30,6 +31,8 @@ export class StripeService {
     private readonly emailService: EmailService,
     @Inject(forwardRef(() => CheckoutService))
     private readonly checkoutService: CheckoutService,
+    @Inject(forwardRef(() => StripeConnectService))
+    private readonly stripeConnectService: StripeConnectService,
   ) {
     const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     if (!secretKey) {
