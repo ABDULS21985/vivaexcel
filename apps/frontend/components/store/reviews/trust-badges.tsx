@@ -1,103 +1,208 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ShieldCheck, RotateCcw, Lock, Headphones } from "lucide-react";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import {
+  Lock,
+  Download,
+  ShieldCheck,
+  BadgeCheck,
+  Headphones,
+  type LucideIcon,
+} from "lucide-react";
 
 // =============================================================================
 // Types
 // =============================================================================
 
+interface TrustBadge {
+  icon: LucideIcon;
+  label: string;
+  tooltip: string;
+}
+
 interface TrustBadgesProps {
-  className?: string;
+  variant?: "inline" | "grid" | "compact";
 }
 
 // =============================================================================
 // Data
 // =============================================================================
 
-const TRUST_BADGES = [
-  {
-    icon: ShieldCheck,
-    label: "Verified Reviews",
-    description: "All reviews are from real customers",
-  },
-  {
-    icon: RotateCcw,
-    label: "Money-Back Guarantee",
-    description: "30-day satisfaction guarantee",
-  },
+const TRUST_BADGES: TrustBadge[] = [
   {
     icon: Lock,
-    label: "Secure Checkout",
-    description: "SSL encrypted payment processing",
+    label: "Secure Payment",
+    tooltip: "Your payment information is encrypted and secure",
+  },
+  {
+    icon: Download,
+    label: "Instant Download",
+    tooltip: "Get immediate access after purchase",
+  },
+  {
+    icon: ShieldCheck,
+    label: "Money-Back Guarantee",
+    tooltip: "30-day satisfaction guarantee",
+  },
+  {
+    icon: BadgeCheck,
+    label: "Verified Reviews",
+    tooltip: "All reviews are from verified purchasers",
   },
   {
     icon: Headphones,
     label: "24/7 Support",
-    description: "Always here to help you",
+    tooltip: "Our team is available around the clock",
   },
-] as const;
+];
 
 // =============================================================================
-// Animation Variants
+// Badge Item (shared across variants)
 // =============================================================================
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const badgeVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15,
-    },
-  },
-};
+function BadgeTooltip({ text }: { text: string }) {
+  return (
+    <span
+      className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2
+        whitespace-nowrap rounded-md bg-neutral-900 dark:bg-neutral-100
+        px-2.5 py-1.5 text-[11px] font-medium leading-none
+        text-white dark:text-neutral-900 opacity-0 group-hover/badge:opacity-100
+        transition-opacity duration-200 z-50
+        after:absolute after:top-full after:left-1/2 after:-translate-x-1/2
+        after:border-4 after:border-transparent after:border-t-neutral-900
+        dark:after:border-t-neutral-100"
+    >
+      {text}
+    </span>
+  );
+}
 
 // =============================================================================
-// Component
+// Inline Variant
 // =============================================================================
 
-export function TrustBadges({ className = "" }: TrustBadgesProps) {
+function InlineBadge({
+  badge,
+  index,
+}: {
+  badge: TrustBadge;
+  index: number;
+}) {
+  const Icon = badge.icon;
   return (
     <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className={`grid grid-cols-2 md:grid-cols-4 gap-4 ${className}`}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.08, duration: 0.3, ease: "easeOut" }}
+      className="group/badge relative flex items-center gap-1.5 px-2 py-1 cursor-default"
     >
-      {TRUST_BADGES.map((badge) => {
-        const Icon = badge.icon;
-        return (
-          <motion.div
-            key={badge.label}
-            variants={badgeVariants}
-            className="flex flex-col items-center text-center p-4 rounded-xl border border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900"
-          >
-            <div className="w-10 h-10 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-3">
-              <Icon className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
-            </div>
-            <h4 className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-0.5">
-              {badge.label}
-            </h4>
-            <p className="text-[10px] text-neutral-400 dark:text-neutral-500 leading-snug">
-              {badge.description}
-            </p>
-          </motion.div>
-        );
-      })}
+      <BadgeTooltip text={badge.tooltip} />
+      <Icon className="h-3.5 w-3.5 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" />
+      <span className="text-[11px] font-medium text-neutral-600 dark:text-neutral-500 whitespace-nowrap">
+        {badge.label}
+      </span>
     </motion.div>
+  );
+}
+
+// =============================================================================
+// Grid Variant
+// =============================================================================
+
+function GridBadge({
+  badge,
+  index,
+}: {
+  badge: TrustBadge;
+  index: number;
+}) {
+  const Icon = badge.icon;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.08, duration: 0.3, ease: "easeOut" }}
+      className="group/badge relative flex items-center gap-3 rounded-xl border border-neutral-100
+        dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3 cursor-default"
+    >
+      <BadgeTooltip text={badge.tooltip} />
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800 transition-colors duration-200 group-hover/badge:bg-blue-50 dark:group-hover/badge:bg-blue-950/30">
+        <Icon className="h-4.5 w-4.5 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" />
+      </div>
+      <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-400">
+        {badge.label}
+      </span>
+    </motion.div>
+  );
+}
+
+// =============================================================================
+// Compact Variant
+// =============================================================================
+
+function CompactBadge({
+  badge,
+  index,
+}: {
+  badge: TrustBadge;
+  index: number;
+}) {
+  const Icon = badge.icon;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.08, duration: 0.3, ease: "easeOut" }}
+      className="group/badge relative flex items-center justify-center cursor-default p-1.5"
+    >
+      <BadgeTooltip text={badge.tooltip} />
+      <Icon className="h-4 w-4 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" />
+    </motion.div>
+  );
+}
+
+// =============================================================================
+// Main Component
+// =============================================================================
+
+export function TrustBadges({ variant = "inline" }: TrustBadgesProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, amount: 0.3 });
+
+  if (variant === "inline") {
+    return (
+      <div ref={containerRef} className="flex flex-wrap items-center gap-1">
+        {isInView &&
+          TRUST_BADGES.map((badge, i) => (
+            <InlineBadge key={badge.label} badge={badge} index={i} />
+          ))}
+      </div>
+    );
+  }
+
+  if (variant === "grid") {
+    return (
+      <div
+        ref={containerRef}
+        className="grid grid-cols-2 lg:grid-cols-3 gap-3"
+      >
+        {isInView &&
+          TRUST_BADGES.map((badge, i) => (
+            <GridBadge key={badge.label} badge={badge} index={i} />
+          ))}
+      </div>
+    );
+  }
+
+  // compact
+  return (
+    <div ref={containerRef} className="flex items-center gap-1">
+      {isInView &&
+        TRUST_BADGES.map((badge, i) => (
+          <CompactBadge key={badge.label} badge={badge} index={i} />
+        ))}
+    </div>
   );
 }
 

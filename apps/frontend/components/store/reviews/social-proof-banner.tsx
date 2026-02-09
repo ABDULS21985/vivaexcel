@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Eye } from "lucide-react";
+import { X } from "lucide-react";
 import { apiGet } from "@/lib/api-client";
 
 // =============================================================================
@@ -11,75 +11,90 @@ import { apiGet } from "@/lib/api-client";
 
 interface SocialProofBannerProps {
   productId: string;
-  className?: string;
+  recentPurchases?: number;
+  totalDownloads?: number;
+  averageRating?: number;
+  totalReviews?: number;
 }
 
-interface SocialProofData {
+interface SocialProofApiResponse {
   recentPurchases: number;
-}
-
-interface ApiResponseWrapper<T> {
-  status: string;
-  data: T;
-  meta?: Record<string, unknown>;
 }
 
 // =============================================================================
 // Constants
 // =============================================================================
 
+const ROTATION_INTERVAL_MS = 5_000;
 const POLL_INTERVAL_MS = 30_000;
-const VIEWER_MIN = 5;
-const VIEWER_MAX = 25;
-const VIEWER_VARIANCE = 3;
 
 // =============================================================================
 // Helpers
 // =============================================================================
 
-/** Generate a random "current viewer count" within bounds, with slight
- *  variance from the previous value to feel organic. */
-function generateViewerCount(previous: number | null): number {
-  if (previous === null) {
-    return Math.floor(Math.random() * (VIEWER_MAX - VIEWER_MIN + 1)) + VIEWER_MIN;
+function getLocalStorageKey(productId: string): string {
+  return `social-proof-dismissed-${productId}`;
+}
+
+function isDismissed(productId: string): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(getLocalStorageKey(productId)) === "true";
+}
+
+function dismissBanner(productId: string): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(getLocalStorageKey(productId), "true");
+}
+
+function formatNumber(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return n.toLocaleString();
+}
+
+// =============================================================================
+// Build proof items
+// =============================================================================
+
+interface ProofItem {
+  key: string;
+  emoji: string;
+  text: string;
+}
+
+function buildProofItems(
+  recentPurchases: number,
+  averageRating: number,
+  totalReviews: number,
+  totalDownloads: number,
+): ProofItem[] {
+  const items: ProofItem[] = [];
+
+  if (recentPurchases > 0) {
+    items.push({
+      key: "purchases",
+      emoji: "\uD83D\uDD25",
+      text: `${formatNumber(recentPurchases)} people bought this in the last 7 days`,
+    });
   }
-  const delta =
-    Math.floor(Math.random() * (VIEWER_VARIANCE * 2 + 1)) - VIEWER_VARIANCE;
-  return Math.min(VIEWER_MAX, Math.max(VIEWER_MIN, previous + delta));
-}
 
-// =============================================================================
-// Animated Number
-// =============================================================================
+  if (averageRating > 0 && totalReviews > 0) {
+    items.push({
+      key: "rating",
+      emoji: "\u2B50",
+      text: `Rated ${averageRating.toFixed(1)}/5 by ${formatNumber(totalReviews)} customers`,
+    });
+  }
 
-function AnimatedNumber({ value }: { value: number }) {
-  return (
-    <AnimatePresence mode="popLayout">
-      <motion.span
-        key={value}
-        initial={{ y: 8, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -8, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="inline-block font-bold tabular-nums"
-      >
-        {value}
-      </motion.span>
-    </AnimatePresence>
-  );
-}
+  if (totalDownloads > 0) {
+    items.push({
+      key: "downloads",
+      emoji: "\uD83D\uDCE5",
+      text: `Downloaded ${formatNumber(totalDownloads)}+ times`,
+    });
+  }
 
-// =============================================================================
-// Skeleton
-// =============================================================================
-
-function BannerSkeleton() {
-  return (
-    <div className="flex items-center gap-4 px-4 py-3 rounded-xl border border-amber-200 dark:border-amber-800/30 bg-amber-50 dark:bg-amber-900/10 animate-pulse">
-      <div className="h-4 w-48 rounded bg-amber-200/60 dark:bg-amber-800/40" />
-      <div className="h-4 w-40 rounded bg-amber-200/60 dark:bg-amber-800/40" />
-    </div>
-  );
+  return items;
 }
 
 // =============================================================================
@@ -88,116 +103,145 @@ function BannerSkeleton() {
 
 export function SocialProofBanner({
   productId,
-  className = "",
+  recentPurchases: initialPurchases = 0,
+  totalDownloads = 0,
+  averageRating = 0,
+  totalReviews = 0,
 }: SocialProofBannerProps) {
-  const [recentPurchases, setRecentPurchases] = useState<number | null>(null);
-  const [viewerCount, setViewerCount] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const viewerRef = useRef<number | null>(null);
+  const [dismissed, setDismissed] = useState(false);
+  const [hiddenByLocalStorage, setHiddenByLocalStorage] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [livePurchases, setLivePurchases] = useState(initialPurchases);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await apiGet<ApiResponseWrapper<SocialProofData>>(
-        `/reviews/product/${productId}/social-proof`,
-        undefined,
-        { skipAuth: true },
-      );
-
-      const purchases = response?.data?.recentPurchases ?? 0;
-      setRecentPurchases(purchases);
-
-      const nextViewers = generateViewerCount(viewerRef.current);
-      viewerRef.current = nextViewers;
-      setViewerCount(nextViewers);
-
-      setHasError(false);
-    } catch {
-      // On error: keep the last known values but stop showing the banner
-      // if we never got data in the first place.
-      if (recentPurchases === null) {
-        setHasError(true);
-      }
-      // Still update viewer count to keep it feeling alive
-      const nextViewers = generateViewerCount(viewerRef.current);
-      viewerRef.current = nextViewers;
-      setViewerCount(nextViewers);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [productId, recentPurchases]);
-
+  // Check localStorage on mount
   useEffect(() => {
-    fetchData();
+    setHiddenByLocalStorage(isDismissed(productId));
+  }, [productId]);
 
-    intervalRef.current = setInterval(fetchData, POLL_INTERVAL_MS);
+  // Poll API for updated recentPurchases
+  useEffect(() => {
+    let mounted = true;
+
+    async function poll() {
+      try {
+        const data = await apiGet<SocialProofApiResponse>(
+          `/reviews/product/${productId}/social-proof`,
+          undefined,
+          { skipAuth: true },
+        );
+        if (mounted && data?.recentPurchases != null) {
+          setLivePurchases(data.recentPurchases);
+        }
+      } catch {
+        // Silently ignore polling errors
+      }
+    }
+
+    poll();
+    pollRef.current = setInterval(poll, POLL_INTERVAL_MS);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      mounted = false;
+      if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [fetchData]);
+  }, [productId]);
 
-  // -------------------------------------------------------------------------
-  // Render
-  // -------------------------------------------------------------------------
+  // Build proof items from current data
+  const proofItems = useMemo(
+    () => buildProofItems(livePurchases, averageRating, totalReviews, totalDownloads),
+    [livePurchases, averageRating, totalReviews, totalDownloads],
+  );
 
-  // First load — show skeleton
-  if (isLoading) {
-    return <BannerSkeleton />;
-  }
+  // Auto-advance rotation
+  useEffect(() => {
+    if (proofItems.length <= 1) return;
 
-  // Error on initial load or no meaningful data
-  if (hasError) {
+    intervalRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % proofItems.length);
+    }, ROTATION_INTERVAL_MS);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [proofItems.length]);
+
+  // Reset index if items change
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [proofItems.length]);
+
+  // Dismiss handler
+  const handleDismiss = useCallback(() => {
+    setDismissed(true);
+    dismissBanner(productId);
+  }, [productId]);
+
+  // Nothing to show
+  if (proofItems.length === 0 || hiddenByLocalStorage) {
     return null;
   }
 
-  const showPurchases = recentPurchases !== null && recentPurchases > 0;
-  const showViewers = viewerCount !== null && viewerCount > 0;
-
-  // Nothing to display
-  if (!showPurchases && !showViewers) {
-    return null;
-  }
+  const currentItem = proofItems[activeIndex % proofItems.length];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-      className={`flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 rounded-xl border border-amber-200 dark:border-amber-800/30 bg-amber-50 dark:bg-amber-900/10 ${className}`}
-    >
-      {/* Recent Purchases */}
-      {showPurchases && (
-        <div className="flex items-center gap-2 text-sm text-amber-800 dark:text-amber-300">
-          <Flame className="h-4 w-4 flex-shrink-0 text-amber-500" />
-          <span>
-            <AnimatedNumber value={recentPurchases!} />{" "}
-            {recentPurchases === 1 ? "customer" : "customers"} bought this in
-            the last 24 hours
-          </span>
-        </div>
-      )}
+    <AnimatePresence mode="wait">
+      {!dismissed ? (
+        <motion.div
+          key="social-proof-banner"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="w-full overflow-hidden"
+        >
+          <div className="relative flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg border border-amber-200 dark:border-amber-800/30 bg-amber-50 dark:bg-amber-900/10">
+            {/* Proof text with crossfade */}
+            <div className="flex-1 flex items-center justify-center min-h-[1.5rem] overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={currentItem.key}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="text-xs sm:text-sm text-amber-800 dark:text-amber-300 text-center whitespace-nowrap"
+                >
+                  <span className="mr-1.5">{currentItem.emoji}</span>
+                  {currentItem.text}
+                </motion.p>
+              </AnimatePresence>
+            </div>
 
-      {/* Separator (only when both are visible) */}
-      {showPurchases && showViewers && (
-        <span className="hidden sm:block h-4 w-px bg-amber-300/50 dark:bg-amber-700/50" />
-      )}
+            {/* Dots indicator — desktop only */}
+            {proofItems.length > 1 && (
+              <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
+                {proofItems.map((item, i) => (
+                  <span
+                    key={item.key}
+                    className={`block h-1.5 w-1.5 rounded-full transition-colors duration-300 ${
+                      i === activeIndex % proofItems.length
+                        ? "bg-amber-500 dark:bg-amber-400"
+                        : "bg-amber-300/50 dark:bg-amber-700/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
 
-      {/* Current Viewers */}
-      {showViewers && (
-        <div className="flex items-center gap-2 text-sm text-amber-800 dark:text-amber-300">
-          <Eye className="h-4 w-4 flex-shrink-0 text-amber-500" />
-          <span>
-            <AnimatedNumber value={viewerCount!} />{" "}
-            {viewerCount === 1 ? "person is" : "people are"} viewing this right
-            now
-          </span>
-        </div>
-      )}
-    </motion.div>
+            {/* Dismiss button */}
+            <button
+              onClick={handleDismiss}
+              className="flex-shrink-0 p-1 -m-0.5 rounded text-amber-400 hover:text-amber-600 dark:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              aria-label="Dismiss social proof banner"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 
