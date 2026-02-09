@@ -28,6 +28,7 @@ import {
     Globe,
     Star,
     Store,
+    Truck,
 } from "lucide-react";
 import { cn } from "@ktblog/ui/components";
 import { useAuthContext } from "../contexts/auth-context";
@@ -94,6 +95,11 @@ const navItems: NavItem[] = [
         label: "Orders",
         href: "/orders",
         icon: <Receipt className="h-5 w-5" />,
+    },
+    {
+        label: "Delivery",
+        href: "/delivery",
+        icon: <Truck className="h-5 w-5" />,
     },
     {
         label: "Reviews",

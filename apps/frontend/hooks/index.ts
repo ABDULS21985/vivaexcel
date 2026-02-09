@@ -13,3 +13,5 @@ export * from "./use-sound";
 export * from "./use-solution-documents";
 export * from "./use-web-templates";
 export * from "./use-sellers";
+export * from "./use-delivery";
+export * from "./use-promotions";

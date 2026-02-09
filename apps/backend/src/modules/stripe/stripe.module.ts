@@ -5,11 +5,13 @@ import { StripeService } from './stripe.service';
 import { Subscription } from '../../entities/subscription.entity';
 import { User } from '../../entities/user.entity';
 import { CheckoutModule } from '../checkout/checkout.module';
+import { SellersModule } from '../sellers/sellers.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Subscription, User]),
     forwardRef(() => CheckoutModule),
+    forwardRef(() => SellersModule),
   ],
   controllers: [StripeController],
   providers: [StripeService],
