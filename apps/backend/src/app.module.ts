@@ -43,6 +43,7 @@ import { MembershipModule } from './modules/membership/membership.module';
 import { BookmarksModule } from './modules/bookmarks/bookmarks.module';
 import { SearchModule } from './modules/search/search.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { DigitalProductsModule } from './modules/digital-products/digital-products.module';
 
 
 // App controller (for root endpoint)
@@ -121,6 +122,7 @@ import { AppService } from './app.service';
     BookmarksModule,
     SearchModule,
     AnalyticsModule,
+    DigitalProductsModule,
   ],
   controllers: [AppController],
   providers: [

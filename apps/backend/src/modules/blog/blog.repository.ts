@@ -202,6 +202,16 @@ export class BlogRepository {
     return this.categoryRepository.save(category);
   }
 
+  async updateCategory(id: string, data: Partial<BlogCategory>): Promise<BlogCategory | null> {
+    await this.categoryRepository.update(id, data);
+    return this.findCategoryById(id);
+  }
+
+  async softDeleteCategory(id: string): Promise<boolean> {
+    const result = await this.categoryRepository.softDelete(id);
+    return !!result.affected && result.affected > 0;
+  }
+
   async categorySlugExists(slug: string, excludeId?: string): Promise<boolean> {
     const qb = this.categoryRepository.createQueryBuilder('category')
       .where('category.slug = :slug', { slug });
@@ -232,6 +242,16 @@ export class BlogRepository {
   async createTag(data: Partial<BlogTag>): Promise<BlogTag> {
     const tag = this.tagRepository.create(data);
     return this.tagRepository.save(tag);
+  }
+
+  async updateTag(id: string, data: Partial<BlogTag>): Promise<BlogTag | null> {
+    await this.tagRepository.update(id, data);
+    return this.findTagById(id);
+  }
+
+  async softDeleteTag(id: string): Promise<boolean> {
+    const result = await this.tagRepository.softDelete(id);
+    return !!result.affected && result.affected > 0;
   }
 
   async tagSlugExists(slug: string, excludeId?: string): Promise<boolean> {
@@ -284,6 +304,60 @@ export class BlogRepository {
   async softDeleteComment(id: string): Promise<boolean> {
     const result = await this.commentRepository.softDelete(id);
     return !!result.affected && result.affected > 0;
+  }
+
+  async findAllComments(query?: {
+    status?: string;
+    limit?: number;
+    cursor?: string;
+    search?: string;
+  }): Promise<PaginatedResponse<Comment>> {
+    const { status, limit = 20, cursor, search } = query || {};
+
+    const qb = this.commentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.post', 'post')
+      .leftJoinAndSelect('comment.author', 'author');
+
+    if (status) {
+      qb.andWhere('comment.status = :status', { status });
+    }
+
+    if (search) {
+      qb.andWhere(
+        '(comment.content ILIKE :search OR comment.authorName ILIKE :search OR comment.authorEmail ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    if (cursor) {
+      const decodedCursor = this.decodeCursor(cursor);
+      qb.andWhere('comment.createdAt < :cursorValue', { cursorValue: decodedCursor.value });
+    }
+
+    qb.orderBy('comment.createdAt', 'DESC');
+    qb.take(limit + 1);
+
+    const items = await qb.getMany();
+    const hasNextPage = items.length > limit;
+
+    if (hasNextPage) {
+      items.pop();
+    }
+
+    const nextCursor = hasNextPage && items.length > 0
+      ? this.encodeCursor({ value: items[items.length - 1].createdAt })
+      : undefined;
+
+    return {
+      items,
+      meta: {
+        hasNextPage,
+        hasPreviousPage: !!cursor,
+        nextCursor,
+        previousCursor: cursor,
+      },
+    };
   }
 
   private encodeCursor(data: { value: any }): string {

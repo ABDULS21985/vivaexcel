@@ -36,6 +36,7 @@ import {
     Rows3,
     Columns3,
     Trash2,
+    Sparkles,
 } from "lucide-react";
 import {
     cn,
@@ -257,9 +258,10 @@ function YouTubeDialog({ editor, onClose }: YouTubeDialogProps) {
 
 interface EditorToolbarProps {
     editor: Editor | null;
+    onAiAction?: (action: string) => void;
 }
 
-export function EditorToolbar({ editor }: EditorToolbarProps) {
+export function EditorToolbar({ editor, onAiAction }: EditorToolbarProps) {
     const [showLinkDialog, setShowLinkDialog] = React.useState(false);
     const [showImageDialog, setShowImageDialog] = React.useState(false);
     const [showYouTubeDialog, setShowYouTubeDialog] = React.useState(false);
@@ -809,6 +811,58 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
                     )}
                 </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* AI Actions */}
+            {onAiAction && (
+                <>
+                    <ToolbarDivider />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button
+                                type="button"
+                                className={cn(
+                                    "inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
+                                    "hover:bg-purple-100 dark:hover:bg-purple-900/30",
+                                    "text-purple-600 dark:text-purple-400"
+                                )}
+                                title="AI Actions"
+                            >
+                                <Sparkles className="h-4 w-4" />
+                                AI
+                                <ChevronDown className="h-3 w-3" />
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="min-w-[180px]">
+                            <DropdownMenuItem
+                                onClick={() => onAiAction("titles")}
+                                className="cursor-pointer"
+                            >
+                                Generate Titles
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => onAiAction("improve")}
+                                disabled={editor.state.selection.empty}
+                                className="cursor-pointer"
+                            >
+                                Improve Selection
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => onAiAction("excerpt")}
+                                className="cursor-pointer"
+                            >
+                                Generate Excerpt
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => onAiAction("analyze")}
+                                className="cursor-pointer"
+                            >
+                                Analyze Content
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </>
+            )}
         </div>
     );
 }

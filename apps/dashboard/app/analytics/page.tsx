@@ -29,52 +29,30 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import Link from "next/link";
+import {
+    useAnalyticsDashboard,
+    useTopPosts,
+    useTrafficSources,
+} from "@/hooks/use-analytics";
 
-// Generate mock data for views over time
-function generateViewsData(days: number) {
-    const data = [];
-    const now = new Date();
-    for (let i = days - 1; i >= 0; i--) {
-        const date = new Date(now);
-        date.setDate(date.getDate() - i);
-        data.push({
-            date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-            value: Math.floor(Math.random() * 800 + 200),
-        });
-    }
-    return data;
+// Default colors for traffic source pie chart slices
+const TRAFFIC_SOURCE_COLORS = [
+    "#1E4DB7",
+    "#F59A23",
+    "#10B981",
+    "#8B5CF6",
+    "#EC4899",
+    "#14B8A6",
+    "#F97316",
+    "#84CC16",
+];
+
+// Format large numbers into compact strings (e.g. 45200 -> "45.2K")
+function formatCompactNumber(num: number): string {
+    if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
+    if (num >= 1_000) return `${(num / 1_000).toFixed(1)}K`;
+    return num.toString();
 }
-
-const viewsData = generateViewsData(30);
-
-const topPostsData = [
-    { name: "React Best Practices", views: 4520 },
-    { name: "TypeScript Tips", views: 3800 },
-    { name: "Next.js Guide", views: 3200 },
-    { name: "CSS Grid Layout", views: 2900 },
-    { name: "Node.js Security", views: 2650 },
-    { name: "Docker Tutorial", views: 2400 },
-    { name: "GraphQL Intro", views: 2100 },
-    { name: "AWS Deployment", views: 1800 },
-    { name: "Testing Strategies", views: 1500 },
-    { name: "CI/CD Pipeline", views: 1200 },
-];
-
-const trafficSourcesData = [
-    { name: "Organic Search", value: 4200, color: "#1E4DB7" },
-    { name: "Social Media", value: 2800, color: "#F59A23" },
-    { name: "Direct", value: 2100, color: "#10B981" },
-    { name: "Referral", value: 1400, color: "#8B5CF6" },
-    { name: "Email", value: 900, color: "#EC4899" },
-];
-
-const recentPopularPosts = [
-    { title: "React Best Practices for 2024", views: 4520, completion: 78, shares: 245 },
-    { title: "TypeScript Tips You Need to Know", views: 3800, completion: 82, shares: 189 },
-    { title: "Complete Next.js 15 Guide", views: 3200, completion: 65, shares: 312 },
-    { title: "Mastering CSS Grid Layout", views: 2900, completion: 71, shares: 156 },
-    { title: "Node.js Security Essentials", views: 2650, completion: 88, shares: 201 },
-];
 
 // Custom tooltip for bar chart
 function BarChartTooltip({ active, payload, label }: any) {
@@ -93,8 +71,91 @@ function BarChartTooltip({ active, payload, label }: any) {
     return null;
 }
 
+// Skeleton placeholder for loading states
+function SkeletonBlock({ className }: { className?: string }) {
+    return (
+        <div
+            className={`animate-pulse bg-zinc-200 dark:bg-zinc-700 rounded ${className ?? ""}`}
+        />
+    );
+}
+
+// Error banner component
+function ErrorBanner({ message }: { message: string }) {
+    return (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
+            <p className="text-red-600 dark:text-red-400 font-medium">
+                {message}
+            </p>
+        </div>
+    );
+}
+
 export default function AnalyticsPage() {
     const [dateRange, setDateRange] = React.useState("30d");
+
+    const {
+        data: dashboardData,
+        isLoading: isDashboardLoading,
+        error: dashboardError,
+    } = useAnalyticsDashboard();
+
+    const {
+        data: topPostsData,
+        isLoading: isTopPostsLoading,
+        error: topPostsError,
+    } = useTopPosts(dateRange);
+
+    const {
+        data: trafficSourcesData,
+        isLoading: isTrafficSourcesLoading,
+        error: trafficSourcesError,
+    } = useTrafficSources(dateRange);
+
+    // Map top posts for the bar chart (needs { name, views })
+    const topPostsChartData = React.useMemo(
+        () =>
+            (topPostsData ?? []).map((post) => ({
+                name: post.title,
+                views: post.views,
+            })),
+        [topPostsData],
+    );
+
+    // Map traffic sources for the pie chart (needs { name, value, color? })
+    const trafficSourcesPieData = React.useMemo(
+        () =>
+            (trafficSourcesData ?? []).map((source, index) => ({
+                name: source.source,
+                value: source.visits,
+                color: TRAFFIC_SOURCE_COLORS[index % TRAFFIC_SOURCE_COLORS.length],
+            })),
+        [trafficSourcesData],
+    );
+
+    // Map popular posts for the table from the dashboard overview
+    const recentPopularPosts = React.useMemo(
+        () =>
+            (dashboardData?.popularPosts ?? []).map((post) => ({
+                title: post.title,
+                views: post.views,
+                completion: 0,
+                shares: 0,
+            })),
+        [dashboardData],
+    );
+
+    // Build a synthetic views-over-time dataset from popular posts
+    // The API doesn't return time-series views data at the dashboard level,
+    // so we show the popular posts as chart data points instead.
+    const viewsChartData = React.useMemo(
+        () =>
+            (dashboardData?.popularPosts ?? []).map((post) => ({
+                date: post.title.length > 20 ? post.title.slice(0, 20) + "..." : post.title,
+                value: post.views,
+            })),
+        [dashboardData],
+    );
 
     return (
         <div className="min-h-screen">
@@ -122,45 +183,64 @@ export default function AnalyticsPage() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <StatsCard
-                        title="Total Views"
-                        value="45.2K"
-                        icon={<Eye className="h-5 w-5" />}
-                        trend={{ value: 18, label: "vs last period" }}
-                        variant="primary"
-                    />
-                    <StatsCard
-                        title="Unique Visitors"
-                        value="12.8K"
-                        icon={<Users className="h-5 w-5" />}
-                        trend={{ value: 12, label: "vs last period" }}
-                        variant="success"
-                    />
-                    <StatsCard
-                        title="Avg Read Time"
-                        value="4m 32s"
-                        icon={<Clock className="h-5 w-5" />}
-                        trend={{ value: 5, label: "vs last period" }}
-                        variant="warning"
-                    />
-                    <StatsCard
-                        title="Bounce Rate"
-                        value="34.2%"
-                        icon={<TrendingDown className="h-5 w-5" />}
-                        trend={{ value: -3, label: "vs last period", isPositive: true }}
-                        variant="default"
-                    />
-                </div>
+                {dashboardError ? (
+                    <ErrorBanner message="Failed to load analytics overview. Please try again later." />
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {isDashboardLoading ? (
+                            <>
+                                <SkeletonBlock className="h-32" />
+                                <SkeletonBlock className="h-32" />
+                                <SkeletonBlock className="h-32" />
+                                <SkeletonBlock className="h-32" />
+                            </>
+                        ) : (
+                            <>
+                                <StatsCard
+                                    title="Total Views"
+                                    value={formatCompactNumber(dashboardData?.totalViews ?? 0)}
+                                    icon={<Eye className="h-5 w-5" />}
+                                    trend={{ value: 0, label: "vs last period" }}
+                                    variant="primary"
+                                />
+                                <StatsCard
+                                    title="Unique Visitors"
+                                    value={formatCompactNumber(dashboardData?.uniqueVisitors ?? 0)}
+                                    icon={<Users className="h-5 w-5" />}
+                                    trend={{ value: 0, label: "vs last period" }}
+                                    variant="success"
+                                />
+                                <StatsCard
+                                    title="Avg Read Time"
+                                    value="--"
+                                    icon={<Clock className="h-5 w-5" />}
+                                    variant="warning"
+                                />
+                                <StatsCard
+                                    title="Bounce Rate"
+                                    value="--"
+                                    icon={<TrendingDown className="h-5 w-5" />}
+                                    variant="default"
+                                />
+                            </>
+                        )}
+                    </div>
+                )}
 
                 {/* Views Over Time */}
                 <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
-                    <AnalyticsChart
-                        data={viewsData}
-                        title="Views Over Time"
-                        color="#1E4DB7"
-                        height={350}
-                    />
+                    {isDashboardLoading ? (
+                        <SkeletonBlock className="h-[350px] w-full" />
+                    ) : dashboardError ? (
+                        <ErrorBanner message="Failed to load views chart." />
+                    ) : (
+                        <AnalyticsChart
+                            data={viewsChartData}
+                            title="Views Over Time"
+                            color="#1E4DB7"
+                            height={350}
+                        />
+                    )}
                 </div>
 
                 {/* Bar Chart + Pie Chart Row */}
@@ -170,56 +250,78 @@ export default function AnalyticsPage() {
                         <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
                             Top 10 Posts by Views
                         </h3>
-                        <ResponsiveContainer width="100%" height={350}>
-                            <RechartsBarChart
-                                data={topPostsData}
-                                layout="vertical"
-                                margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
-                            >
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    stroke="currentColor"
-                                    className="text-zinc-200 dark:text-zinc-700"
-                                    opacity={0.5}
-                                    horizontal={false}
-                                />
-                                <XAxis
-                                    type="number"
-                                    tick={{ fontSize: 12 }}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    stroke="currentColor"
-                                    className="text-zinc-500 dark:text-zinc-400"
-                                    tickFormatter={(value) => value.toLocaleString()}
-                                />
-                                <YAxis
-                                    type="category"
-                                    dataKey="name"
-                                    tick={{ fontSize: 11 }}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    stroke="currentColor"
-                                    className="text-zinc-500 dark:text-zinc-400"
-                                    width={120}
-                                />
-                                <Tooltip content={<BarChartTooltip />} />
-                                <Bar
-                                    dataKey="views"
-                                    fill="#1E4DB7"
-                                    radius={[0, 4, 4, 0]}
-                                    animationDuration={1500}
-                                />
-                            </RechartsBarChart>
-                        </ResponsiveContainer>
+                        {isTopPostsLoading ? (
+                            <SkeletonBlock className="h-[350px] w-full" />
+                        ) : topPostsError ? (
+                            <ErrorBanner message="Failed to load top posts." />
+                        ) : (
+                            <ResponsiveContainer width="100%" height={350}>
+                                <RechartsBarChart
+                                    data={topPostsChartData}
+                                    layout="vertical"
+                                    margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
+                                >
+                                    <CartesianGrid
+                                        strokeDasharray="3 3"
+                                        stroke="currentColor"
+                                        className="text-zinc-200 dark:text-zinc-700"
+                                        opacity={0.5}
+                                        horizontal={false}
+                                    />
+                                    <XAxis
+                                        type="number"
+                                        tick={{ fontSize: 12 }}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        stroke="currentColor"
+                                        className="text-zinc-500 dark:text-zinc-400"
+                                        tickFormatter={(value) => value.toLocaleString()}
+                                    />
+                                    <YAxis
+                                        type="category"
+                                        dataKey="name"
+                                        tick={{ fontSize: 11 }}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        stroke="currentColor"
+                                        className="text-zinc-500 dark:text-zinc-400"
+                                        width={120}
+                                    />
+                                    <Tooltip content={<BarChartTooltip />} />
+                                    <Bar
+                                        dataKey="views"
+                                        fill="#1E4DB7"
+                                        radius={[0, 4, 4, 0]}
+                                        animationDuration={1500}
+                                    />
+                                </RechartsBarChart>
+                            </ResponsiveContainer>
+                        )}
                     </div>
 
                     {/* Traffic Sources Pie Chart */}
-                    <PieChart
-                        data={trafficSourcesData}
-                        title="Traffic Sources"
-                        height={350}
-                        interactive
-                    />
+                    {isTrafficSourcesLoading ? (
+                        <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
+                                Traffic Sources
+                            </h3>
+                            <SkeletonBlock className="h-[350px] w-full" />
+                        </div>
+                    ) : trafficSourcesError ? (
+                        <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-4">
+                                Traffic Sources
+                            </h3>
+                            <ErrorBanner message="Failed to load traffic sources." />
+                        </div>
+                    ) : (
+                        <PieChart
+                            data={trafficSourcesPieData}
+                            title="Traffic Sources"
+                            height={350}
+                            interactive
+                        />
+                    )}
                 </div>
 
                 {/* Recent Popular Posts Table */}
@@ -236,59 +338,77 @@ export default function AnalyticsPage() {
                             <ArrowRight className="h-4 w-4" />
                         </Link>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-zinc-50 dark:bg-zinc-700/50">
-                                <tr>
-                                    <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                                        Post Title
-                                    </th>
-                                    <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                                        Views
-                                    </th>
-                                    <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                                        Read Completion
-                                    </th>
-                                    <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                                        Shares
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                                {recentPopularPosts.map((post, index) => (
-                                    <tr
-                                        key={index}
-                                        className="hover:bg-zinc-50 dark:hover:bg-zinc-700/30 transition-colors"
-                                    >
-                                        <td className="px-6 py-4">
-                                            <span className="text-sm font-medium text-zinc-900 dark:text-white">
-                                                {post.title}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
-                                            {post.views.toLocaleString()}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-24 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
-                                                    <div
-                                                        className="h-full bg-primary rounded-full"
-                                                        style={{ width: `${post.completion}%` }}
-                                                    />
-                                                </div>
-                                                <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                                                    {post.completion}%
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
-                                            {post.shares}
-                                        </td>
+                    {isDashboardLoading ? (
+                        <div className="p-6 space-y-3">
+                            <SkeletonBlock className="h-10 w-full" />
+                            <SkeletonBlock className="h-10 w-full" />
+                            <SkeletonBlock className="h-10 w-full" />
+                            <SkeletonBlock className="h-10 w-full" />
+                            <SkeletonBlock className="h-10 w-full" />
+                        </div>
+                    ) : dashboardError ? (
+                        <div className="p-6">
+                            <ErrorBanner message="Failed to load popular posts." />
+                        </div>
+                    ) : recentPopularPosts.length === 0 ? (
+                        <div className="p-6 text-center text-zinc-500 dark:text-zinc-400">
+                            No popular posts data available.
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-zinc-50 dark:bg-zinc-700/50">
+                                    <tr>
+                                        <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                                            Post Title
+                                        </th>
+                                        <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                                            Views
+                                        </th>
+                                        <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                                            Read Completion
+                                        </th>
+                                        <th className="text-left px-6 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                                            Shares
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+                                    {recentPopularPosts.map((post, index) => (
+                                        <tr
+                                            key={index}
+                                            className="hover:bg-zinc-50 dark:hover:bg-zinc-700/30 transition-colors"
+                                        >
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm font-medium text-zinc-900 dark:text-white">
+                                                    {post.title}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+                                                {post.views.toLocaleString()}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-24 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-primary rounded-full"
+                                                            style={{ width: `${post.completion}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                                                        {post.completion}%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+                                                {post.shares}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

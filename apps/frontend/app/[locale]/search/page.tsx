@@ -1,26 +1,41 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
     Search,
     Calendar,
-    Clock,
     ArrowRight,
     X,
     Sparkles,
     TrendingUp,
     ChevronRight,
+    Loader2,
 } from "lucide-react";
-import {
-    blogPosts,
-    blogCategories,
-    blogAuthors,
-    blogTags,
-    getAllPublishedPosts,
-    type BlogPostWithRelations,
-} from "@/data/blog";
+import { apiGet } from "@/lib/api-client";
+import type {
+    ApiResponseWrapper,
+    SearchResult,
+    PopularSearch,
+    BlogCategory,
+    BlogTag,
+    BlogCategoriesResponse,
+    BlogTagsResponse,
+} from "@/types/blog";
+
+// =============================================================================
+// Backend response shape for search (matches search.service.ts)
+// =============================================================================
+
+interface BackendSearchResult {
+    items: SearchResult[];
+    total: number;
+    page: number;
+    limit: number;
+    hasNextPage: boolean;
+    query: string;
+}
 
 // =============================================================================
 // Helper
@@ -40,51 +55,107 @@ function getInitials(name: string): string {
 
 export default function SearchPage() {
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
-    const allPosts = useMemo(() => getAllPublishedPosts(), []);
+
+    // Search results state
+    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [totalResults, setTotalResults] = useState(0);
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchError, setSearchError] = useState<string | null>(null);
+
+    // Suggestions/Browse state
+    const [popularSearches, setPopularSearches] = useState<PopularSearch[]>([]);
+    const [categories, setCategories] = useState<BlogCategory[]>([]);
+    const [tags, setTags] = useState<BlogTag[]>([]);
 
     // Auto-focus search input on mount
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
 
-    // Real-time search filtering
-    const filteredPosts = useMemo(() => {
-        if (!query.trim()) return [];
+    // Load popular searches, categories, and tags on mount
+    useEffect(() => {
+        async function loadInitialData() {
+            try {
+                const [popularRes, categoriesRes, tagsRes] = await Promise.allSettled([
+                    apiGet<ApiResponseWrapper<PopularSearch[]>>("/search/popular", undefined, { skipAuth: true }),
+                    apiGet<ApiResponseWrapper<BlogCategoriesResponse>>("/blog/categories", undefined, { skipAuth: true }),
+                    apiGet<ApiResponseWrapper<BlogTagsResponse>>("/blog/tags", undefined, { skipAuth: true }),
+                ]);
 
-        const searchTerms = query.toLowerCase().split(" ").filter(Boolean);
+                if (popularRes.status === "fulfilled" && popularRes.value?.data) {
+                    setPopularSearches(popularRes.value.data);
+                }
+                if (categoriesRes.status === "fulfilled" && categoriesRes.value?.data) {
+                    const catData = categoriesRes.value.data;
+                    setCategories(Array.isArray(catData) ? catData : catData.categories ?? []);
+                }
+                if (tagsRes.status === "fulfilled" && tagsRes.value?.data) {
+                    const tagData = tagsRes.value.data;
+                    setTags(Array.isArray(tagData) ? tagData : tagData.tags ?? []);
+                }
+            } catch {
+                // Silently fail for initial data — not critical
+            }
+        }
+        loadInitialData();
+    }, []);
 
-        return allPosts.filter((post) => {
-            const searchableText = [
-                post.title,
-                post.excerpt,
-                post.author?.name,
-                post.category?.name,
-                post.tags?.map((t) => t.name).join(" "),
-            ]
-                .filter(Boolean)
-                .join(" ")
-                .toLowerCase();
+    // Debounce search query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedQuery(query.trim());
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [query]);
 
-            return searchTerms.every((term) => searchableText.includes(term));
-        });
-    }, [query, allPosts]);
+    // Search when debounced query changes
+    const performSearch = useCallback(async (q: string) => {
+        if (!q) {
+            setSearchResults([]);
+            setTotalResults(0);
+            setSearchError(null);
+            return;
+        }
 
-    // Suggested searches
-    const suggestedSearches = [
-        "CBDC",
-        "Cybersecurity",
-        "AI",
-        "Digital Transformation",
-        "Cloud",
-        "Blockchain",
-    ];
+        setIsSearching(true);
+        setSearchError(null);
 
-    // Popular tags
-    const popularTags = blogTags.slice(0, 12);
+        try {
+            const response = await apiGet<ApiResponseWrapper<BackendSearchResult>>(
+                "/search",
+                { q, limit: 20 },
+                { skipAuth: true },
+            );
 
+            if (response?.data) {
+                setSearchResults(response.data.items ?? []);
+                setTotalResults(response.data.total ?? 0);
+            } else {
+                setSearchResults([]);
+                setTotalResults(0);
+            }
+        } catch {
+            setSearchError("Something went wrong while searching. Please try again.");
+            setSearchResults([]);
+            setTotalResults(0);
+        } finally {
+            setIsSearching(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        performSearch(debouncedQuery);
+    }, [debouncedQuery, performSearch]);
+
+    // Derived UI state
+    const suggestedSearchTerms = popularSearches.length > 0
+        ? popularSearches.map((ps) => ps.query)
+        : ["CBDC", "Cybersecurity", "AI", "Digital Transformation", "Cloud", "Blockchain"];
+    const popularTags = tags.slice(0, 12);
     const hasQuery = query.trim().length > 0;
-    const hasResults = filteredPosts.length > 0;
+    const hasResults = searchResults.length > 0;
 
     return (
         <div className="min-h-screen bg-white dark:bg-neutral-950">
@@ -144,13 +215,22 @@ export default function SearchPage() {
                             </div>
                         </div>
 
-                        {/* Result count */}
+                        {/* Result count / Loading */}
                         {hasQuery && (
                             <p className="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
-                                {filteredPosts.length}{" "}
-                                {filteredPosts.length === 1 ? "result" : "results"} found
-                                {query && (
-                                    <> for &ldquo;<span className="font-semibold text-neutral-900 dark:text-white">{query}</span>&rdquo;</>
+                                {isSearching ? (
+                                    <span className="inline-flex items-center gap-2">
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        Searching...
+                                    </span>
+                                ) : (
+                                    <>
+                                        {totalResults}{" "}
+                                        {totalResults === 1 ? "result" : "results"} found
+                                        {query && (
+                                            <> for &ldquo;<span className="font-semibold text-neutral-900 dark:text-white">{query}</span>&rdquo;</>
+                                        )}
+                                    </>
                                 )}
                             </p>
                         )}
@@ -172,7 +252,7 @@ export default function SearchPage() {
                                         Suggested Searches
                                     </h2>
                                     <div className="flex flex-wrap gap-3">
-                                        {suggestedSearches.map((term) => (
+                                        {suggestedSearchTerms.map((term) => (
                                             <button
                                                 key={term}
                                                 onClick={() => setQuery(term)}
@@ -185,52 +265,85 @@ export default function SearchPage() {
                                 </div>
 
                                 {/* Browse by category */}
-                                <div className="mb-10">
-                                    <h2 className="flex items-center gap-2 text-lg font-bold text-neutral-900 dark:text-white mb-4">
-                                        <Sparkles className="h-5 w-5 text-[#1E4DB7]" />
-                                        Browse by Category
-                                    </h2>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                        {blogCategories.map((cat) => (
-                                            <Link
-                                                key={cat.id}
-                                                href={`/blogs/category/${cat.slug}`}
-                                                className="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl hover:border-[#1E4DB7] dark:hover:border-[#1E4DB7] hover:shadow-lg transition-all duration-300 group"
-                                            >
-                                                <div
-                                                    className="w-3 h-3 rounded-full flex-shrink-0"
-                                                    style={{ backgroundColor: cat.accentColor }}
-                                                />
-                                                <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-[#1E4DB7] transition-colors">
-                                                    {cat.name}
-                                                </span>
-                                            </Link>
-                                        ))}
+                                {categories.length > 0 && (
+                                    <div className="mb-10">
+                                        <h2 className="flex items-center gap-2 text-lg font-bold text-neutral-900 dark:text-white mb-4">
+                                            <Sparkles className="h-5 w-5 text-[#1E4DB7]" />
+                                            Browse by Category
+                                        </h2>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                            {categories.map((cat) => (
+                                                <Link
+                                                    key={cat.id}
+                                                    href={`/blogs/category/${cat.slug}`}
+                                                    className="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl hover:border-[#1E4DB7] dark:hover:border-[#1E4DB7] hover:shadow-lg transition-all duration-300 group"
+                                                >
+                                                    <div
+                                                        className="w-3 h-3 rounded-full flex-shrink-0"
+                                                        style={{ backgroundColor: cat.color || "#1E4DB7" }}
+                                                    />
+                                                    <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-[#1E4DB7] transition-colors">
+                                                        {cat.name}
+                                                    </span>
+                                                </Link>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                                 {/* Popular tags */}
-                                <div>
-                                    <h2 className="text-lg font-bold text-neutral-900 dark:text-white mb-4">
-                                        Popular Tags
-                                    </h2>
-                                    <div className="flex flex-wrap gap-2">
-                                        {popularTags.map((tag) => (
-                                            <Link
-                                                key={tag.id}
-                                                href={`/blogs/tag/${tag.slug}`}
-                                                className="px-3 py-1.5 bg-[#1E4DB7]/5 dark:bg-[#1E4DB7]/10 text-[#1E4DB7] text-sm font-medium rounded-full hover:bg-[#1E4DB7]/10 dark:hover:bg-[#1E4DB7]/20 transition-colors"
-                                            >
-                                                #{tag.name}
-                                            </Link>
-                                        ))}
+                                {popularTags.length > 0 && (
+                                    <div>
+                                        <h2 className="text-lg font-bold text-neutral-900 dark:text-white mb-4">
+                                            Popular Tags
+                                        </h2>
+                                        <div className="flex flex-wrap gap-2">
+                                            {popularTags.map((tag) => (
+                                                <Link
+                                                    key={tag.id}
+                                                    href={`/blogs/tag/${tag.slug}`}
+                                                    className="px-3 py-1.5 bg-[#1E4DB7]/5 dark:bg-[#1E4DB7]/10 text-[#1E4DB7] text-sm font-medium rounded-full hover:bg-[#1E4DB7]/10 dark:hover:bg-[#1E4DB7]/20 transition-colors"
+                                                >
+                                                    #{tag.name}
+                                                </Link>
+                                            ))}
+                                        </div>
                                     </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Loading spinner */}
+                        {hasQuery && isSearching && (
+                            <div className="flex flex-col items-center justify-center py-16">
+                                <Loader2 className="h-10 w-10 text-[#1E4DB7] animate-spin mb-4" />
+                                <p className="text-neutral-500 dark:text-neutral-400">Searching articles...</p>
+                            </div>
+                        )}
+
+                        {/* Error state */}
+                        {hasQuery && !isSearching && searchError && (
+                            <div className="text-center py-16">
+                                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                                    <X className="h-10 w-10 text-red-400" />
                                 </div>
+                                <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-3">
+                                    Search Error
+                                </h2>
+                                <p className="text-neutral-600 dark:text-neutral-400 mb-8 max-w-md mx-auto">
+                                    {searchError}
+                                </p>
+                                <button
+                                    onClick={() => performSearch(debouncedQuery)}
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#1E4DB7] hover:bg-[#143A8F] text-white font-semibold rounded-xl transition-all duration-300"
+                                >
+                                    Try Again
+                                </button>
                             </div>
                         )}
 
                         {/* Has query but no results */}
-                        {hasQuery && !hasResults && (
+                        {hasQuery && !isSearching && !searchError && !hasResults && (
                             <div className="text-center py-16">
                                 <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
                                     <Search className="h-10 w-10 text-neutral-400" />
@@ -248,7 +361,7 @@ export default function SearchPage() {
                                     <span className="text-sm text-neutral-500 dark:text-neutral-400">
                                         Try:
                                     </span>
-                                    {suggestedSearches.slice(0, 4).map((term) => (
+                                    {suggestedSearchTerms.slice(0, 4).map((term) => (
                                         <button
                                             key={term}
                                             onClick={() => setQuery(term)}
@@ -270,10 +383,10 @@ export default function SearchPage() {
                         )}
 
                         {/* Results grid */}
-                        {hasQuery && hasResults && (
+                        {hasQuery && !isSearching && !searchError && hasResults && (
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {filteredPosts.map((post) => (
-                                    <SearchResultCard key={post.id} post={post} query={query} />
+                                {searchResults.map((result) => (
+                                    <SearchResultCard key={result.id} result={result} query={query} />
                                 ))}
                             </div>
                         )}
@@ -289,17 +402,19 @@ export default function SearchPage() {
 // =============================================================================
 
 function SearchResultCard({
-    post,
+    result,
     query,
 }: {
-    post: BlogPostWithRelations;
+    result: SearchResult;
     query: string;
 }) {
-    const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-    });
+    const formattedDate = result.publishedAt
+        ? new Date(result.publishedAt).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        })
+        : null;
 
     const gradients = [
         "from-blue-500 via-blue-600 to-indigo-600",
@@ -321,36 +436,38 @@ function SearchResultCard({
         return highlighted;
     };
 
+    const categoryColor = "#1E4DB7";
+
     return (
         <Link
-            href={`/blogs/${post.slug}`}
+            href={`/blogs/${result.slug}`}
             className="group relative block bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
         >
             {/* Image */}
             <div className="relative h-48 sm:h-52 overflow-hidden">
-                {post.featuredImage ? (
+                {result.featuredImage ? (
                     <Image
-                        src={post.featuredImage}
-                        alt={post.title}
+                        src={result.featuredImage}
+                        alt={result.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                 ) : (
                     <div className="w-full h-full bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700 flex items-center justify-center">
                         <span className="text-neutral-300 dark:text-neutral-600 text-6xl font-bold">
-                            {post.title.charAt(0)}
+                            {result.title.charAt(0)}
                         </span>
                     </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                {post.category && (
+                {result.categoryName && (
                     <div className="absolute top-4 left-4">
                         <span
                             className="inline-flex px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white shadow-lg"
-                            style={{ backgroundColor: post.category.accentColor }}
+                            style={{ backgroundColor: categoryColor }}
                         >
-                            {post.category.name}
+                            {result.categoryName}
                         </span>
                     </div>
                 )}
@@ -360,44 +477,40 @@ function SearchResultCard({
             <div className="p-6">
                 <h3
                     className="text-lg font-bold text-neutral-900 dark:text-white mb-3 line-clamp-2 transition-colors duration-300 group-hover:text-[#1E4DB7] leading-tight"
-                    dangerouslySetInnerHTML={{ __html: highlightText(post.title) }}
+                    dangerouslySetInnerHTML={{ __html: highlightText(result.title) }}
                 />
 
-                {post.excerpt && (
+                {result.excerpt && (
                     <p
                         className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4 line-clamp-2"
-                        dangerouslySetInnerHTML={{ __html: highlightText(post.excerpt) }}
+                        dangerouslySetInnerHTML={{ __html: highlightText(result.excerpt) }}
                     />
                 )}
 
                 {/* Footer */}
                 <div className="flex items-center justify-between pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                    {post.author && (
+                    {result.authorName && (
                         <div className="flex items-center gap-2.5">
-                            <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${gradients[post.author.name.length % gradients.length]} flex items-center justify-center text-white text-xs font-bold shadow-lg ring-2 ring-white dark:ring-neutral-900 relative overflow-hidden`}>
+                            <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${gradients[result.authorName.length % gradients.length]} flex items-center justify-center text-white text-xs font-bold shadow-lg ring-2 ring-white dark:ring-neutral-900 relative overflow-hidden`}>
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent" />
                                 <span className="relative drop-shadow-sm">
-                                    {getInitials(post.author.name)}
+                                    {getInitials(result.authorName)}
                                 </span>
                             </div>
                             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                                {post.author.name}
+                                {result.authorName}
                             </span>
                         </div>
                     )}
 
-                    <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
-                        <span className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            {formattedDate}
-                        </span>
-                        {post.readingTime && (
+                    {formattedDate && (
+                        <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
                             <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {post.readingTime}m
+                                <Calendar className="h-3 w-3" />
+                                {formattedDate}
                             </span>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -405,7 +518,7 @@ function SearchResultCard({
             <div
                 className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
                 style={{
-                    background: `linear-gradient(90deg, ${post.category?.accentColor || "#1E4DB7"} 0%, #F59A23 100%)`,
+                    background: `linear-gradient(90deg, ${categoryColor} 0%, #F59A23 100%)`,
                 }}
             />
         </Link>

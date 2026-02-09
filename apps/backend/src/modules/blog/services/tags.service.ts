@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { BlogRepository } from '../blog.repository';
 import { CreateTagDto } from '../dto/create-tag.dto';
+import { UpdateTagDto } from '../dto/update-tag.dto';
 import { BlogTag } from '../../../entities/blog-tag.entity';
 import { ApiResponse } from '../../../common/interfaces/response.interface';
 
@@ -60,6 +61,43 @@ export class TagsService {
       status: 'success',
       message: 'Tag created successfully',
       data: tag,
+    };
+  }
+
+  async update(id: string, updateTagDto: UpdateTagDto): Promise<ApiResponse<BlogTag>> {
+    const existing = await this.blogRepository.findTagById(id);
+    if (!existing) {
+      throw new NotFoundException(`Tag with ID "${id}" not found`);
+    }
+
+    if (updateTagDto.slug) {
+      const slugExists = await this.blogRepository.tagSlugExists(updateTagDto.slug, id);
+      if (slugExists) {
+        throw new ConflictException('Tag slug already exists');
+      }
+    }
+
+    const tag = await this.blogRepository.updateTag(id, updateTagDto);
+
+    return {
+      status: 'success',
+      message: 'Tag updated successfully',
+      data: tag!,
+    };
+  }
+
+  async remove(id: string): Promise<ApiResponse<null>> {
+    const existing = await this.blogRepository.findTagById(id);
+    if (!existing) {
+      throw new NotFoundException(`Tag with ID "${id}" not found`);
+    }
+
+    await this.blogRepository.softDeleteTag(id);
+
+    return {
+      status: 'success',
+      message: 'Tag deleted successfully',
+      data: null,
     };
   }
 }

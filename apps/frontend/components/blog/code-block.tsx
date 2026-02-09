@@ -135,7 +135,7 @@ export function CodeBlock({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const codeContainerRef = useRef<HTMLDivElement>(null);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const resolvedLang = resolveLanguage(language);
   const langLabel = getLanguageLabel(language);

@@ -15,14 +15,8 @@ import {
     Newspaper,
     User,
 } from "lucide-react";
-import {
-    blogAuthors,
-    getBlogAuthorBySlug,
-    getBlogPostsByAuthor,
-    type BlogPostWithRelations,
-    type BlogAuthor,
-} from "@/data/blog";
-import { routing } from "@/i18n/routing";
+import { fetchPosts } from "@/lib/blog-api";
+import type { BlogPost, BlogAuthor, BlogCategory } from "@/types/blog";
 import { JsonLd } from "@/components/shared/json-ld";
 import { generateBreadcrumbSchema } from "@/lib/schema";
 
@@ -35,37 +29,47 @@ type Props = {
 };
 
 // =============================================================================
-// Static Params
+// Helpers
 // =============================================================================
 
-export async function generateStaticParams() {
-    return blogAuthors.map((author) => ({
-        slug: author.slug,
-    }));
+/**
+ * Generate a URL-friendly slug from an author name.
+ * The backend User entity does not have a slug field, so we derive one.
+ */
+function authorSlugFromName(name: string): string {
+    return name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
 }
 
-// =============================================================================
-// Metadata
-// =============================================================================
+/** Resolve accent color from backend category (may be `color` or `accentColor`). */
+function getCategoryAccentColor(category: BlogCategory): string {
+    return (category as any).accentColor || category.color || "#1E4DB7";
+}
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { slug } = await params;
-    const author = getBlogAuthorBySlug(slug);
-
-    if (!author) {
-        return { title: "Author Not Found | KTBlog" };
+function getInitials(name: string): string {
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+        return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
     }
+    return name.slice(0, 2).toUpperCase();
+}
 
-    return {
-        title: `${author.name} - Author | KTBlog`,
-        description: author.bio,
-        openGraph: {
-            title: `${author.name} - Author | KTBlog`,
-            description: author.bio,
-            url: `https://drkatangablog.com/author/${slug}`,
-            type: "profile",
-        },
-    };
+/**
+ * Find the author from a list of posts by matching the URL slug against
+ * author names. Returns the first matching BlogAuthor or undefined.
+ */
+function findAuthorBySlug(
+    posts: BlogPost[],
+    slug: string,
+): BlogAuthor | undefined {
+    for (const post of posts) {
+        if (post.author && authorSlugFromName(post.author.name) === slug) {
+            return post.author;
+        }
+    }
+    return undefined;
 }
 
 // =============================================================================
@@ -75,15 +79,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const POSTS_PER_PAGE = 9;
 
 // =============================================================================
-// Helper
+// Metadata
 // =============================================================================
 
-function getInitials(name: string): string {
-    const parts = name.trim().split(" ");
-    if (parts.length >= 2) {
-        return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { slug } = await params;
+    const { items: allPosts } = await fetchPosts({
+        status: "published" as any,
+        limit: 100,
+    });
+
+    const author = findAuthorBySlug(allPosts, slug);
+
+    if (!author) {
+        return { title: "Author Not Found | KTBlog" };
     }
-    return name.slice(0, 2).toUpperCase();
+
+    return {
+        title: `${author.name} - Author | KTBlog`,
+        description: author.bio ?? "",
+        openGraph: {
+            title: `${author.name} - Author | KTBlog`,
+            description: author.bio ?? "",
+            url: `https://drkatangablog.com/author/${slug}`,
+            type: "profile",
+        },
+    };
 }
 
 // =============================================================================
@@ -94,13 +115,21 @@ export default async function AuthorPage({ params }: Props) {
     const { locale, slug } = await params;
     setRequestLocale(locale);
 
-    const author = getBlogAuthorBySlug(slug);
+    const { items: allPosts } = await fetchPosts({
+        status: "published" as any,
+        limit: 100,
+    });
+
+    const author = findAuthorBySlug(allPosts, slug);
 
     if (!author) {
         notFound();
     }
 
-    const posts = getBlogPostsByAuthor(slug);
+    // Filter posts by this author
+    const posts = allPosts.filter(
+        (p) => p.author && authorSlugFromName(p.author.name) === slug,
+    );
     const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
     const paginatedPosts = posts.slice(0, POSTS_PER_PAGE);
 
@@ -112,6 +141,11 @@ export default async function AuthorPage({ params }: Props) {
         "from-amber-400 via-orange-500 to-red-500",
     ];
     const gradient = gradients[author.name.length % gradients.length];
+
+    // Attempt to read social links from the author object (backend may include them)
+    const socialLinks = (author as any).socialLinks as
+        | { linkedin?: string; twitter?: string; email?: string }
+        | undefined;
 
     return (
         <>
@@ -126,12 +160,12 @@ export default async function AuthorPage({ params }: Props) {
                 "@context": "https://schema.org",
                 "@type": "Person",
                 name: author.name,
-                jobTitle: author.role,
-                description: author.bio,
+                jobTitle: author.role ?? undefined,
+                description: author.bio ?? undefined,
                 url: `https://drkatangablog.com/author/${slug}`,
                 sameAs: [
-                    author.socialLinks?.linkedin,
-                    author.socialLinks?.twitter,
+                    socialLinks?.linkedin,
+                    socialLinks?.twitter,
                 ].filter(Boolean),
             }} />
 
@@ -193,13 +227,17 @@ export default async function AuthorPage({ params }: Props) {
                                         {author.name}
                                     </h1>
 
-                                    <p className="text-lg font-semibold text-[#1E4DB7] mb-4">
-                                        {author.role}
-                                    </p>
+                                    {author.role && (
+                                        <p className="text-lg font-semibold text-[#1E4DB7] mb-4">
+                                            {author.role}
+                                        </p>
+                                    )}
 
-                                    <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6 max-w-2xl">
-                                        {author.bio}
-                                    </p>
+                                    {author.bio && (
+                                        <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6 max-w-2xl">
+                                            {author.bio}
+                                        </p>
+                                    )}
 
                                     {/* Stats & Social */}
                                     <div className="flex flex-wrap items-center gap-4">
@@ -215,9 +253,9 @@ export default async function AuthorPage({ params }: Props) {
                                         </div>
 
                                         {/* Social links */}
-                                        {author.socialLinks?.twitter && (
+                                        {socialLinks?.twitter && (
                                             <a
-                                                href={author.socialLinks.twitter}
+                                                href={socialLinks.twitter}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-[#1DA1F2] hover:text-white text-neutral-600 dark:text-neutral-400 flex items-center justify-center transition-all duration-300 border border-neutral-200 dark:border-neutral-700"
@@ -226,9 +264,9 @@ export default async function AuthorPage({ params }: Props) {
                                                 <Twitter className="h-4 w-4" />
                                             </a>
                                         )}
-                                        {author.socialLinks?.linkedin && (
+                                        {socialLinks?.linkedin && (
                                             <a
-                                                href={author.socialLinks.linkedin}
+                                                href={socialLinks.linkedin}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-[#0A66C2] hover:text-white text-neutral-600 dark:text-neutral-400 flex items-center justify-center transition-all duration-300 border border-neutral-200 dark:border-neutral-700"
@@ -237,9 +275,9 @@ export default async function AuthorPage({ params }: Props) {
                                                 <Linkedin className="h-4 w-4" />
                                             </a>
                                         )}
-                                        {author.socialLinks?.email && (
+                                        {socialLinks?.email && (
                                             <a
-                                                href={`mailto:${author.socialLinks.email}`}
+                                                href={`mailto:${socialLinks.email}`}
                                                 className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-[#F59A23] hover:text-white text-neutral-600 dark:text-neutral-400 flex items-center justify-center transition-all duration-300 border border-neutral-200 dark:border-neutral-700"
                                                 title="Email"
                                             >
@@ -325,12 +363,18 @@ export default async function AuthorPage({ params }: Props) {
 // Author Post Card
 // =============================================================================
 
-function AuthorPostCard({ post }: { post: BlogPostWithRelations }) {
-    const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-    });
+function AuthorPostCard({ post }: { post: BlogPost }) {
+    const formattedDate = post.publishedAt
+        ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+          })
+        : "";
+
+    const categoryAccentColor = post.category
+        ? getCategoryAccentColor(post.category)
+        : "#1E4DB7";
 
     return (
         <Link
@@ -359,7 +403,7 @@ function AuthorPostCard({ post }: { post: BlogPostWithRelations }) {
                     <div className="absolute top-4 left-4">
                         <span
                             className="inline-flex px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white shadow-lg"
-                            style={{ backgroundColor: post.category.accentColor }}
+                            style={{ backgroundColor: categoryAccentColor }}
                         >
                             {post.category.name}
                         </span>
@@ -403,7 +447,7 @@ function AuthorPostCard({ post }: { post: BlogPostWithRelations }) {
             <div
                 className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
                 style={{
-                    background: `linear-gradient(90deg, ${post.category?.accentColor || "#1E4DB7"} 0%, #F59A23 100%)`,
+                    background: `linear-gradient(90deg, ${categoryAccentColor} 0%, #F59A23 100%)`,
                 }}
             />
         </Link>

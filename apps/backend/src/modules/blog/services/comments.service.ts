@@ -6,11 +6,26 @@ import {
 import { BlogRepository } from '../blog.repository';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Comment, CommentStatus } from '../../../entities/comment.entity';
-import { ApiResponse } from '../../../common/interfaces/response.interface';
+import { ApiResponse, PaginatedResponse } from '../../../common/interfaces/response.interface';
 
 @Injectable()
 export class CommentsService {
   constructor(private readonly blogRepository: BlogRepository) {}
+
+  async findAll(query?: {
+    status?: string;
+    limit?: number;
+    cursor?: string;
+    search?: string;
+  }): Promise<ApiResponse<PaginatedResponse<Comment>>> {
+    const result = await this.blogRepository.findAllComments(query);
+
+    return {
+      status: 'success',
+      message: 'Comments retrieved successfully',
+      data: result,
+    };
+  }
 
   async findByPostId(
     postId: string,

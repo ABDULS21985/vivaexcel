@@ -10,37 +10,48 @@ import {
     Clock,
     Eye,
     Tag,
-    User,
 } from "lucide-react";
 import type { BlogPostWithRelations } from "@/data/blog";
 
 // Get initials from name
 function getInitials(name: string): string {
-  const parts = name.trim().split(" ");
-  if (parts.length >= 2) {
-    return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+        return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
 }
 
 // Cartoon-style avatar with gradient
-function CartoonAvatar({ name, size = "md" }: { name: string; size?: "sm" | "md" | "lg" }) {
-  const initials = getInitials(name);
-  const sizeClasses = { sm: "w-8 h-8 text-xs", md: "w-10 h-10 text-sm", lg: "w-12 h-12 text-base" };
-  const gradients = [
-    "from-blue-500 via-blue-600 to-indigo-600",
-    "from-orange-400 via-orange-500 to-red-500",
-    "from-emerald-400 via-emerald-500 to-teal-600",
-    "from-purple-500 via-purple-600 to-pink-500",
-    "from-amber-400 via-orange-500 to-red-500",
-  ];
-  const gradient = gradients[name.length % gradients.length];
-  return (
-    <div className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-white/30 relative overflow-hidden`}>
-      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent" />
-      <span className="relative drop-shadow-sm">{initials}</span>
-    </div>
-  );
+function CartoonAvatar({
+    name,
+    size = "md",
+}: {
+    name: string;
+    size?: "sm" | "md" | "lg";
+}) {
+    const initials = getInitials(name);
+    const sizeClasses = {
+        sm: "w-8 h-8 text-xs",
+        md: "w-10 h-10 text-sm",
+        lg: "w-12 h-12 text-base",
+    };
+    const gradients = [
+        "from-blue-500 via-blue-600 to-indigo-600",
+        "from-orange-400 via-orange-500 to-red-500",
+        "from-emerald-400 via-emerald-500 to-teal-600",
+        "from-purple-500 via-purple-600 to-pink-500",
+        "from-amber-400 via-orange-500 to-red-500",
+    ];
+    const gradient = gradients[name.length % gradients.length];
+    return (
+        <div
+            className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-bold shadow-lg ring-2 ring-white/30 relative overflow-hidden`}
+        >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent" />
+            <span className="relative drop-shadow-sm">{initials}</span>
+        </div>
+    );
 }
 
 interface ParallaxHeroProps {
@@ -52,7 +63,6 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
     const heroRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(false);
 
-    // Check for mobile device
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
@@ -62,33 +72,50 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
 
-    // Scroll progress for parallax effect
     const { scrollYProgress } = useScroll({
         target: heroRef,
         offset: ["start start", "end start"],
     });
 
-    // Parallax transforms - disabled on mobile for performance
-    const imageY = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "0%" : "30%"]);
-    const imageScale = useTransform(scrollYProgress, [0, 1], [1, isMobile ? 1 : 1.15]);
-    const contentY = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "0%" : "50%"]);
+    const imageY = useTransform(
+        scrollYProgress,
+        [0, 1],
+        ["0%", isMobile ? "0%" : "30%"]
+    );
+    const imageScale = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [1, isMobile ? 1 : 1.15]
+    );
+    const contentY = useTransform(
+        scrollYProgress,
+        [0, 1],
+        ["0%", isMobile ? "0%" : "50%"]
+    );
     const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0]);
 
-    // Smooth spring physics for parallax
     const smoothImageY = useSpring(imageY, { stiffness: 100, damping: 30 });
-    const smoothImageScale = useSpring(imageScale, { stiffness: 100, damping: 30 });
-    const smoothContentY = useSpring(contentY, { stiffness: 100, damping: 30 });
+    const smoothImageScale = useSpring(imageScale, {
+        stiffness: 100,
+        damping: 30,
+    });
+    const smoothContentY = useSpring(contentY, {
+        stiffness: 100,
+        damping: 30,
+    });
     const smoothOpacity = useSpring(opacity, { stiffness: 100, damping: 30 });
 
-    const formattedDate = new Date(post.publishedAt).toLocaleDateString(
-        locale === "ar" ? "ar-QA" : "en-US",
-        {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        }
-    );
+    const formattedDate = post.publishedAt
+        ? new Date(post.publishedAt).toLocaleDateString(
+              locale === "ar" ? "ar-QA" : "en-US",
+              {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+              }
+          )
+        : "";
 
     return (
         <section
@@ -96,7 +123,7 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
             className="relative w-full min-h-[70vh] md:min-h-[85vh] overflow-hidden"
         >
             {/* Background Image with Parallax */}
-            {post.featuredImage && (
+            {post.featuredImage ? (
                 <motion.div
                     className="absolute inset-0"
                     style={{
@@ -124,6 +151,17 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
                         }}
                     />
                 </motion.div>
+            ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1E4DB7] via-[#143A8F] to-[#0D2A6B]">
+                    {/* Decorative pattern for posts without images */}
+                    <div
+                        className="absolute inset-0 opacity-5"
+                        style={{
+                            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 1px)`,
+                            backgroundSize: "32px 32px",
+                        }}
+                    />
+                </div>
             )}
 
             {/* Content Container with Parallax */}
@@ -145,7 +183,9 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
                         className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-all duration-300 group w-fit"
                     >
                         <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
-                        <span className="text-sm font-medium">Back to Insights</span>
+                        <span className="text-sm font-medium">
+                            Back to Insights
+                        </span>
                     </Link>
                 </motion.div>
 
@@ -156,22 +196,30 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="mb-6"
                 >
-                    <span
-                        className="inline-flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold uppercase tracking-wider rounded-full shadow-lg"
-                        style={{
-                            backgroundColor: post.category?.accentColor || "#F59A23",
-                        }}
-                    >
-                        <Tag className="h-4 w-4" />
-                        {post.category?.name || "Article"}
-                    </span>
+                    {post.category && (
+                        <Link
+                            href={`/blogs/category/${post.category.slug}`}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold uppercase tracking-wider rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+                            style={{
+                                backgroundColor:
+                                    post.category?.accentColor || "#F59A23",
+                            }}
+                        >
+                            <Tag className="h-4 w-4" />
+                            {post.category?.name || "Article"}
+                        </Link>
+                    )}
                 </motion.div>
 
-                {/* Title with word reveal animation */}
+                {/* Title */}
                 <motion.h1
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{
+                        duration: 0.7,
+                        delay: 0.3,
+                        ease: [0.16, 1, 0.3, 1],
+                    }}
                     className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 max-w-5xl leading-[1.1] tracking-tight"
                 >
                     {post.title}
@@ -194,14 +242,29 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.6 }}
-                    className="flex flex-wrap items-center gap-4 md:gap-6"
+                    className="flex flex-wrap items-center gap-3 md:gap-4"
                 >
                     {/* Author */}
                     <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
-                        <CartoonAvatar name={post.author?.name || "DigiAfrika"} size="lg" />
+                        {post.author?.avatar ? (
+                            <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/30">
+                                <Image
+                                    src={post.author.avatar}
+                                    alt={post.author.name || "Author"}
+                                    width={40}
+                                    height={40}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        ) : (
+                            <CartoonAvatar
+                                name={post.author?.name || "KTBlog"}
+                                size="md"
+                            />
+                        )}
                         <div>
                             <p className="text-white font-semibold text-sm">
-                                {post.author?.name || "DigiAfrika"}
+                                {post.author?.name || "KTBlog"}
                             </p>
                             <p className="text-white/70 text-xs">
                                 {post.author?.role || "Team"}
@@ -210,16 +273,22 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
                     </div>
 
                     {/* Date */}
-                    <div className="flex items-center gap-2 text-white/80 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
-                        <Calendar className="h-4 w-4" />
-                        <span className="text-sm">{formattedDate}</span>
-                    </div>
+                    {formattedDate && (
+                        <div className="flex items-center gap-2 text-white/80 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
+                            <Calendar className="h-4 w-4" />
+                            <span className="text-sm">{formattedDate}</span>
+                        </div>
+                    )}
 
                     {/* Reading Time */}
-                    <div className="flex items-center gap-2 text-white/80 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
-                        <Clock className="h-4 w-4" />
-                        <span className="text-sm">{post.readingTime} min read</span>
-                    </div>
+                    {post.readingTime && (
+                        <div className="flex items-center gap-2 text-white/80 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
+                            <Clock className="h-4 w-4" />
+                            <span className="text-sm">
+                                {post.readingTime} min read
+                            </span>
+                        </div>
+                    )}
 
                     {/* Views */}
                     {post.viewsCount > 0 && (
@@ -237,7 +306,7 @@ export function ParallaxHero({ post, locale = "en" }: ParallaxHeroProps) {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
+                transition={{ delay: 1.2, duration: 0.5 }}
                 className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
             >
                 <span className="text-white/50 text-xs uppercase tracking-wider">

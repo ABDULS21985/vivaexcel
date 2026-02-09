@@ -17,7 +17,8 @@ import {
     Loader2,
     ChevronUp,
 } from "lucide-react";
-import type { BlogPost, BlogCategory } from "@/types/blog";
+import type { BlogPost, BlogCategory, BlogPostFilters } from "@/types/blog";
+import { usePosts } from "@/hooks/use-posts";
 
 // =============================================================================
 // Types
@@ -146,6 +147,26 @@ function CartoonAvatar({ name, size = "md" }: { name: string; size?: "sm" | "md"
       <span className="relative drop-shadow-sm">{initials}</span>
     </div>
   );
+}
+
+// =============================================================================
+// Debounce Hook
+// =============================================================================
+
+function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
 }
 
 // =============================================================================
@@ -654,13 +675,127 @@ export function BlogListingEnhanced({
 }: BlogListingEnhancedProps) {
     const gridRef = useRef<HTMLDivElement>(null);
 
-    // State
+    // ---------------------------------------------------------------------------
+    // Local UI state
+    // ---------------------------------------------------------------------------
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [visibleCount, setVisibleCount] = useState<number>(POSTS_PER_PAGE);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [sortOption, setSortOption] = useState<string>("latest");
 
-    // Calculate post counts by category
+    // Accumulated posts for cursor-based "load more"
+    const [accumulatedPosts, setAccumulatedPosts] = useState<BlogPost[]>([]);
+    const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
+    const [loadMoreLoading, setLoadMoreLoading] = useState(false);
+
+    // Debounce the search query so we don't fire an API request on every keystroke
+    const debouncedSearch = useDebounce(searchQuery, 300);
+
+    // ---------------------------------------------------------------------------
+    // Determine if we need to fetch from the backend
+    // ---------------------------------------------------------------------------
+    const isFiltered =
+        selectedCategory !== "all" ||
+        debouncedSearch.trim() !== "" ||
+        sortOption !== "latest";
+
+    // Build filters for the React Query hook. Pass `null` when not filtered
+    // so the query is disabled and we show server-rendered data instead.
+    const apiFilters: BlogPostFilters | null = useMemo(() => {
+        if (!isFiltered) return null;
+
+        const filters: BlogPostFilters = {
+            limit: POSTS_PER_PAGE,
+            status: "published" as any,
+        };
+
+        if (selectedCategory !== "all") {
+            filters.categorySlug = selectedCategory;
+        }
+        if (debouncedSearch.trim()) {
+            filters.search = debouncedSearch.trim();
+        }
+        if (sortOption === "popular") {
+            filters.sortBy = "viewsCount";
+            filters.sortOrder = "DESC";
+        } else if (sortOption === "trending") {
+            filters.sortBy = "viewsCount";
+            filters.sortOrder = "DESC";
+        } else {
+            // "latest" — default
+            filters.sortBy = "publishedAt";
+            filters.sortOrder = "DESC";
+        }
+
+        return filters;
+    }, [isFiltered, selectedCategory, debouncedSearch, sortOption]);
+
+    // React Query — only fires when apiFilters is not null
+    const { data: apiData, isLoading: isQueryLoading } = usePosts(apiFilters);
+
+    // Reset accumulated posts when filters change
+    useEffect(() => {
+        if (apiData) {
+            setAccumulatedPosts(apiData.items);
+            setNextCursor(apiData.meta?.nextCursor ?? undefined);
+        }
+    }, [apiData]);
+
+    // Reset accumulated state when switching back to unfiltered
+    useEffect(() => {
+        if (!isFiltered) {
+            setAccumulatedPosts([]);
+            setNextCursor(undefined);
+        }
+    }, [isFiltered]);
+
+    // ---------------------------------------------------------------------------
+    // Derive display posts
+    // ---------------------------------------------------------------------------
+
+    // For unfiltered view: use server-rendered posts with client-side pagination
+    const [visibleCount, setVisibleCount] = useState<number>(POSTS_PER_PAGE);
+
+    // Reset visible count when filters change
+    useEffect(() => {
+        setVisibleCount(POSTS_PER_PAGE);
+    }, [selectedCategory, debouncedSearch, sortOption]);
+
+    // Server-side posts excluding featured post, sorted newest first
+    const serverPosts = useMemo(() => {
+        let result = [...posts];
+        if (featuredPost) {
+            result = result.filter((p) => p.id !== featuredPost.id);
+        }
+        result.sort((a, b) => {
+            const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+            const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+            return dateB - dateA;
+        });
+        return result;
+    }, [posts, featuredPost]);
+
+    // Filtered posts (from API) excluding featured post
+    const filteredApiPosts = useMemo(() => {
+        if (!featuredPost) return accumulatedPosts;
+        return accumulatedPosts.filter((p) => p.id !== featuredPost.id);
+    }, [accumulatedPosts, featuredPost]);
+
+    // The posts we actually display
+    const displayPosts = isFiltered ? filteredApiPosts : serverPosts.slice(0, visibleCount);
+
+    const hasMore = isFiltered
+        ? !!nextCursor
+        : visibleCount < serverPosts.length;
+
+    const totalResults = isFiltered
+        ? (apiData?.meta?.total ?? filteredApiPosts.length)
+        : serverPosts.length;
+
+    const isLoadingResults = isFiltered && isQueryLoading;
+
+    // ---------------------------------------------------------------------------
+    // Calculate post counts by category (from server data for the filter bar)
+    // ---------------------------------------------------------------------------
     const postCounts = useMemo(() => {
         const counts: Record<string, number> = { all: posts.length };
         categories.forEach((cat) => {
@@ -669,52 +804,14 @@ export function BlogListingEnhanced({
         return counts;
     }, [posts, categories]);
 
-    // Filter posts
-    const filteredPosts = useMemo(() => {
-        let result = [...posts];
-
-        // Exclude featured post from grid
-        if (featuredPost) {
-            result = result.filter((p) => p.id !== featuredPost.id);
-        }
-
-        // Filter by category
-        if (selectedCategory !== "all") {
-            result = result.filter((p) => p.category?.slug === selectedCategory);
-        }
-
-        // Filter by search query
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase().trim();
-            result = result.filter(
-                (p) =>
-                    p.title.toLowerCase().includes(query) ||
-                    (p.excerpt && p.excerpt.toLowerCase().includes(query))
-            );
-        }
-
-        // Sort by published date (newest first)
-        result.sort((a, b) => {
-            const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-            const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
-            return dateB - dateA;
-        });
-
-        return result;
-    }, [posts, featuredPost, selectedCategory, searchQuery]);
-
-    // Visible posts
-    const visiblePosts = useMemo(() => {
-        return filteredPosts.slice(0, visibleCount);
-    }, [filteredPosts, visibleCount]);
-
-    const hasMore = visibleCount < filteredPosts.length;
-    const totalResults = filteredPosts.length;
-    const isFiltered = selectedCategory !== "all" || searchQuery.trim() !== "";
-
+    // ---------------------------------------------------------------------------
     // Handlers
+    // ---------------------------------------------------------------------------
+
     const handleCategoryChange = useCallback((slug: string) => {
         setSelectedCategory(slug);
+        setAccumulatedPosts([]);
+        setNextCursor(undefined);
         setVisibleCount(POSTS_PER_PAGE);
         // Smooth scroll to grid
         if (gridRef.current) {
@@ -724,25 +821,68 @@ export function BlogListingEnhanced({
         }
     }, []);
 
-    const handleLoadMore = useCallback(() => {
-        setIsLoading(true);
-        // Simulate loading delay for better UX
-        setTimeout(() => {
-            setVisibleCount((prev) => prev + POSTS_PER_PAGE);
-            setIsLoading(false);
-        }, 400);
-    }, []);
+    const handleLoadMore = useCallback(async () => {
+        if (isFiltered && nextCursor) {
+            // Cursor-based load more via API
+            setLoadMoreLoading(true);
+            try {
+                // We import the fetch function dynamically to avoid SSR issues
+                const { apiGet } = await import("@/lib/api-client");
+                const params: Record<string, string | number | boolean | undefined> = {
+                    cursor: nextCursor,
+                    limit: POSTS_PER_PAGE,
+                    status: "published",
+                };
+                if (selectedCategory !== "all") params.categorySlug = selectedCategory;
+                if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+                if (sortOption === "popular" || sortOption === "trending") {
+                    params.sortBy = "viewsCount";
+                    params.sortOrder = "DESC";
+                } else {
+                    params.sortBy = "publishedAt";
+                    params.sortOrder = "DESC";
+                }
+
+                const res = await apiGet<any>("/blog/posts", params);
+                // The API client returns ApiResponseWrapper; unwrap it
+                const newItems: BlogPost[] = res?.data?.items ?? res?.items ?? [];
+                const newCursor = res?.meta?.nextCursor ?? res?.data?.meta?.nextCursor ?? undefined;
+
+                setAccumulatedPosts((prev) => [...prev, ...newItems]);
+                setNextCursor(newCursor);
+            } catch (error) {
+                console.error("[BlogListingEnhanced] Load more failed:", error);
+            } finally {
+                setLoadMoreLoading(false);
+            }
+        } else {
+            // Client-side pagination for unfiltered server data
+            setLoadMoreLoading(true);
+            setTimeout(() => {
+                setVisibleCount((prev) => prev + POSTS_PER_PAGE);
+                setLoadMoreLoading(false);
+            }, 400);
+        }
+    }, [isFiltered, nextCursor, selectedCategory, debouncedSearch, sortOption]);
 
     const handleClearFilters = useCallback(() => {
         setSelectedCategory("all");
         setSearchQuery("");
+        setSortOption("latest");
+        setAccumulatedPosts([]);
+        setNextCursor(undefined);
         setVisibleCount(POSTS_PER_PAGE);
     }, []);
 
     const handleSearchChange = useCallback((value: string) => {
         setSearchQuery(value);
+        setAccumulatedPosts([]);
+        setNextCursor(undefined);
         setVisibleCount(POSTS_PER_PAGE);
     }, []);
+
+    // Whether the filter UI indicator should show
+    const showFilterIndicator = selectedCategory !== "all" || searchQuery.trim() !== "";
 
     return (
         <div className="w-full">
@@ -755,7 +895,11 @@ export function BlogListingEnhanced({
                 <SearchBar
                     searchQuery={searchQuery}
                     onSearchChange={handleSearchChange}
-                    onClear={() => setSearchQuery("")}
+                    onClear={() => {
+                        setSearchQuery("");
+                        setAccumulatedPosts([]);
+                        setNextCursor(undefined);
+                    }}
                 />
 
                 {/* Category Filter Bar */}
@@ -767,14 +911,23 @@ export function BlogListingEnhanced({
                 />
 
                 {/* Results Count */}
-                {isFiltered && (
+                {showFilterIndicator && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="flex items-center gap-3 mb-6"
                     >
                         <span className="text-sm text-neutral-500">
-                            {totalResults} {totalResults === 1 ? "result" : "results"} found
+                            {isLoadingResults ? (
+                                <span className="flex items-center gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    Searching...
+                                </span>
+                            ) : (
+                                <>
+                                    {totalResults} {totalResults === 1 ? "result" : "results"} found
+                                </>
+                            )}
                         </span>
                         <button
                             onClick={handleClearFilters}
@@ -787,9 +940,19 @@ export function BlogListingEnhanced({
                 )}
             </div>
 
-            {/* Article Grid */}
-            {visiblePosts.length > 0 ? (
+            {/* Loading State */}
+            {isLoadingResults ? (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col items-center justify-center py-20"
+                >
+                    <Loader2 className="h-10 w-10 text-[#1E4DB7] animate-spin mb-4" />
+                    <p className="text-sm text-neutral-500">Loading articles...</p>
+                </motion.div>
+            ) : displayPosts.length > 0 ? (
                 <>
+                    {/* Article Grid */}
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
@@ -797,7 +960,7 @@ export function BlogListingEnhanced({
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
                     >
                         <AnimatePresence mode="popLayout">
-                            {visiblePosts.map((post, index) => (
+                            {displayPosts.map((post, index) => (
                                 <ArticleCard key={post.id} post={post} index={index} />
                             ))}
                         </AnimatePresence>
@@ -807,15 +970,19 @@ export function BlogListingEnhanced({
                     {hasMore && (
                         <LoadMoreButton
                             onClick={handleLoadMore}
-                            isLoading={isLoading}
-                            remaining={filteredPosts.length - visibleCount}
+                            isLoading={loadMoreLoading}
+                            remaining={
+                                isFiltered
+                                    ? Math.max(0, totalResults - displayPosts.length)
+                                    : serverPosts.length - visibleCount
+                            }
                         />
                     )}
 
                     {/* Results Count */}
                     <div className="flex justify-center mt-8">
                         <p className="text-sm text-neutral-500">
-                            Showing {visiblePosts.length} of {filteredPosts.length} articles
+                            Showing {displayPosts.length} of {totalResults} articles
                         </p>
                     </div>
                 </>
@@ -833,11 +1000,11 @@ export function BlogListingEnhanced({
                         No articles found
                     </h3>
                     <p className="text-neutral-600 max-w-md mx-auto mb-6">
-                        {isFiltered
+                        {showFilterIndicator
                             ? "We couldn't find any articles matching your filters. Try adjusting your search or browse all articles."
                             : "No articles are currently available. Check back soon for new content."}
                     </p>
-                    {isFiltered && (
+                    {showFilterIndicator && (
                         <motion.button
                             onClick={handleClearFilters}
                             className="inline-flex items-center gap-2 px-6 py-3 bg-[#1E4DB7] text-white rounded-xl font-medium hover:bg-[#143A8F] transition-colors shadow-md shadow-[#1E4DB7]/20"

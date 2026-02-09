@@ -7,14 +7,19 @@ import { DataTable, Column } from "@/components/data-table";
 import { ConfirmModal } from "@/components/modal";
 import { useToast } from "@/components/toast";
 import { Button } from "@ktblog/ui/components";
-import { Plus, Eye, MoreHorizontal, Pencil, Trash, Send, Calendar } from "lucide-react";
+import { Plus, Eye, MoreHorizontal, Pencil, Trash, Send, Calendar, Loader2, AlertCircle } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@ktblog/ui/components";
+import {
+    useNewsletterStats,
+    useSendNewsletter,
+} from "@/hooks/use-newsletter";
 
+// TODO: Wire to backend when campaign endpoints are available
 interface Newsletter {
     id: string;
     subject: string;
@@ -25,6 +30,7 @@ interface Newsletter {
     openRate: string | null;
 }
 
+// TODO: Wire to backend when campaign endpoints are available
 const initialNewsletters: Newsletter[] = [
     {
         id: "1",
@@ -65,11 +71,20 @@ const initialNewsletters: Newsletter[] = [
 ];
 
 export default function NewsletterPage() {
-    const { success, error } = useToast();
+    const { success, error: toastError } = useToast();
+
+    // Fetch newsletter stats from backend
+    const { data: stats, isLoading: isLoadingStats, error: statsError } = useNewsletterStats();
+    const sendNewsletterMutation = useSendNewsletter();
+
+    // TODO: Wire to backend when campaign endpoints are available
     const [newsletters, setNewsletters] = React.useState<Newsletter[]>(initialNewsletters);
     const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
     const [selectedNewsletter, setSelectedNewsletter] = React.useState<Newsletter | null>(null);
     const [isLoading, setIsLoading] = React.useState(false);
+
+    // Use real stats for recipient counts where applicable
+    const totalSubscribers = stats?.totalSubscribers ?? 0;
 
     const columns: Column<Newsletter>[] = [
         {
@@ -149,17 +164,82 @@ export default function NewsletterPage() {
 
         setIsLoading(true);
         try {
+            // TODO: Wire to backend when campaign delete endpoint is available
             await new Promise((resolve) => setTimeout(resolve, 1000));
             setNewsletters((prev) => prev.filter((n) => n.id !== selectedNewsletter.id));
             success("Newsletter deleted", "The newsletter has been deleted successfully.");
             setIsDeleteOpen(false);
             setSelectedNewsletter(null);
         } catch {
-            error("Error", "Failed to delete newsletter.");
+            toastError("Error", "Failed to delete newsletter.");
         } finally {
             setIsLoading(false);
         }
     };
+
+    const handleSendNow = (newsletter: Newsletter) => {
+        sendNewsletterMutation.mutate(
+            { id: newsletter.id },
+            {
+                onSuccess: () => {
+                    success("Newsletter sent", `"${newsletter.subject}" is being sent.`);
+                    // Update local state to reflect sent status
+                    setNewsletters((prev) =>
+                        prev.map((n) =>
+                            n.id === newsletter.id
+                                ? { ...n, status: "sending" as const, recipientCount: totalSubscribers }
+                                : n
+                        )
+                    );
+                },
+                onError: () => {
+                    toastError("Error", "Failed to send newsletter.");
+                },
+            }
+        );
+    };
+
+    // Loading state
+    if (isLoadingStats) {
+        return (
+            <div className="min-h-screen">
+                <PageHeader
+                    title="Newsletters"
+                    description="Manage email campaigns and newsletters"
+                    breadcrumbs={[
+                        { label: "Dashboard", href: "/" },
+                        { label: "Newsletters" },
+                    ]}
+                />
+                <div className="flex items-center justify-center py-24">
+                    <Loader2 className="h-10 w-10 text-primary animate-spin" />
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (statsError) {
+        return (
+            <div className="min-h-screen">
+                <PageHeader
+                    title="Newsletters"
+                    description="Manage email campaigns and newsletters"
+                    breadcrumbs={[
+                        { label: "Dashboard", href: "/" },
+                        { label: "Newsletters" },
+                    ]}
+                />
+                <div className="flex flex-col items-center justify-center py-24 text-red-500">
+                    <AlertCircle className="h-10 w-10 mb-4" />
+                    <p className="text-lg font-medium">Failed to load newsletter data</p>
+                    <p className="text-sm text-zinc-500 mt-1">
+                        {statsError.message || "An unexpected error occurred."}
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen">
@@ -201,9 +281,12 @@ export default function NewsletterPage() {
                                     </DropdownMenuItem>
                                 </Link>
                                 {news.status === "draft" && (
-                                    <DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => handleSendNow(news)}
+                                        disabled={sendNewsletterMutation.isPending}
+                                    >
                                         <Send className="mr-2 h-4 w-4" />
-                                        Send Now
+                                        {sendNewsletterMutation.isPending ? "Sending..." : "Send Now"}
                                     </DropdownMenuItem>
                                 )}
                                 <DropdownMenuItem

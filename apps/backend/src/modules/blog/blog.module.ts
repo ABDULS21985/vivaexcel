@@ -4,6 +4,7 @@ import { PostsController } from './controllers/posts.controller';
 import { CategoriesController } from './controllers/categories.controller';
 import { TagsController } from './controllers/tags.controller';
 import { CommentsController } from './controllers/comments.controller';
+import { CommentModerationController } from './controllers/comment-moderation.controller';
 import { RevisionsController } from './controllers/revisions.controller';
 import { SeriesController } from './controllers/series.controller';
 import { PostsService } from './services/posts.service';
@@ -43,6 +44,7 @@ import { MembershipModule } from '../membership/membership.module';
     CategoriesController,
     TagsController,
     CommentsController,
+    CommentModerationController,
     RevisionsController,
     SeriesController,
   ],

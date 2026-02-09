@@ -12,137 +12,88 @@ import {
     Filter,
     LayoutGrid,
     Rows3,
+    AlertCircle,
+    Loader2,
 } from "lucide-react";
 import { CalendarGrid } from "@/components/calendar/calendar-grid";
 import type { CalendarPost, PostStatus } from "@/components/calendar/calendar-post-card";
+import { useBlogPosts, useUpdatePost, useBlogCategories, type BlogPost } from "@/hooks/use-blog";
 
 const MONTH_NAMES = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December",
 ];
 
-// Mock data for the calendar
-const mockCalendarPosts: CalendarPost[] = [
-    {
-        id: "1",
-        title: "The Future of Digital Trust",
-        status: "published",
-        category: "Technology",
-        author: "John Doe",
-        scheduledAt: "2026-02-03T10:00:00Z",
-        excerpt: "Exploring how blockchain and AI are redefining trust in the digital age.",
-    },
-    {
-        id: "2",
-        title: "Implementing Blockchain in Banking",
-        status: "published",
-        category: "Finance",
-        author: "Sarah Smith",
-        scheduledAt: "2026-02-05T09:30:00Z",
-        excerpt: "A comprehensive guide to integrating blockchain solutions.",
-    },
-    {
-        id: "3",
-        title: "AI Trends for 2026",
-        status: "draft",
-        category: "Artificial Intelligence",
-        author: "Mike Johnson",
-        scheduledAt: "2026-02-10T08:00:00Z",
-        excerpt: "What to expect in the rapidly evolving world of AI this year.",
-    },
-    {
-        id: "4",
-        title: "Cybersecurity Best Practices",
-        status: "scheduled",
-        category: "Security",
-        author: "Jane Wilson",
-        scheduledAt: "2026-02-14T14:15:00Z",
-        excerpt: "Essential security measures every organization should implement.",
-    },
-    {
-        id: "5",
-        title: "Digital Transformation Guide",
-        status: "archived",
-        category: "Business",
-        author: "John Doe",
-        scheduledAt: "2026-02-01T11:00:00Z",
-    },
-    {
-        id: "6",
-        title: "Cloud Migration Strategies",
-        status: "scheduled",
-        category: "Technology",
-        author: "Sarah Smith",
-        scheduledAt: "2026-02-18T10:00:00Z",
-        excerpt: "Step-by-step guide to migrating your infrastructure to the cloud.",
-    },
-    {
-        id: "7",
-        title: "Data Privacy in 2026",
-        status: "draft",
-        category: "Security",
-        author: "Mike Johnson",
-        scheduledAt: "2026-02-22T09:00:00Z",
-    },
-    {
-        id: "8",
-        title: "Startup Funding Trends",
-        status: "published",
-        category: "Finance",
-        author: "Jane Wilson",
-        scheduledAt: "2026-02-07T12:00:00Z",
-        excerpt: "How the funding landscape is changing for tech startups.",
-    },
-    {
-        id: "9",
-        title: "Machine Learning for Beginners",
-        status: "scheduled",
-        category: "Artificial Intelligence",
-        author: "John Doe",
-        scheduledAt: "2026-02-25T10:00:00Z",
-    },
-    {
-        id: "10",
-        title: "Remote Work Productivity Tips",
-        status: "published",
-        category: "Business",
-        author: "Sarah Smith",
-        scheduledAt: "2026-02-12T08:00:00Z",
-        excerpt: "Proven strategies to boost productivity while working from home.",
-    },
-    {
-        id: "11",
-        title: "Intro to Web3 Development",
-        status: "draft",
-        category: "Technology",
-        author: "Mike Johnson",
-        scheduledAt: "2026-03-02T10:00:00Z",
-    },
-    {
-        id: "12",
-        title: "FinTech Innovations",
-        status: "scheduled",
-        category: "Finance",
-        author: "Jane Wilson",
-        scheduledAt: "2026-03-08T14:00:00Z",
-    },
-];
+/**
+ * Map a BlogPost from the API into the CalendarPost shape expected by the
+ * calendar UI components.  Uses scheduledAt for scheduled posts, publishedAt
+ * for published posts, and createdAt as a final fallback.
+ */
+function blogPostToCalendarPost(post: BlogPost): CalendarPost {
+    const dateStr =
+        post.scheduledAt ??
+        post.publishedAt ??
+        post.createdAt ??
+        new Date().toISOString();
 
-const categories = ["Technology", "Finance", "Security", "Business", "Artificial Intelligence"];
-const authors = ["John Doe", "Sarah Smith", "Mike Johnson", "Jane Wilson"];
+    return {
+        id: post.id,
+        title: post.title,
+        status: post.status,
+        category: post.category?.name ?? "Uncategorized",
+        author: post.author?.name ?? "Unknown",
+        authorAvatar: post.author?.avatar,
+        scheduledAt: dateStr,
+        excerpt: post.excerpt ?? undefined,
+    };
+}
 
 export default function CalendarPage() {
     const router = useRouter();
-    const { success } = useToast();
+    const { success, error: toastError } = useToast();
 
-    const [currentDate, setCurrentDate] = React.useState(new Date(2026, 1, 1)); // Feb 2026
+    const [currentDate, setCurrentDate] = React.useState(() => new Date());
     const [viewMode, setViewMode] = React.useState<"month" | "week">("month");
-    const [posts, setPosts] = React.useState<CalendarPost[]>(mockCalendarPosts);
 
     // Filters
     const [statusFilter, setStatusFilter] = React.useState("all");
     const [categoryFilter, setCategoryFilter] = React.useState("all");
     const [authorFilter, setAuthorFilter] = React.useState("all");
+
+    // --- Data fetching via React Query ---
+    const {
+        data: postsData,
+        isLoading: isPostsLoading,
+        isError: isPostsError,
+        error: postsError,
+        refetch: refetchPosts,
+    } = useBlogPosts({ limit: 100 });
+
+    const { data: categoriesData } = useBlogCategories();
+
+    const updatePost = useUpdatePost();
+
+    // Derive CalendarPost[] from API response
+    const posts: CalendarPost[] = React.useMemo(() => {
+        const items = postsData?.items ?? [];
+        return items.map(blogPostToCalendarPost);
+    }, [postsData]);
+
+    // Derive unique category names for the filter dropdown
+    const categories = React.useMemo(() => {
+        if (categoriesData?.categories) {
+            return categoriesData.categories.map((c) => c.name);
+        }
+        // Fallback: derive from loaded posts
+        const unique = new Set(posts.map((p) => p.category));
+        return Array.from(unique).sort();
+    }, [categoriesData, posts]);
+
+    // Derive unique author names for the filter dropdown
+    const authors = React.useMemo(() => {
+        const unique = new Set(posts.map((p) => p.author));
+        return Array.from(unique).sort();
+    }, [posts]);
 
     const filteredPosts = React.useMemo(() => {
         return posts.filter((post) => {
@@ -175,20 +126,26 @@ export default function CalendarPage() {
     };
 
     const handlePostDrop = (post: CalendarPost, newDate: Date) => {
-        setPosts((prev) =>
-            prev.map((p) => {
-                if (p.id === post.id) {
-                    const oldDate = new Date(p.scheduledAt);
-                    const newScheduledAt = new Date(newDate);
-                    newScheduledAt.setHours(oldDate.getHours(), oldDate.getMinutes(), 0, 0);
-                    return { ...p, scheduledAt: newScheduledAt.toISOString() };
-                }
-                return p;
-            })
-        );
-        success(
-            "Post rescheduled",
-            `"${post.title}" moved to ${newDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+        const oldDate = new Date(post.scheduledAt);
+        const newScheduledAt = new Date(newDate);
+        newScheduledAt.setHours(oldDate.getHours(), oldDate.getMinutes(), 0, 0);
+
+        updatePost.mutate(
+            { id: post.id, data: { scheduledAt: newScheduledAt.toISOString() } },
+            {
+                onSuccess: () => {
+                    success(
+                        "Post rescheduled",
+                        `"${post.title}" moved to ${newDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
+                    );
+                },
+                onError: () => {
+                    toastError(
+                        "Reschedule failed",
+                        `Could not reschedule "${post.title}". Please try again.`
+                    );
+                },
+            }
         );
     };
 
@@ -339,14 +296,46 @@ export default function CalendarPage() {
                     </div>
                 </div>
 
-                {/* Calendar grid */}
-                <CalendarGrid
-                    currentDate={currentDate}
-                    viewMode={viewMode}
-                    posts={filteredPosts}
-                    onDateClick={handleDateClick}
-                    onPostDrop={handlePostDrop}
-                />
+                {/* Loading state */}
+                {isPostsLoading && (
+                    <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-12">
+                        <div className="flex flex-col items-center justify-center gap-3 text-zinc-500 dark:text-zinc-400">
+                            <Loader2 className="h-8 w-8 animate-spin" />
+                            <p className="text-sm font-medium">Loading calendar posts...</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Error state */}
+                {isPostsError && (
+                    <div className="bg-white dark:bg-zinc-800 rounded-xl border border-red-200 dark:border-red-800 p-8">
+                        <div className="flex flex-col items-center justify-center gap-3 text-red-600 dark:text-red-400">
+                            <AlertCircle className="h-8 w-8" />
+                            <p className="text-sm font-medium">
+                                Failed to load posts{postsError?.message ? `: ${postsError.message}` : ""}
+                            </p>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => refetchPosts()}
+                                className="mt-2"
+                            >
+                                Try again
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Calendar grid — only rendered once data is available */}
+                {!isPostsLoading && !isPostsError && (
+                    <CalendarGrid
+                        currentDate={currentDate}
+                        viewMode={viewMode}
+                        posts={filteredPosts}
+                        onDateClick={handleDateClick}
+                        onPostDrop={handlePostDrop}
+                    />
+                )}
             </div>
         </div>
     );

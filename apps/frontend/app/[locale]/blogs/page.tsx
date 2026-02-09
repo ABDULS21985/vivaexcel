@@ -7,15 +7,8 @@ import {
 } from "lucide-react";
 import { BlogListingEnhanced } from "@/components/blog";
 import { CTASection, TrustIndicators } from "@/components/shared";
-import {
-    blogPosts,
-    blogCategories,
-    blogAuthors,
-    getAllPublishedPosts,
-    getFeaturedPosts,
-    getCategoriesWithCounts,
-} from "@/data/blog";
-import type { BlogPost, BlogCategory, BlogPostStatus } from "@/types/blog";
+import { fetchPosts, fetchCategories, fetchFeaturedPosts } from "@/lib/blog-api";
+import type { BlogPost, BlogCategory } from "@/types/blog";
 import { routing } from "@/i18n/routing";
 import { JsonLd } from "@/components/shared/json-ld";
 import { generateBreadcrumbSchema } from "@/lib/schema";
@@ -93,58 +86,6 @@ function getCategoryColor(slug: string): string {
     return colors[slug] || "#1E4DB7";
 }
 
-function transformToTypedPost(post: (typeof blogPosts)[0]): BlogPost {
-    const categoryData = blogCategories.find(
-        (c) => c.id === post.categoryId
-    );
-    const authorData = blogAuthors.find(
-        (a) => a.id === post.authorId
-    );
-
-    return {
-        id: post.id,
-        authorId: post.authorId,
-        categoryId: post.categoryId || null,
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        content: post.content || null,
-        featuredImage: post.featuredImage,
-        status: post.status as BlogPostStatus,
-        publishedAt: post.publishedAt,
-        viewsCount: post.viewsCount || 0,
-        readingTime: post.readingTime,
-        author: authorData
-            ? {
-                id: authorData.id,
-                name: authorData.name,
-                avatar: authorData.avatar,
-                bio: authorData.bio,
-                role: authorData.role,
-            }
-            : undefined,
-        category: categoryData
-            ? {
-                id: categoryData.id,
-                name: categoryData.name,
-                slug: categoryData.slug,
-                color: getCategoryColor(categoryData.slug),
-            }
-            : null,
-    };
-}
-
-function transformCategory(cat: (typeof blogCategories)[0]): BlogCategory {
-    return {
-        id: cat.id,
-        name: cat.name,
-        slug: cat.slug,
-        color: getCategoryColor(cat.slug),
-        sortOrder: 1,
-        isActive: true,
-    };
-}
-
 // =============================================================================
 // Page Component
 // =============================================================================
@@ -153,15 +94,41 @@ export default async function BlogsPage({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
 
-    const featuredPosts = getFeaturedPosts(1);
-    const featuredPost = featuredPosts.length > 0 ? transformToTypedPost(featuredPosts[0]) : null;
+    // -------------------------------------------------------------------------
+    // Fetch data from the backend API (server-side)
+    // -------------------------------------------------------------------------
+    let posts: BlogPost[] = [];
+    let categories: BlogCategory[] = [];
+    let featuredPost: BlogPost | null = null;
+    let publishedCount = 0;
+    let authorsCount = 0;
 
-    const allPosts = blogPosts;
-    const categories = blogCategories;
-    const publishedCount = allPosts.filter((p) => p.status === "published").length;
+    try {
+        const [postsResponse, categoriesData, featuredPosts] = await Promise.all([
+            fetchPosts({ status: 'published' as any, limit: 50 }),
+            fetchCategories(),
+            fetchFeaturedPosts(1),
+        ]);
 
-    const typedPosts = allPosts.map(transformToTypedPost);
-    const typedCategories = categories.map(transformCategory);
+        posts = postsResponse.items;
+        categories = categoriesData.map((cat) => ({
+            ...cat,
+            color: cat.color || getCategoryColor(cat.slug),
+        }));
+        featuredPost = featuredPosts.length > 0 ? featuredPosts[0] : null;
+        publishedCount = postsResponse.meta.total ?? posts.length;
+
+        // Derive unique authors count from the posts data
+        const uniqueAuthorIds = new Set(
+            posts
+                .map((p) => p.authorId)
+                .filter(Boolean)
+        );
+        authorsCount = uniqueAuthorIds.size || 1;
+    } catch (error) {
+        // If the API fails, we still render the page with empty state.
+        console.error("[BlogsPage] Failed to fetch blog data:", error);
+    }
 
     return (
         <>
@@ -230,7 +197,7 @@ export default async function BlogsPage({ params }: Props) {
                                 <div className="w-px h-10 bg-white/20" />
                                 <div className="text-center">
                                     <p className="text-3xl md:text-4xl font-bold text-white">
-                                        {blogAuthors.length}
+                                        {authorsCount}
                                     </p>
                                     <p className="text-sm text-white/60">Expert Authors</p>
                                 </div>
@@ -269,8 +236,8 @@ export default async function BlogsPage({ params }: Props) {
                         {/* Enhanced Blog Listing with filters, search, pagination */}
                         <div className="max-w-7xl mx-auto">
                             <BlogListingEnhanced
-                                posts={typedPosts}
-                                categories={typedCategories}
+                                posts={posts}
+                                categories={categories}
                                 featuredPost={featuredPost}
                             />
                         </div>

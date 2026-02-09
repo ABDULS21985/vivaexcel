@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Delete,
   Body,
   Param,
   ParseUUIDPipe,
@@ -18,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { CategoriesService } from '../services/categories.service';
 import { CreateBlogCategoryDto } from '../dto/create-category.dto';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { RequirePermissions } from '../../../common/decorators/permissions.decorator';
 import { Public } from '../../../common/decorators/public.decorator';
@@ -70,5 +73,34 @@ export class CategoriesController {
   @SwaggerResponse({ status: 409, description: 'Category slug already exists' })
   async create(@Body() createCategoryDto: CreateBlogCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
+  }
+
+  @Patch(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.EDITOR)
+  @RequirePermissions(Permission.BLOG_UPDATE)
+  @ApiOperation({ summary: 'Update a blog category' })
+  @ApiParam({ name: 'id', description: 'Category ID' })
+  @SwaggerResponse({ status: 200, description: 'Category updated successfully' })
+  @SwaggerResponse({ status: 404, description: 'Category not found' })
+  @SwaggerResponse({ status: 409, description: 'Category slug already exists' })
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ) {
+    return this.categoriesService.update(id, updateCategoryDto);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @RequirePermissions(Permission.BLOG_DELETE)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete a blog category' })
+  @ApiParam({ name: 'id', description: 'Category ID' })
+  @SwaggerResponse({ status: 200, description: 'Category deleted successfully' })
+  @SwaggerResponse({ status: 404, description: 'Category not found' })
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.categoriesService.remove(id);
   }
 }

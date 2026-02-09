@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Delete,
   Body,
   Param,
   ParseUUIDPipe,
@@ -18,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { TagsService } from '../services/tags.service';
 import { CreateTagDto } from '../dto/create-tag.dto';
+import { UpdateTagDto } from '../dto/update-tag.dto';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { RequirePermissions } from '../../../common/decorators/permissions.decorator';
 import { Public } from '../../../common/decorators/public.decorator';
@@ -70,5 +73,34 @@ export class TagsController {
   @SwaggerResponse({ status: 409, description: 'Tag slug already exists' })
   async create(@Body() createTagDto: CreateTagDto) {
     return this.tagsService.create(createTagDto);
+  }
+
+  @Patch(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.EDITOR)
+  @RequirePermissions(Permission.BLOG_UPDATE)
+  @ApiOperation({ summary: 'Update a blog tag' })
+  @ApiParam({ name: 'id', description: 'Tag ID' })
+  @SwaggerResponse({ status: 200, description: 'Tag updated successfully' })
+  @SwaggerResponse({ status: 404, description: 'Tag not found' })
+  @SwaggerResponse({ status: 409, description: 'Tag slug already exists' })
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateTagDto: UpdateTagDto,
+  ) {
+    return this.tagsService.update(id, updateTagDto);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @RequirePermissions(Permission.BLOG_DELETE)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete a blog tag' })
+  @ApiParam({ name: 'id', description: 'Tag ID' })
+  @SwaggerResponse({ status: 200, description: 'Tag deleted successfully' })
+  @SwaggerResponse({ status: 404, description: 'Tag not found' })
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.tagsService.remove(id);
   }
 }

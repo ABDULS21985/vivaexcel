@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Mail } from "lucide-react";
-import { CTASection } from "@/components/shared";
 import {
     ParallaxHero,
     ReadingProgress,
@@ -12,20 +10,15 @@ import {
     ReadingTracker,
 } from "@/components/blog";
 import { CommentSection } from "@/components/blog/comments";
-import {
-    blogPosts,
-    blogCategories,
-    blogTags,
-    getPostBySlug,
-    getRelatedPosts,
-    type BlogPostWithRelations,
-} from "@/data/blog";
-import { routing } from "@/i18n/routing";
+import type { BlogPostWithRelations } from "@/data/blog";
+import { fetchPostBySlug, fetchPosts } from "@/lib/blog-api";
+import type { BlogPost } from "@/types/blog";
 import { JsonLd } from "@/components/shared/json-ld";
 import {
     generateBreadcrumbSchema,
     generateArticleSchema as generateArticleSchemaLib,
 } from "@/lib/schema";
+import { NewsletterSection } from "./newsletter-section";
 
 // =============================================================================
 // Types
@@ -36,15 +29,22 @@ type Props = {
 };
 
 // =============================================================================
-// Static Params
+// Helpers
+// =============================================================================
+
+function authorSlugFromName(name: string): string {
+    return name
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+}
+
+// =============================================================================
+// Static Params — disabled for on-demand ISR
 // =============================================================================
 
 export async function generateStaticParams() {
-    const slugParams = blogPosts.map((post) => ({
-        slug: post.slug,
-    }));
-
-    return slugParams;
+    return [];
 }
 
 // =============================================================================
@@ -53,7 +53,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const post = await fetchPostBySlug(slug);
 
     if (!post) {
         return {
@@ -63,32 +63,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const postUrl = `https://drkatangablog.com/blogs/${slug}`;
 
-    // Dynamic OG image URL with post metadata
     const ogImageUrl = `/api/og?${new URLSearchParams({
         title: post.title,
-        author: post.author.name,
-        category: post.category.name,
-        date: new Date(post.publishedAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        }),
+        author: post.author?.name ?? "KTBlog",
+        category: post.category?.name ?? "Blog",
+        date: post.publishedAt
+            ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+              })
+            : "",
         type: "post",
     }).toString()}`;
 
     return {
         title: `${post.title} | KTBlog`,
-        description: post.excerpt,
+        description: post.excerpt ?? "",
         keywords: [
-            post.category.name.toLowerCase(),
-            ...post.tags.map((tag) => tag.name.toLowerCase()),
+            ...(post.category?.name ? [post.category.name.toLowerCase()] : []),
+            ...(post.tags?.map((tag) => tag.name.toLowerCase()) ?? []),
             "blog",
             "insights",
             "ktblog",
         ],
         openGraph: {
             title: post.title,
-            description: post.excerpt,
+            description: post.excerpt ?? "",
             url: postUrl,
             images: [
                 {
@@ -100,16 +101,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 },
             ],
             type: "article",
-            publishedTime: post.publishedAt,
-            modifiedTime: post.updatedAt,
-            authors: [post.author.name],
-            section: post.category.name,
-            tags: post.tags.map((t) => t.name),
+            publishedTime: post.publishedAt ?? undefined,
+            modifiedTime: post.updatedAt ?? undefined,
+            authors: post.author?.name ? [post.author.name] : [],
+            section: post.category?.name ?? undefined,
+            tags: post.tags?.map((t) => t.name) ?? [],
         },
         twitter: {
             card: "summary_large_image",
             title: post.title,
-            description: post.excerpt,
+            description: post.excerpt ?? "",
             images: [
                 {
                     url: ogImageUrl,
@@ -126,26 +127,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // =============================================================================
-// Article JSON-LD Schema — uses the enhanced generator from lib/schema.ts
+// Article JSON-LD Schema
 // =============================================================================
 
-function generateArticleSchema(post: BlogPostWithRelations) {
+function generateArticleSchema(post: BlogPost) {
     return generateArticleSchemaLib({
         title: post.title,
-        excerpt: post.excerpt,
-        featuredImage: post.featuredImage,
-        publishedAt: post.publishedAt,
-        updatedAt: post.updatedAt,
+        excerpt: post.excerpt ?? "",
+        featuredImage: post.featuredImage ?? "",
+        publishedAt: post.publishedAt ?? "",
+        updatedAt: post.updatedAt ?? "",
         slug: post.slug,
-        content: post.content,
+        content: post.content ?? undefined,
         author: {
-            name: post.author.name,
-            role: post.author.role,
-            slug: post.author.slug,
-            avatar: post.author.avatar,
+            name: post.author?.name ?? "KTBlog",
+            role: post.author?.role ?? "Author",
+            slug: post.author?.name
+                ? authorSlugFromName(post.author.name)
+                : undefined,
+            avatar: post.author?.avatar ?? undefined,
         },
-        category: { name: post.category.name },
-        tags: post.tags.map((t) => ({ name: t.name })),
+        category: { name: post.category?.name ?? "Blog" },
+        tags: post.tags?.map((t) => ({ name: t.name })) ?? [],
         viewsCount: post.viewsCount,
     });
 }
@@ -158,138 +161,155 @@ export default async function BlogDetailPage({ params }: Props) {
     const { locale, slug } = await params;
     setRequestLocale(locale);
 
-    const post = getPostBySlug(slug);
+    const post = await fetchPostBySlug(slug);
 
     if (!post) {
         notFound();
     }
 
-    const relatedPosts = getRelatedPosts(post.slug, 3);
+    // Fetch related posts by category (excluding the current post)
+    const relatedResponse = post.category?.slug
+        ? await fetchPosts({
+              categorySlug: post.category.slug,
+              limit: 4,
+              status: "published" as any,
+          })
+        : { items: [] };
+    const relatedPosts = relatedResponse.items.filter(
+        (p) => p.slug !== post.slug,
+    ).slice(0, 3);
+
+    // Fetch adjacent posts for prev/next navigation
+    const allPostsResponse = await fetchPosts({
+        limit: 50,
+        status: "published" as any,
+        sortBy: "publishedAt",
+        sortOrder: "DESC",
+    });
+
+    const currentIndex = allPostsResponse.items.findIndex(
+        (p) => p.slug === post.slug,
+    );
+    const adjacentPosts = {
+        previous:
+            currentIndex > 0
+                ? {
+                      slug: allPostsResponse.items[currentIndex - 1].slug,
+                      title: allPostsResponse.items[currentIndex - 1].title,
+                  }
+                : null,
+        next:
+            currentIndex < allPostsResponse.items.length - 1 &&
+            currentIndex !== -1
+                ? {
+                      slug: allPostsResponse.items[currentIndex + 1].slug,
+                      title: allPostsResponse.items[currentIndex + 1].title,
+                  }
+                : null,
+    };
+
     const shareUrl = `https://drkatangablog.com/blogs/${slug}`;
 
     return (
         <>
             {/* Structured Data */}
-            <JsonLd data={generateBreadcrumbSchema([
-                { name: "Home", url: "/" },
-                { name: "Blog", url: "/blogs" },
-                { name: post.category.name, url: `/blogs/category/${post.category.slug}` },
-                { name: post.title, url: `/blogs/${post.slug}` },
-            ])} />
+            <JsonLd
+                data={generateBreadcrumbSchema([
+                    { name: "Home", url: "/" },
+                    { name: "Blog", url: "/blogs" },
+                    {
+                        name: post.category?.name ?? "Blog",
+                        url: `/blogs/category/${post.category?.slug ?? ""}`,
+                    },
+                    { name: post.title, url: `/blogs/${post.slug}` },
+                ])}
+            />
             <JsonLd data={generateArticleSchema(post)} />
 
             <div className="min-h-screen bg-white dark:bg-neutral-950">
-                {/* Reading Progress Bar - Fixed at top */}
+                {/* Reading Progress Bar */}
                 <ReadingProgress height={3} showPercentage={false} />
 
-                {/* Reading Tracker - tracks reading progress for authenticated users */}
+                {/* Reading Tracker */}
                 <ReadingTracker postId={post.id} threshold={0.8} />
 
-                {/* Sticky Share Bar - Left side on desktop, bottom on mobile */}
+                {/* Sticky Share Bar */}
                 <StickyShareBar
                     url={shareUrl}
                     title={post.title}
-                    description={post.excerpt}
+                    description={post.excerpt ?? ""}
                     showAfter={500}
                 />
 
                 {/* Bookmark Button - Fixed on the right side */}
                 <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:block">
-                    <BookmarkButton postId={post.id} size="lg" variant="default" />
+                    <BookmarkButton
+                        postId={post.id}
+                        size="lg"
+                        variant="default"
+                    />
                 </div>
 
                 {/* Parallax Hero Section */}
-                <ParallaxHero post={post as BlogPostWithRelations} locale={locale} />
+                <ParallaxHero
+                    post={post as unknown as BlogPostWithRelations}
+                    locale={locale}
+                />
 
                 {/* Main Article Content with TOC Sidebar */}
                 <BlogArticleClient
-                    post={post as BlogPostWithRelations}
-                    relatedPosts={relatedPosts as BlogPostWithRelations[]}
+                    post={post as unknown as BlogPostWithRelations}
+                    relatedPosts={
+                        relatedPosts as unknown as BlogPostWithRelations[]
+                    }
+                    adjacentPosts={adjacentPosts}
                 />
 
                 {/* Comments Section */}
                 <CommentSection postId={post.id} slug={post.slug} />
 
                 {/* Newsletter CTA Section */}
-                <section className="w-full py-20 md:py-28 bg-gradient-to-br from-[#1E4DB7] via-[#143A8F] to-[#1E4DB7] relative overflow-hidden">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 overflow-hidden">
-                        <div
-                            className="absolute inset-0 opacity-10"
-                            style={{
-                                backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 1px)`,
-                                backgroundSize: "40px 40px",
-                            }}
-                        />
-                        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#F59A23]/20 rounded-full blur-3xl" />
-                        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-                    </div>
+                <NewsletterSection />
 
-                    <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-                        <div className="max-w-3xl mx-auto text-center">
-                            {/* Icon */}
-                            <div className="flex justify-center mb-8">
-                                <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center animate-fade-in-up">
-                                    <Mail className="h-10 w-10 text-white" />
-                                </div>
+                {/* Final CTA */}
+                <section className="w-full py-20 md:py-28 bg-white dark:bg-neutral-950">
+                    <div className="container mx-auto px-4 md:px-6 lg:px-8">
+                        <div className="max-w-4xl mx-auto text-center">
+                            <div className="flex items-center justify-center gap-3 mb-6">
+                                <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-[#1E4DB7]" />
+                                <span className="text-sm font-bold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase">
+                                    Get in Touch
+                                </span>
+                                <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-[#1E4DB7]" />
                             </div>
-
-                            {/* Title */}
-                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 animate-fade-in-up">
-                                Stay Ahead with{" "}
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59A23] to-[#E86A1D]">
-                                    Expert Insights
+                            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white mb-6">
+                                Have{" "}
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1E4DB7] to-[#F59A23]">
+                                    Questions?
                                 </span>
                             </h2>
-
-                            {/* Description */}
-                            <p className="text-lg md:text-xl text-white/80 mb-10 animate-fade-in-up">
-                                Subscribe to our newsletter and receive the latest articles,
-                                industry insights, and exclusive content directly in your inbox.
+                            <p className="text-lg text-neutral-600 dark:text-neutral-400 mb-10 max-w-2xl mx-auto">
+                                Our team of experts is ready to help you
+                                navigate the complexities of digital
+                                transformation.
                             </p>
-
-                            {/* Newsletter Form */}
-                            <form className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto animate-fade-in-up">
-                                <div className="flex-1 relative group">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-[#F59A23]/20 to-[#E86A1D]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <input
-                                        type="email"
-                                        placeholder="Enter your email address"
-                                        className="relative w-full px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white placeholder-white/50 focus:outline-none focus:border-[#F59A23]/50 focus:bg-white/15 transition-all duration-300"
-                                        required
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="px-8 py-4 bg-gradient-to-r from-[#F59A23] to-[#E86A1D] hover:from-[#E86A1D] hover:to-[#F59A23] text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#F59A23]/25"
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <a
+                                    href="/contact"
+                                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] hover:from-[#143A8F] hover:to-[#1E4DB7] text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#1E4DB7]/25"
                                 >
-                                    Subscribe
-                                </button>
-                            </form>
-
-                            {/* Trust Message */}
-                            <p className="text-sm text-white/60 mt-6 animate-fade-in-up">
-                                Join 5,000+ professionals. No spam, unsubscribe anytime.
-                            </p>
+                                    Contact Us
+                                </a>
+                                <a
+                                    href="/blogs"
+                                    className="inline-flex items-center gap-2 px-8 py-4 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 font-semibold rounded-xl transition-all duration-300"
+                                >
+                                    Explore More Articles
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </section>
-
-                {/* Final CTA */}
-                <CTASection
-                    title="Have Questions?"
-                    accentTitle="Let's Talk"
-                    description="Our team of experts is ready to help you navigate the complexities of digital transformation."
-                    primaryCTA={{
-                        label: "Contact Us",
-                        href: "/contact",
-                    }}
-                    secondaryCTA={{
-                        label: "Our Services",
-                        href: "/services",
-                    }}
-                    showContactOptions={true}
-                />
             </div>
         </>
     );

@@ -17,26 +17,22 @@ import {
     GripVertical,
     FileText,
     Folder,
+    Loader2,
+    AlertCircle,
 } from "lucide-react";
+import {
+    useBlogCategories,
+    useCreateCategory,
+    useUpdateCategory,
+    useDeleteCategory,
+    type BlogCategory,
+} from "@/hooks/use-blog";
 
-interface Category {
-    id: string;
-    name: string;
-    slug: string;
-    description: string;
+// Local interface extending BlogCategory with display fields
+interface DisplayCategory extends BlogCategory {
     postCount: number;
     order: number;
 }
-
-const initialCategories: Category[] = [
-    { id: "1", name: "Technology", slug: "technology", description: "Posts about software, hardware, and emerging tech trends.", postCount: 24, order: 0 },
-    { id: "2", name: "Finance", slug: "finance", description: "Financial insights, market analysis, and investment strategies.", postCount: 18, order: 1 },
-    { id: "3", name: "Security", slug: "security", description: "Cybersecurity best practices and threat analysis.", postCount: 12, order: 2 },
-    { id: "4", name: "Business", slug: "business", description: "Business strategy, leadership, and entrepreneurship.", postCount: 15, order: 3 },
-    { id: "5", name: "Tutorials", slug: "tutorials", description: "Step-by-step guides and how-to articles.", postCount: 31, order: 4 },
-    { id: "6", name: "Case Studies", slug: "case-studies", description: "Real-world project breakdowns and success stories.", postCount: 8, order: 5 },
-    { id: "7", name: "News", slug: "news", description: "Industry news and updates.", postCount: 42, order: 6 },
-];
 
 function generateSlug(name: string): string {
     return name
@@ -46,13 +42,37 @@ function generateSlug(name: string): string {
 }
 
 export default function CategoriesPage() {
-    const { success, error } = useToast();
-    const [categories, setCategories] = React.useState<Category[]>(initialCategories);
+    const { success, error: toastError } = useToast();
+
+    // Data fetching
+    const { data: categoriesData, isLoading: isLoadingCategories, error: categoriesError } = useBlogCategories();
+    const createCategoryMutation = useCreateCategory();
+    const updateCategoryMutation = useUpdateCategory();
+    const deleteCategoryMutation = useDeleteCategory();
+
+    // Map API categories to display categories with defaults for missing fields
+    const apiCategories: DisplayCategory[] = React.useMemo(
+        () =>
+            (categoriesData?.categories ?? []).map((c, index) => ({
+                ...c,
+                postCount: (c as unknown as { postCount?: number }).postCount ?? 0,
+                order: c.sortOrder ?? index,
+            })),
+        [categoriesData]
+    );
+
+    // Local reorder state (drag-and-drop is client-only)
+    const [localOrder, setLocalOrder] = React.useState<DisplayCategory[]>([]);
+    React.useEffect(() => {
+        setLocalOrder(apiCategories);
+    }, [apiCategories]);
+
+    const categories = localOrder.length > 0 ? localOrder : apiCategories;
+
     const [isFormOpen, setIsFormOpen] = React.useState(false);
-    const [editingCategory, setEditingCategory] = React.useState<Category | null>(null);
+    const [editingCategory, setEditingCategory] = React.useState<DisplayCategory | null>(null);
     const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
-    const [deleteTarget, setDeleteTarget] = React.useState<Category | null>(null);
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [deleteTarget, setDeleteTarget] = React.useState<DisplayCategory | null>(null);
     const [draggedItem, setDraggedItem] = React.useState<string | null>(null);
 
     // Form state
@@ -68,11 +88,11 @@ export default function CategoriesPage() {
         setIsFormOpen(true);
     };
 
-    const openEditForm = (category: Category) => {
+    const openEditForm = (category: DisplayCategory) => {
         setEditingCategory(category);
         setFormName(category.name);
         setFormSlug(category.slug);
-        setFormDescription(category.description);
+        setFormDescription(category.description ?? "");
         setIsFormOpen(true);
     };
 
@@ -87,48 +107,54 @@ export default function CategoriesPage() {
         if (!formName.trim()) return;
 
         if (editingCategory) {
-            setCategories((prev) =>
-                prev.map((c) =>
-                    c.id === editingCategory.id
-                        ? { ...c, name: formName, slug: formSlug, description: formDescription }
-                        : c
-                )
+            updateCategoryMutation.mutate(
+                {
+                    id: editingCategory.id,
+                    data: { name: formName, slug: formSlug, description: formDescription },
+                },
+                {
+                    onSuccess: () => {
+                        success("Category updated", `"${formName}" has been updated.`);
+                        setIsFormOpen(false);
+                    },
+                    onError: () => {
+                        toastError("Error", "Failed to update category.");
+                    },
+                }
             );
-            success("Category updated", `"${formName}" has been updated.`);
         } else {
-            const newCategory: Category = {
-                id: String(Date.now()),
-                name: formName,
-                slug: formSlug || generateSlug(formName),
-                description: formDescription,
-                postCount: 0,
-                order: categories.length,
-            };
-            setCategories((prev) => [...prev, newCategory]);
-            success("Category created", `"${formName}" has been created.`);
+            createCategoryMutation.mutate(
+                { name: formName, slug: formSlug || generateSlug(formName), description: formDescription },
+                {
+                    onSuccess: () => {
+                        success("Category created", `"${formName}" has been created.`);
+                        setIsFormOpen(false);
+                    },
+                    onError: () => {
+                        toastError("Error", "Failed to create category.");
+                    },
+                }
+            );
         }
-        setIsFormOpen(false);
     };
 
-    const handleDelete = (category: Category) => {
+    const handleDelete = (category: DisplayCategory) => {
         setDeleteTarget(category);
         setIsDeleteOpen(true);
     };
 
     const confirmDelete = async () => {
         if (!deleteTarget) return;
-        setIsLoading(true);
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            setCategories((prev) => prev.filter((c) => c.id !== deleteTarget.id));
-            success("Category deleted", `"${deleteTarget.name}" has been deleted.`);
-            setIsDeleteOpen(false);
-            setDeleteTarget(null);
-        } catch {
-            error("Error", "Failed to delete category.");
-        } finally {
-            setIsLoading(false);
-        }
+        deleteCategoryMutation.mutate(deleteTarget.id, {
+            onSuccess: () => {
+                success("Category deleted", `"${deleteTarget.name}" has been deleted.`);
+                setIsDeleteOpen(false);
+                setDeleteTarget(null);
+            },
+            onError: () => {
+                toastError("Error", "Failed to delete category.");
+            },
+        });
     };
 
     // Drag and drop reordering
@@ -140,7 +166,7 @@ export default function CategoriesPage() {
         e.preventDefault();
         if (!draggedItem || draggedItem === targetId) return;
 
-        setCategories((prev) => {
+        setLocalOrder((prev) => {
             const items = [...prev];
             const draggedIndex = items.findIndex((c) => c.id === draggedItem);
             const targetIndex = items.findIndex((c) => c.id === targetId);
@@ -153,6 +179,50 @@ export default function CategoriesPage() {
     const handleDragEnd = () => {
         setDraggedItem(null);
     };
+
+    // Loading state
+    if (isLoadingCategories) {
+        return (
+            <div className="min-h-screen">
+                <PageHeader
+                    title="Categories"
+                    description="Organize your blog posts into categories"
+                    breadcrumbs={[
+                        { label: "Dashboard", href: "/" },
+                        { label: "Categories" },
+                    ]}
+                />
+                <div className="flex items-center justify-center py-24">
+                    <Loader2 className="h-10 w-10 text-primary animate-spin" />
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (categoriesError) {
+        return (
+            <div className="min-h-screen">
+                <PageHeader
+                    title="Categories"
+                    description="Organize your blog posts into categories"
+                    breadcrumbs={[
+                        { label: "Dashboard", href: "/" },
+                        { label: "Categories" },
+                    ]}
+                />
+                <div className="flex flex-col items-center justify-center py-24 text-red-500">
+                    <AlertCircle className="h-10 w-10 mb-4" />
+                    <p className="text-lg font-medium">Failed to load categories</p>
+                    <p className="text-sm text-zinc-500 mt-1">
+                        {categoriesError.message || "An unexpected error occurred."}
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    const isSaving = createCategoryMutation.isPending || updateCategoryMutation.isPending;
 
     return (
         <div className="min-h-screen">
@@ -221,7 +291,7 @@ export default function CategoriesPage() {
                                     </div>
                                     <div className="col-span-3">
                                         <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1">
-                                            {category.description}
+                                            {category.description ?? ""}
                                         </p>
                                     </div>
                                     <div className="col-span-1 text-center">
@@ -315,8 +385,12 @@ export default function CategoriesPage() {
                         <Button variant="outline" onClick={() => setIsFormOpen(false)}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSave} disabled={!formName.trim()}>
-                            {editingCategory ? "Save Changes" : "Create Category"}
+                        <Button onClick={handleSave} disabled={!formName.trim() || isSaving}>
+                            {isSaving
+                                ? "Saving..."
+                                : editingCategory
+                                    ? "Save Changes"
+                                    : "Create Category"}
                         </Button>
                     </div>
                 </div>
@@ -328,7 +402,7 @@ export default function CategoriesPage() {
                 title="Delete Category"
                 description={`Are you sure you want to delete "${deleteTarget?.name}"? Posts in this category will not be deleted.`}
                 onConfirm={confirmDelete}
-                isLoading={isLoading}
+                isLoading={deleteCategoryMutation.isPending}
                 variant="danger"
             />
         </div>

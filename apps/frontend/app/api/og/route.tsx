@@ -181,9 +181,9 @@ export async function GET(request: NextRequest) {
         ...(interBold
           ? {
               fonts: [
-                { name: "Inter", data: interBold, weight: 700, style: "normal" as const },
+                { name: "Inter", data: interBold, weight: 700 as const, style: "normal" as const },
                 ...(interMedium
-                  ? [{ name: "Inter", data: interMedium, weight: 500, style: "normal" as const }]
+                  ? [{ name: "Inter", data: interMedium, weight: 500 as const, style: "normal" as const }]
                   : []),
               ],
             }
@@ -434,9 +434,9 @@ export async function GET(request: NextRequest) {
       ...(interBold
         ? {
             fonts: [
-              { name: "Inter", data: interBold, weight: 700, style: "normal" as const },
+              { name: "Inter", data: interBold, weight: 700 as const, style: "normal" as const },
               ...(interMedium
-                ? [{ name: "Inter", data: interMedium, weight: 500, style: "normal" as const }]
+                ? [{ name: "Inter", data: interMedium, weight: 500 as const, style: "normal" as const }]
                 : []),
             ],
           }

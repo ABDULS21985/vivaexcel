@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "../providers/auth-provider";
+import { QueryProvider } from "../providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { ToastProvider } from "@/components/toast";
@@ -83,13 +84,15 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
-            <ToastProvider>
-              <DashboardLayout>
-                {children}
-              </DashboardLayout>
-            </ToastProvider>
-          </ThemeProvider>
+          <QueryProvider>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+              <ToastProvider>
+                <DashboardLayout>
+                  {children}
+                </DashboardLayout>
+              </ToastProvider>
+            </ThemeProvider>
+          </QueryProvider>
         </AuthProvider>
       </body>
     </html>

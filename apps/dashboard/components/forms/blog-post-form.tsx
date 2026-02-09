@@ -15,9 +15,19 @@ import {
     Switch,
     Label,
 } from "@ktblog/ui/components";
-import { Loader2, Globe } from "lucide-react";
+import { Loader2, Globe, Sparkles, X, BarChart3, BookOpen, Type, FileText, Zap } from "lucide-react";
 import Link from "next/link";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
+import {
+    useGenerateTitles,
+    useGenerateMetaDescription,
+    useGenerateExcerpt,
+    useAnalyzeContent,
+    useImproveText,
+    type ContentAnalysis,
+} from "@/hooks/use-ai";
+import { useToast } from "@/components/toast";
+import type { Editor } from "@tiptap/react";
 
 const blogPostSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -25,7 +35,7 @@ const blogPostSchema = z.object({
     slug: z.string().min(1, "Slug is required"),
     excerpt: z.string().optional(),
     content: z.string().optional(),
-    status: z.enum(["draft", "published", "archived"]),
+    status: z.enum(["draft", "published", "scheduled", "archived"]),
     visibility: z.enum(["public", "members", "paid"]).default("public"),
     minimumTier: z.enum(["free", "basic", "pro", "premium"]).optional(),
     categoryId: z.string().optional(),
@@ -77,6 +87,88 @@ export function BlogPostForm({
         }
     );
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [showAiPanel, setShowAiPanel] = useState(false);
+    const editorRef = React.useRef<Editor | null>(null);
+
+    const toast = useToast();
+
+    // AI Mutations
+    const generateTitles = useGenerateTitles();
+    const generateMetaDescription = useGenerateMetaDescription();
+    const generateExcerpt = useGenerateExcerpt();
+    const analyzeContent = useAnalyzeContent();
+    const improveText = useImproveText();
+
+    const handleEditorReady = React.useCallback((editor: Editor) => {
+        editorRef.current = editor;
+    }, []);
+
+    const handleAiAction = React.useCallback(
+        (action: string) => {
+            switch (action) {
+                case "titles":
+                    if (!formData.content && !formData.title) {
+                        toast.warning("No content", "Add some content or a title first to generate title suggestions.");
+                        return;
+                    }
+                    generateTitles.mutate(formData.content || formData.title, {
+                        onError: () => toast.error("AI Error", "Failed to generate titles."),
+                    });
+                    setShowAiPanel(true);
+                    break;
+                case "improve": {
+                    const editor = editorRef.current;
+                    if (!editor) return;
+                    const { from, to, empty } = editor.state.selection;
+                    if (empty) {
+                        toast.warning("No selection", "Select some text in the editor to improve.");
+                        return;
+                    }
+                    const selectedText = editor.state.doc.textBetween(from, to, " ");
+                    improveText.mutate(
+                        { text: selectedText, tone: "professional" },
+                        {
+                            onSuccess: (improved) => {
+                                editor
+                                    .chain()
+                                    .focus()
+                                    .deleteRange({ from, to })
+                                    .insertContentAt(from, improved)
+                                    .run();
+                                toast.success("Text improved", "The selected text has been replaced.");
+                            },
+                            onError: () => toast.error("AI Error", "Failed to improve text."),
+                        }
+                    );
+                    break;
+                }
+                case "excerpt":
+                    if (!formData.content) {
+                        toast.warning("No content", "Add some content first to generate an excerpt.");
+                        return;
+                    }
+                    generateExcerpt.mutate(
+                        { content: formData.content },
+                        {
+                            onError: () => toast.error("AI Error", "Failed to generate excerpt."),
+                        }
+                    );
+                    setShowAiPanel(true);
+                    break;
+                case "analyze":
+                    if (!formData.content) {
+                        toast.warning("No content", "Add some content first to analyze.");
+                        return;
+                    }
+                    analyzeContent.mutate(formData.content, {
+                        onError: () => toast.error("AI Error", "Failed to analyze content."),
+                    });
+                    setShowAiPanel(true);
+                    break;
+            }
+        },
+        [formData.content, formData.title, generateTitles, generateExcerpt, analyzeContent, improveText, toast]
+    );
 
     const handleContentChange = React.useCallback(
         (html: string) => {
@@ -245,6 +337,8 @@ export function BlogPostForm({
                             initialContent={formData.content || ""}
                             onChange={handleContentChange}
                             placeholder="Start writing your post..."
+                            onAiAction={handleAiAction}
+                            onEditorReady={handleEditorReady}
                         />
                         {errors.content && (
                             <p className="text-sm font-medium text-red-500">{errors.content}</p>
@@ -295,6 +389,7 @@ export function BlogPostForm({
                                 <SelectContent>
                                     <SelectItem value="draft">Draft</SelectItem>
                                     <SelectItem value="published">Published</SelectItem>
+                                    <SelectItem value="scheduled">Scheduled</SelectItem>
                                     <SelectItem value="archived">Archived</SelectItem>
                                 </SelectContent>
                             </Select>
@@ -433,19 +528,350 @@ export function BlogPostForm({
                             </p>
                         </div>
                     </div>
+
+                    {/* AI Assistant Panel */}
+                    {showAiPanel && (
+                        <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl border border-purple-200 dark:border-purple-800 space-y-5">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <Sparkles className="h-5 w-5 text-purple-500" />
+                                    <h3 className="font-semibold text-lg text-zinc-900 dark:text-white">
+                                        AI Assistant
+                                    </h3>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAiPanel(false)}
+                                    className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                                    aria-label="Close AI panel"
+                                >
+                                    <X className="h-4 w-4 text-zinc-500" />
+                                </button>
+                            </div>
+
+                            {/* Title Suggestions */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <Type className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+                                    <Label className="text-sm font-medium">Title Suggestions</Label>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full"
+                                    disabled={generateTitles.isPending || (!formData.content && !formData.title)}
+                                    onClick={() =>
+                                        generateTitles.mutate(formData.content || formData.title, {
+                                            onError: () => toast.error("AI Error", "Failed to generate titles."),
+                                        })
+                                    }
+                                >
+                                    {generateTitles.isPending ? (
+                                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                                    ) : (
+                                        <Sparkles className="mr-2 h-3.5 w-3.5" />
+                                    )}
+                                    Generate Titles
+                                </Button>
+                                {generateTitles.isError && (
+                                    <p className="text-xs text-red-500">
+                                        {generateTitles.error?.message || "Failed to generate titles."}
+                                    </p>
+                                )}
+                                {generateTitles.isSuccess && generateTitles.data && (
+                                    <div className="flex flex-wrap gap-1.5 pt-1">
+                                        {generateTitles.data.map((title, i) => (
+                                            <button
+                                                key={i}
+                                                type="button"
+                                                onClick={() => {
+                                                    setFormData((prev) => ({
+                                                        ...prev,
+                                                        title,
+                                                        slug:
+                                                            mode === "create" && !initialData?.slug
+                                                                ? generateSlug(title)
+                                                                : prev.slug,
+                                                    }));
+                                                    toast.success("Title applied", `"${title}" has been set as the title.`);
+                                                }}
+                                                className="text-xs px-2.5 py-1.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50 transition-colors text-left"
+                                            >
+                                                {title}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Meta Description */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <FileText className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+                                    <Label className="text-sm font-medium">Meta Description</Label>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full"
+                                    disabled={generateMetaDescription.isPending || !formData.title}
+                                    onClick={() =>
+                                        generateMetaDescription.mutate(
+                                            { title: formData.title, content: formData.content || "" },
+                                            {
+                                                onError: () =>
+                                                    toast.error("AI Error", "Failed to generate meta description."),
+                                            }
+                                        )
+                                    }
+                                >
+                                    {generateMetaDescription.isPending ? (
+                                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                                    ) : (
+                                        <Sparkles className="mr-2 h-3.5 w-3.5" />
+                                    )}
+                                    Generate Meta Description
+                                </Button>
+                                {generateMetaDescription.isError && (
+                                    <p className="text-xs text-red-500">
+                                        {generateMetaDescription.error?.message || "Failed to generate meta description."}
+                                    </p>
+                                )}
+                                {generateMetaDescription.isSuccess && generateMetaDescription.data && (
+                                    <div className="space-y-2 pt-1">
+                                        <p className="text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 p-2.5 rounded-md">
+                                            {generateMetaDescription.data}
+                                        </p>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    excerpt: generateMetaDescription.data,
+                                                }));
+                                                toast.success("Applied", "Meta description set as excerpt.");
+                                            }}
+                                        >
+                                            Use as Excerpt
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Excerpt */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <BookOpen className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+                                    <Label className="text-sm font-medium">Excerpt</Label>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full"
+                                    disabled={generateExcerpt.isPending || !formData.content}
+                                    onClick={() =>
+                                        generateExcerpt.mutate(
+                                            { content: formData.content || "" },
+                                            {
+                                                onError: () =>
+                                                    toast.error("AI Error", "Failed to generate excerpt."),
+                                            }
+                                        )
+                                    }
+                                >
+                                    {generateExcerpt.isPending ? (
+                                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                                    ) : (
+                                        <Sparkles className="mr-2 h-3.5 w-3.5" />
+                                    )}
+                                    Generate Excerpt
+                                </Button>
+                                {generateExcerpt.isError && (
+                                    <p className="text-xs text-red-500">
+                                        {generateExcerpt.error?.message || "Failed to generate excerpt."}
+                                    </p>
+                                )}
+                                {generateExcerpt.isSuccess && generateExcerpt.data && (
+                                    <div className="space-y-2 pt-1">
+                                        <p className="text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 p-2.5 rounded-md">
+                                            {generateExcerpt.data}
+                                        </p>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    excerpt: generateExcerpt.data,
+                                                }));
+                                                toast.success("Applied", "Excerpt has been set.");
+                                            }}
+                                        >
+                                            Use Excerpt
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* SEO Analysis */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <BarChart3 className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+                                    <Label className="text-sm font-medium">Content Analysis</Label>
+                                </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full"
+                                    disabled={analyzeContent.isPending || !formData.content}
+                                    onClick={() =>
+                                        analyzeContent.mutate(formData.content || "", {
+                                            onError: () =>
+                                                toast.error("AI Error", "Failed to analyze content."),
+                                        })
+                                    }
+                                >
+                                    {analyzeContent.isPending ? (
+                                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                                    ) : (
+                                        <BarChart3 className="mr-2 h-3.5 w-3.5" />
+                                    )}
+                                    Analyze Content
+                                </Button>
+                                {analyzeContent.isError && (
+                                    <p className="text-xs text-red-500">
+                                        {analyzeContent.error?.message || "Failed to analyze content."}
+                                    </p>
+                                )}
+                                {analyzeContent.isSuccess && analyzeContent.data && (
+                                    <div className="pt-1 space-y-3">
+                                        {/* Score Metrics */}
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div className="bg-zinc-50 dark:bg-zinc-900 rounded-md p-2.5 text-center">
+                                                <p className="text-lg font-bold text-zinc-900 dark:text-white">
+                                                    {analyzeContent.data.readabilityScore}
+                                                    <span className="text-xs font-normal text-zinc-500">/100</span>
+                                                </p>
+                                                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+                                                    Readability
+                                                </p>
+                                            </div>
+                                            <div className="bg-zinc-50 dark:bg-zinc-900 rounded-md p-2.5 text-center">
+                                                <p className="text-lg font-bold text-zinc-900 dark:text-white">
+                                                    {analyzeContent.data.seoScore}
+                                                    <span className="text-xs font-normal text-zinc-500">/100</span>
+                                                </p>
+                                                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+                                                    SEO Score
+                                                </p>
+                                            </div>
+                                            <div className="bg-zinc-50 dark:bg-zinc-900 rounded-md p-2.5 text-center">
+                                                <p className="text-lg font-bold text-zinc-900 dark:text-white">
+                                                    {analyzeContent.data.wordCount.toLocaleString()}
+                                                </p>
+                                                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+                                                    Words
+                                                </p>
+                                            </div>
+                                            <div className="bg-zinc-50 dark:bg-zinc-900 rounded-md p-2.5 text-center">
+                                                <p className="text-lg font-bold text-zinc-900 dark:text-white">
+                                                    {analyzeContent.data.estimatedReadTime}
+                                                    <span className="text-xs font-normal text-zinc-500"> min</span>
+                                                </p>
+                                                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+                                                    Read Time
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Key Topics */}
+                                        {analyzeContent.data.keyTopics.length > 0 && (
+                                            <div className="space-y-1">
+                                                <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                                                    Key Topics
+                                                </p>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {analyzeContent.data.keyTopics.map((topic, i) => (
+                                                        <span
+                                                            key={i}
+                                                            className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                                                        >
+                                                            {topic}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Suggestions */}
+                                        {analyzeContent.data.suggestions.length > 0 && (
+                                            <div className="space-y-1">
+                                                <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                                                    Suggestions
+                                                </p>
+                                                <ul className="space-y-1">
+                                                    {analyzeContent.data.suggestions.map((suggestion, i) => (
+                                                        <li
+                                                            key={i}
+                                                            className="text-xs text-zinc-600 dark:text-zinc-400 flex items-start gap-1.5"
+                                                        >
+                                                            <Zap className="h-3 w-3 text-amber-500 flex-shrink-0 mt-0.5" />
+                                                            {suggestion}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Improve Selection hint */}
+                            <div className="pt-2 border-t border-zinc-200 dark:border-zinc-700">
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 flex items-start gap-1.5">
+                                    <Zap className="h-3 w-3 flex-shrink-0 mt-0.5" />
+                                    Select text in the editor and use the AI toolbar menu to improve it.
+                                </p>
+                                {improveText.isPending && (
+                                    <div className="flex items-center gap-2 mt-2 text-xs text-purple-600 dark:text-purple-400">
+                                        <Loader2 className="h-3 w-3 animate-spin" />
+                                        Improving selected text...
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className="flex items-center justify-end gap-4">
-                <Link href="/blog">
-                    <Button variant="outline" type="button">
-                        Cancel
-                    </Button>
-                </Link>
-                <Button type="submit" disabled={isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {mode === "create" ? "Create Post" : "Save Changes"}
+            <div className="flex items-center justify-between gap-4">
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowAiPanel(!showAiPanel)}
+                    className="gap-2 text-purple-600 border-purple-200 hover:bg-purple-50 dark:text-purple-400 dark:border-purple-800 dark:hover:bg-purple-900/20"
+                >
+                    <Sparkles className="h-4 w-4" />
+                    AI Assistant
                 </Button>
+                <div className="flex items-center gap-4">
+                    <Link href="/blog">
+                        <Button variant="outline" type="button">
+                            Cancel
+                        </Button>
+                    </Link>
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        {mode === "create" ? "Create Post" : "Save Changes"}
+                    </Button>
+                </div>
             </div>
         </form>
     );

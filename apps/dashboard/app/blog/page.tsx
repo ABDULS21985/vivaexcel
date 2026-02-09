@@ -23,6 +23,7 @@ import {
     ArrowUpDown,
     Filter,
     X,
+    Loader2,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -31,138 +32,22 @@ import {
     DropdownMenuTrigger,
     DropdownMenuSeparator,
 } from "@ktblog/ui/components";
-
-interface BlogPost {
-    id: string;
-    title: string;
-    slug: string;
-    excerpt?: string;
-    status: "draft" | "published" | "archived";
-    author: string;
-    category: string;
-    publishedAt: string | null;
-    views: number;
-    coverImage?: string;
-    tags?: string[];
-}
-
-const initialPosts: BlogPost[] = [
-    {
-        id: "1",
-        title: "The Future of Digital Trust",
-        slug: "future-of-digital-trust",
-        excerpt: "Exploring how blockchain and AI are redefining trust in the digital age.",
-        status: "published",
-        author: "John Doe",
-        category: "Technology",
-        publishedAt: "2024-03-15T10:00:00Z",
-        views: 1250,
-        coverImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1080",
-        tags: ["blockchain", "ai", "trust"],
-    },
-    {
-        id: "2",
-        title: "Implementing Blockchain in Banking",
-        slug: "blockchain-in-banking",
-        excerpt: "A comprehensive guide to integrating blockchain solutions in financial institutions.",
-        status: "published",
-        author: "Sarah Smith",
-        category: "Finance",
-        publishedAt: "2024-03-10T09:30:00Z",
-        views: 980,
-        coverImage: "https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=1080",
-        tags: ["blockchain", "finance"],
-    },
-    {
-        id: "3",
-        title: "AI Trends for 2024",
-        slug: "ai-trends-2024",
-        excerpt: "What to expect in the rapidly evolving world of Artificial Intelligence this year.",
-        status: "draft",
-        author: "Mike Johnson",
-        category: "Artificial Intelligence",
-        publishedAt: null,
-        views: 0,
-        tags: ["ai", "trends"],
-    },
-    {
-        id: "4",
-        title: "Cybersecurity Best Practices",
-        slug: "cybersecurity-best-practices",
-        excerpt: "Essential security measures every organization should implement immediately.",
-        status: "published",
-        author: "Jane Wilson",
-        category: "Security",
-        publishedAt: "2024-02-28T14:15:00Z",
-        views: 2100,
-        coverImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1080",
-        tags: ["security", "guide"],
-    },
-    {
-        id: "5",
-        title: "Digital Transformation Guide",
-        slug: "digital-transformation-guide",
-        excerpt: "Step-by-step roadmap for digitally transforming your legacy business.",
-        status: "archived",
-        author: "John Doe",
-        category: "Business",
-        publishedAt: "2023-12-01T11:00:00Z",
-        views: 3500,
-        coverImage: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1080",
-        tags: ["digital", "business", "guide"],
-    },
-    {
-        id: "6",
-        title: "Cloud Migration Strategies",
-        slug: "cloud-migration-strategies",
-        excerpt: "How to move your infrastructure to the cloud without downtime.",
-        status: "published",
-        author: "Sarah Smith",
-        category: "Technology",
-        publishedAt: "2024-01-20T08:00:00Z",
-        views: 1870,
-        coverImage: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1080",
-        tags: ["cloud", "infrastructure"],
-    },
-    {
-        id: "7",
-        title: "Startup Funding Trends",
-        slug: "startup-funding-trends",
-        excerpt: "How the funding landscape is changing for tech startups in 2024.",
-        status: "draft",
-        author: "Jane Wilson",
-        category: "Finance",
-        publishedAt: null,
-        views: 0,
-        tags: ["startups", "funding"],
-    },
-    {
-        id: "8",
-        title: "Machine Learning for Beginners",
-        slug: "machine-learning-beginners",
-        excerpt: "A gentle introduction to machine learning concepts and practical applications.",
-        status: "published",
-        author: "Mike Johnson",
-        category: "Artificial Intelligence",
-        publishedAt: "2024-02-14T12:00:00Z",
-        views: 4200,
-        coverImage: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=1080",
-        tags: ["ml", "tutorial", "ai"],
-    },
-];
-
-const allCategories = ["Technology", "Finance", "Security", "Business", "Artificial Intelligence"];
-const allAuthors = ["John Doe", "Sarah Smith", "Mike Johnson", "Jane Wilson"];
+import {
+    useBlogPosts,
+    useBlogCategories,
+    useDeletePost,
+    usePublishPost,
+    useUnpublishPost,
+    type BlogPost,
+} from "@/hooks/use-blog";
 
 type ViewMode = "grid" | "table";
 type SortOption = "newest" | "oldest" | "views-high" | "views-low" | "title-az" | "title-za";
 
 export default function BlogPage() {
-    const { success, error } = useToast();
-    const [posts, setPosts] = React.useState<BlogPost[]>(initialPosts);
+    const { success, error: toastError } = useToast();
     const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
     const [selectedPost, setSelectedPost] = React.useState<BlogPost | null>(null);
-    const [isLoading, setIsLoading] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
     const [statusFilter, setStatusFilter] = React.useState("all");
 
@@ -181,51 +66,80 @@ export default function BlogPage() {
     const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
     const [isBulkLoading, setIsBulkLoading] = React.useState(false);
 
-    // Filter logic
+    // Build API filters from current filter state
+    const apiFilters = React.useMemo(() => {
+        const filters: Record<string, unknown> = {};
+        if (searchQuery) filters.search = searchQuery;
+        if (statusFilter !== "all") filters.status = statusFilter;
+        if (categoryFilter !== "all") filters.categorySlug = categoryFilter;
+        if (sortOption === "newest") {
+            filters.sortBy = "publishedAt";
+            filters.sortOrder = "DESC";
+        } else if (sortOption === "oldest") {
+            filters.sortBy = "publishedAt";
+            filters.sortOrder = "ASC";
+        } else if (sortOption === "views-high") {
+            filters.sortBy = "viewsCount";
+            filters.sortOrder = "DESC";
+        } else if (sortOption === "views-low") {
+            filters.sortBy = "viewsCount";
+            filters.sortOrder = "ASC";
+        } else if (sortOption === "title-az") {
+            filters.sortBy = "title";
+            filters.sortOrder = "ASC";
+        } else if (sortOption === "title-za") {
+            filters.sortBy = "title";
+            filters.sortOrder = "DESC";
+        }
+        return filters;
+    }, [searchQuery, statusFilter, categoryFilter, sortOption]);
+
+    // Fetch posts from backend
+    const { data: postsData, isLoading: isLoadingPosts, error: postsError } = useBlogPosts(apiFilters);
+    const posts = postsData?.items ?? [];
+
+    // Fetch categories for filter dropdown
+    const { data: categoriesData } = useBlogCategories();
+    const allCategories = categoriesData?.categories ?? [];
+
+    // Mutations
+    const deletePostMutation = useDeletePost();
+    const publishPostMutation = usePublishPost();
+    const unpublishPostMutation = useUnpublishPost();
+
+    // Client-side filtering for author and date (these may not be supported by backend filters)
     const filteredPosts = React.useMemo(() => {
-        let result = posts.filter((post) => {
-            const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                post.slug.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesStatus = statusFilter === "all" || post.status === statusFilter;
-            const matchesCategory = categoryFilter === "all" || post.category === categoryFilter;
-            const matchesAuthor = authorFilter === "all" || post.author === authorFilter;
+        let result = posts;
 
-            let matchesDateRange = true;
-            if (dateFrom && post.publishedAt) {
-                matchesDateRange = new Date(post.publishedAt) >= new Date(dateFrom);
-            }
-            if (dateTo && post.publishedAt) {
-                matchesDateRange = matchesDateRange && new Date(post.publishedAt) <= new Date(dateTo + "T23:59:59Z");
-            }
-            if ((dateFrom || dateTo) && !post.publishedAt) {
-                matchesDateRange = false;
-            }
+        if (authorFilter !== "all") {
+            result = result.filter((post) => post.author?.name === authorFilter);
+        }
 
-            return matchesSearch && matchesStatus && matchesCategory && matchesAuthor && matchesDateRange;
-        });
-
-        // Sort
-        result = [...result].sort((a, b) => {
-            switch (sortOption) {
-                case "newest":
-                    return (b.publishedAt || "").localeCompare(a.publishedAt || "");
-                case "oldest":
-                    return (a.publishedAt || "").localeCompare(b.publishedAt || "");
-                case "views-high":
-                    return b.views - a.views;
-                case "views-low":
-                    return a.views - b.views;
-                case "title-az":
-                    return a.title.localeCompare(b.title);
-                case "title-za":
-                    return b.title.localeCompare(a.title);
-                default:
-                    return 0;
-            }
-        });
+        if (dateFrom || dateTo) {
+            result = result.filter((post) => {
+                if (!post.publishedAt) return false;
+                let matches = true;
+                if (dateFrom) {
+                    matches = new Date(post.publishedAt) >= new Date(dateFrom);
+                }
+                if (dateTo && matches) {
+                    matches = new Date(post.publishedAt) <= new Date(dateTo + "T23:59:59Z");
+                }
+                return matches;
+            });
+        }
 
         return result;
-    }, [posts, searchQuery, statusFilter, categoryFilter, authorFilter, dateFrom, dateTo, sortOption]);
+    }, [posts, authorFilter, dateFrom, dateTo]);
+
+    // Extract unique authors from loaded posts for the author filter dropdown
+    const allAuthors = React.useMemo(() => {
+        const authorNames = new Set<string>();
+        posts.forEach((post) => {
+            if (post.author?.name) authorNames.add(post.author.name);
+        });
+        return Array.from(authorNames).sort();
+    }, [posts]);
 
     // Bulk selection helpers
     const isAllSelected = filteredPosts.length > 0 && filteredPosts.every((p) => selectedIds.has(p.id));
@@ -257,107 +171,62 @@ export default function BlogPage() {
 
     // Quick actions
     const handleQuickStatusToggle = (post: BlogPost) => {
-        const newStatus = post.status === "published" ? "draft" : "published";
-        setPosts((prev) =>
-            prev.map((p) =>
-                p.id === post.id
-                    ? {
-                        ...p,
-                        status: newStatus as "draft" | "published",
-                        publishedAt: newStatus === "published" ? new Date().toISOString() : null,
-                    }
-                    : p
-            )
-        );
-        success(
-            newStatus === "published" ? "Post published" : "Post unpublished",
-            `"${post.title}" has been ${newStatus === "published" ? "published" : "moved to draft"}.`
-        );
+        if (post.status === "published") {
+            unpublishPostMutation.mutate(post.id, {
+                onSuccess: () => {
+                    success("Post unpublished", `"${post.title}" has been moved to draft.`);
+                },
+                onError: () => {
+                    toastError("Error", "Failed to unpublish post.");
+                },
+            });
+        } else {
+            publishPostMutation.mutate(post.id, {
+                onSuccess: () => {
+                    success("Post published", `"${post.title}" has been published.`);
+                },
+                onError: () => {
+                    toastError("Error", "Failed to publish post.");
+                },
+            });
+        }
     };
 
-    const handleDuplicate = (post: BlogPost) => {
-        const duplicated: BlogPost = {
-            ...post,
-            id: `${post.id}-copy-${Date.now()}`,
-            title: `${post.title} (Copy)`,
-            slug: `${post.slug}-copy`,
-            status: "draft",
-            publishedAt: null,
-            views: 0,
-        };
-        setPosts((prev) => [duplicated, ...prev]);
-        success("Post duplicated", `"${post.title}" has been duplicated as a draft.`);
+    const handleDuplicate = (_post: BlogPost) => {
+        // Duplicate is a client-side convenience — we could POST a create with copied data
+        // For now, show a message since the backend doesn't have a dedicated duplicate endpoint
+        success("Feature coming soon", "Post duplication will be available soon.");
     };
 
     // Bulk action handler
-    const handleBulkAction = async (action: BulkAction, payload?: string) => {
+    const handleBulkAction = async (action: BulkAction, _payload?: string) => {
         setIsBulkLoading(true);
         try {
-            await new Promise((resolve) => setTimeout(resolve, 800));
+            const ids = Array.from(selectedIds);
 
             switch (action) {
                 case "publish":
-                    setPosts((prev) =>
-                        prev.map((p) =>
-                            selectedIds.has(p.id)
-                                ? { ...p, status: "published" as const, publishedAt: new Date().toISOString() }
-                                : p
-                        )
-                    );
-                    success("Posts published", `${selectedIds.size} posts have been published.`);
+                    await Promise.all(ids.map((id) => publishPostMutation.mutateAsync(id)));
+                    success("Posts published", `${ids.length} posts have been published.`);
                     break;
 
                 case "unpublish":
                 case "draft":
-                    setPosts((prev) =>
-                        prev.map((p) =>
-                            selectedIds.has(p.id) ? { ...p, status: "draft" as const, publishedAt: null } : p
-                        )
-                    );
-                    success("Posts moved to draft", `${selectedIds.size} posts have been moved to draft.`);
-                    break;
-
-                case "archive":
-                    setPosts((prev) =>
-                        prev.map((p) =>
-                            selectedIds.has(p.id) ? { ...p, status: "archived" as const } : p
-                        )
-                    );
-                    success("Posts archived", `${selectedIds.size} posts have been archived.`);
+                    await Promise.all(ids.map((id) => unpublishPostMutation.mutateAsync(id)));
+                    success("Posts moved to draft", `${ids.length} posts have been moved to draft.`);
                     break;
 
                 case "delete":
-                    setPosts((prev) => prev.filter((p) => !selectedIds.has(p.id)));
-                    success("Posts deleted", `${selectedIds.size} posts have been deleted.`);
+                    await Promise.all(ids.map((id) => deletePostMutation.mutateAsync(id)));
+                    success("Posts deleted", `${ids.length} posts have been deleted.`);
                     break;
 
-                case "change-category":
-                    if (payload) {
-                        setPosts((prev) =>
-                            prev.map((p) =>
-                                selectedIds.has(p.id) ? { ...p, category: payload } : p
-                            )
-                        );
-                        success("Category updated", `${selectedIds.size} posts moved to "${payload}".`);
-                    }
-                    break;
-
-                case "add-tags":
-                    if (payload) {
-                        setPosts((prev) =>
-                            prev.map((p) =>
-                                selectedIds.has(p.id)
-                                    ? { ...p, tags: [...new Set([...(p.tags || []), payload])] }
-                                    : p
-                            )
-                        );
-                        success("Tag added", `Tag "${payload}" added to ${selectedIds.size} posts.`);
-                    }
+                default:
                     break;
             }
             clearSelection();
         } catch {
-            error("Error", "Failed to perform bulk action.");
+            toastError("Error", "Failed to perform bulk action.");
         } finally {
             setIsBulkLoading(false);
         }
@@ -371,18 +240,16 @@ export default function BlogPage() {
     const handleConfirmDelete = async () => {
         if (!selectedPost) return;
 
-        setIsLoading(true);
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            setPosts((prev) => prev.filter((p) => p.id !== selectedPost.id));
-            success("Post deleted", "The blog post has been deleted successfully.");
-            setIsDeleteOpen(false);
-            setSelectedPost(null);
-        } catch {
-            error("Error", "Failed to delete blog post.");
-        } finally {
-            setIsLoading(false);
-        }
+        deletePostMutation.mutate(selectedPost.id, {
+            onSuccess: () => {
+                success("Post deleted", "The blog post has been deleted successfully.");
+                setIsDeleteOpen(false);
+                setSelectedPost(null);
+            },
+            onError: () => {
+                toastError("Error", "Failed to delete blog post.");
+            },
+        });
     };
 
     const clearFilters = () => {
@@ -402,6 +269,7 @@ export default function BlogPage() {
             published: "bg-green-100/90 text-green-700 dark:bg-green-900/80 dark:text-green-300",
             draft: "bg-zinc-100/90 text-zinc-700 dark:bg-zinc-700/80 dark:text-zinc-300",
             archived: "bg-red-100/90 text-red-700 dark:bg-red-900/80 dark:text-red-300",
+            scheduled: "bg-blue-100/90 text-blue-700 dark:bg-blue-900/80 dark:text-blue-300",
         };
         return (
             <span className={`px-2.5 py-1 text-xs font-medium rounded-full ${styles[status] || ""}`}>
@@ -529,7 +397,7 @@ export default function BlogPage() {
                                     <SelectContent>
                                         <SelectItem value="all">All Categories</SelectItem>
                                         {allCategories.map((cat) => (
-                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                            <SelectItem key={cat.id} value={cat.slug}>{cat.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -585,267 +453,143 @@ export default function BlogPage() {
                     )}
                 </div>
 
-                {/* Bulk select all header */}
-                {filteredPosts.length > 0 && (
-                    <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={isAllSelected}
-                                ref={(el) => {
-                                    if (el) el.indeterminate = isSomeSelected && !isAllSelected;
-                                }}
-                                onChange={toggleSelectAll}
-                                className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary"
-                            />
-                            <span className="font-medium">
-                                {isAllSelected ? "Deselect all" : "Select all"}
-                            </span>
-                        </label>
-                        <span className="text-zinc-400">
-                            {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
-                        </span>
-                        {selectedIds.size > 0 && (
-                            <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                                {selectedIds.size} selected
-                            </span>
-                        )}
+                {/* Loading state */}
+                {isLoadingPosts && (
+                    <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700">
+                        <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
+                        <p className="text-zinc-500 dark:text-zinc-400">Loading posts...</p>
                     </div>
                 )}
 
-                {/* Content: Grid or Table */}
-                {filteredPosts.length > 0 ? (
-                    viewMode === "grid" ? (
-                        /* Grid View */
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {filteredPosts.map((post) => (
-                                <div key={post.id} className="group relative flex flex-col bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden hover:shadow-lg transition-all duration-300">
-                                    {/* Checkbox */}
-                                    <div className="absolute top-3 left-3 z-10">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedIds.has(post.id)}
-                                            onChange={() => toggleSelectPost(post.id)}
-                                            className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary bg-white/80 backdrop-blur-sm cursor-pointer"
-                                        />
-                                    </div>
-
-                                    {/* Cover Image */}
-                                    <div className="relative aspect-video bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
-                                        {post.coverImage ? (
-                                            // eslint-disable-next-line @next/next/no-img-element
-                                            <img
-                                                src={post.coverImage}
-                                                alt={post.title}
-                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                                                <Eye className="h-8 w-8 opacity-50" />
-                                            </div>
-                                        )}
-
-                                        <div className="absolute top-3 right-3">
-                                            {getStatusBadge(post.status)}
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="flex-1 p-5 flex flex-col space-y-3">
-                                        <div className="flex-1 space-y-2">
-                                            <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                                                <span className="text-primary">{post.category}</span>
-                                                <span>&#8226;</span>
-                                                <span>{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : "Unpublished"}</span>
-                                            </div>
-                                            <h3 className="font-semibold text-lg text-zinc-900 dark:text-white line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-                                                {post.title}
-                                            </h3>
-                                            {post.excerpt && (
-                                                <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
-                                                    {post.excerpt}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        {/* Tags */}
-                                        {post.tags && post.tags.length > 0 && (
-                                            <div className="flex flex-wrap gap-1">
-                                                {post.tags.slice(0, 3).map((tag) => (
-                                                    <span key={tag} className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400">
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        {/* Footer */}
-                                        <div className="pt-4 mt-auto flex items-center justify-between border-t border-zinc-100 dark:border-zinc-700">
-                                            <div className="flex items-center gap-2 text-xs text-zinc-500">
-                                                <div className="h-6 w-6 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center">
-                                                    <User className="h-3 w-3" />
-                                                </div>
-                                                <span>{post.author}</span>
-                                                {post.views > 0 && (
-                                                    <>
-                                                        <span className="text-zinc-300 dark:text-zinc-600">&#8226;</span>
-                                                        <span className="flex items-center gap-1">
-                                                            <Eye className="h-3 w-3" />
-                                                            {post.views.toLocaleString()}
-                                                        </span>
-                                                    </>
-                                                )}
-                                            </div>
-
-                                            <div className="flex items-center gap-1">
-                                                <Link href={`/blog/${post.id}`} className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
-                                                    <Pencil className="h-4 w-4" />
-                                                </Link>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <button className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem onClick={() => handleQuickStatusToggle(post)}>
-                                                            {post.status === "published" ? (
-                                                                <>
-                                                                    <Eye className="mr-2 h-4 w-4" />
-                                                                    Unpublish
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <Check className="mr-2 h-4 w-4" />
-                                                                    Publish
-                                                                </>
-                                                            )}
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => handleDuplicate(post)}>
-                                                            <Copy className="mr-2 h-4 w-4" />
-                                                            Duplicate
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem asChild>
-                                                            <a
-                                                                href={`https://drkatangablog.com/blog/${post.slug}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                            >
-                                                                <ExternalLink className="mr-2 h-4 w-4" />
-                                                                View on Site
-                                                            </a>
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem
-                                                            className="text-red-600 focus:text-red-600"
-                                                            onClick={() => handleDelete(post)}
-                                                        >
-                                                            <Trash className="mr-2 h-4 w-4" />
-                                                            Delete
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                {/* Error state */}
+                {!isLoadingPosts && postsError && (
+                    <div className="text-center py-20 bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700">
+                        <div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4">
+                            <X className="h-6 w-6 text-red-500" />
                         </div>
-                    ) : (
-                        /* Table View */
-                        <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-700/50">
-                                            <th className="w-10 px-4 py-3">
+                        <h3 className="text-lg font-medium text-zinc-900 dark:text-white">Failed to load posts</h3>
+                        <p className="text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
+                            {postsError.message || "An error occurred while fetching posts."}
+                        </p>
+                    </div>
+                )}
+
+                {/* Content when loaded */}
+                {!isLoadingPosts && !postsError && (
+                    <>
+                        {/* Bulk select all header */}
+                        {filteredPosts.length > 0 && (
+                            <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={isAllSelected}
+                                        ref={(el) => {
+                                            if (el) el.indeterminate = isSomeSelected && !isAllSelected;
+                                        }}
+                                        onChange={toggleSelectAll}
+                                        className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary"
+                                    />
+                                    <span className="font-medium">
+                                        {isAllSelected ? "Deselect all" : "Select all"}
+                                    </span>
+                                </label>
+                                <span className="text-zinc-400">
+                                    {filteredPosts.length} post{filteredPosts.length !== 1 ? "s" : ""}
+                                </span>
+                                {selectedIds.size > 0 && (
+                                    <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+                                        {selectedIds.size} selected
+                                    </span>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Content: Grid or Table */}
+                        {filteredPosts.length > 0 ? (
+                            viewMode === "grid" ? (
+                                /* Grid View */
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {filteredPosts.map((post) => (
+                                        <div key={post.id} className="group relative flex flex-col bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden hover:shadow-lg transition-all duration-300">
+                                            {/* Checkbox */}
+                                            <div className="absolute top-3 left-3 z-10">
                                                 <input
                                                     type="checkbox"
-                                                    checked={isAllSelected}
-                                                    ref={(el) => {
-                                                        if (el) el.indeterminate = isSomeSelected && !isAllSelected;
-                                                    }}
-                                                    onChange={toggleSelectAll}
-                                                    className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary"
+                                                    checked={selectedIds.has(post.id)}
+                                                    onChange={() => toggleSelectPost(post.id)}
+                                                    className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary bg-white/80 backdrop-blur-sm cursor-pointer"
                                                 />
-                                            </th>
-                                            <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Title</th>
-                                            <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Status</th>
-                                            <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden md:table-cell">Category</th>
-                                            <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden lg:table-cell">Author</th>
-                                            <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden lg:table-cell">Date</th>
-                                            <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden lg:table-cell">Views</th>
-                                            <th className="text-right px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                                        {filteredPosts.map((post) => (
-                                            <tr key={post.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-700/30 transition-colors">
-                                                <td className="w-10 px-4 py-3">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedIds.has(post.id)}
-                                                        onChange={() => toggleSelectPost(post.id)}
-                                                        className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary"
+                                            </div>
+
+                                            {/* Cover Image */}
+                                            <div className="relative aspect-video bg-zinc-100 dark:bg-zinc-900 overflow-hidden">
+                                                {post.featuredImage ? (
+                                                    // eslint-disable-next-line @next/next/no-img-element
+                                                    <img
+                                                        src={post.featuredImage}
+                                                        alt={post.title}
+                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                                     />
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    <div className="flex items-center gap-3">
-                                                        {post.coverImage && (
-                                                            // eslint-disable-next-line @next/next/no-img-element
-                                                            <img
-                                                                src={post.coverImage}
-                                                                alt=""
-                                                                className="h-10 w-14 rounded object-cover flex-shrink-0 hidden sm:block"
-                                                            />
-                                                        )}
-                                                        <div className="min-w-0">
-                                                            <Link href={`/blog/${post.id}`} className="text-sm font-medium text-zinc-900 dark:text-white hover:text-primary transition-colors line-clamp-1">
-                                                                {post.title}
-                                                            </Link>
-                                                            <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">/{post.slug}</p>
-                                                        </div>
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                                                        <Eye className="h-8 w-8 opacity-50" />
                                                     </div>
-                                                </td>
-                                                <td className="px-4 py-3">
+                                                )}
+
+                                                <div className="absolute top-3 right-3">
                                                     {getStatusBadge(post.status)}
-                                                </td>
-                                                <td className="px-4 py-3 hidden md:table-cell">
-                                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">{post.category}</span>
-                                                </td>
-                                                <td className="px-4 py-3 hidden lg:table-cell">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="h-6 w-6 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center flex-shrink-0">
-                                                            <User className="h-3 w-3 text-zinc-500" />
-                                                        </div>
-                                                        <span className="text-sm text-zinc-600 dark:text-zinc-400">{post.author}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Content */}
+                                            <div className="flex-1 p-5 flex flex-col space-y-3">
+                                                <div className="flex-1 space-y-2">
+                                                    <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+                                                        <span className="text-primary">{post.category?.name ?? "Uncategorized"}</span>
+                                                        <span>&#8226;</span>
+                                                        <span>{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : "Unpublished"}</span>
                                                     </div>
-                                                </td>
-                                                <td className="px-4 py-3 hidden lg:table-cell">
-                                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                                                        {post.publishedAt
-                                                            ? new Date(post.publishedAt).toLocaleDateString()
-                                                            : "---"}
-                                                    </span>
-                                                </td>
-                                                <td className="px-4 py-3 hidden lg:table-cell">
-                                                    <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                                                        {post.views.toLocaleString()}
-                                                    </span>
-                                                </td>
-                                                <td className="px-4 py-3 text-right">
-                                                    <div className="flex items-center justify-end gap-1">
-                                                        <button
-                                                            onClick={() => handleQuickStatusToggle(post)}
-                                                            className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
-                                                            title={post.status === "published" ? "Unpublish" : "Publish"}
-                                                        >
-                                                            {post.status === "published" ? (
-                                                                <Eye className="h-4 w-4" />
-                                                            ) : (
-                                                                <Check className="h-4 w-4" />
-                                                            )}
-                                                        </button>
+                                                    <h3 className="font-semibold text-lg text-zinc-900 dark:text-white line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                                                        {post.title}
+                                                    </h3>
+                                                    {post.excerpt && (
+                                                        <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">
+                                                            {post.excerpt}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                {/* Tags */}
+                                                {post.tags && post.tags.length > 0 && (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {post.tags.slice(0, 3).map((tag) => (
+                                                            <span key={tag.id} className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-zinc-100 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400">
+                                                                {tag.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {/* Footer */}
+                                                <div className="pt-4 mt-auto flex items-center justify-between border-t border-zinc-100 dark:border-zinc-700">
+                                                    <div className="flex items-center gap-2 text-xs text-zinc-500">
+                                                        <div className="h-6 w-6 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center">
+                                                            <User className="h-3 w-3" />
+                                                        </div>
+                                                        <span>{post.author?.name ?? "Unknown"}</span>
+                                                        {post.viewsCount > 0 && (
+                                                            <>
+                                                                <span className="text-zinc-300 dark:text-zinc-600">&#8226;</span>
+                                                                <span className="flex items-center gap-1">
+                                                                    <Eye className="h-3 w-3" />
+                                                                    {post.viewsCount.toLocaleString()}
+                                                                </span>
+                                                            </>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="flex items-center gap-1">
                                                         <Link href={`/blog/${post.id}`} className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
                                                             <Pencil className="h-4 w-4" />
                                                         </Link>
@@ -856,6 +600,19 @@ export default function BlogPage() {
                                                                 </button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
+                                                                <DropdownMenuItem onClick={() => handleQuickStatusToggle(post)}>
+                                                                    {post.status === "published" ? (
+                                                                        <>
+                                                                            <Eye className="mr-2 h-4 w-4" />
+                                                                            Unpublish
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <Check className="mr-2 h-4 w-4" />
+                                                                            Publish
+                                                                        </>
+                                                                    )}
+                                                                </DropdownMenuItem>
                                                                 <DropdownMenuItem onClick={() => handleDuplicate(post)}>
                                                                     <Copy className="mr-2 h-4 w-4" />
                                                                     Duplicate
@@ -881,29 +638,166 @@ export default function BlogPage() {
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                /* Table View */
+                                <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full">
+                                            <thead>
+                                                <tr className="border-b border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-700/50">
+                                                    <th className="w-10 px-4 py-3">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isAllSelected}
+                                                            ref={(el) => {
+                                                                if (el) el.indeterminate = isSomeSelected && !isAllSelected;
+                                                            }}
+                                                            onChange={toggleSelectAll}
+                                                            className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary"
+                                                        />
+                                                    </th>
+                                                    <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Title</th>
+                                                    <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Status</th>
+                                                    <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden md:table-cell">Category</th>
+                                                    <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden lg:table-cell">Author</th>
+                                                    <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden lg:table-cell">Date</th>
+                                                    <th className="text-left px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider hidden lg:table-cell">Views</th>
+                                                    <th className="text-right px-4 py-3 text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+                                                {filteredPosts.map((post) => (
+                                                    <tr key={post.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-700/30 transition-colors">
+                                                        <td className="w-10 px-4 py-3">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedIds.has(post.id)}
+                                                                onChange={() => toggleSelectPost(post.id)}
+                                                                className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600 text-primary focus:ring-primary"
+                                                            />
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            <div className="flex items-center gap-3">
+                                                                {post.featuredImage && (
+                                                                    // eslint-disable-next-line @next/next/no-img-element
+                                                                    <img
+                                                                        src={post.featuredImage}
+                                                                        alt=""
+                                                                        className="h-10 w-14 rounded object-cover flex-shrink-0 hidden sm:block"
+                                                                    />
+                                                                )}
+                                                                <div className="min-w-0">
+                                                                    <Link href={`/blog/${post.id}`} className="text-sm font-medium text-zinc-900 dark:text-white hover:text-primary transition-colors line-clamp-1">
+                                                                        {post.title}
+                                                                    </Link>
+                                                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">/{post.slug}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-4 py-3">
+                                                            {getStatusBadge(post.status)}
+                                                        </td>
+                                                        <td className="px-4 py-3 hidden md:table-cell">
+                                                            <span className="text-sm text-zinc-600 dark:text-zinc-400">{post.category?.name ?? "Uncategorized"}</span>
+                                                        </td>
+                                                        <td className="px-4 py-3 hidden lg:table-cell">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="h-6 w-6 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center flex-shrink-0">
+                                                                    <User className="h-3 w-3 text-zinc-500" />
+                                                                </div>
+                                                                <span className="text-sm text-zinc-600 dark:text-zinc-400">{post.author?.name ?? "Unknown"}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-4 py-3 hidden lg:table-cell">
+                                                            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                                                                {post.publishedAt
+                                                                    ? new Date(post.publishedAt).toLocaleDateString()
+                                                                    : "---"}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-3 hidden lg:table-cell">
+                                                            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                                                                {post.viewsCount.toLocaleString()}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right">
+                                                            <div className="flex items-center justify-end gap-1">
+                                                                <button
+                                                                    onClick={() => handleQuickStatusToggle(post)}
+                                                                    className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                                                                    title={post.status === "published" ? "Unpublish" : "Publish"}
+                                                                >
+                                                                    {post.status === "published" ? (
+                                                                        <Eye className="h-4 w-4" />
+                                                                    ) : (
+                                                                        <Check className="h-4 w-4" />
+                                                                    )}
+                                                                </button>
+                                                                <Link href={`/blog/${post.id}`} className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+                                                                    <Pencil className="h-4 w-4" />
+                                                                </Link>
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <button className="p-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+                                                                            <MoreHorizontal className="h-4 w-4" />
+                                                                        </button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end">
+                                                                        <DropdownMenuItem onClick={() => handleDuplicate(post)}>
+                                                                            <Copy className="mr-2 h-4 w-4" />
+                                                                            Duplicate
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuItem asChild>
+                                                                            <a
+                                                                                href={`https://drkatangablog.com/blog/${post.slug}`}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                            >
+                                                                                <ExternalLink className="mr-2 h-4 w-4" />
+                                                                                View on Site
+                                                                            </a>
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuSeparator />
+                                                                        <DropdownMenuItem
+                                                                            className="text-red-600 focus:text-red-600"
+                                                                            onClick={() => handleDelete(post)}
+                                                                        >
+                                                                            <Trash className="mr-2 h-4 w-4" />
+                                                                            Delete
+                                                                        </DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            )
+                        ) : (
+                            <div className="text-center py-20 bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700">
+                                <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center mx-auto mb-4">
+                                    <Search className="h-6 w-6 text-zinc-400" />
+                                </div>
+                                <h3 className="text-lg font-medium text-zinc-900 dark:text-white">No posts found</h3>
+                                <p className="text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
+                                    Try adjusting your search or filters to find what you are looking for.
+                                </p>
+                                {hasActiveFilters && (
+                                    <Button variant="ghost" onClick={clearFilters} className="mt-4 text-primary">
+                                        Clear all filters
+                                    </Button>
+                                )}
                             </div>
-                        </div>
-                    )
-                ) : (
-                    <div className="text-center py-20 bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700">
-                        <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center mx-auto mb-4">
-                            <Search className="h-6 w-6 text-zinc-400" />
-                        </div>
-                        <h3 className="text-lg font-medium text-zinc-900 dark:text-white">No posts found</h3>
-                        <p className="text-zinc-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
-                            Try adjusting your search or filters to find what you are looking for.
-                        </p>
-                        {hasActiveFilters && (
-                            <Button variant="ghost" onClick={clearFilters} className="mt-4 text-primary">
-                                Clear all filters
-                            </Button>
                         )}
-                    </div>
+                    </>
                 )}
             </div>
 
@@ -921,7 +815,7 @@ export default function BlogPage() {
                 title="Delete Post"
                 description="Are you sure you want to delete this blog post? This action cannot be undone."
                 onConfirm={handleConfirmDelete}
-                isLoading={isLoading}
+                isLoading={deletePostMutation.isPending}
                 variant="danger"
             />
         </div>

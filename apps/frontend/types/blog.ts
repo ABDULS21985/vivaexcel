@@ -10,7 +10,14 @@
 export enum BlogPostStatus {
   DRAFT = 'draft',
   PUBLISHED = 'published',
+  SCHEDULED = 'scheduled',
   ARCHIVED = 'archived',
+}
+
+export enum BlogPostVisibility {
+  PUBLIC = 'public',
+  MEMBERS = 'members',
+  PAID = 'paid',
 }
 
 // -----------------------------------------------------------------------------
@@ -23,12 +30,14 @@ export interface BlogAuthor {
   avatar?: string;
   bio?: string;
   role?: string;
+  slug?: string;
 }
 
 export interface BlogTag {
   id: string;
   name: string;
   slug: string;
+  description?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -38,11 +47,15 @@ export interface BlogCategory {
   parentId?: string | null;
   name: string;
   slug: string;
+  description?: string;
+  image?: string;
   color?: string;
   sortOrder?: number;
   isActive?: boolean;
   parent?: BlogCategory | null;
   children?: BlogCategory[];
+  metaTitle?: string;
+  metaDescription?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -53,16 +66,32 @@ export interface BlogPost {
   categoryId?: string | null;
   title: string;
   slug: string;
+  subtitle?: string | null;
   excerpt?: string | null;
   content?: string | null;
   featuredImage?: string | null;
   status: BlogPostStatus;
+  visibility?: BlogPostVisibility;
   publishedAt?: string | null;
+  scheduledAt?: string | null;
   viewsCount: number;
   readingTime?: number;
+  wordCount?: number;
+  isFeatured?: boolean;
+  allowComments?: boolean;
+  noIndex?: boolean;
+  canonicalUrl?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string[];
   author?: BlogAuthor;
   category?: BlogCategory | null;
   tags?: BlogTag[];
+  // Content gating fields
+  paywalled?: boolean;
+  gated?: boolean;
+  requiresSubscription?: boolean;
+  minimumTier?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -79,6 +108,8 @@ export interface BlogPostPreview {
   featuredImage?: string | null;
   publishedAt?: string | null;
   readingTime?: number;
+  viewsCount?: number;
+  isFeatured?: boolean;
   author?: BlogAuthor;
   category?: BlogCategory | null;
   tags?: BlogTag[];
@@ -129,12 +160,33 @@ export interface BlogTagCloudProps {
 // API Response Types
 // -----------------------------------------------------------------------------
 
+/** Wraps all backend responses */
+export interface ApiResponseWrapper<T> {
+  status: 'success' | 'error';
+  message: string;
+  data?: T;
+  meta?: CursorMeta;
+}
+
+/** Cursor-based pagination metadata from the backend */
+export interface CursorMeta {
+  total?: number;
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
+  nextCursor?: string;
+  previousCursor?: string;
+}
+
+/** Paginated list response from the backend */
+export interface PaginatedResponse<T> {
+  items: T[];
+  meta: CursorMeta;
+}
+
+/** Blog posts paginated response */
 export interface BlogPostsResponse {
-  posts: BlogPostPreview[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  items: BlogPost[];
+  meta: CursorMeta;
 }
 
 export interface BlogCategoriesResponse {
@@ -152,15 +204,53 @@ export interface BlogTagsResponse {
 // -----------------------------------------------------------------------------
 
 export interface BlogPostFilters {
+  cursor?: string;
+  limit?: number;
   categorySlug?: string;
+  categoryId?: string;
   tagSlug?: string;
+  tagId?: string;
   authorId?: string;
   status?: BlogPostStatus;
   search?: string;
-  page?: number;
-  pageSize?: number;
-  sortBy?: 'publishedAt' | 'viewsCount' | 'title';
-  sortOrder?: 'asc' | 'desc';
+  isFeatured?: boolean;
+  sortBy?: string;
+  sortOrder?: 'ASC' | 'DESC';
+}
+
+// -----------------------------------------------------------------------------
+// Search Types
+// -----------------------------------------------------------------------------
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  headline?: string;
+  featuredImage?: string;
+  authorName?: string;
+  categoryName?: string;
+  categorySlug?: string;
+  publishedAt?: string;
+  rank?: number;
+}
+
+export interface SearchResponse {
+  results: SearchResult[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface SearchSuggestion {
+  title: string;
+  slug: string;
+}
+
+export interface PopularSearch {
+  query: string;
+  count: number;
 }
 
 // -----------------------------------------------------------------------------

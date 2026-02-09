@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import ImageExtension from "@tiptap/extension-image";
 import LinkExtension from "@tiptap/extension-link";
@@ -56,6 +56,8 @@ interface RichTextEditorProps {
     onChange?: (html: string) => void;
     placeholder?: string;
     className?: string;
+    onAiAction?: (action: string) => void;
+    onEditorReady?: (editor: Editor) => void;
 }
 
 // ---- Component ----
@@ -65,6 +67,8 @@ export function RichTextEditor({
     onChange,
     placeholder = "Start writing your post...",
     className,
+    onAiAction,
+    onEditorReady,
 }: RichTextEditorProps) {
     const [isSourceView, setIsSourceView] = React.useState(false);
     const [sourceHtml, setSourceHtml] = React.useState("");
@@ -160,6 +164,13 @@ export function RichTextEditor({
         immediatelyRender: false,
     });
 
+    // Notify parent about editor instance
+    React.useEffect(() => {
+        if (editor) {
+            onEditorReady?.(editor);
+        }
+    }, [editor, onEditorReady]);
+
     // Sync source view HTML when switching to source
     const handleToggleSource = React.useCallback(() => {
         if (!editor) return;
@@ -196,7 +207,7 @@ export function RichTextEditor({
             )}
         >
             {/* Toolbar */}
-            {!isSourceView && <EditorToolbar editor={editor} />}
+            {!isSourceView && <EditorToolbar editor={editor} onAiAction={onAiAction} />}
 
             {/* Source / Visual Toggle bar */}
             {isSourceView && (

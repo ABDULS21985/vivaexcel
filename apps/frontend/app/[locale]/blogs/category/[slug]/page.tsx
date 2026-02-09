@@ -11,13 +11,8 @@ import {
     FolderOpen,
     ArrowLeft,
 } from "lucide-react";
-import {
-    blogCategories,
-    getBlogCategoryBySlug,
-    getBlogPostsByCategory,
-    type BlogPostWithRelations,
-} from "@/data/blog";
-import { routing } from "@/i18n/routing";
+import { fetchPosts, fetchCategories } from "@/lib/blog-api";
+import type { BlogPost, BlogCategory } from "@/types/blog";
 import { JsonLd } from "@/components/shared/json-ld";
 import { generateBreadcrumbSchema } from "@/lib/schema";
 
@@ -30,13 +25,20 @@ type Props = {
 };
 
 // =============================================================================
-// Static Params
+// Helpers
 // =============================================================================
 
-export async function generateStaticParams() {
-    return blogCategories.map((cat) => ({
-        slug: cat.slug,
-    }));
+/** Resolve accent color from backend category (may be `color` or `accentColor`). */
+function getCategoryAccentColor(category: BlogCategory): string {
+    return (category as any).accentColor || category.color || "#1E4DB7";
+}
+
+function getInitials(name: string): string {
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) {
+        return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
 }
 
 // =============================================================================
@@ -45,7 +47,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
-    const category = getBlogCategoryBySlug(slug);
+    const categories = await fetchCategories();
+    const category = categories.find((c) => c.slug === slug);
 
     if (!category) {
         return { title: "Category Not Found | KTBlog" };
@@ -53,10 +56,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
         title: `${category.name} Articles | KTBlog`,
-        description: category.description,
+        description: category.description ?? "",
         openGraph: {
             title: `${category.name} Articles | KTBlog`,
-            description: category.description,
+            description: category.description ?? "",
             url: `https://drkatangablog.com/blogs/category/${slug}`,
             type: "website",
         },
@@ -70,18 +73,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const POSTS_PER_PAGE = 9;
 
 // =============================================================================
-// Helper: Get initials from name
-// =============================================================================
-
-function getInitials(name: string): string {
-    const parts = name.trim().split(" ");
-    if (parts.length >= 2) {
-        return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(0)}`.toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
-}
-
-// =============================================================================
 // Page Component
 // =============================================================================
 
@@ -89,15 +80,21 @@ export default async function CategoryPage({ params }: Props) {
     const { locale, slug } = await params;
     setRequestLocale(locale);
 
-    const category = getBlogCategoryBySlug(slug);
+    const [categories, postsResponse] = await Promise.all([
+        fetchCategories(),
+        fetchPosts({ categorySlug: slug, status: "published" as any, limit: 20 }),
+    ]);
+
+    const category = categories.find((c) => c.slug === slug);
 
     if (!category) {
         notFound();
     }
 
-    const posts = getBlogPostsByCategory(slug);
+    const posts = postsResponse.items;
     const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
     const paginatedPosts = posts.slice(0, POSTS_PER_PAGE);
+    const accentColor = getCategoryAccentColor(category);
 
     return (
         <>
@@ -112,7 +109,7 @@ export default async function CategoryPage({ params }: Props) {
                 <section
                     className="relative py-20 md:py-28 overflow-hidden"
                     style={{
-                        background: `linear-gradient(135deg, ${category.accentColor}20 0%, ${category.accentColor}05 50%, white 100%)`,
+                        background: `linear-gradient(135deg, ${accentColor}20 0%, ${accentColor}05 50%, white 100%)`,
                     }}
                 >
                     <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
@@ -145,13 +142,13 @@ export default async function CategoryPage({ params }: Props) {
                             <div className="flex items-center gap-3 mb-6">
                                 <div
                                     className="w-12 h-12 rounded-xl flex items-center justify-center"
-                                    style={{ backgroundColor: `${category.accentColor}15` }}
+                                    style={{ backgroundColor: `${accentColor}15` }}
                                 >
-                                    <FolderOpen className="h-6 w-6" style={{ color: category.accentColor }} />
+                                    <FolderOpen className="h-6 w-6" style={{ color: accentColor }} />
                                 </div>
                                 <span
                                     className="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider text-white"
-                                    style={{ backgroundColor: category.accentColor }}
+                                    style={{ backgroundColor: accentColor }}
                                 >
                                     {category.name}
                                 </span>
@@ -241,12 +238,14 @@ export default async function CategoryPage({ params }: Props) {
 // Post Card Component
 // =============================================================================
 
-function PostCard({ post }: { post: BlogPostWithRelations }) {
-    const formattedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-    });
+function PostCard({ post }: { post: BlogPost }) {
+    const formattedDate = post.publishedAt
+        ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+          })
+        : "";
 
     const gradients = [
         "from-blue-500 via-blue-600 to-indigo-600",
@@ -255,6 +254,10 @@ function PostCard({ post }: { post: BlogPostWithRelations }) {
         "from-purple-500 via-purple-600 to-pink-500",
         "from-amber-400 via-orange-500 to-red-500",
     ];
+
+    const categoryAccentColor = post.category
+        ? getCategoryAccentColor(post.category)
+        : "#1E4DB7";
 
     return (
         <Link
@@ -284,7 +287,7 @@ function PostCard({ post }: { post: BlogPostWithRelations }) {
                     <div className="absolute top-4 left-4">
                         <span
                             className="inline-flex px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-white shadow-lg"
-                            style={{ backgroundColor: post.category.accentColor }}
+                            style={{ backgroundColor: categoryAccentColor }}
                         >
                             {post.category.name}
                         </span>
@@ -341,7 +344,7 @@ function PostCard({ post }: { post: BlogPostWithRelations }) {
             <div
                 className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
                 style={{
-                    background: `linear-gradient(90deg, ${post.category?.accentColor || "#1E4DB7"} 0%, #F59A23 100%)`,
+                    background: `linear-gradient(90deg, ${categoryAccentColor} 0%, #F59A23 100%)`,
                 }}
             />
         </Link>

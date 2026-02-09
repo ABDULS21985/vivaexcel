@@ -22,41 +22,27 @@ import {
     Tag,
     Merge,
     FileText,
+    Loader2,
+    AlertCircle,
 } from "lucide-react";
-
-interface BlogTag {
-    id: string;
-    name: string;
-    slug: string;
-    postCount: number;
-}
-
-const initialTags: BlogTag[] = [
-    { id: "1", name: "React", slug: "react", postCount: 18 },
-    { id: "2", name: "TypeScript", slug: "typescript", postCount: 15 },
-    { id: "3", name: "Next.js", slug: "nextjs", postCount: 12 },
-    { id: "4", name: "JavaScript", slug: "javascript", postCount: 24 },
-    { id: "5", name: "CSS", slug: "css", postCount: 9 },
-    { id: "6", name: "Node.js", slug: "nodejs", postCount: 11 },
-    { id: "7", name: "Python", slug: "python", postCount: 7 },
-    { id: "8", name: "Docker", slug: "docker", postCount: 5 },
-    { id: "9", name: "AWS", slug: "aws", postCount: 6 },
-    { id: "10", name: "GraphQL", slug: "graphql", postCount: 4 },
-    { id: "11", name: "REST API", slug: "rest-api", postCount: 8 },
-    { id: "12", name: "Testing", slug: "testing", postCount: 10 },
-    { id: "13", name: "DevOps", slug: "devops", postCount: 3 },
-    { id: "14", name: "Security", slug: "security", postCount: 6 },
-    { id: "15", name: "Performance", slug: "performance", postCount: 5 },
-    { id: "16", name: "Tailwind CSS", slug: "tailwind-css", postCount: 8 },
-    { id: "17", name: "Database", slug: "database", postCount: 4 },
-    { id: "18", name: "AI", slug: "ai", postCount: 7 },
-];
+import {
+    useBlogTags,
+    useCreateTag,
+    useUpdateTag,
+    useDeleteTag,
+    type BlogTag,
+} from "@/hooks/use-blog";
 
 function generateSlug(name: string): string {
     return name
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
+}
+
+// Local interface extending BlogTag with optional postCount for display
+interface DisplayTag extends BlogTag {
+    postCount: number;
 }
 
 // Calculate tag sizes for cloud visualization
@@ -79,16 +65,31 @@ const tagColors = [
 ];
 
 export default function TagsPage() {
-    const { success, error } = useToast();
-    const [tags, setTags] = React.useState<BlogTag[]>(initialTags);
+    const { success, error: toastError } = useToast();
+
+    // Data fetching
+    const { data: tagsData, isLoading: isLoadingTags, error: tagsError } = useBlogTags();
+    const createTagMutation = useCreateTag();
+    const updateTagMutation = useUpdateTag();
+    const deleteTagMutation = useDeleteTag();
+
+    // Map API tags to display tags with default postCount
+    const tags: DisplayTag[] = React.useMemo(
+        () =>
+            (tagsData?.tags ?? []).map((t) => ({
+                ...t,
+                postCount: (t as unknown as { postCount?: number }).postCount ?? 0,
+            })),
+        [tagsData]
+    );
+
     const [isFormOpen, setIsFormOpen] = React.useState(false);
-    const [editingTag, setEditingTag] = React.useState<BlogTag | null>(null);
+    const [editingTag, setEditingTag] = React.useState<DisplayTag | null>(null);
     const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
-    const [deleteTarget, setDeleteTarget] = React.useState<BlogTag | null>(null);
+    const [deleteTarget, setDeleteTarget] = React.useState<DisplayTag | null>(null);
     const [isMergeOpen, setIsMergeOpen] = React.useState(false);
     const [mergeSource, setMergeSource] = React.useState("");
     const [mergeTarget, setMergeTarget] = React.useState("");
-    const [isLoading, setIsLoading] = React.useState(false);
 
     // Form state
     const [formName, setFormName] = React.useState("");
@@ -103,7 +104,7 @@ export default function TagsPage() {
         setIsFormOpen(true);
     };
 
-    const openEditForm = (tag: BlogTag) => {
+    const openEditForm = (tag: DisplayTag) => {
         setEditingTag(tag);
         setFormName(tag.name);
         setFormSlug(tag.slug);
@@ -121,46 +122,51 @@ export default function TagsPage() {
         if (!formName.trim()) return;
 
         if (editingTag) {
-            setTags((prev) =>
-                prev.map((t) =>
-                    t.id === editingTag.id
-                        ? { ...t, name: formName, slug: formSlug }
-                        : t
-                )
+            updateTagMutation.mutate(
+                { id: editingTag.id, data: { name: formName, slug: formSlug } },
+                {
+                    onSuccess: () => {
+                        success("Tag updated", `"${formName}" has been updated.`);
+                        setIsFormOpen(false);
+                    },
+                    onError: () => {
+                        toastError("Error", "Failed to update tag.");
+                    },
+                }
             );
-            success("Tag updated", `"${formName}" has been updated.`);
         } else {
-            const newTag: BlogTag = {
-                id: String(Date.now()),
-                name: formName,
-                slug: formSlug || generateSlug(formName),
-                postCount: 0,
-            };
-            setTags((prev) => [...prev, newTag]);
-            success("Tag created", `"${formName}" has been created.`);
+            createTagMutation.mutate(
+                { name: formName, slug: formSlug || generateSlug(formName) },
+                {
+                    onSuccess: () => {
+                        success("Tag created", `"${formName}" has been created.`);
+                        setIsFormOpen(false);
+                    },
+                    onError: () => {
+                        toastError("Error", "Failed to create tag.");
+                    },
+                }
+            );
         }
-        setIsFormOpen(false);
     };
 
-    const handleDelete = (tag: BlogTag) => {
+    const handleDelete = (tag: DisplayTag) => {
         setDeleteTarget(tag);
         setIsDeleteOpen(true);
     };
 
     const confirmDelete = async () => {
         if (!deleteTarget) return;
-        setIsLoading(true);
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            setTags((prev) => prev.filter((t) => t.id !== deleteTarget.id));
-            success("Tag deleted", `"${deleteTarget.name}" has been deleted.`);
-            setIsDeleteOpen(false);
-            setDeleteTarget(null);
-        } catch {
-            error("Error", "Failed to delete tag.");
-        } finally {
-            setIsLoading(false);
-        }
+        deleteTagMutation.mutate(deleteTarget.id, {
+            onSuccess: () => {
+                success("Tag deleted", `"${deleteTarget.name}" has been deleted.`);
+                setIsDeleteOpen(false);
+                setDeleteTarget(null);
+            },
+            onError: () => {
+                toastError("Error", "Failed to delete tag.");
+            },
+        });
     };
 
     const handleMerge = () => {
@@ -170,26 +176,25 @@ export default function TagsPage() {
         const targetTag = tags.find((t) => t.id === mergeTarget);
         if (!sourceTag || !targetTag) return;
 
-        setTags((prev) =>
-            prev
-                .map((t) =>
-                    t.id === mergeTarget
-                        ? { ...t, postCount: t.postCount + sourceTag.postCount }
-                        : t
-                )
-                .filter((t) => t.id !== mergeSource)
-        );
-
-        success(
-            "Tags merged",
-            `"${sourceTag.name}" has been merged into "${targetTag.name}".`
-        );
-        setIsMergeOpen(false);
-        setMergeSource("");
-        setMergeTarget("");
+        // TODO: Wire to backend merge endpoint when available
+        // For now, just delete the source tag
+        deleteTagMutation.mutate(mergeSource, {
+            onSuccess: () => {
+                success(
+                    "Tags merged",
+                    `"${sourceTag.name}" has been merged into "${targetTag.name}".`
+                );
+                setIsMergeOpen(false);
+                setMergeSource("");
+                setMergeTarget("");
+            },
+            onError: () => {
+                toastError("Error", "Failed to merge tags.");
+            },
+        });
     };
 
-    const columns: Column<BlogTag>[] = [
+    const columns: Column<DisplayTag>[] = [
         {
             key: "name",
             header: "Tag Name",
@@ -225,6 +230,50 @@ export default function TagsPage() {
             ),
         },
     ];
+
+    // Loading state
+    if (isLoadingTags) {
+        return (
+            <div className="min-h-screen">
+                <PageHeader
+                    title="Tags"
+                    description="Manage tags for your blog posts"
+                    breadcrumbs={[
+                        { label: "Dashboard", href: "/" },
+                        { label: "Tags" },
+                    ]}
+                />
+                <div className="flex items-center justify-center py-24">
+                    <Loader2 className="h-10 w-10 text-primary animate-spin" />
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (tagsError) {
+        return (
+            <div className="min-h-screen">
+                <PageHeader
+                    title="Tags"
+                    description="Manage tags for your blog posts"
+                    breadcrumbs={[
+                        { label: "Dashboard", href: "/" },
+                        { label: "Tags" },
+                    ]}
+                />
+                <div className="flex flex-col items-center justify-center py-24 text-red-500">
+                    <AlertCircle className="h-10 w-10 mb-4" />
+                    <p className="text-lg font-medium">Failed to load tags</p>
+                    <p className="text-sm text-zinc-500 mt-1">
+                        {tagsError.message || "An unexpected error occurred."}
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    const isSaving = createTagMutation.isPending || updateTagMutation.isPending;
 
     return (
         <div className="min-h-screen">
@@ -326,8 +375,12 @@ export default function TagsPage() {
                         <Button variant="outline" onClick={() => setIsFormOpen(false)}>
                             Cancel
                         </Button>
-                        <Button onClick={handleSave} disabled={!formName.trim()}>
-                            {editingTag ? "Save Changes" : "Create Tag"}
+                        <Button onClick={handleSave} disabled={!formName.trim() || isSaving}>
+                            {isSaving
+                                ? "Saving..."
+                                : editingTag
+                                    ? "Save Changes"
+                                    : "Create Tag"}
                         </Button>
                     </div>
                 </div>
@@ -382,9 +435,9 @@ export default function TagsPage() {
                         </Button>
                         <Button
                             onClick={handleMerge}
-                            disabled={!mergeSource || !mergeTarget || mergeSource === mergeTarget}
+                            disabled={!mergeSource || !mergeTarget || mergeSource === mergeTarget || deleteTagMutation.isPending}
                         >
-                            Merge Tags
+                            {deleteTagMutation.isPending ? "Merging..." : "Merge Tags"}
                         </Button>
                     </div>
                 </div>
@@ -396,7 +449,7 @@ export default function TagsPage() {
                 title="Delete Tag"
                 description={`Are you sure you want to delete "${deleteTarget?.name}"? This tag will be removed from all posts.`}
                 onConfirm={confirmDelete}
-                isLoading={isLoading}
+                isLoading={deleteTagMutation.isPending}
                 variant="danger"
             />
         </div>

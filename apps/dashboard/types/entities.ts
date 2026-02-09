@@ -81,7 +81,7 @@ export interface Post {
     category: PostCategory;
     tag?: PostTag;
     author: PostAuthor;
-    status: "draft" | "published" | "archived";
+    status: "draft" | "published" | "scheduled" | "archived";
     publishedAt?: string;
     readingTime?: number;
     views?: number;
@@ -119,7 +119,7 @@ export interface CreatePostDto {
     categoryId: string;
     tagId?: string;
     authorId: string;
-    status?: "draft" | "published" | "archived";
+    status?: "draft" | "published" | "scheduled" | "archived";
     publishedAt?: string;
 }
 
