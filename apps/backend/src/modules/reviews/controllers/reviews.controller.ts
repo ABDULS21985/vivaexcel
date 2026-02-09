@@ -22,13 +22,19 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { ReviewsService } from '../services/reviews.service';
+import { CreateReviewDto } from '../dto/create-review.dto';
+import { UpdateReviewDto } from '../dto/update-review.dto';
+import { CreateReviewVoteDto } from '../dto/create-review-vote.dto';
+import { CreateReviewReportDto } from '../dto/create-review-report.dto';
+import { SellerResponseDto } from '../dto/seller-response.dto';
+import { ModerateReviewDto } from '../dto/moderate-review.dto';
+import { ReviewSortBy } from '../dto/review-query.dto';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { Public } from '../../../common/decorators/public.decorator';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { RolesGuard } from '../../../common/guards/roles.guard';
 import { PermissionsGuard } from '../../../common/guards/permissions.guard';
 import { Role } from '../../../common/constants/roles.constant';
-import { ReviewSortBy } from '../enums/review.enums';
 
 @ApiTags('Reviews')
 @Controller('reviews')
@@ -140,7 +146,7 @@ export class ReviewsController {
   @SwaggerResponse({ status: 409, description: 'User already reviewed this product' })
   async createReview(
     @CurrentUser('sub') userId: string,
-    @Body() dto: { digitalProductId: string; rating: number; title: string; content: string },
+    @Body() dto: CreateReviewDto,
   ) {
     return this.reviewsService.createReview(userId, dto);
   }
@@ -155,7 +161,7 @@ export class ReviewsController {
   async updateReview(
     @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: { rating?: number; title?: string; content?: string },
+    @Body() dto: UpdateReviewDto,
   ) {
     return this.reviewsService.updateReview(userId, id, dto);
   }
@@ -171,9 +177,9 @@ export class ReviewsController {
   async voteOnReview(
     @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: { type: string },
+    @Body() dto: CreateReviewVoteDto,
   ) {
-    return this.reviewsService.voteOnReview(userId, id, dto as any);
+    return this.reviewsService.voteOnReview(userId, id, dto);
   }
 
   @Post(':id/report')
@@ -186,9 +192,9 @@ export class ReviewsController {
   async reportReview(
     @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: { reason: string; description?: string },
+    @Body() dto: CreateReviewReportDto,
   ) {
-    return this.reviewsService.reportReview(userId, id, dto as any);
+    return this.reviewsService.reportReview(userId, id, dto);
   }
 
   @Post(':id/respond')
@@ -202,7 +208,7 @@ export class ReviewsController {
   async addSellerResponse(
     @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: { sellerResponse: string },
+    @Body() dto: SellerResponseDto,
   ) {
     return this.reviewsService.addSellerResponse(userId, id, dto);
   }
@@ -220,8 +226,8 @@ export class ReviewsController {
   @SwaggerResponse({ status: 404, description: 'Review not found' })
   async moderateReview(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: { status: string; moderationNote?: string },
+    @Body() dto: ModerateReviewDto,
   ) {
-    return this.reviewsService.moderateReview(id, dto as any);
+    return this.reviewsService.moderateReview(id, dto);
   }
 }

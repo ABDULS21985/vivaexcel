@@ -3,7 +3,6 @@ import {
   NotFoundException,
   ConflictException,
   ForbiddenException,
-  BadRequestException,
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,13 +11,18 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import Anthropic from '@anthropic-ai/sdk';
 import { ReviewsRepository, ReviewQueryOptions } from '../reviews.repository';
 import { CacheService } from '../../../common/cache/cache.service';
+import { CreateReviewDto } from '../dto/create-review.dto';
+import { UpdateReviewDto } from '../dto/update-review.dto';
+import { SellerResponseDto } from '../dto/seller-response.dto';
+import { CreateReviewVoteDto } from '../dto/create-review-vote.dto';
+import { CreateReviewReportDto } from '../dto/create-review-report.dto';
+import { ModerateReviewDto } from '../dto/moderate-review.dto';
 import { Review } from '../../../entities/review.entity';
 import { DigitalProduct } from '../../../entities/digital-product.entity';
 import { ApiResponse, PaginatedResponse } from '../../../common/interfaces/response.interface';
 import {
   ReviewStatus,
   VoteType,
-  ReportReason,
   ReportStatus,
 } from '../enums/review.enums';
 
@@ -34,38 +38,6 @@ interface AiModerationResult {
   qualityScore: number;
   flags: string[];
   reason: string;
-}
-
-// DTO interfaces (will be replaced by actual DTO imports when DTOs are created)
-interface CreateReviewDto {
-  digitalProductId: string;
-  rating: number;
-  title: string;
-  content: string;
-}
-
-interface UpdateReviewDto {
-  rating?: number;
-  title?: string;
-  content?: string;
-}
-
-interface SellerResponseDto {
-  sellerResponse: string;
-}
-
-interface VoteDto {
-  type: VoteType;
-}
-
-interface ReportDto {
-  reason: ReportReason;
-  description?: string;
-}
-
-interface ModerateReviewDto {
-  status: ReviewStatus.APPROVED | ReviewStatus.REJECTED;
-  moderationNote?: string;
 }
 
 @Injectable()
@@ -114,20 +86,20 @@ export class ReviewsService {
       dto.digitalProductId,
     );
 
-    // Validate rating range
-    if (dto.rating < 1 || dto.rating > 5) {
-      throw new BadRequestException('Rating must be between 1 and 5');
-    }
-
-    // Create the review with PENDING status
+    // Create the review with PENDING_MODERATION status
     const review = await this.repository.create({
       userId,
       digitalProductId: dto.digitalProductId,
+      orderId: dto.orderId,
       rating: dto.rating,
       title: dto.title,
-      content: dto.content,
+      body: dto.body,
+      pros: dto.pros || [],
+      cons: dto.cons || [],
+      images: dto.images || [],
+      metadata: dto.metadata,
       isVerifiedPurchase,
-      status: ReviewStatus.PENDING,
+      status: ReviewStatus.PENDING_MODERATION,
       helpfulCount: 0,
       notHelpfulCount: 0,
     });
@@ -178,15 +150,15 @@ export class ReviewsService {
       throw new ForbiddenException('You can only update your own reviews');
     }
 
-    // Validate rating if provided
-    if (dto.rating !== undefined && (dto.rating < 1 || dto.rating > 5)) {
-      throw new BadRequestException('Rating must be between 1 and 5');
-    }
-
     const updated = await this.repository.update(reviewId, {
-      ...dto,
+      ...(dto.rating !== undefined && { rating: dto.rating }),
+      ...(dto.title !== undefined && { title: dto.title }),
+      ...(dto.body !== undefined && { body: dto.body }),
+      ...(dto.pros !== undefined && { pros: dto.pros }),
+      ...(dto.cons !== undefined && { cons: dto.cons }),
+      ...(dto.images !== undefined && { images: dto.images }),
       editedAt: new Date(),
-      status: ReviewStatus.PENDING, // Re-set to pending for re-moderation
+      status: ReviewStatus.PENDING_MODERATION, // Re-set to pending for re-moderation
     });
 
     // Re-run AI moderation
@@ -248,7 +220,7 @@ export class ReviewsService {
     }
 
     const updated = await this.repository.update(reviewId, {
-      sellerResponse: dto.sellerResponse,
+      sellerResponse: dto.response,
       sellerRespondedAt: new Date(),
     });
 
@@ -274,7 +246,7 @@ export class ReviewsService {
   async voteOnReview(
     userId: string,
     reviewId: string,
-    dto: VoteDto,
+    dto: CreateReviewVoteDto,
   ): Promise<ApiResponse<Review>> {
     const review = await this.repository.findById(reviewId);
     if (!review) {
@@ -292,18 +264,18 @@ export class ReviewsService {
     let notHelpfulDelta = 0;
 
     if (existingVote) {
-      if (existingVote.type === dto.type) {
+      if (existingVote.voteType === dto.voteType) {
         // Same vote — toggle off (remove vote)
         await this.repository.deleteVote(existingVote.id);
-        if (dto.type === VoteType.HELPFUL) {
+        if (dto.voteType === VoteType.HELPFUL) {
           helpfulDelta = -1;
         } else {
           notHelpfulDelta = -1;
         }
       } else {
         // Opposite vote — flip it
-        await this.repository.updateVote(existingVote.id, { type: dto.type });
-        if (dto.type === VoteType.HELPFUL) {
+        await this.repository.updateVote(existingVote.id, { voteType: dto.voteType });
+        if (dto.voteType === VoteType.HELPFUL) {
           helpfulDelta = 1;
           notHelpfulDelta = -1;
         } else {
@@ -316,9 +288,9 @@ export class ReviewsService {
       await this.repository.createVote({
         reviewId,
         userId,
-        type: dto.type,
+        voteType: dto.voteType,
       });
-      if (dto.type === VoteType.HELPFUL) {
+      if (dto.voteType === VoteType.HELPFUL) {
         helpfulDelta = 1;
       } else {
         notHelpfulDelta = 1;
@@ -352,7 +324,7 @@ export class ReviewsService {
   async reportReview(
     userId: string,
     reviewId: string,
-    dto: ReportDto,
+    dto: CreateReviewReportDto,
   ): Promise<ApiResponse<null>> {
     const review = await this.repository.findById(reviewId);
     if (!review) {
@@ -364,7 +336,7 @@ export class ReviewsService {
       reviewId,
       reportedBy: userId,
       reason: dto.reason,
-      description: dto.description,
+      details: dto.details,
       status: ReportStatus.PENDING,
     });
 
@@ -481,10 +453,17 @@ export class ReviewsService {
       throw new NotFoundException(`Review with ID "${reviewId}" not found`);
     }
 
+    // Store moderation info in metadata since entity doesn't have dedicated columns
+    const moderationMetadata = {
+      ...(review.metadata || {}),
+      moderationDecision: dto.status,
+      moderationReason: dto.reason,
+      moderatedAt: new Date().toISOString(),
+    };
+
     const updated = await this.repository.update(reviewId, {
       status: dto.status,
-      moderationNote: dto.moderationNote,
-      moderatedAt: new Date(),
+      metadata: moderationMetadata,
     });
 
     // If approved, trigger rating recalculation
@@ -502,7 +481,7 @@ export class ReviewsService {
       `review:${reviewId}`,
     ]);
     this.logger.log(
-      `Review ${reviewId} moderated: ${dto.status}${dto.moderationNote ? ` — ${dto.moderationNote}` : ''}`,
+      `Review ${reviewId} moderated: ${dto.status}${dto.reason ? ` — ${dto.reason}` : ''}`,
     );
 
     return {
@@ -576,9 +555,11 @@ export class ReviewsService {
     const prompt = `You are a content moderation AI for a digital product marketplace. Analyze the following product review and determine if it should be approved or rejected.
 
 Review Title: ${review.title}
-Review Content: ${review.content}
+Review Body: ${review.body}
 Rating: ${review.rating}/5
 Verified Purchase: ${review.isVerifiedPurchase ? 'Yes' : 'No'}
+Pros: ${review.pros?.join(', ') || 'None listed'}
+Cons: ${review.cons?.join(', ') || 'None listed'}
 
 Evaluate the review based on these criteria:
 1. Is the content appropriate (no hate speech, harassment, or explicit content)?
@@ -692,11 +673,22 @@ Respond with ONLY a valid JSON object (no markdown, no code blocks):
   private async runAiModerationAndUpdate(review: Review): Promise<void> {
     const result = await this.aiModerateReview(review);
 
+    // Store AI moderation info in metadata
+    const moderationMetadata = {
+      ...(review.metadata || {}),
+      aiModeration: {
+        shouldApprove: result.shouldApprove,
+        qualityScore: result.qualityScore,
+        flags: result.flags,
+        reason: result.reason,
+        moderatedAt: new Date().toISOString(),
+      },
+    };
+
     if (result.shouldApprove && result.qualityScore >= 30) {
       await this.repository.update(review.id, {
         status: ReviewStatus.APPROVED,
-        moderationNote: `Auto-approved by AI: ${result.reason} (score: ${result.qualityScore})`,
-        moderatedAt: new Date(),
+        metadata: moderationMetadata,
       });
 
       // Trigger rating recalculation after auto-approval
@@ -705,15 +697,15 @@ Respond with ONLY a valid JSON object (no markdown, no code blocks):
         reviewId: review.id,
       });
     } else {
-      // Keep as pending for manual review, but add AI notes
+      // Keep as pending for manual review or flag if AI flagged issues
       const newStatus =
         result.flags.length > 0 && !result.shouldApprove
           ? ReviewStatus.FLAGGED
-          : ReviewStatus.PENDING;
+          : ReviewStatus.PENDING_MODERATION;
 
       await this.repository.update(review.id, {
         status: newStatus,
-        moderationNote: `AI moderation: ${result.reason} (score: ${result.qualityScore}, flags: ${result.flags.join(', ') || 'none'})`,
+        metadata: moderationMetadata,
       });
     }
 
