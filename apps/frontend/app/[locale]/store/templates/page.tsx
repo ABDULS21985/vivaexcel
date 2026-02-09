@@ -407,7 +407,7 @@ export default async function TemplatesPage({ params }: Props) {
 
           {/* Horizontal Scroll of Framework Cards */}
           <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-4 scrollbar-hide">
-            {frameworkEntries.map(([key, label], idx) => {
+            {frameworkEntries.map(([key, label]) => {
               const color = FRAMEWORK_COLORS[key] || "#6B7280";
               return (
                 <Link
@@ -559,9 +559,6 @@ export default async function TemplatesPage({ params }: Props) {
                 <Link
                   href="/store/templates"
                   className="btn-premium inline-flex items-center gap-2"
-                  onClick={() => {
-                    // Scroll handled by anchor
-                  }}
                 >
                   <Rocket className="h-5 w-5" />
                   Browse All Templates

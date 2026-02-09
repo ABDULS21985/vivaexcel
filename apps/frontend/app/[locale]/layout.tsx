@@ -21,6 +21,8 @@ import { GoogleAnalytics } from "../../components/analytics";
 import { JsonLd } from "../../components/shared/json-ld";
 import { generateOrganizationSchema, generateWebSiteSchema } from "../../lib/schema";
 import { PageContentWrapper } from "../../components/layout/page-content-wrapper";
+import { ServiceWorkerRegister, InstallPrompt } from "../../components/pwa";
+import { MobileBottomNav, MobileTopBar } from "../../components/mobile";
 import "../globals.css";
 
 // Noto Sans Arabic for RTL support
@@ -58,37 +60,37 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "KTBlog — Insights, Tutorials & Expert Knowledge",
+  title: "VivaExcel — Digital Products Marketplace",
   description:
-    "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
+    "Premium digital products marketplace — Excel templates, Google Sheets, presentations, and more.",
   openGraph: {
-    title: "KTBlog — Insights, Tutorials & Expert Knowledge",
+    title: "VivaExcel — Digital Products Marketplace",
     description:
-      "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
+      "Premium digital products marketplace — Excel templates, Google Sheets, presentations, and more.",
     type: "website",
-    siteName: "KTBlog",
+    siteName: "VivaExcel",
     url: "https://drkatangablog.com",
     images: [
       {
         url: "/api/og?type=default",
         width: 1200,
         height: 630,
-        alt: "KTBlog — Insights, Tutorials & Expert Knowledge",
+        alt: "VivaExcel — Digital Products Marketplace",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KTBlog — Insights, Tutorials & Expert Knowledge",
+    title: "VivaExcel — Digital Products Marketplace",
     description:
-      "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
+      "Premium digital products marketplace — Excel templates, Google Sheets, presentations, and more.",
     images: [
       {
         url: "/api/og?type=default",
         width: 1200,
         height: 630,
-        alt: "KTBlog — Insights, Tutorials & Expert Knowledge",
+        alt: "VivaExcel — Digital Products Marketplace",
       },
     ],
   },
@@ -125,13 +127,13 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link
           rel="alternate"
           type="application/rss+xml"
-          title="KTBlog RSS Feed"
+          title="VivaExcel RSS Feed"
           href="/rss.xml"
         />
         <link
           rel="alternate"
           type="application/atom+xml"
-          title="KTBlog Atom Feed"
+          title="VivaExcel Atom Feed"
           href="/atom.xml"
         />
 
@@ -162,10 +164,11 @@ export default async function LocaleLayout({ children, params }: Props) {
                   <ScrollProgress />
 
                   <CartDrawer />
+                  <MobileTopBar />
                   <BlogNavbar />
                   <main
                     id="main-content"
-                    className="flex-1"
+                    className="flex-1 pb-16 lg:pb-0"
                     tabIndex={-1}
                     role="main"
                     aria-label="Main content"
@@ -178,6 +181,13 @@ export default async function LocaleLayout({ children, params }: Props) {
 
                   {/* Back to Top Button */}
                   <BackToTop />
+
+                  {/* Mobile Bottom Navigation — visible only on mobile (<lg) */}
+                  <MobileBottomNav />
+
+                  {/* PWA: Service Worker Registration & Install Prompt */}
+                  <ServiceWorkerRegister />
+                  <InstallPrompt />
                 </NextIntlClientProvider>
               </SoundProvider>
             </GSAPProvider>

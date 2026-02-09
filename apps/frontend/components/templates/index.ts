@@ -11,3 +11,5 @@ export { RelatedTemplates } from './related-templates';
 export { TemplateManagementClient } from './template-management-client';
 export { TemplateCreationWizard } from './template-creation-wizard';
 export { TemplateEditForm } from './template-edit-form';
+export { CopyCodeButton } from './copy-code-button';
+export { SetupGuide } from './setup-guide';
