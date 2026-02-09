@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { Tag, Zap, Crown } from "lucide-react";
+import { useCurrency } from "@/providers/currency-provider";
+import { useFormat } from "@/hooks/use-format";
 
 // =============================================================================
 // Types
@@ -25,16 +27,6 @@ interface ProductPricingDisplayProps {
 // =============================================================================
 // Helpers
 // =============================================================================
-
-function formatPrice(price: number, currency: string = "USD"): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
 
 // =============================================================================
 // Size Configs
@@ -77,6 +69,8 @@ export function ProductPricingDisplay({
   size = "md",
   className = "",
 }: ProductPricingDisplayProps) {
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   const config = sizeConfig[size];
   const hasSale =
     pricing.salePrice !== undefined && pricing.salePrice < pricing.originalPrice;
@@ -102,12 +96,12 @@ export function ProductPricingDisplay({
             animate={{ scale: 1, opacity: 1 }}
             className={`${config.sale} text-red-600 dark:text-red-400`}
           >
-            {formatPrice(pricing.salePrice!, pricing.currency)}
+            {formatPrice(convertPrice(pricing.salePrice!), currency)}
           </motion.span>
           <span
             className={`${config.original} text-neutral-400 dark:text-neutral-500 line-through`}
           >
-            {formatPrice(pricing.originalPrice, pricing.currency)}
+            {formatPrice(convertPrice(pricing.originalPrice), currency)}
           </span>
           {discountPercent > 0 && (
             <span
@@ -122,7 +116,7 @@ export function ProductPricingDisplay({
         <span
           className={`${config.sale} text-neutral-900 dark:text-white`}
         >
-          {formatPrice(pricing.originalPrice, pricing.currency)}
+          {formatPrice(convertPrice(pricing.originalPrice), currency)}
         </span>
       )}
 

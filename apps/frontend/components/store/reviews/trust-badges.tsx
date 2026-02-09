@@ -10,6 +10,7 @@ import {
   Headphones,
   type LucideIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Types
@@ -29,33 +30,7 @@ interface TrustBadgesProps {
 // Data
 // =============================================================================
 
-const TRUST_BADGES: TrustBadge[] = [
-  {
-    icon: Lock,
-    label: "Secure Payment",
-    tooltip: "Your payment information is encrypted and secure",
-  },
-  {
-    icon: Download,
-    label: "Instant Download",
-    tooltip: "Get immediate access after purchase",
-  },
-  {
-    icon: ShieldCheck,
-    label: "Money-Back Guarantee",
-    tooltip: "30-day satisfaction guarantee",
-  },
-  {
-    icon: BadgeCheck,
-    label: "Verified Reviews",
-    tooltip: "All reviews are from verified purchasers",
-  },
-  {
-    icon: Headphones,
-    label: "24/7 Support",
-    tooltip: "Our team is available around the clock",
-  },
-];
+// TRUST_BADGES is now built inside the component to use translations
 
 // =============================================================================
 // Badge Item (shared across variants)
@@ -167,8 +142,17 @@ function CompactBadge({
 // =============================================================================
 
 export function TrustBadges({ variant = "inline" }: TrustBadgesProps) {
+  const t = useTranslations("store");
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.3 });
+
+  const TRUST_BADGES: TrustBadge[] = [
+    { icon: Lock, label: t("trust.securePayment"), tooltip: t("trust.securePaymentDesc") },
+    { icon: Download, label: t("trust.instantDownload"), tooltip: t("trust.instantDownloadDesc") },
+    { icon: ShieldCheck, label: t("trust.moneyBack"), tooltip: t("trust.moneyBackDesc") },
+    { icon: BadgeCheck, label: t("trust.verifiedReviews"), tooltip: t("trust.verifiedReviewsDesc") },
+    { icon: Headphones, label: t("trust.support"), tooltip: t("trust.supportDesc") },
+  ];
 
   if (variant === "inline") {
     return (

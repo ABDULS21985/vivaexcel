@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Types
@@ -97,6 +98,7 @@ export function StarRating({
   readOnly = false,
   showValue = false,
 }: StarRatingProps) {
+  const t = useTranslations("reviews");
   const [hoverValue, setHoverValue] = useState<number | null>(null);
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
   const starRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -209,7 +211,7 @@ export function StarRating({
         type="button"
         role="radio"
         aria-checked={starNumber === value}
-        aria-label={`Rate ${starNumber} out of 5 stars`}
+        aria-label={t("rating.value", { value: starNumber })}
         tabIndex={starNumber === value || (value === 0 && starNumber === 1) ? 0 : -1}
         onMouseEnter={() => handleMouseEnter(starNumber)}
         onMouseLeave={handleMouseLeave}
@@ -258,8 +260,8 @@ export function StarRating({
       role={isInteractive ? "radiogroup" : "img"}
       aria-label={
         isInteractive
-          ? "Rate out of 5 stars"
-          : `Rating: ${value} out of 5 stars`
+          ? t("rating.rateProduct")
+          : t("rating.value", { value })
       }
     >
       {Array.from({ length: 5 }, (_, i) =>

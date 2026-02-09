@@ -26,6 +26,7 @@ import {
   REVIEW_SORT_LABELS,
 } from "@/types/review";
 import type { ReviewSortBy, VoteType } from "@/types/review";
+import { useTranslations } from "next-intl";
 import { ReviewCard } from "./review-card";
 
 // =============================================================================
@@ -42,21 +43,9 @@ interface ReviewListProps {
 // Constants
 // =============================================================================
 
-const RATING_FILTERS = [
-  { label: "All", value: null },
-  { label: "5\u2605", value: 5 },
-  { label: "4\u2605", value: 4 },
-  { label: "3\u2605", value: 3 },
-  { label: "2\u2605", value: 2 },
-  { label: "1\u2605", value: 1 },
-] as const;
+const RATING_FILTER_VALUES = [null, 5, 4, 3, 2, 1] as const;
 
-const SORT_OPTIONS: { value: ReviewSortBy; label: string }[] = [
-  { value: ReviewSortByEnum.MOST_HELPFUL, label: "Most Helpful" },
-  { value: ReviewSortByEnum.NEWEST, label: "Newest" },
-  { value: ReviewSortByEnum.HIGHEST, label: "Highest Rating" },
-  { value: ReviewSortByEnum.LOWEST, label: "Lowest Rating" },
-];
+// SORT_OPTIONS and RATING_FILTERS are now derived from translations inside the component
 
 const DEBOUNCE_MS = 300;
 
@@ -152,15 +141,19 @@ function ReviewSkeleton() {
 function SortDropdown({
   value,
   onChange,
+  sortOptions,
+  sortByLabel,
 }: {
   value: ReviewSortBy;
   onChange: (v: ReviewSortBy) => void;
+  sortOptions: { value: ReviewSortBy; label: string }[];
+  sortByLabel: string;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const currentLabel =
-    SORT_OPTIONS.find((o) => o.value === value)?.label ?? "Sort by";
+    sortOptions.find((o) => o.value === value)?.label ?? sortByLabel;
 
   // Close on outside click
   useEffect(() => {
@@ -221,14 +214,14 @@ function SortDropdown({
             exit="exit"
             role="listbox"
             className="
-              absolute right-0 top-full mt-1.5 z-20
+              absolute end-0 top-full mt-1.5 z-20
               w-48 py-1 rounded-lg shadow-lg
               bg-white dark:bg-neutral-900
               border border-neutral-200 dark:border-neutral-700
               overflow-hidden
             "
           >
-            {SORT_OPTIONS.map((option) => {
+            {sortOptions.map((option) => {
               const isSelected = option.value === value;
               return (
                 <li key={option.value} role="option" aria-selected={isSelected}>
@@ -239,7 +232,7 @@ function SortDropdown({
                       setOpen(false);
                     }}
                     className={`
-                      w-full text-left px-3.5 py-2 text-sm transition-colors
+                      w-full text-start px-3.5 py-2 text-sm transition-colors
                       ${
                         isSelected
                           ? "bg-[#1E4DB7]/5 dark:bg-[#1E4DB7]/10 text-[#1E4DB7] dark:text-blue-400 font-semibold"
@@ -283,6 +276,24 @@ export function ReviewList({
   ratingFilter: externalRatingFilter,
   onRatingFilterChange,
 }: ReviewListProps) {
+  const t = useTranslations("reviews");
+
+  const RATING_FILTERS = [
+    { label: t("list.all"), value: null as number | null },
+    { label: "5\u2605", value: 5 },
+    { label: "4\u2605", value: 4 },
+    { label: "3\u2605", value: 3 },
+    { label: "2\u2605", value: 2 },
+    { label: "1\u2605", value: 1 },
+  ];
+
+  const SORT_OPTIONS: { value: ReviewSortBy; label: string }[] = [
+    { value: ReviewSortByEnum.MOST_HELPFUL, label: t("sort.mostHelpful") },
+    { value: ReviewSortByEnum.NEWEST, label: t("sort.newest") },
+    { value: ReviewSortByEnum.HIGHEST, label: t("sort.highest") },
+    { value: ReviewSortByEnum.LOWEST, label: t("sort.lowest") },
+  ];
+
   // ---------------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------------
@@ -411,11 +422,11 @@ export function ReviewList({
             <span className="inline-block h-5 w-24 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse align-middle" />
           ) : (
             <>
-              {totalCount} Review{totalCount !== 1 ? "s" : ""}
+              {totalCount} {totalCount !== 1 ? t("title") : t("title")}
             </>
           )}
         </h2>
-        <SortDropdown value={sortBy} onChange={setSortBy} />
+        <SortDropdown value={sortBy} onChange={setSortBy} sortOptions={SORT_OPTIONS} sortByLabel={t("list.sortBy")} />
       </div>
 
       {/* ------------------------------------------------------------------ */}
@@ -463,14 +474,14 @@ export function ReviewList({
       {/* Search within reviews                                              */}
       {/* ------------------------------------------------------------------ */}
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 dark:text-neutral-500 pointer-events-none" />
+        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 dark:text-neutral-500 pointer-events-none" />
         <input
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Search reviews..."
+          placeholder={t("list.searchPlaceholder")}
           className="
-            w-full pl-9 pr-9 py-2.5 text-sm rounded-lg
+            w-full ps-9 pe-9 py-2.5 text-sm rounded-lg
             bg-neutral-50 dark:bg-neutral-900
             border border-neutral-200 dark:border-neutral-700
             text-neutral-900 dark:text-neutral-100
@@ -490,7 +501,7 @@ export function ReviewList({
               transition={{ duration: 0.15 }}
               onClick={() => setSearchInput("")}
               className="
-                absolute right-2.5 top-1/2 -translate-y-1/2
+                absolute end-2.5 top-1/2 -translate-y-1/2
                 p-0.5 rounded-full
                 text-neutral-400 dark:text-neutral-500
                 hover:text-neutral-600 dark:hover:text-neutral-300
@@ -530,10 +541,10 @@ export function ReviewList({
         >
           <AlertCircle className="h-10 w-10 text-red-400 dark:text-red-500" />
           <p className="text-sm font-semibold text-red-700 dark:text-red-400">
-            Failed to load reviews
+            {t("list.error")}
           </p>
           <p className="text-xs text-red-500/80 dark:text-red-400/60">
-            Something went wrong while fetching reviews.
+            {t("list.errorDescription")}
           </p>
           <button
             type="button"
@@ -545,7 +556,7 @@ export function ReviewList({
               focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2
             "
           >
-            Try again
+            {t("list.tryAgain")}
           </button>
         </motion.div>
       )}
@@ -581,12 +592,12 @@ export function ReviewList({
               <MessageSquare className="h-16 w-16 text-neutral-300 dark:text-neutral-600" />
             </div>
             <h3 className="text-xl font-bold text-neutral-800 dark:text-neutral-200 mb-2">
-              No reviews yet
+              {t("list.noReviews")}
             </h3>
             <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-xs leading-relaxed">
               {ratingFilter
-                ? `No ${ratingFilter}-star reviews found. Try a different filter.`
-                : "Be the first to share your experience with this product!"}
+                ? t("list.noResultsDescription")
+                : t("list.noReviewsDescription")}
             </p>
           </div>
         </motion.div>
@@ -607,10 +618,10 @@ export function ReviewList({
           >
             <Search className="h-10 w-10 mx-auto text-neutral-300 dark:text-neutral-600 mb-3" />
             <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-              No reviews matching &ldquo;{debouncedSearch}&rdquo;
+              {t("list.noResults")}
             </p>
             <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
-              Try a different search term.
+              {t("list.noResultsDescription")}
             </p>
           </motion.div>
         )}
@@ -682,10 +693,10 @@ export function ReviewList({
               {isFetchingNextPage ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Loading...
+                  {t("list.loading")}
                 </>
               ) : (
-                "Load More Reviews"
+                t("list.loadMore")
               )}
             </button>
           </div>

@@ -39,6 +39,7 @@ interface PreviewItemProps {
 }
 
 function PreviewItem({ item }: PreviewItemProps) {
+  const { currency, convertPrice } = useCurrency();
   const { formatPrice } = useFormat();
   return (
     <Link
@@ -65,7 +66,7 @@ function PreviewItem({ item }: PreviewItemProps) {
           {item.product.title}
         </p>
         <p className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">
-          {formatPrice(item.unitPrice, item.product.currency)}
+          {formatPrice(convertPrice(item.unitPrice), currency)}
         </p>
       </div>
     </Link>
@@ -92,6 +93,7 @@ function HoverPreview({
   onOpenCart,
 }: HoverPreviewProps) {
   const t = useTranslations("cart");
+  const { currency: activeCurrency, convertPrice } = useCurrency();
   const { formatPrice } = useFormat();
   const previewItems = items.slice(0, 3);
   const remainingCount = itemCount - previewItems.length;
@@ -102,10 +104,10 @@ function HoverPreview({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: -4 }}
       transition={{ type: "spring", stiffness: 400, damping: 25, duration: 0.2 }}
-      className="absolute top-full right-0 mt-2 w-80 z-50 hidden lg:block"
+      className="absolute top-full end-0 mt-2 w-80 z-50 hidden lg:block"
     >
       {/* Arrow pointer */}
-      <div className="absolute -top-1.5 right-4 w-3 h-3 bg-white dark:bg-neutral-900 border-l border-t border-neutral-200 dark:border-neutral-700 rotate-45" />
+      <div className="absolute -top-1.5 end-4 w-3 h-3 bg-white dark:bg-neutral-900 border-s border-t border-neutral-200 dark:border-neutral-700 rotate-45" />
 
       <div className="relative bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-xl shadow-black/10 dark:shadow-black/40 overflow-hidden" aria-label="Cart preview">
         {/* Header */}
@@ -140,7 +142,7 @@ function HoverPreview({
               {t("subtotal")}
             </span>
             <span className="text-sm font-bold text-neutral-900 dark:text-white">
-              {formatPrice(subtotal, currency)}
+              {formatPrice(convertPrice(subtotal), activeCurrency)}
             </span>
           </div>
 
@@ -274,7 +276,7 @@ export function CartIcon() {
               exit={{ scale: 0, opacity: 0 }}
               transition={{ type: "spring", stiffness: 500, damping: 20 }}
               className={cn(
-                "absolute -top-0.5 -right-0.5",
+                "absolute -top-0.5 -end-0.5",
                 "flex items-center justify-center",
                 "min-w-[18px] h-[18px] px-1",
                 "bg-gradient-to-r from-red-500 to-rose-500",

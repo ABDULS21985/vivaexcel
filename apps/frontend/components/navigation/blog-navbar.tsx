@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@ktblog/ui/components";
 import { CartIcon } from "@/components/cart/cart-icon";
+import { CurrencySelector } from "@/components/store/currency-selector";
 
 // ============================================
 // TYPES
@@ -185,6 +186,9 @@ export function BlogNavbar() {
 
               {/* Cart Icon */}
               <CartIcon />
+
+              {/* Currency Selector */}
+              <CurrencySelector />
 
               {/* Dark Mode Toggle */}
               <button

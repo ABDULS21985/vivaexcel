@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { toast } from "sonner";
 import { usePathname } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Types
@@ -68,13 +69,7 @@ const FIRST_NAMES = [
   "Lucas",
 ];
 
-const TIME_LABELS = [
-  "just now",
-  "1 minute ago",
-  "2 minutes ago",
-  "3 minutes ago",
-  "5 minutes ago",
-];
+// TIME_LABELS are built inside the component using translations
 
 const DEFAULT_PRODUCT_NAMES = [
   "Cloud Architecture Guide",
@@ -131,19 +126,21 @@ function incrementDismissCount(): number {
 // =============================================================================
 
 function PurchaseToastContent({
-  name,
-  city,
+  nameFromCity,
   product,
   timeLabel,
   gradient,
   onDismiss,
+  purchasedLabel,
+  initial,
 }: {
-  name: string;
-  city: string;
+  nameFromCity: string;
   product: string;
   timeLabel: string;
   gradient: string;
   onDismiss: () => void;
+  purchasedLabel: string;
+  initial: string;
 }) {
   return (
     <div
@@ -155,16 +152,16 @@ function PurchaseToastContent({
         className={`flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center`}
       >
         <span className="text-sm font-semibold text-white leading-none">
-          {name.charAt(0).toUpperCase()}
+          {initial}
         </span>
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
         <p className="text-sm text-neutral-900 dark:text-neutral-100 leading-snug">
-          <span className="font-semibold">{name} from {city}</span>{" "}
+          <span className="font-semibold">{nameFromCity}</span>{" "}
           <span className="text-neutral-600 dark:text-neutral-400">
-            purchased {product}
+            {purchasedLabel} {product}
           </span>
         </p>
         <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
@@ -184,6 +181,7 @@ export function RecentPurchaseToast({
   intervalMs = DEFAULT_INTERVAL_MS,
   productNames,
 }: RecentPurchaseToastProps) {
+  const t = useTranslations("store");
   const pathname = usePathname();
   const [permanentlyHidden, setPermanentlyHidden] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -203,23 +201,34 @@ export function RecentPurchaseToast({
     ? productNames
     : DEFAULT_PRODUCT_NAMES;
 
+  const timeLabels = [
+    t("socialProof.timeLabels.justNow"),
+    t("socialProof.timeLabels.oneMinuteAgo"),
+    t("socialProof.timeLabels.twoMinutesAgo"),
+    t("socialProof.timeLabels.threeMinutesAgo"),
+    t("socialProof.timeLabels.fiveMinutesAgo"),
+  ];
+
   const showToast = useCallback(() => {
     const name = randomFrom(FIRST_NAMES);
     const city = randomFrom(CITIES);
     const product = randomFrom(products);
-    const timeLabel = randomFrom(TIME_LABELS);
+    const timeLabel = randomFrom(timeLabels);
     const gradient = randomFrom(AVATAR_GRADIENTS);
+    const nameFromCity = t("socialProof.fromCity", { name, city });
+    const purchasedLabel = t("socialProof.purchased");
 
     toast.custom(
-      (t) => (
+      (toastId) => (
         <PurchaseToastContent
-          name={name}
-          city={city}
+          nameFromCity={nameFromCity}
           product={product}
           timeLabel={timeLabel}
           gradient={gradient}
+          purchasedLabel={purchasedLabel}
+          initial={name.charAt(0).toUpperCase()}
           onDismiss={() => {
-            toast.dismiss(t);
+            toast.dismiss(toastId);
             const count = incrementDismissCount();
             if (count >= MAX_DISMISSALS) {
               setPermanentlyHidden(true);
@@ -232,7 +241,7 @@ export function RecentPurchaseToast({
         position: "bottom-left",
       },
     );
-  }, [products]);
+  }, [products, timeLabels, t]);
 
   // Schedule recurring toasts
   useEffect(() => {

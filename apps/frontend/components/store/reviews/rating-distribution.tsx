@@ -3,6 +3,7 @@
 import { useCallback, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Star } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Types
@@ -56,6 +57,7 @@ export function RatingDistribution({
   activeFilter,
   onRatingFilter,
 }: RatingDistributionProps) {
+  const t = useTranslations("reviews");
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-40px" });
 
@@ -102,7 +104,7 @@ export function RatingDistribution({
                 }
                 ${isDimmed ? "opacity-50" : "opacity-100"}
               `}
-              aria-label={`${row.rating} star reviews: ${row.count} reviews, ${row.percentage}%. ${isActive ? "Currently filtered. Click to clear." : "Click to filter."}`}
+              aria-label={t("distribution.bar", { stars: row.rating, count: row.count, percentage: row.percentage })}
               aria-pressed={isActive}
             >
               {/* Star label */}
@@ -161,7 +163,7 @@ export function RatingDistribution({
           exit={{ opacity: 0, height: 0 }}
           className="text-xs text-amber-600 dark:text-amber-400 text-center pt-1"
         >
-          Showing {activeFilter}-star reviews. Click again to clear.
+          {t("distribution.filterHint", { stars: activeFilter })}
         </motion.p>
       )}
     </motion.div>

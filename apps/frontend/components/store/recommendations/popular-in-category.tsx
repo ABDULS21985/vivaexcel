@@ -4,6 +4,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Star, TrendingUp, Package } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { useCurrency } from "@/providers/currency-provider";
+import { useFormat } from "@/hooks/use-format";
 import { ProductBadge } from "./product-badge";
 import type { ProductRecommendation } from "@/types/analytics";
 
@@ -53,16 +55,6 @@ const cardVariants = {
 // Helpers
 // =============================================================================
 
-function formatPrice(price: number): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
-
 // =============================================================================
 // Component
 // =============================================================================
@@ -72,6 +64,9 @@ export function PopularInCategory({
   products,
   className = "",
 }: PopularInCategoryProps) {
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
+
   if (products.length === 0) return null;
 
   return (
@@ -194,12 +189,12 @@ export function PopularInCategory({
                   {/* Price */}
                   <div className="flex items-baseline gap-2 pt-3 border-t border-neutral-100 dark:border-neutral-800">
                     <span className="text-lg font-bold text-neutral-900 dark:text-white">
-                      {formatPrice(product.price)}
+                      {formatPrice(convertPrice(product.price), currency)}
                     </span>
                     {product.compareAtPrice != null &&
                       product.compareAtPrice > product.price && (
                         <span className="text-sm text-neutral-400 line-through">
-                          {formatPrice(product.compareAtPrice)}
+                          {formatPrice(convertPrice(product.compareAtPrice), currency)}
                         </span>
                       )}
                   </div>

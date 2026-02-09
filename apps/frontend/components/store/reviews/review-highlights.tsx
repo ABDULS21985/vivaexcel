@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Sparkles, ThumbsUp, ThumbsDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Types
@@ -18,18 +19,7 @@ interface ReviewHighlightsProps {
 // Helpers
 // =============================================================================
 
-function getSummaryText(averageRating: number): string {
-  if (averageRating >= 4.5) {
-    return "Customers consistently praise this product for its quality and value. The overwhelming majority of buyers report a positive experience.";
-  }
-  if (averageRating >= 3.5) {
-    return "Most customers are satisfied with this product. Positive feedback highlights good quality, while some suggest minor improvements.";
-  }
-  if (averageRating >= 2.5) {
-    return "Customer opinions are mixed. While some appreciate certain aspects, others have noted areas for improvement.";
-  }
-  return "This product has received mixed feedback. Consider reading individual reviews for specific details.";
-}
+// getSummaryText is now resolved using translations inside the component
 
 const PLACEHOLDER_PROS = [
   { label: "Easy to use", count: 45 },
@@ -88,6 +78,7 @@ export function ReviewHighlights({
   averageRating,
   totalReviews,
 }: ReviewHighlightsProps) {
+  const t = useTranslations("reviews");
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
@@ -96,7 +87,14 @@ export function ReviewHighlights({
     return null;
   }
 
-  const summaryText = getSummaryText(averageRating);
+  const getSummaryText = (): string => {
+    if (averageRating >= 4.5) return t("highlights.sentiment.exceptional");
+    if (averageRating >= 3.5) return t("highlights.sentiment.positive");
+    if (averageRating >= 2.5) return t("highlights.sentiment.mixed");
+    return t("highlights.sentiment.negative");
+  };
+
+  const summaryText = getSummaryText();
 
   return (
     <motion.div
@@ -111,10 +109,10 @@ export function ReviewHighlights({
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="h-5 w-5 text-[#F59A23]" aria-hidden="true" />
           <h3 className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-            Review Highlights
+            {t("highlights.title")}
           </h3>
           <span className="ml-auto rounded-full bg-neutral-100 dark:bg-neutral-800 px-2.5 py-0.5 text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
-            AI-generated summary
+            {t("highlights.aiGenerated")}
           </span>
         </div>
 
@@ -128,7 +126,7 @@ export function ReviewHighlights({
           <div className="flex items-center gap-1.5 mb-2">
             <ThumbsUp className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
             <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-              Top Mentioned Pros
+              {t("highlights.topPros")}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -148,7 +146,7 @@ export function ReviewHighlights({
           <div className="flex items-center gap-1.5 mb-2">
             <ThumbsDown className="h-3.5 w-3.5 text-red-500" aria-hidden="true" />
             <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
-              Top Mentioned Cons
+              {t("highlights.topCons")}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">

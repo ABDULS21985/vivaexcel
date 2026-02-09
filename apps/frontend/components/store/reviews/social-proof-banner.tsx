@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { apiGet } from "@/lib/api-client";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Types
@@ -71,6 +72,7 @@ function buildProofItems(
   averageRating: number,
   totalReviews: number,
   totalDownloads: number,
+  t: ReturnType<typeof useTranslations>,
 ): ProofItem[] {
   const items: ProofItem[] = [];
 
@@ -78,7 +80,7 @@ function buildProofItems(
     items.push({
       key: "purchases",
       emoji: "\uD83D\uDD25",
-      text: `${formatNumber(recentPurchases)} people bought this in the last 7 days`,
+      text: t("socialProof.recentPurchases", { count: formatNumber(recentPurchases) }),
     });
   }
 
@@ -86,7 +88,7 @@ function buildProofItems(
     items.push({
       key: "rating",
       emoji: "\u2B50",
-      text: `Rated ${averageRating.toFixed(1)}/5 by ${formatNumber(totalReviews)} customers`,
+      text: t("socialProof.averageRating", { rating: averageRating.toFixed(1), count: formatNumber(totalReviews) }),
     });
   }
 
@@ -94,7 +96,7 @@ function buildProofItems(
     items.push({
       key: "downloads",
       emoji: "\uD83D\uDCE5",
-      text: `Downloaded ${formatNumber(totalDownloads)}+ times`,
+      text: t("socialProof.totalDownloads", { count: formatNumber(totalDownloads) }),
     });
   }
 
@@ -112,6 +114,7 @@ export function SocialProofBanner({
   averageRating = 0,
   totalReviews = 0,
 }: SocialProofBannerProps) {
+  const t = useTranslations("store");
   const [dismissed, setDismissed] = useState(false);
   const [hiddenByLocalStorage, setHiddenByLocalStorage] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -154,8 +157,8 @@ export function SocialProofBanner({
 
   // Build proof items from current data
   const proofItems = useMemo(
-    () => buildProofItems(livePurchases, averageRating, totalReviews, totalDownloads),
-    [livePurchases, averageRating, totalReviews, totalDownloads],
+    () => buildProofItems(livePurchases, averageRating, totalReviews, totalDownloads, t),
+    [livePurchases, averageRating, totalReviews, totalDownloads, t],
   );
 
   // Auto-advance rotation
@@ -238,7 +241,7 @@ export function SocialProofBanner({
             <button
               onClick={handleDismiss}
               className="flex-shrink-0 p-1 -m-0.5 rounded text-amber-400 hover:text-amber-600 dark:text-amber-600 dark:hover:text-amber-400 transition-colors"
-              aria-label="Dismiss"
+              aria-label={t("socialProof.dismiss")}
             >
               <X className="h-3.5 w-3.5" />
             </button>

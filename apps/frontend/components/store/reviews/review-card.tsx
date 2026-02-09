@@ -14,6 +14,8 @@ import {
   Store,
 } from "lucide-react";
 import type { Review } from "@/types/review";
+import { useTranslations } from "next-intl";
+import { formatRelativeTime } from "@/lib/format";
 import { StarRating } from "./star-rating";
 
 // =============================================================================
@@ -94,6 +96,7 @@ const voteCountVariants = {
 // =============================================================================
 
 export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
+  const t = useTranslations("reviews");
   const [isBodyExpanded, setIsBodyExpanded] = useState(false);
   const [isReporting, setIsReporting] = useState(false);
   const [expandedImages, setExpandedImages] = useState(false);
@@ -165,7 +168,7 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
             {review.isVerifiedPurchase && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-[10px] font-semibold rounded-full whitespace-nowrap">
                 <CheckCircle className="h-3 w-3" />
-                Verified Purchase
+                {t("verifiedPurchase")}
               </span>
             )}
           </div>
@@ -177,12 +180,12 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
               &middot;
             </span>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              {getRelativeTime(review.createdAt)}
+              {formatRelativeTime(review.createdAt)}
             </span>
             {review.editedAt && (
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 text-[10px] font-medium rounded-full">
                 <Pencil className="h-2.5 w-2.5" />
-                Edited
+                {t("card.edited")}
               </span>
             )}
           </div>
@@ -218,7 +221,7 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
             onClick={() => setIsBodyExpanded(!isBodyExpanded)}
             className="mt-1 text-sm font-medium text-[#1E4DB7] dark:text-blue-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4DB7] rounded-sm"
           >
-            {isBodyExpanded ? "Show less" : "Read more"}
+            {isBodyExpanded ? t("card.readLess") : t("card.readMore")}
           </button>
         )}
       </motion.div>
@@ -284,7 +287,7 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
                 onClick={() => setExpandedImages(true)}
                 className="w-16 h-16 rounded-lg border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1E4DB7]"
               >
-                +{review.images.length - 4} more
+                {t("card.moreImages", { count: review.images.length - 4 })}
               </button>
             )}
           </div>
@@ -295,15 +298,15 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
       {/* Seller Response                                                  */}
       {/* ================================================================= */}
       {review.sellerResponse && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/30 rounded-lg p-4 mb-4 ml-4">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/30 rounded-lg p-4 mb-4 ms-4">
           <div className="flex items-center gap-2 mb-2">
             <Store className="h-4 w-4 text-[#1E4DB7] dark:text-blue-400" />
             <span className="text-xs font-bold text-[#1E4DB7] dark:text-blue-400 uppercase tracking-wide">
-              Seller Response
+              {t("card.sellerResponse")}
             </span>
             {review.sellerRespondedAt && (
               <span className="text-[10px] text-blue-500/80 dark:text-blue-400/60">
-                &middot; {getRelativeTime(review.sellerRespondedAt)}
+                &middot; {formatRelativeTime(review.sellerRespondedAt)}
               </span>
             )}
           </div>
@@ -318,7 +321,7 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
       {/* ================================================================= */}
       <div className="flex items-center justify-between pt-3 border-t border-neutral-100 dark:border-neutral-800">
         <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
-          <span>Was this helpful?</span>
+          <span>{t("card.helpful")}?</span>
 
           <motion.button
             type="button"
@@ -327,7 +330,7 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
             whileHover={hasAlreadyVoted ? undefined : { scale: 1.08 }}
             whileTap={hasAlreadyVoted ? undefined : { scale: 0.92 }}
             className={`
-              inline-flex items-center gap-1 ml-1.5 px-2.5 py-1 rounded-md transition-colors
+              inline-flex items-center gap-1 ms-1.5 px-2.5 py-1 rounded-md transition-colors
               ${
                 review.userVote === "HELPFUL"
                   ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400"
@@ -394,10 +397,10 @@ export function ReviewCard({ review, onVote, onReport }: ReviewCardProps) {
           whileTap={{ scale: 0.92 }}
           disabled={isReporting}
           className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs text-neutral-400 dark:text-neutral-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors disabled:opacity-50"
-          aria-label="Report review"
+          aria-label={t("card.report")}
         >
           <Flag className="h-3.5 w-3.5" />
-          {isReporting ? "Reported" : "Report"}
+          {isReporting ? t("card.reported") : t("card.report")}
         </motion.button>
       </div>
     </motion.article>

@@ -798,7 +798,7 @@ export function ReviewForm({
         {/* Pros */}
         <div>
           <Label className="text-green-700 dark:text-green-400 mb-2 block font-semibold">
-            Pros
+            {t("form.prosLabel")}
           </Label>
           <div className="flex gap-2">
             <Input
@@ -806,7 +806,7 @@ export function ReviewForm({
               value={proInput}
               onChange={(e) => setProInput(e.target.value)}
               onKeyDown={handleProKeyDown}
-              placeholder="Add a pro..."
+              placeholder={t("form.prosPlaceholder")}
               className="flex-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white"
             />
             <Button
@@ -838,7 +838,7 @@ export function ReviewForm({
                       type="button"
                       onClick={() => removePro(i)}
                       className="hover:text-green-900 dark:hover:text-green-200 transition-colors"
-                      aria-label={`Remove pro: ${pro}`}
+                      aria-label={t("form.removePro", { text: pro })}
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -852,7 +852,7 @@ export function ReviewForm({
         {/* Cons */}
         <div>
           <Label className="text-red-600 dark:text-red-400 mb-2 block font-semibold">
-            Cons
+            {t("form.consLabel")}
           </Label>
           <div className="flex gap-2">
             <Input
@@ -860,7 +860,7 @@ export function ReviewForm({
               value={conInput}
               onChange={(e) => setConInput(e.target.value)}
               onKeyDown={handleConKeyDown}
-              placeholder="Add a con..."
+              placeholder={t("form.consPlaceholder")}
               className="flex-1 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white"
             />
             <Button
@@ -892,7 +892,7 @@ export function ReviewForm({
                       type="button"
                       onClick={() => removeCon(i)}
                       className="hover:text-red-900 dark:hover:text-red-200 transition-colors"
-                      aria-label={`Remove con: ${con}`}
+                      aria-label={t("form.removeCon", { text: con })}
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -921,14 +921,14 @@ export function ReviewForm({
             onClick={handleSkip}
             className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 underline underline-offset-2 transition-colors"
           >
-            Skip
+            {t("form.skip")}
           </button>
           <Button
             type="button"
             onClick={handleNext}
             className="bg-[#1E4DB7] hover:bg-[#143A8F] text-white gap-1"
           >
-            Next
+            {t("form.next")}
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -943,10 +943,7 @@ export function ReviewForm({
   const renderStep4 = () => (
     <div className="flex flex-col gap-5 py-4">
       <Label className="text-neutral-700 dark:text-neutral-300 block">
-        Add images{" "}
-        <span className="text-neutral-400 dark:text-neutral-500 font-normal">
-          (up to {MAX_IMAGES})
-        </span>
+        {t("form.imagesLabel")}
       </Label>
 
       {/* Hidden file input */}
@@ -988,12 +985,12 @@ export function ReviewForm({
         <div className="text-center">
           <p className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
             {images.length >= MAX_IMAGES
-              ? "Maximum images reached"
-              : "Drag and drop images here"}
+              ? t("form.maxImages")
+              : t("form.imagesDescription")}
           </p>
           {images.length < MAX_IMAGES && (
             <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
-              or click to browse
+              {t("form.orClickToBrowse")}
             </p>
           )}
         </div>
@@ -1019,7 +1016,7 @@ export function ReviewForm({
                   removeImage(i);
                 }}
                 className="absolute top-1 right-1 p-0.5 bg-black/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                aria-label={`Remove image ${i + 1}`}
+                aria-label={t("form.removeImage")}
               >
                 <X className="h-3 w-3" />
               </button>
@@ -1035,7 +1032,7 @@ export function ReviewForm({
           <p className="text-xs text-red-600 dark:text-red-400">
             {(createMutation.error as Error)?.message ||
               (updateMutation.error as Error)?.message ||
-              "Something went wrong. Please try again."}
+              t("form.error")}
           </p>
         </div>
       )}
@@ -1074,12 +1071,12 @@ export function ReviewForm({
                   transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                   className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                 />
-                Submitting...
+                {t("form.submitting")}
               </span>
             ) : isEditing ? (
-              "Update Review"
+              t("form.update")
             ) : (
-              "Submit Review"
+              t("form.submit")
             )}
           </Button>
         </div>
@@ -1107,12 +1104,12 @@ export function ReviewForm({
       <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800">
         <DialogHeader>
           <DialogTitle className="text-neutral-900 dark:text-white">
-            {isEditing ? "Edit Your Review" : "Write a Review"}
+            {isEditing ? t("form.editTitle") : t("form.title")}
           </DialogTitle>
           <DialogDescription className="text-neutral-500 dark:text-neutral-400">
             {isEditing
-              ? "Update your review below."
-              : "Share your experience with this product."}
+              ? t("editReview")
+              : t("shareExperience")}
           </DialogDescription>
         </DialogHeader>
 
@@ -1120,6 +1117,8 @@ export function ReviewForm({
         <StepProgress
           currentStep={currentStep}
           completedSteps={completedSteps}
+          stepLabels={STEP_LABELS}
+          stepAriaLabel={t("form.step", { current: currentStep, total: TOTAL_STEPS, name: STEP_LABELS[currentStep - 1] })}
         />
 
         {/* Step Content with Animated Transitions */}

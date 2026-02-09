@@ -9,6 +9,7 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Types
@@ -91,7 +92,8 @@ function CompactStats({
   totalReviews,
   downloadCount,
   isTrending,
-}: Omit<ProductSocialStatsProps, "variant">) {
+  t,
+}: Omit<ProductSocialStatsProps, "variant"> & { t: ReturnType<typeof useTranslations> }) {
   return (
     <div className="flex items-center gap-1.5 text-sm text-neutral-600 dark:text-neutral-400">
       <span className="font-semibold text-neutral-800 dark:text-neutral-200">
@@ -102,12 +104,12 @@ function CompactStats({
         ({totalReviews})
       </span>
       <span className="text-neutral-300 dark:text-neutral-600">&middot;</span>
-      <span>{formatCount(downloadCount)} downloads</span>
+      <span>{t("socialStats.downloads", { count: formatCount(downloadCount) })}</span>
 
       {isTrending && (
         <span className="ml-1 inline-flex items-center gap-0.5 rounded-full bg-[#F59A23]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[#F59A23]">
           <TrendingUp className="h-3 w-3" aria-hidden="true" />
-          Trending
+          {t("socialStats.trending")}
         </span>
       )}
     </div>
@@ -157,7 +159,8 @@ function ExpandedStats({
   totalReviews,
   downloadCount,
   isTrending,
-}: Omit<ProductSocialStatsProps, "variant">) {
+  t,
+}: Omit<ProductSocialStatsProps, "variant"> & { t: ReturnType<typeof useTranslations> }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
 
@@ -172,21 +175,21 @@ function ExpandedStats({
       <StatBlock
         icon={Star}
         value={averageRating}
-        label="rating"
+        label={t("rating.label")}
         formatted={isInView ? averageRating.toFixed(1) : "0.0"}
       />
       <Divider />
       <StatBlock
         icon={Users}
         value={animatedReviews}
-        label="reviews"
+        label={t("socialStats.reviewsLabel")}
         formatted={formatCount(animatedReviews)}
       />
       <Divider />
       <StatBlock
         icon={Download}
         value={animatedDownloads}
-        label="downloads"
+        label={t("socialStats.downloadsLabel")}
         formatted={formatCount(animatedDownloads)}
       />
 
@@ -199,7 +202,7 @@ function ExpandedStats({
               🔥
             </span>
             <span className="text-[11px] font-medium uppercase tracking-wider text-[#F59A23]">
-              Trending
+              {t("socialStats.trending")}
             </span>
           </div>
         </>
@@ -219,6 +222,8 @@ export function ProductSocialStats({
   variant = "compact",
   isTrending = false,
 }: ProductSocialStatsProps) {
+  const t = useTranslations("reviews");
+
   if (variant === "compact") {
     return (
       <CompactStats
@@ -226,6 +231,7 @@ export function ProductSocialStats({
         totalReviews={totalReviews}
         downloadCount={downloadCount}
         isTrending={isTrending}
+        t={t}
       />
     );
   }
@@ -236,6 +242,7 @@ export function ProductSocialStats({
       totalReviews={totalReviews}
       downloadCount={downloadCount}
       isTrending={isTrending}
+      t={t}
     />
   );
 }

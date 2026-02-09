@@ -1179,7 +1179,16 @@
       "recentPurchases": "{count} purchases in the last 24 hours",
       "averageRating": "Rated {rating} by {count} customers",
       "totalDownloads": "{count} downloads and counting",
-      "dismiss": "Dismiss"
+      "dismiss": "Dismiss",
+      "purchased": "purchased",
+      "fromCity": "{name} from {city}",
+      "timeLabels": {
+        "justNow": "just now",
+        "oneMinuteAgo": "1 minute ago",
+        "twoMinutesAgo": "2 minutes ago",
+        "threeMinutesAgo": "3 minutes ago",
+        "fiveMinutesAgo": "5 minutes ago"
+      }
     },
     "newsletter": {
       "title": "Stay Updated",
@@ -1389,8 +1398,11 @@
       "imagesLabel": "Add Photos (optional)",
       "imagesDescription": "Drag and drop up to 5 images or click to browse",
       "removeImage": "Remove image",
+      "maxImages": "Maximum images reached",
+      "orClickToBrowse": "or click to browse",
       "next": "Next",
       "back": "Back",
+      "skip": "Skip",
       "submit": "Submit Review",
       "update": "Update Review",
       "submitting": "Submitting...",
@@ -1422,6 +1434,7 @@
       "helpfulCount": "{count, plural, one {# person} other {# people}} found this helpful",
       "notHelpful": "Not helpful",
       "report": "Report review",
+      "reported": "Reported",
       "readMore": "Read more",
       "readLess": "Read less",
       "sellerResponse": "Seller Response",
@@ -1440,6 +1453,8 @@
     "highlights": {
       "title": "Review Highlights",
       "aiGenerated": "AI-generated summary",
+      "topPros": "Top Mentioned Pros",
+      "topCons": "Top Mentioned Cons",
       "sentiment": {
         "exceptional": "Customers are exceptionally satisfied with this product.",
         "positive": "Customers are very satisfied with this product.",
@@ -1451,7 +1466,9 @@
     "socialStats": {
       "trending": "Trending",
       "downloads": "{count} downloads",
-      "reviews": "{count} reviews"
+      "downloadsLabel": "downloads",
+      "reviews": "{count} reviews",
+      "reviewsLabel": "reviews"
     }
   },
   "language": "Language",

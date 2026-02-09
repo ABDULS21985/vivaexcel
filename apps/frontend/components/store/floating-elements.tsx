@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ArrowUp, ShoppingCart } from "lucide-react";
 import { useCart } from "@/providers/cart-provider";
+import { useCurrency } from "@/providers/currency-provider";
+import { useFormat } from "@/hooks/use-format";
 
 // =============================================================================
 // Types
@@ -25,16 +27,6 @@ interface FloatingElementsProps {
 // Helpers
 // =============================================================================
 
-function formatPrice(price: number, currency: string = "USD"): string {
-  if (price === 0) return "Free";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(price);
-}
-
 // =============================================================================
 // Component
 // =============================================================================
@@ -44,6 +36,8 @@ export function FloatingElements({
   selectedVariantId,
 }: FloatingElementsProps) {
   const { addToCart, openCart } = useCart();
+  const { currency, convertPrice } = useCurrency();
+  const { formatPrice } = useFormat();
   const [scrollY, setScrollY] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -140,7 +134,7 @@ export function FloatingElements({
                     {product.title}
                   </p>
                   <p className="text-xs font-bold text-[#1E4DB7] dark:text-blue-400">
-                    {formatPrice(product.price, product.currency)}
+                    {formatPrice(convertPrice(product.price), currency)}
                   </p>
                 </div>
 
@@ -194,7 +188,7 @@ export function FloatingElements({
                     {product.title}
                   </p>
                   <p className="text-xs font-bold text-[#1E4DB7] dark:text-blue-400">
-                    {formatPrice(product.price, product.currency)}
+                    {formatPrice(convertPrice(product.price), currency)}
                   </p>
                 </div>
 
