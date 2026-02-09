@@ -37,3 +37,8 @@ export * from './review-report.entity';
 export * from './seller-profile.entity';
 export * from './seller-payout.entity';
 export * from './seller-application.entity';
+export * from './download-link.entity';
+export * from './download-log.entity';
+export * from './license.entity';
+export * from './license-activation.entity';
+export * from './product-update.entity';
