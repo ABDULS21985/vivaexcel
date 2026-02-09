@@ -109,7 +109,7 @@ export function ReviewHighlights({
       <div className="rounded-[11px] bg-white dark:bg-neutral-900 p-5">
         {/* Header */}
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="h-5 w-5 text-[#F59A23]" />
+          <Sparkles className="h-5 w-5 text-[#F59A23]" aria-hidden="true" />
           <h3 className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
             Review Highlights
           </h3>
@@ -126,7 +126,7 @@ export function ReviewHighlights({
         {/* Pros */}
         <div className="mb-3">
           <div className="flex items-center gap-1.5 mb-2">
-            <ThumbsUp className="h-3.5 w-3.5 text-emerald-500" />
+            <ThumbsUp className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
             <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
               Top Mentioned Pros
             </span>

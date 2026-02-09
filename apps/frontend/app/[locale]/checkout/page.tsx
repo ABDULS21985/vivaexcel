@@ -459,7 +459,7 @@ export default function CheckoutPage() {
                 </AnimatePresence>
 
                 <div className="flex items-center justify-between pt-3 border-t border-neutral-100 dark:border-neutral-800">
-                  <span className="text-base font-semibold text-neutral-900 dark:text-white">Total</span>
+                  <span className="text-base font-semibold text-neutral-900 dark:text-white">{t("summary.total")}</span>
                   <motion.span key={summary.total} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-xl font-bold text-neutral-900 dark:text-white">
                     {formatPrice(summary.total, { currency: summary.currency })}
                   </motion.span>
@@ -473,7 +473,7 @@ export default function CheckoutPage() {
                   disabled={checkout.isPending || items.length === 0}
                   className="w-full h-12 relative overflow-hidden bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] hover:from-[#143A8F] hover:to-[#1E4DB7] text-white font-semibold rounded-xl shadow-lg shadow-[#1E4DB7]/25 hover:shadow-xl hover:shadow-[#1E4DB7]/30 transition-all gap-2"
                 >
-                  {checkout.isPending ? (<><Loader2 className="w-5 h-5 animate-spin" /> Creating session...</>) : (<><CreditCard className="w-5 h-5" /> Proceed to Payment</>)}
+                  {checkout.isPending ? (<><Loader2 className="w-5 h-5 animate-spin" /> {t("creatingSession")}</>) : (<><CreditCard className="w-5 h-5" /> {t("proceedToPayment")}</>)}
                   <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent" style={{ animation: "checkoutShimmer 2.5s ease-in-out infinite" }} />
                 </Button>
                 <style>{`@keyframes checkoutShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>

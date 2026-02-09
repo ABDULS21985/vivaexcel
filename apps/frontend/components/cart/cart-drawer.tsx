@@ -3,6 +3,7 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useSpring, useTransform } from "framer-motion";
+import { useTranslations } from "next-intl";
 import {
   X,
   ShoppingBag,
