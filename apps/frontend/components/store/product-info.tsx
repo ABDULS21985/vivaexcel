@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "@/i18n/routing";
+import { useCart } from "@/providers/cart-provider";
 import {
   Star,
   Download,
@@ -158,10 +160,41 @@ function getMetadataItems(product: DigitalProduct): MetadataItem[] {
 // =============================================================================
 
 export function ProductInfo({ product }: ProductInfoProps) {
+  const router = useRouter();
+  const { addToCart, openCart } = useCart();
   const [selectedVariant, setSelectedVariant] =
     useState<DigitalProductVariant | null>(
       product.variants?.length ? product.variants[0] : null,
     );
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
+  const [showAddedFeedback, setShowAddedFeedback] = useState(false);
+
+  const handleAddToCart = useCallback(async () => {
+    setIsAddingToCart(true);
+    try {
+      await addToCart(product.id, selectedVariant?.id);
+      setShowAddedFeedback(true);
+      openCart();
+      setTimeout(() => setShowAddedFeedback(false), 2000);
+    } catch {
+      // Error is handled silently; the cart provider logs it
+    } finally {
+      setIsAddingToCart(false);
+    }
+  }, [addToCart, product.id, selectedVariant?.id, openCart]);
+
+  const handleBuyNow = useCallback(async () => {
+    setIsBuyingNow(true);
+    try {
+      await addToCart(product.id, selectedVariant?.id);
+      router.push("/checkout");
+    } catch {
+      // Error is handled silently
+    } finally {
+      setIsBuyingNow(false);
+    }
+  }, [addToCart, product.id, selectedVariant?.id, router]);
 
   const typeLabel = DIGITAL_PRODUCT_TYPE_LABELS[product.type] || "Product";
   const typeColor = DIGITAL_PRODUCT_TYPE_COLORS[product.type] || "#1E4DB7";
@@ -360,21 +393,68 @@ export function ProductInfo({ product }: ProductInfoProps) {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3">
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] hover:from-[#143A8F] hover:to-[#1E4DB7] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-[#1E4DB7]/25 hover:shadow-xl hover:shadow-[#1E4DB7]/30"
+          onClick={handleAddToCart}
+          disabled={isAddingToCart}
+          whileHover={{ scale: isAddingToCart ? 1 : 1.02 }}
+          whileTap={{ scale: isAddingToCart ? 1 : 0.98 }}
+          className="relative flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] hover:from-[#143A8F] hover:to-[#1E4DB7] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-[#1E4DB7]/25 hover:shadow-xl hover:shadow-[#1E4DB7]/30 disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
         >
-          <ShoppingCart className="h-5 w-5" />
-          Add to Cart
+          <AnimatePresence mode="wait">
+            {isAddingToCart ? (
+              <motion.span
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-2"
+              >
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Adding...
+              </motion.span>
+            ) : showAddedFeedback ? (
+              <motion.span
+                key="added"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-2"
+              >
+                <Check className="h-5 w-5" />
+                Added!
+              </motion.span>
+            ) : (
+              <motion.span
+                key="default"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-2"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                Add to Cart
+              </motion.span>
+            )}
+          </AnimatePresence>
         </motion.button>
 
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-[#F59A23] to-[#E86A1D] hover:from-[#E86A1D] hover:to-[#F59A23] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-[#F59A23]/25 hover:shadow-xl hover:shadow-[#F59A23]/30"
+          onClick={handleBuyNow}
+          disabled={isBuyingNow}
+          whileHover={{ scale: isBuyingNow ? 1 : 1.02 }}
+          whileTap={{ scale: isBuyingNow ? 1 : 0.98 }}
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-[#F59A23] to-[#E86A1D] hover:from-[#E86A1D] hover:to-[#F59A23] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-[#F59A23]/25 hover:shadow-xl hover:shadow-[#F59A23]/30 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          <Zap className="h-5 w-5" />
-          Buy Now
+          {isBuyingNow ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Zap className="h-5 w-5" />
+              Buy Now
+            </>
+          )}
         </motion.button>
       </div>
 

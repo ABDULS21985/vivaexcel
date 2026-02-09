@@ -12,6 +12,8 @@ import { BackToTop } from "../../components/ui/back-to-top";
 import { CursorProvider, CustomCursorWrapper } from "../../components/ui/custom-cursor";
 import { QueryProvider } from "../../providers/query-provider";
 import { AuthProvider } from "../../providers/auth-provider";
+import { CartProvider } from "../../providers/cart-provider";
+import { CartDrawer } from "../../components/cart/cart-drawer";
 import { GSAPProvider } from "../../providers/gsap-provider";
 import { SoundProvider } from "../../providers/sound-provider";
 import { ThemeProvider } from "../../providers/theme-provider";
@@ -144,6 +146,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <ThemeProvider>
           <QueryProvider>
             <AuthProvider>
+            <CartProvider>
             <GSAPProvider>
               <SoundProvider>
                 <NextIntlClientProvider messages={messages}>
@@ -158,6 +161,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                   {/* Scroll Progress Indicator */}
                   <ScrollProgress />
 
+                  <CartDrawer />
                   <BlogNavbar />
                   <main
                     id="main-content"
@@ -177,6 +181,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                 </NextIntlClientProvider>
               </SoundProvider>
             </GSAPProvider>
+          </CartProvider>
           </AuthProvider>
           </QueryProvider>
         </ThemeProvider>

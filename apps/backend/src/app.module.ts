@@ -44,7 +44,10 @@ import { BookmarksModule } from './modules/bookmarks/bookmarks.module';
 import { SearchModule } from './modules/search/search.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { DigitalProductsModule } from './modules/digital-products/digital-products.module';
-
+import { CartModule } from './modules/cart/cart.module';
+import { CheckoutModule } from './modules/checkout/checkout.module';
+import { PresentationsModule } from './modules/presentations/presentations.module';
+import { SolutionDocumentsModule } from './modules/solution-documents/solution-documents.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -123,6 +126,10 @@ import { AppService } from './app.service';
     SearchModule,
     AnalyticsModule,
     DigitalProductsModule,
+    CartModule,
+    CheckoutModule,
+    PresentationsModule,
+    SolutionDocumentsModule,
   ],
   controllers: [AppController],
   providers: [

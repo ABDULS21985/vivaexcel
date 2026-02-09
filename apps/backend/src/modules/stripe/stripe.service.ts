@@ -1,8 +1,10 @@
 import {
   Injectable,
+  Inject,
   Logger,
   BadRequestException,
   InternalServerErrorException,
+  forwardRef,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +13,7 @@ import Stripe from 'stripe';
 import { Subscription, SubscriptionStatus } from '../../entities/subscription.entity';
 import { User } from '../../entities/user.entity';
 import { EmailService } from '../email/email.service';
+import { CheckoutService } from '../checkout/checkout.service';
 
 @Injectable()
 export class StripeService {
@@ -25,6 +28,8 @@ export class StripeService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly emailService: EmailService,
+    @Inject(forwardRef(() => CheckoutService))
+    private readonly checkoutService: CheckoutService,
   ) {
     const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     if (!secretKey) {
@@ -39,7 +44,7 @@ export class StripeService {
     this.webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET') || '';
   }
 
-  private getStripeClient(): Stripe {
+  getStripeClient(): Stripe {
     if (!this.stripe) {
       throw new InternalServerErrorException('Stripe is not configured. Set STRIPE_SECRET_KEY.');
     }
@@ -207,9 +212,33 @@ export class StripeService {
     this.logger.log(`Processing webhook event: ${event.type} (${event.id})`);
 
     switch (event.type) {
-      case 'checkout.session.completed':
-        await this.handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        // Delegate digital product purchases to CheckoutService
+        if (session.metadata?.type === 'digital_product_purchase') {
+          await this.checkoutService.handleCheckoutComplete(session);
+          break;
+        }
+        // Otherwise, handle as subscription checkout
+        await this.handleCheckoutCompleted(session);
         break;
+      }
+
+      case 'checkout.session.async_payment_failed': {
+        const failedSession = event.data.object as Stripe.Checkout.Session;
+        if (failedSession.metadata?.type === 'digital_product_purchase') {
+          await this.checkoutService.handlePaymentFailed(failedSession);
+        }
+        break;
+      }
+
+      case 'charge.refunded': {
+        const charge = event.data.object as Stripe.Charge;
+        if (charge.metadata?.type === 'digital_product_purchase') {
+          await this.checkoutService.handleChargeRefunded(charge);
+        }
+        break;
+      }
 
       case 'customer.subscription.updated':
         await this.handleSubscriptionUpdated(event.data.object as Stripe.Subscription);

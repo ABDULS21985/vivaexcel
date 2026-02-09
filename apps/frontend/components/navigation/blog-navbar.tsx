@@ -5,6 +5,7 @@ import { Menu, X, Search, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@ktblog/ui/components";
+import { CartIcon } from "@/components/cart/cart-icon";
 
 // ============================================
 // TYPES
@@ -181,6 +182,9 @@ export function BlogNavbar() {
                 <Search className="w-[18px] h-[18px]" />
               </button>
 
+              {/* Cart Icon */}
+              <CartIcon />
+
               {/* Dark Mode Toggle */}
               <button
                 onClick={toggleDarkMode}
@@ -230,6 +234,9 @@ export function BlogNavbar() {
               >
                 <Search className="w-5 h-5" />
               </button>
+
+              {/* Mobile Cart Icon */}
+              <CartIcon />
 
               {/* Dark Mode Toggle — Mobile */}
               <button

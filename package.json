@@ -9,11 +9,16 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "turbo": "latest",
-    "prettier": "latest"
+    "prettier": "latest",
+    "turbo": "latest"
   },
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@types/jszip": "^3.4.0",
+    "jszip": "^3.10.1",
+    "pdf-parse": "^2.4.5"
+  }
 }

@@ -23,6 +23,8 @@ import {
     Calendar,
     ArrowRightLeft,
     ShoppingBag,
+    Receipt,
+    Projector,
 } from "lucide-react";
 import { cn } from "@ktblog/ui/components";
 import { useAuthContext } from "../contexts/auth-context";
@@ -69,6 +71,21 @@ const navItems: NavItem[] = [
         label: "Digital Products",
         href: "/products/digital",
         icon: <ShoppingBag className="h-5 w-5" />,
+    },
+    {
+        label: "Presentations",
+        href: "/presentations",
+        icon: <Projector className="h-5 w-5" />,
+    },
+    {
+        label: "Solutions",
+        href: "/solutions",
+        icon: <FileText className="h-5 w-5" />,
+    },
+    {
+        label: "Orders",
+        href: "/orders",
+        icon: <Receipt className="h-5 w-5" />,
     },
     {
         label: "Comments",
