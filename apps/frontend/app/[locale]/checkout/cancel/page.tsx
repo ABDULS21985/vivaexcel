@@ -5,6 +5,7 @@ import { XCircle, ArrowLeft, ShoppingCart } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
+import { useTranslations } from "next-intl";
 
 // =============================================================================
 // Checkout Cancel Page

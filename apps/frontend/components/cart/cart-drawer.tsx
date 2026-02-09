@@ -551,7 +551,7 @@ function CouponSection() {
                     setCode(e.target.value);
                     if (status !== "idle" && status !== "loading") setStatus("idle");
                   }}
-                  placeholder="Enter code"
+                  placeholder={t("coupon.placeholder")}
                   aria-label="Coupon code"
                   className={cn(
                     "h-9 text-sm rounded-lg pr-8",
@@ -576,7 +576,7 @@ function CouponSection() {
                 {status === "loading" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  "Apply"
+                  t("coupon.apply")
                 )}
               </Button>
             </div>
@@ -589,7 +589,7 @@ function CouponSection() {
                   exit={{ opacity: 0, y: -5 }}
                   className="text-xs text-emerald-600 dark:text-emerald-400 mt-1.5 font-medium"
                 >
-                  Coupon applied successfully!
+                  {t("coupon.applied")}
                 </motion.p>
               )}
               {status === "error" && (
@@ -599,7 +599,7 @@ function CouponSection() {
                   exit={{ opacity: 0, y: -5 }}
                   className="text-xs text-red-500 dark:text-red-400 mt-1.5 font-medium"
                 >
-                  Invalid or expired coupon code.
+                  {t("coupon.invalid")}
                 </motion.p>
               )}
             </AnimatePresence>
@@ -712,6 +712,9 @@ function ShimmerButton({
 // -----------------------------------------------------------------------------
 
 export function CartDrawer() {
+  const tCart = useTranslations("cart");
+  const tStore = useTranslations("store");
+  const { formatPrice: fmtPrice } = useFormat();
   const { items, summary, isLoading, isOpen, closeCart, removeFromCart } =
     useCart();
   const [removingId, setRemovingId] = useState<string | null>(null);
