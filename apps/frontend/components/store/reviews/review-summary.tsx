@@ -232,9 +232,10 @@ export function ReviewSummary({ productId }: ReviewSummaryProps) {
             {/* Total reviews */}
             <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
               Based on{" "}
-              <span className="font-semibold text-neutral-700 dark:text-neutral-200 tabular-nums">
+              <span className="font-semibold text-neutral-700 dark:text-neutral-200 tabular-nums" aria-hidden="true">
                 {animatedTotal}
               </span>{" "}
+              <SrOnly>{stats.totalReviews.toLocaleString()}</SrOnly>
               review{stats.totalReviews !== 1 ? "s" : ""}
             </p>
 

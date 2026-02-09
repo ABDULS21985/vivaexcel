@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Header,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -39,6 +40,7 @@ export class DigitalProductCategoriesController {
 
   @Get()
   @Public()
+  @Header('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
   @ApiOperation({ summary: 'Get all digital product categories' })
   @SwaggerResponse({ status: 200, description: 'Categories retrieved successfully' })
   async findAll() {

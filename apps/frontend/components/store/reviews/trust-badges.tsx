@@ -98,7 +98,7 @@ function InlineBadge({
       className="group/badge relative flex items-center gap-1.5 px-2 py-1 cursor-default"
     >
       <BadgeTooltip text={badge.tooltip} />
-      <Icon className="h-3.5 w-3.5 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" />
+      <Icon className="h-3.5 w-3.5 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" aria-hidden="true" />
       <span className="text-[11px] font-medium text-neutral-600 dark:text-neutral-500 whitespace-nowrap">
         {badge.label}
       </span>
@@ -128,7 +128,7 @@ function GridBadge({
     >
       <BadgeTooltip text={badge.tooltip} />
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800 transition-colors duration-200 group-hover/badge:bg-blue-50 dark:group-hover/badge:bg-blue-950/30">
-        <Icon className="h-4.5 w-4.5 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" />
+        <Icon className="h-4.5 w-4.5 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" aria-hidden="true" />
       </div>
       <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-400">
         {badge.label}
@@ -157,7 +157,7 @@ function CompactBadge({
       className="group/badge relative flex items-center justify-center cursor-default p-1.5"
     >
       <BadgeTooltip text={badge.tooltip} />
-      <Icon className="h-4 w-4 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" />
+      <Icon className="h-4 w-4 text-neutral-500 dark:text-neutral-500 transition-colors duration-200 group-hover/badge:text-[#1E4DB7]" aria-hidden="true" />
     </motion.div>
   );
 }

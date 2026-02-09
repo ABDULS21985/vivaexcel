@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { ProductCard } from "@/components/store/product-card";
@@ -65,9 +66,11 @@ const SCROLL_AMOUNT = 340;
 
 export function RelatedProducts({
   products,
-  title = "You might also like",
+  title,
   showViewAll = true,
 }: RelatedProductsProps) {
+  const t = useTranslations("store");
+  const displayTitle = title ?? t("sections.youMightAlsoLike");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -138,14 +141,14 @@ export function RelatedProducts({
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E4DB7]/10 dark:bg-[#1E4DB7]/20">
                 <Sparkles className="h-3.5 w-3.5 text-[#1E4DB7] dark:text-blue-400" />
                 <span className="text-[11px] font-semibold tracking-wide text-[#1E4DB7] dark:text-blue-400 uppercase">
-                  Personalized
+                  {t("sections.personalized")}
                 </span>
               </span>
             </div>
 
             {/* Heading */}
             <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
-              {title}
+              {displayTitle}
             </h2>
 
             {/* Subtitle */}

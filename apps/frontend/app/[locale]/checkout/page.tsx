@@ -245,6 +245,7 @@ function CouponSection({
 // -----------------------------------------------------------------------------
 
 export default function CheckoutPage() {
+  const t = useTranslations("checkout");
   const { items, summary, isLoading: cartLoading, removeFromCart } = useCart();
   const checkout = useCheckout();
   const [couponCode, setCouponCode] = useState("");
@@ -337,10 +338,10 @@ export default function CheckoutPage() {
             <ShoppingBag className="w-12 h-12 text-neutral-300 dark:text-neutral-600" />
           </div>
         </motion.div>
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">Your cart is empty</h1>
-        <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-md">Add some products before proceeding.</p>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">{t("empty.title")}</h1>
+        <p className="text-neutral-500 dark:text-neutral-400 mb-6 max-w-md">{t("empty.description")}</p>
         <Button asChild className="gap-2">
-          <Link href="/store"><ArrowLeft className="w-4 h-4" /> Browse Products</Link>
+          <Link href="/store"><ArrowLeft className="w-4 h-4" /> {t("empty.browseProducts")}</Link>
         </Button>
       </div>
     );
@@ -350,23 +351,23 @@ export default function CheckoutPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       <Breadcrumb className="mb-8">
         <BreadcrumbList>
-          <BreadcrumbItem><BreadcrumbLink asChild><Link href="/">Home</Link></BreadcrumbLink></BreadcrumbItem>
+          <BreadcrumbItem><BreadcrumbLink asChild><Link href="/">{t("breadcrumb.home")}</Link></BreadcrumbLink></BreadcrumbItem>
           <BreadcrumbSeparator><ChevronRight className="w-3.5 h-3.5" /></BreadcrumbSeparator>
-          <BreadcrumbItem><BreadcrumbLink asChild><Link href="/store">Store</Link></BreadcrumbLink></BreadcrumbItem>
+          <BreadcrumbItem><BreadcrumbLink asChild><Link href="/store">{t("breadcrumb.store")}</Link></BreadcrumbLink></BreadcrumbItem>
           <BreadcrumbSeparator><ChevronRight className="w-3.5 h-3.5" /></BreadcrumbSeparator>
-          <BreadcrumbItem><BreadcrumbPage>Checkout</BreadcrumbPage></BreadcrumbItem>
+          <BreadcrumbItem><BreadcrumbPage>{t("breadcrumb.checkout")}</BreadcrumbPage></BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
       <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white mb-8">
-        Checkout
+        {t("title")}
       </motion.h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
         {/* Items */}
         <div className="lg:col-span-2 space-y-4">
           <h2 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
-            Order Summary ({summary.itemCount} {summary.itemCount === 1 ? "item" : "items"})
+            {t("orderSummary")} ({t("item.count", { count: summary.itemCount })})
           </h2>
 
           <div className="bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl border border-white/20 dark:border-neutral-700/30 rounded-2xl overflow-hidden shadow-lg shadow-neutral-200/20 dark:shadow-black/20">
@@ -413,7 +414,7 @@ export default function CheckoutPage() {
                     whileTap={{ scale: 0.9 }}
                     onClick={() => handleRemove(item.id)}
                     className="flex items-center justify-center w-8 h-8 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100 sm:opacity-50 sm:group-hover:opacity-100"
-                    aria-label={`Remove ${item.product.title}`}
+                    aria-label={t("item.remove", { title: item.product.title })}
                   >
                     <Trash2 className="w-4 h-4" />
                   </motion.button>

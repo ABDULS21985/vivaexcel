@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Header,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -45,6 +46,7 @@ export class DigitalProductsController {
 
   @Get()
   @Public()
+  @Header('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300')
   @ApiOperation({ summary: 'Get all digital products with pagination and filters' })
   @SwaggerResponse({ status: 200, description: 'Digital products retrieved successfully' })
   @ApiQuery({ name: 'cursor', required: false })
@@ -66,6 +68,7 @@ export class DigitalProductsController {
 
   @Get('slug/:slug')
   @Public()
+  @Header('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600')
   @ApiOperation({ summary: 'Get digital product by slug' })
   @ApiParam({ name: 'slug', description: 'Product slug' })
   @SwaggerResponse({ status: 200, description: 'Digital product retrieved successfully' })

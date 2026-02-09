@@ -238,7 +238,7 @@ export function SocialProofBanner({
             <button
               onClick={handleDismiss}
               className="flex-shrink-0 p-1 -m-0.5 rounded text-amber-400 hover:text-amber-600 dark:text-amber-600 dark:hover:text-amber-400 transition-colors"
-              aria-label="Dismiss social proof banner"
+              aria-label="Dismiss"
             >
               <X className="h-3.5 w-3.5" />
             </button>

@@ -341,7 +341,7 @@ function ActiveFilterChips({
           {chip.label}
           <button
             onClick={chip.onRemove}
-            className="ml-0.5 p-0.5 rounded-full hover:bg-white/20 transition-colors"
+            className="ms-0.5 p-0.5 rounded-full hover:bg-white/20 transition-colors"
             aria-label={tStore("filters.removeFilter", { label: chip.label })}
           >
             <X className="h-3 w-3" />
@@ -351,7 +351,7 @@ function ActiveFilterChips({
       {chips.length > 1 && (
         <button
           onClick={onClearAll}
-          className="text-xs text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors ml-1"
+          className="text-xs text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors ms-1"
         >
           {tStore("filters.clearAll")}
         </button>
@@ -383,7 +383,7 @@ function ScrollToTopButton() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-[#1E4DB7] text-white rounded-full shadow-lg shadow-[#1E4DB7]/30 flex items-center justify-center hover:bg-[#143A8F] transition-colors"
+          className="fixed bottom-8 end-8 z-50 w-12 h-12 bg-[#1E4DB7] text-white rounded-full shadow-lg shadow-[#1E4DB7]/30 flex items-center justify-center hover:bg-[#143A8F] transition-colors"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
@@ -514,7 +514,7 @@ function FilterContent({
         </h3>
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
+            <span className="absolute start-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
               $
             </span>
             <input
@@ -522,13 +522,13 @@ function FilterContent({
               placeholder={t("filters.min")}
               value={minPrice}
               onChange={(e) => onMinPriceChange(e.target.value)}
-              className="w-full pl-7 pr-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
+              className="w-full ps-7 pe-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
               min="0"
             />
           </div>
           <span className="text-neutral-400">-</span>
           <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
+            <span className="absolute start-3 top-1/2 -translate-y-1/2 text-neutral-400 text-sm">
               $
             </span>
             <input
@@ -536,7 +536,7 @@ function FilterContent({
               placeholder={t("filters.max")}
               value={maxPrice}
               onChange={(e) => onMaxPriceChange(e.target.value)}
-              className="w-full pl-7 pr-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
+              className="w-full ps-7 pe-3 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#1E4DB7]/20 focus:border-[#1E4DB7]"
               min="0"
             />
           </div>
