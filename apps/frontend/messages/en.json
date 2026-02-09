@@ -1002,6 +1002,422 @@
     "error": "Please enter a valid email address.",
     "placeholder": "Enter your email"
   },
+  "store": {
+    "title": "Digital Products Store",
+    "badge": "Digital Products Store",
+    "hero": {
+      "title": "Premium Digital Products",
+      "titleHighlight": "Digital Products",
+      "subtitle": "Discover professionally crafted templates, design systems, starter kits, and tools to supercharge your workflow.",
+      "trustBadges": {
+        "secureCheckout": "Secure Checkout",
+        "instantDownload": "Instant Download",
+        "premiumQuality": "Premium Quality"
+      },
+      "search": "Search products..."
+    },
+    "sections": {
+      "browseByCategory": "Browse by Category",
+      "staffPicks": "Staff Picks",
+      "featuredProducts": "Featured Products",
+      "mostPopular": "Most Popular",
+      "bestsellingProducts": "Bestselling Products",
+      "freshArrivals": "Fresh Arrivals",
+      "newThisWeek": "New This Week",
+      "exploreProductCatalog": "Explore Our Product Catalog",
+      "browseDescription": "Browse {count} premium digital products across {categories} categories. Use the filters to find exactly what you need.",
+      "youMightAlsoLike": "You might also like",
+      "personalized": "Personalized",
+      "basedOnViews": "Based on what other customers viewed"
+    },
+    "filters": {
+      "title": "Filters",
+      "category": "Category",
+      "allCategories": "All Categories",
+      "productType": "Product Type",
+      "allTypes": "All Types",
+      "priceRange": "Price Range",
+      "minPrice": "Minimum price",
+      "maxPrice": "Maximum price",
+      "min": "Min",
+      "max": "Max",
+      "minimumRating": "Minimum Rating",
+      "anyRating": "Any Rating",
+      "starsAndUp": "{count}+ Stars",
+      "andUp": "& up",
+      "clearAll": "Clear all filters",
+      "clearAllFilters": "Clear All Filters",
+      "removeFilter": "Remove {label} filter",
+      "filterProducts": "Filter products",
+      "closeFilters": "Close filters",
+      "activeFilters": "{count, plural, one {# active filter} other {# active filters}}"
+    },
+    "sort": {
+      "label": "Sort",
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "popular": "Most Popular",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "topRated": "Top Rated"
+    },
+    "search": {
+      "placeholder": "Search products...",
+      "searching": "Searching...",
+      "label": "Search products",
+      "resultsCount": "{count, plural, =0 {No products} one {# product} other {# products}} found",
+      "showingCount": "Showing {shown} of {total} products",
+      "loadingMore": "Loading more products...",
+      "loadMore": "Load More"
+    },
+    "view": {
+      "grid": "Grid view",
+      "list": "List view"
+    },
+    "empty": {
+      "title": "No products found",
+      "filteredDescription": "We could not find any products matching your filters. Try adjusting your search criteria or browse all products.",
+      "defaultDescription": "No products are currently available. Check back soon for new additions."
+    },
+    "product": {
+      "featured": "Featured",
+      "bestseller": "Bestseller",
+      "free": "Free",
+      "save": "SAVE {percent}%",
+      "discount": "-{percent}%",
+      "by": "By",
+      "downloads": "{count, plural, one {# download} other {# downloads}}",
+      "views": "{count, plural, one {# view} other {# views}}",
+      "reviews": "{count, plural, =0 {No reviews} one {# review} other {# reviews}}",
+      "rating": "Rated {value} out of 5 stars",
+      "ratingWithReviews": "Rated {value} out of 5 stars based on {count, plural, one {# review} other {# reviews}}",
+      "price": "Price: {price}",
+      "priceWithDiscount": "Price: {price}, was {original}, save {percent}%",
+      "imageOf": "Product image {current} of {total}",
+      "ariaLabel": "{title}, {type}, {price}",
+      "productImages": "Product images",
+      "previousImage": "Previous image",
+      "nextImage": "Next image",
+      "showingImage": "Showing image {current} of {total}",
+      "imageLightbox": "Image lightbox",
+      "hoverToZoom": "Hover to zoom",
+      "quickView": "Quick view"
+    },
+    "variants": {
+      "selectVariant": "Select variant",
+      "selected": "Selected"
+    },
+    "cta": {
+      "addToCart": "Add to Cart",
+      "addToCartAriaLabel": "Add {title} to cart",
+      "adding": "Adding...",
+      "addedToCart": "Added to Cart!",
+      "addedToCartAnnouncement": "{title} added to cart successfully",
+      "buyNow": "Buy Now",
+      "processing": "Processing...",
+      "livePreview": "Live Preview",
+      "addToWishlist": "Add to wishlist",
+      "removeFromWishlist": "Remove from wishlist",
+      "viewAll": "View All",
+      "viewAllProducts": "View All Products",
+      "contactUs": "Contact Us",
+      "browseMore": "Browse More Products",
+      "browseStore": "Browse Store",
+      "continueShopping": "Continue Shopping",
+      "subscribe": "Subscribe"
+    },
+    "trust": {
+      "securePayment": "Secure Payment",
+      "securePaymentDesc": "256-bit SSL encryption",
+      "instantDownload": "Instant Download",
+      "instantDownloadDesc": "Access files immediately",
+      "moneyBack": "Money-Back Guarantee",
+      "moneyBackDesc": "30-day refund policy",
+      "verifiedReviews": "Verified Reviews",
+      "verifiedReviewsDesc": "Real customer feedback",
+      "support": "24/7 Support",
+      "supportDesc": "We're here to help"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "whatsIncluded": "What's Included",
+      "compatibility": "Compatibility",
+      "reviews": "Reviews",
+      "faq": "FAQ",
+      "changelog": "Changelog"
+    },
+    "compatibility": {
+      "platform": "Platform",
+      "status": "Status",
+      "version": "Version",
+      "supported": "Supported",
+      "notSupported": "Not Supported"
+    },
+    "faq": {
+      "stillHaveQuestions": "Still have questions?",
+      "contactSupport": "Contact our support team and we will get back to you within 24 hours."
+    },
+    "changelog": {
+      "versionHistory": "Version history and updates"
+    },
+    "license": {
+      "singleUse": "Single Use",
+      "multiUse": "Multi Use",
+      "extended": "Extended",
+      "unlimited": "Unlimited",
+      "selectPlan": "Select Plan",
+      "selected": "Selected",
+      "popular": "Most Popular",
+      "perProject": "per project",
+      "lifetime": "Lifetime"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "store": "Store"
+    },
+    "socialProof": {
+      "recentPurchases": "{count} purchases in the last 24 hours",
+      "averageRating": "Rated {rating} by {count} customers",
+      "totalDownloads": "{count} downloads and counting",
+      "dismiss": "Dismiss"
+    },
+    "newsletter": {
+      "title": "Stay Updated",
+      "description": "Get notified about new products, exclusive deals, and helpful resources.",
+      "placeholder": "your@email.com",
+      "subscribe": "Subscribe"
+    },
+    "currency": {
+      "label": "Currency",
+      "select": "Select currency",
+      "change": "Click to change",
+      "approximatePrice": "Approximate price in {currency}"
+    },
+    "accessibility": {
+      "skipToProducts": "Skip to products",
+      "skipToFilters": "Skip to filters",
+      "productPagination": "Product pagination",
+      "loadingProducts": "Loading products",
+      "productsLoaded": "Products loaded",
+      "filterChanged": "Showing {count} products",
+      "sortChanged": "Products sorted by {sort}"
+    }
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "drawerTitle": "Your Cart",
+    "preview": "Cart Preview",
+    "empty": "Your cart is empty",
+    "emptyDescription": "Browse our store to find digital products you love.",
+    "item": "{count, plural, one {# item} other {# items}}",
+    "moreItems": "+{count} more {count, plural, one {item} other {items}}",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "viewCart": "View Cart",
+    "removeItem": "Remove {title} from cart",
+    "itemRemoved": "{title} removed from cart",
+    "addedToCart": "Added to cart!",
+    "failedToAdd": "Failed to add to cart",
+    "tryAgain": "Please try again.",
+    "proceedToCheckout": "Proceed to Checkout",
+    "securePurchase": "Secure Purchase",
+    "freeShippingProgress": "Add {amount} more for premium support",
+    "youMightAlsoLike": "You Might Also Like",
+    "recentlyViewed": "Recently Viewed",
+    "coupon": {
+      "label": "Have a coupon?",
+      "placeholder": "Enter coupon code",
+      "apply": "Apply",
+      "applied": "Coupon applied!",
+      "invalid": "Invalid coupon code",
+      "remove": "Remove coupon"
+    },
+    "ariaLabel": "Cart, {count, plural, =0 {empty} one {# item} other {# items}}"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "orderSummary": "Order Summary",
+    "paymentSummary": "Payment Summary",
+    "proceedToPayment": "Proceed to Payment",
+    "creatingSession": "Creating session...",
+    "securedByStripe": "Secured by Stripe. We never store your card details.",
+    "breadcrumb": {
+      "home": "Home",
+      "store": "Store",
+      "checkout": "Checkout"
+    },
+    "item": {
+      "remove": "Remove {title}",
+      "variant": "Variant: {name}",
+      "unitPrice": "Unit price: {price}"
+    },
+    "coupon": {
+      "haveACoupon": "Have a coupon?",
+      "placeholder": "Enter coupon code",
+      "apply": "Apply",
+      "applied": "Coupon applied! You save {amount}",
+      "invalid": "Invalid coupon code",
+      "expired": "This coupon has expired",
+      "remove": "Remove coupon"
+    },
+    "summary": {
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "total": "Total"
+    },
+    "trust": {
+      "securePayment": "Secure Payment",
+      "securePaymentDesc": "256-bit SSL encryption via Stripe",
+      "sslEncrypted": "SSL Encrypted",
+      "sslEncryptedDesc": "Industry-standard security",
+      "moneyBack": "Money Back",
+      "moneyBackDesc": "30-day guarantee"
+    },
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "Add some products to your cart to proceed with checkout.",
+      "browseProducts": "Browse Products"
+    },
+    "success": {
+      "title": "Order Confirmed!",
+      "subtitle": "Thank you for your purchase",
+      "description": "Your order has been processed successfully. Your downloads are ready.",
+      "orderNumber": "Order Number",
+      "date": "Date",
+      "email": "Email",
+      "items": "Items",
+      "total": "Total",
+      "downloadNow": "Download Now",
+      "continueShopping": "Continue Shopping",
+      "orderDetails": "Order Details"
+    },
+    "cancel": {
+      "title": "Checkout Cancelled",
+      "description": "Your order was cancelled. Your cart items are still saved.",
+      "returnToCart": "Return to Cart",
+      "continueShopping": "Continue Shopping"
+    }
+  },
+  "reviews": {
+    "title": "Customer Reviews",
+    "writeReview": "Write a Review",
+    "editReview": "Edit Review",
+    "shareExperience": "Share your experience",
+    "basedOn": "Based on {count, plural, one {# review} other {# reviews}}",
+    "verifiedPurchase": "Verified Purchase",
+    "recommended": "{percent}% recommend this product",
+    "rating": {
+      "label": "Rating",
+      "rateProduct": "Rate this product",
+      "value": "{value} out of 5 stars",
+      "starLabel": "{count, plural, one {# star} other {# stars}}",
+      "labels": {
+        "1": "Poor",
+        "2": "Fair",
+        "3": "Good",
+        "4": "Great",
+        "5": "Excellent"
+      }
+    },
+    "distribution": {
+      "title": "Rating Distribution",
+      "bar": "{stars, plural, one {# star} other {# stars}}: {count, plural, one {# review} other {# reviews}}, {percentage}%",
+      "filterHint": "Click to filter by {stars} stars, click again to clear"
+    },
+    "form": {
+      "title": "Write a Review",
+      "editTitle": "Edit Your Review",
+      "step": "Step {current} of {total}: {name}",
+      "steps": {
+        "rating": "Rating",
+        "details": "Details",
+        "prosAndCons": "Pros & Cons",
+        "images": "Images"
+      },
+      "titleLabel": "Review Title",
+      "titlePlaceholder": "Summarize your experience",
+      "titleMax": "{count}/{max} characters",
+      "bodyLabel": "Your Review",
+      "bodyPlaceholder": "Tell others about your experience with this product...",
+      "bodyMin": "Minimum {min} characters",
+      "bodyCount": "{count}/{max} characters",
+      "prosLabel": "What did you like?",
+      "prosPlaceholder": "Add a pro",
+      "consLabel": "What could be improved?",
+      "consPlaceholder": "Add a con",
+      "addPro": "Add a pro and press Enter",
+      "addCon": "Add a con and press Enter",
+      "removePro": "Remove pro: {text}",
+      "removeCon": "Remove con: {text}",
+      "imagesLabel": "Add Photos (optional)",
+      "imagesDescription": "Drag and drop up to 5 images or click to browse",
+      "removeImage": "Remove image",
+      "next": "Next",
+      "back": "Back",
+      "submit": "Submit Review",
+      "update": "Update Review",
+      "submitting": "Submitting...",
+      "success": "Thank you for your review!",
+      "successDescription": "Your review helps others make informed decisions.",
+      "error": "Failed to submit review. Please try again.",
+      "draftSaved": "Draft saved",
+      "loginRequired": "Please log in to write a review"
+    },
+    "list": {
+      "title": "Customer Reviews",
+      "sortBy": "Sort by",
+      "searchPlaceholder": "Search reviews...",
+      "searchLabel": "Search reviews",
+      "all": "All",
+      "stars": "{count} Stars",
+      "noReviews": "No reviews yet",
+      "noReviewsDescription": "Be the first to share your experience with this product.",
+      "noResults": "No reviews match your search",
+      "noResultsDescription": "Try a different search term or clear your filters.",
+      "loadMore": "Load more reviews",
+      "loading": "Loading reviews...",
+      "error": "Failed to load reviews",
+      "errorDescription": "Something went wrong while loading reviews.",
+      "tryAgain": "Try again"
+    },
+    "card": {
+      "helpful": "Helpful",
+      "helpfulCount": "{count, plural, one {# person} other {# people}} found this helpful",
+      "notHelpful": "Not helpful",
+      "report": "Report review",
+      "readMore": "Read more",
+      "readLess": "Read less",
+      "sellerResponse": "Seller Response",
+      "edited": "Edited",
+      "pros": "Pros",
+      "cons": "Cons",
+      "images": "{count, plural, one {# image} other {# images}}",
+      "moreImages": "+{count} more"
+    },
+    "sort": {
+      "mostHelpful": "Most Helpful",
+      "newest": "Newest First",
+      "highest": "Highest Rated",
+      "lowest": "Lowest Rated"
+    },
+    "highlights": {
+      "title": "Review Highlights",
+      "aiGenerated": "AI-generated summary",
+      "sentiment": {
+        "exceptional": "Customers are exceptionally satisfied with this product.",
+        "positive": "Customers are very satisfied with this product.",
+        "good": "Customers are generally satisfied with this product.",
+        "mixed": "This product has received mixed reviews.",
+        "negative": "This product has received below-average reviews."
+      }
+    },
+    "socialStats": {
+      "trending": "Trending",
+      "downloads": "{count} downloads",
+      "reviews": "{count} reviews"
+    }
+  },
   "language": "Language",
   "careers": {
     "hero": {

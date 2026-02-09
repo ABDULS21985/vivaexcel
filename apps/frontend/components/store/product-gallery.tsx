@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -521,6 +521,9 @@ function Lightbox({
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image lightbox"
     >
       {/* Top bar */}
       <div
@@ -747,9 +750,23 @@ export function ProductGallery({ product }: ProductGalleryProps) {
   const currentItem = galleryItems[selectedIndex];
 
   return (
-    <div className="w-full" ref={galleryRef}>
+    <div className="w-full" ref={galleryRef} role="region" aria-label="Product images">
       {/* Main Image Display */}
-      <div className="relative rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-3 shadow-lg group/gallery">
+      <div
+        className="relative rounded-2xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 mb-3 shadow-lg group/gallery"
+        aria-roledescription="carousel"
+        aria-label="Product image gallery"
+        onKeyDown={(e: KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            scrollPrev();
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            scrollNext();
+          }
+        }}
+        tabIndex={0}
+      >
         <div className="overflow-hidden" ref={mainRef}>
           <div className="flex">
             {galleryItems.map((item, idx) => (

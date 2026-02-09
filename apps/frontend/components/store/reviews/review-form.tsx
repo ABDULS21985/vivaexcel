@@ -23,6 +23,7 @@ import {
   DialogDescription,
 } from "ktblog-ui/components";
 import { useCreateReview, useUpdateReview } from "@/hooks/use-reviews";
+import { trackConversion } from "@/lib/conversion-tracking";
 import type { Review } from "@/types/review";
 import { StarRating } from "./star-rating";
 
@@ -556,6 +557,7 @@ export function ReviewForm({
 
       // Show success state
       setShowSuccess(true);
+      trackConversion("REVIEW_WRITTEN", { digitalProductId: productId });
       setCompletedSteps(new Set([1, 2, 3, 4]));
 
       // Auto-close after 2 seconds

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -20,6 +20,7 @@ import { cn, Button, Skeleton } from "@ktblog/ui/components";
 import { useCheckoutSuccess } from "@/hooks/use-cart";
 import { ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from "@/types/order";
 import { toast } from "sonner";
+import { trackConversion } from "@/lib/conversion-tracking";
 
 // =============================================================================
 // Premium Checkout Success Page
@@ -275,6 +276,17 @@ export default function CheckoutSuccessPage() {
   const sessionId = searchParams.get("session_id") || "";
 
   const { data: order, isLoading, isError } = useCheckoutSuccess(sessionId);
+
+  useEffect(() => {
+    if (order) {
+      trackConversion("CHECKOUT_COMPLETED", {
+        orderId: order.orderNumber,
+        revenue: order.total,
+        currency: order.currency,
+        quantity: order.items.length,
+      });
+    }
+  }, [order]);
 
   const [copiedOrderNumber, setCopiedOrderNumber] = useState(false);
 

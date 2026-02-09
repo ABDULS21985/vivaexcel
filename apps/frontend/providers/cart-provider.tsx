@@ -12,6 +12,7 @@ import {
 } from "react";
 import { useAuth } from "@/providers/auth-provider";
 import { apiGet, apiPost, apiDelete } from "@/lib/api-client";
+import { trackConversion } from "@/lib/conversion-tracking";
 
 // =============================================================================
 // Cart Provider
@@ -234,6 +235,8 @@ export function CartProvider({ children }: CartProviderProps) {
         variantId,
         ...(sessionId && { sessionId }),
       });
+
+      trackConversion("ADD_TO_CART", { digitalProductId });
 
       await fetchCart();
     },

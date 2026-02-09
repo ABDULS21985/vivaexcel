@@ -32,6 +32,7 @@ import {
 } from "@ktblog/ui/components";
 import { useCart } from "@/providers/cart-provider";
 import { useCheckout } from "@/hooks/use-cart";
+import { trackConversion } from "@/lib/conversion-tracking";
 
 // =============================================================================
 // Checkout Page — Premium Pre-Checkout Experience
@@ -281,6 +282,16 @@ export default function CheckoutPage() {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [couponSuccess]);
+
+  useEffect(() => {
+    if (items.length > 0) {
+      trackConversion("CHECKOUT_STARTED", {
+        quantity: items.length,
+        revenue: summary.total,
+        currency: summary.currency,
+      });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCheckout = async () => {
     setCouponError(null);

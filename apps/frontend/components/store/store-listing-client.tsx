@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -107,9 +108,19 @@ function SortDropdown({
   value: SortOption;
   onChange: (v: SortOption) => void;
 }) {
+  const t = useTranslations("store");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const currentLabel = SORT_OPTIONS.find((o) => o.value === value)?.label || "Sort";
+
+  const sortOptions: { value: SortOption; label: string }[] = [
+    { value: "newest", label: t("sort.newest") },
+    { value: "popular", label: t("sort.popular") },
+    { value: "price-asc", label: t("sort.priceAsc") },
+    { value: "price-desc", label: t("sort.priceDesc") },
+    { value: "top-rated", label: t("sort.topRated") },
+  ];
+
+  const currentLabel = sortOptions.find((o) => o.value === value)?.label || t("sort.label");
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -143,7 +154,7 @@ function SortDropdown({
             transition={{ duration: 0.15 }}
             className="absolute right-0 mt-2 w-52 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-xl z-50 overflow-hidden"
           >
-            {SORT_OPTIONS.map((option) => (
+            {sortOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => {

@@ -5,6 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Star, Download, TrendingUp, Award, Eye } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { SrOnly } from "@/components/ui/accessibility";
+import { formatPrice as formatPriceLib } from "@/lib/format";
 import type { DigitalProduct } from "@/types/digital-product";
 import {
   DIGITAL_PRODUCT_TYPE_LABELS,
@@ -59,14 +61,15 @@ function renderStars(rating: number): React.ReactNode[] {
         <Star
           key={i}
           className="h-3.5 w-3.5 fill-amber-400 text-amber-400"
+          aria-hidden="true"
         />,
       );
     } else if (i === fullStars && hasHalfStar) {
       stars.push(
         <span key={i} className="relative inline-flex">
-          <Star className="h-3.5 w-3.5 text-neutral-300 dark:text-neutral-600" />
+          <Star className="h-3.5 w-3.5 text-neutral-300 dark:text-neutral-600" aria-hidden="true" />
           <span className="absolute inset-0 overflow-hidden w-1/2">
-            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
           </span>
         </span>,
       );
@@ -75,6 +78,7 @@ function renderStars(rating: number): React.ReactNode[] {
         <Star
           key={i}
           className="h-3.5 w-3.5 text-neutral-300 dark:text-neutral-600"
+          aria-hidden="true"
         />,
       );
     }
@@ -187,8 +191,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       exit="exit"
       className="group"
     >
-      <Link href={`/store/${product.slug}`} className="block h-full">
+      <Link href={`/store/${product.slug}`} className="block h-full" aria-label={`${product.title}, ${typeLabel}, ${formatPriceLib(product.price, { currency: product.currency || 'USD' })}`}>
         <div
+          role="article"
           className="card-interactive relative h-full bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 overflow-hidden"
           style={{ borderTopColor: typeColor, borderTopWidth: "3px" }}
           onMouseEnter={startCycling}
@@ -198,6 +203,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           <div
             className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"
             style={{ backgroundColor: `${typeColor}20` }}
+            aria-hidden="true"
           />
 
           {/* ---------------------------------------------------------------
@@ -218,7 +224,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                       alt={`${product.title}${idx > 0 ? ` - ${idx + 1}` : ""}`}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      sizes="(max-width: 768px) 300px, 340px"
                     />
                   </div>
                 ))}
@@ -229,6 +235,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                     {allImages.map((_, idx) => (
                       <div
                         key={idx}
+                        aria-label={`Image ${idx + 1} of ${allImages.length}`}
+                        aria-current={currentImageIndex === idx}
                         className={`h-1.5 rounded-full transition-all duration-300 ${
                           idx === currentImageIndex
                             ? "bg-white w-4"
@@ -296,7 +304,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             )}
 
             {/* Glassmorphism Price Tag (bottom-right, hover reveal) */}
-            <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0" aria-hidden="true">
               <div className="glass rounded-lg px-3 py-1.5">
                 <span className="text-sm font-bold text-white">
                   {formatPrice(product.price, product.currency)}
@@ -342,6 +350,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                     ({product.totalReviews})
                   </span>
                 )}
+                <SrOnly>{product.averageRating.toFixed(1)} out of 5 stars, {product.totalReviews} reviews</SrOnly>
               </div>
             )}
 
@@ -380,6 +389,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             style={{
               background: `linear-gradient(90deg, ${typeColor} 0%, #F59A23 100%)`,
             }}
+            aria-hidden="true"
           />
         </div>
       </Link>

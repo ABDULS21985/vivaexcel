@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -13,9 +14,10 @@ import { JsonLd } from "@/components/shared/json-ld";
 import { generateBreadcrumbSchema, generateFAQSchema } from "@/lib/schema";
 import { ProductGallery } from "@/components/store/product-gallery";
 import { ProductInfo } from "@/components/store/product-info";
-import { ProductDescriptionTabs } from "./product-description-tabs";
-import { RelatedProducts } from "@/components/store/related-products";
-import { FloatingElements } from "@/components/store/floating-elements";
+
+const ProductDescriptionTabs = dynamic(() => import("./product-description-tabs").then(m => ({ default: m.ProductDescriptionTabs })));
+const RelatedProducts = dynamic(() => import("@/components/store/related-products").then(m => ({ default: m.RelatedProducts })));
+const FloatingElements = dynamic(() => import("@/components/store/floating-elements").then(m => ({ default: m.FloatingElements })));
 
 // =============================================================================
 // Types

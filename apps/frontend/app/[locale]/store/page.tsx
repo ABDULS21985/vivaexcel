@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { setRequestLocale } from "next-intl/server";
 import {
   ShoppingBag,
@@ -10,9 +11,10 @@ import {
 } from "lucide-react";
 import { StoreListingClient } from "@/components/store/store-listing-client";
 import { StoreHeroClient } from "@/components/store/store-hero-client";
-import { SocialProofStrip } from "@/components/store/social-proof-strip";
-import { StoreNewsletter } from "@/components/store/store-newsletter";
 import { ProductCard } from "@/components/store/product-card";
+
+const SocialProofStrip = dynamic(() => import("@/components/store/social-proof-strip").then(m => ({ default: m.SocialProofStrip })));
+const StoreNewsletter = dynamic(() => import("@/components/store/store-newsletter").then(m => ({ default: m.StoreNewsletter })));
 import {
   fetchProducts,
   fetchProductCategories,
