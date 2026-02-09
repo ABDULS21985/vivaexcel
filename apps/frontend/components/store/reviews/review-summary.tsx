@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { ShieldCheck, ThumbsUp, MessageSquarePlus } from "lucide-react";
 import { Button } from "ktblog-ui/components";
 import { useReviewStats } from "@/hooks/use-reviews";
+import { SrOnly } from "@/components/ui/accessibility";
 import { StarRating } from "./star-rating";
 import { RatingDistribution } from "./rating-distribution";
 import { ReviewForm } from "./review-form";
@@ -218,9 +219,10 @@ export function ReviewSummary({ productId }: ReviewSummaryProps) {
           {/* ================================================================ */}
           <div className="w-full md:w-auto flex flex-col items-center md:items-start shrink-0 md:min-w-[220px]">
             {/* Big animated rating number */}
-            <span className="text-6xl font-extrabold tracking-tight text-neutral-900 dark:text-white tabular-nums leading-none">
+            <span className="text-6xl font-extrabold tracking-tight text-neutral-900 dark:text-white tabular-nums leading-none" aria-hidden="true">
               {animatedRating}
             </span>
+            <SrOnly>{stats.averageRating.toFixed(1)} out of 5 stars</SrOnly>
 
             {/* Star rating */}
             <div className="mt-2">

@@ -160,11 +160,13 @@ function CouponSection({
   setCouponCode,
   couponError,
   couponSuccess,
+  t,
 }: {
   couponCode: string;
   setCouponCode: (v: string) => void;
   couponError: string | null;
   couponSuccess: boolean;
+  t: ReturnType<typeof useTranslations>;
 }) {
   const [showCoupon, setShowCoupon] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -182,7 +184,7 @@ function CouponSection({
         className="flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-[#1E4DB7] dark:hover:text-blue-400 transition-colors"
       >
         <Tag className="w-3.5 h-3.5" />
-        <span>{showCoupon ? "Hide coupon" : "Have a coupon?"}</span>
+        <span>{showCoupon ? t("coupon.hide") : t("coupon.haveACoupon")}</span>
       </button>
 
       <AnimatePresence>
@@ -199,7 +201,7 @@ function CouponSection({
                 ref={inputRef}
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
-                placeholder="Enter code"
+                placeholder={t("coupon.placeholder")}
                 leftIcon={<Tag className="w-4 h-4" />}
                 className={cn(
                   "flex-1 text-sm h-9",
@@ -217,7 +219,7 @@ function CouponSection({
                   exit={{ opacity: 0 }}
                   className="text-xs text-emerald-600 dark:text-emerald-400 mt-1.5 font-medium flex items-center gap-1"
                 >
-                  <Check className="w-3 h-3" /> Coupon applied!
+                  <Check className="w-3 h-3" /> {t("coupon.applied")}
                 </motion.p>
               )}
               {couponError && (

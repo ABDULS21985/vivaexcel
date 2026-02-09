@@ -279,13 +279,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               {product.isFeatured && (
                 <span className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-[#F59A23] to-[#E86A1D] text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg">
                   <TrendingUp className="h-3 w-3" />
-                  Featured
+                  {t("product.featured")}
                 </span>
               )}
               {product.isBestseller && (
                 <span className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg">
                   <Award className="h-3 w-3" />
-                  Bestseller
+                  {t("product.bestseller")}
                 </span>
               )}
             </div>
@@ -294,7 +294,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             {discount > 0 && (
               <div className="absolute bottom-3 start-3 z-10">
                 <span className="px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-lg shadow-lg">
-                  -{discount}%
+                  {t("product.discount", { percent: discount })}
                 </span>
               </div>
             )}
@@ -355,7 +355,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               <div className="flex items-baseline gap-2">
                 {product.price === 0 ? (
                   <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#1E4DB7] to-[#6366F1]">
-                    Free
+                    {t("product.free")}
                   </span>
                 ) : (
                   <span className="text-lg font-bold text-neutral-900 dark:text-white">
