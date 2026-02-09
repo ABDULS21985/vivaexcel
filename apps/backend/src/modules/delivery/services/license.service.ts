@@ -159,7 +159,30 @@ export class LicenseService {
   }
 
   // ──────────────────────────────────────────────
-  //  Activate license on a domain/machine
+  //  Activate license on a domain/machine (by license ID)
+  // ──────────────────────────────────────────────
+
+  async activateLicenseById(
+    licenseId: string,
+    userId: string,
+    domain?: string,
+    machineId?: string,
+    ipAddress?: string,
+  ): Promise<ApiResponse<LicenseActivation>> {
+    const license = await this.repository.findLicenseById(licenseId);
+    if (!license) {
+      throw new NotFoundException('License not found');
+    }
+
+    if (license.userId !== userId) {
+      throw new ForbiddenException('You do not have permission to activate this license');
+    }
+
+    return this.activateLicense(license.licenseKey, domain, machineId, ipAddress);
+  }
+
+  // ──────────────────────────────────────────────
+  //  Activate license on a domain/machine (by key)
   // ──────────────────────────────────────────────
 
   async activateLicense(
@@ -250,7 +273,28 @@ export class LicenseService {
   }
 
   // ──────────────────────────────────────────────
-  //  Deactivate license activation
+  //  Deactivate license activation (by license ID)
+  // ──────────────────────────────────────────────
+
+  async deactivateLicenseById(
+    licenseId: string,
+    activationId: string,
+    userId: string,
+  ): Promise<ApiResponse<void>> {
+    const license = await this.repository.findLicenseById(licenseId);
+    if (!license) {
+      throw new NotFoundException('License not found');
+    }
+
+    if (license.userId !== userId) {
+      throw new ForbiddenException('You do not have permission to manage this license');
+    }
+
+    return this.deactivateLicense(license.licenseKey, activationId, userId);
+  }
+
+  // ──────────────────────────────────────────────
+  //  Deactivate license activation (by key)
   // ──────────────────────────────────────────────
 
   async deactivateLicense(
@@ -321,7 +365,23 @@ export class LicenseService {
   }
 
   // ──────────────────────────────────────────────
-  //  Revoke license (admin)
+  //  Revoke license (admin, by license ID)
+  // ──────────────────────────────────────────────
+
+  async revokeLicenseById(
+    licenseId: string,
+    reason: string,
+  ): Promise<ApiResponse<void>> {
+    const license = await this.repository.findLicenseById(licenseId);
+    if (!license) {
+      throw new NotFoundException('License not found');
+    }
+
+    return this.revokeLicense(license.licenseKey, reason);
+  }
+
+  // ──────────────────────────────────────────────
+  //  Revoke license (admin, by key)
   // ──────────────────────────────────────────────
 
   async revokeLicense(
