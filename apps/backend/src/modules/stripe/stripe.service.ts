@@ -259,6 +259,18 @@ export class StripeService {
         await this.handlePaymentFailed(event.data.object as Stripe.Invoice);
         break;
 
+      case 'account.updated': {
+        const account = event.data.object as Stripe.Account;
+        await this.stripeConnectService.handleAccountUpdated(account);
+        break;
+      }
+
+      case 'transfer.failed': {
+        const transfer = event.data.object as Stripe.Transfer;
+        await this.stripeConnectService.handleTransferFailed(transfer);
+        break;
+      }
+
       default:
         this.logger.log(`Unhandled webhook event type: ${event.type}`);
     }
