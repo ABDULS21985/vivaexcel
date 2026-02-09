@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VivaExcel Blog Newsletter</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  {{#if preheaderText}}
+  <span style="display: none; max-height: 0; overflow: hidden; mso-hide: all;">{{preheaderText}}</span>
+  {{/if}}
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #f4f6f9;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f4f6f9;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);">
+          <!-- Header with Brand -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1E4DB7 0%, #3B6FD4 100%); padding: 30px 40px; text-align: center;">
+              <h1 style="margin: 0 0 4px; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">VivaExcel Blog</h1>
+              <p style="margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 13px;">Newsletter</p>
+            </td>
+          </tr>
+
+          <!-- Greeting -->
+          <tr>
+            <td style="padding: 32px 40px 0;">
+              <p style="margin: 0 0 16px; color: #4b5563; font-size: 16px;">Hi {{name}},</p>
+            </td>
+          </tr>
+
+          <!-- Dynamic Content Block -->
+          <tr>
+            <td style="padding: 0 40px 32px;">
+              <div style="color: #4b5563; font-size: 15px; line-height: 1.7;">
+                {{{content}}}
+              </div>
+            </td>
+          </tr>
+
+          <!-- Divider -->
+          <tr>
+            <td style="padding: 0 40px;">
+              <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 0;">
+            </td>
+          </tr>
+
+          <!-- Blog CTA -->
+          <tr>
+            <td style="padding: 24px 40px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                  <td align="center">
+                    <a href="{{blogUrl}}" style="display: inline-block; background-color: #1E4DB7; color: #ffffff; text-decoration: none; padding: 12px 32px; border-radius: 6px; font-weight: 600; font-size: 14px;">Visit the Blog</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px 40px; background-color: #f8f9fb; border-top: 1px solid #e5e7eb;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                  <td style="text-align: center;">
+                    <p style="margin: 0 0 8px; color: #6b7280; font-size: 13px; font-weight: 600;">VivaExcel Blog</p>
+                    <p style="margin: 0 0 12px; color: #9ca3af; font-size: 12px;">&copy; {{year}} VivaExcel Blog. All rights reserved.</p>
+                    <p style="margin: 0 0 8px; color: #9ca3af; font-size: 12px;">
+                      Questions? <a href="mailto:{{supportEmail}}" style="color: #1E4DB7; text-decoration: none;">{{supportEmail}}</a>
+                    </p>
+                    <p style="margin: 0; font-size: 11px;">
+                      <a href="{{unsubscribeUrl}}" style="color: #9ca3af; text-decoration: underline;">Unsubscribe</a> from this newsletter.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -21,13 +21,13 @@ export class Subscription extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ name: 'tier_id' })
+  @Column({ name: 'tier_id', nullable: true })
   @Index()
-  tierId: string;
+  tierId?: string;
 
-  @ManyToOne(() => MembershipTier, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => MembershipTier, { onDelete: 'RESTRICT', nullable: true })
   @JoinColumn({ name: 'tier_id' })
-  tier: MembershipTier;
+  tier?: MembershipTier;
 
   @Column({ name: 'stripe_customer_id', nullable: true })
   stripeCustomerId?: string;

@@ -32,7 +32,7 @@ export class StripeService {
     }
 
     this.stripe = new Stripe(secretKey || '', {
-      apiVersion: '2025-04-30.basil',
+      apiVersion: '2025-02-24.acacia',
     });
 
     this.webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET') || '';

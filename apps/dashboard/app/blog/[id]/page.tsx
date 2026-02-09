@@ -19,6 +19,7 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
         excerpt: "Exploring how blockchain and digital identity are shaping the future of trust on the internet.",
         content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...",
         status: "published" as const,
+        visibility: "public" as const,
         categoryId: "technology",
         authorId: "user-1",
         featured: true,

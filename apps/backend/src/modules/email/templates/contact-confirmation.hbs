@@ -3,147 +3,98 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>We Received Your Message - DigiWeb</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .container {
-      background-color: #ffffff;
-      border-radius: 8px;
-      padding: 40px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .logo {
-      font-size: 28px;
-      font-weight: bold;
-      color: #2563eb;
-    }
-    h1 {
-      color: #1f2937;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    p {
-      color: #4b5563;
-      margin-bottom: 15px;
-    }
-    .success-icon {
-      text-align: center;
-      margin: 20px 0;
-    }
-    .success-icon .checkmark {
-      display: inline-block;
-      width: 60px;
-      height: 60px;
-      background-color: #10b981;
-      border-radius: 50%;
-      line-height: 60px;
-      color: #fff;
-      font-size: 30px;
-    }
-    .message-summary {
-      background-color: #f3f4f6;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 25px 0;
-    }
-    .message-summary h3 {
-      color: #1f2937;
-      margin-top: 0;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
-    .message-summary .field {
-      margin-bottom: 12px;
-    }
-    .message-summary .label {
-      font-weight: 600;
-      color: #374151;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .message-summary .value {
-      color: #4b5563;
-      margin-top: 4px;
-    }
-    .message-content {
-      background-color: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
-      padding: 15px;
-      white-space: pre-wrap;
-    }
-    .footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e7eb;
-      text-align: center;
-      color: #9ca3af;
-      font-size: 12px;
-    }
-    .info-box {
-      background-color: #eff6ff;
-      border-left: 4px solid #2563eb;
-      padding: 12px 16px;
-      margin: 20px 0;
-      border-radius: 0 6px 6px 0;
-    }
-  </style>
+  <title>We Received Your Message - VivaExcel Blog</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">DigiWeb</div>
-    </div>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #f4f6f9;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f4f6f9;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);">
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #1E4DB7; padding: 24px 40px; text-align: center;">
+              <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #ffffff;">VivaExcel Blog</h1>
+            </td>
+          </tr>
 
-    <div class="success-icon">
-      <span class="checkmark">&#10003;</span>
-    </div>
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <!-- Success Icon -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 0 0 24px;">
+                <tr>
+                  <td align="center">
+                    <div style="display: inline-block; background-color: #ecfdf5; border: 2px solid #10b981; border-radius: 50%; width: 60px; height: 60px; line-height: 60px; text-align: center; font-size: 28px; color: #10b981;">
+                      &#10003;
+                    </div>
+                  </td>
+                </tr>
+              </table>
 
-    <h1>Thank You for Contacting Us!</h1>
+              <h2 style="margin: 0 0 20px; font-size: 22px; color: #1a1a2e; text-align: center;">Thank You for Contacting Us!</h2>
 
-    <p>Hello {{name}},</p>
+              <p style="margin: 0 0 16px; color: #4b5563; font-size: 16px;">Hello {{name}},</p>
 
-    <p>We've received your message and appreciate you taking the time to reach out. Our team will review your inquiry and get back to you as soon as possible.</p>
+              <p style="margin: 0 0 16px; color: #4b5563; font-size: 16px;">We've received your message and appreciate you taking the time to reach out. Our team will review your inquiry and get back to you as soon as possible.</p>
 
-    <div class="info-box">
-      <strong>What happens next?</strong><br>
-      Our team typically responds within 24-48 business hours. For urgent matters, please don't hesitate to call us directly.
-    </div>
+              <!-- Info Box -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 24px 0;">
+                <tr>
+                  <td style="background-color: #eff6ff; border-left: 4px solid #1E4DB7; padding: 14px 18px; border-radius: 0 6px 6px 0;">
+                    <p style="margin: 0; color: #1e3a5f; font-size: 14px;"><strong>What happens next?</strong><br>Our team typically responds within 24-48 business hours. For urgent matters, please don't hesitate to contact us directly.</p>
+                  </td>
+                </tr>
+              </table>
 
-    <div class="message-summary">
-      <h3>Your Message Summary</h3>
-      <div class="field">
-        <div class="label">Subject</div>
-        <div class="value">{{subject}}</div>
-      </div>
-      <div class="field">
-        <div class="label">Message</div>
-        <div class="message-content">{{message}}</div>
-      </div>
-    </div>
+              <!-- Message Summary -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f8f9fb; border-radius: 8px; margin: 24px 0;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <h3 style="margin: 0 0 16px; font-size: 15px; color: #1a1a2e;">Your Message Summary</h3>
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <p style="margin: 0 0 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; font-weight: 600;">Subject</p>
+                          <p style="margin: 0; font-size: 14px; color: #4b5563;">{{subject}}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0 0;">
+                          <p style="margin: 0 0 2px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; font-weight: 600;">Message</p>
+                          <div style="margin-top: 4px; padding: 12px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; color: #4b5563; white-space: pre-wrap;">{{message}}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
 
-    <p>If you need to add any additional information to your inquiry, simply reply to this email.</p>
+              <p style="margin: 0 0 16px; color: #4b5563; font-size: 14px;">If you need to add any additional information to your inquiry, simply reply to this email.</p>
 
-    <p>Thank you for your interest in DigiWeb!</p>
-    <p><strong>The DigiWeb Team</strong></p>
+              <p style="margin: 0 0 8px; color: #4b5563; font-size: 14px;">Thank you for your interest in VivaExcel Blog!</p>
+              <p style="margin: 0; color: #1a1a2e; font-size: 14px; font-weight: 600;">The VivaExcel Blog Team</p>
+            </td>
+          </tr>
 
-    <div class="footer">
-      <p>&copy; {{year}} DigiWeb. All rights reserved.</p>
-      <p>Questions? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
-    </div>
-  </div>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px 40px; border-top: 1px solid #e5e7eb; text-align: center;">
+              <p style="margin: 0 0 8px; color: #9ca3af; font-size: 12px;">&copy; {{year}} VivaExcel Blog. All rights reserved.</p>
+              <p style="margin: 0; color: #9ca3af; font-size: 12px;">Questions? Contact us at <a href="mailto:{{supportEmail}}" style="color: #1E4DB7; text-decoration: none;">{{supportEmail}}</a></p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
