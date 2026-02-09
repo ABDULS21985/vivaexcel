@@ -1,0 +1,1126 @@
+{
+  "metadata": {
+    "title": "Global Digitalbit Limited - Conseil IT, IA, Cybersecurite et Solutions CBDC",
+    "titleTemplate": "{title} | Global Digitalbit Limited",
+    "description": "Global Digitalbit Limited est une entreprise informatique pionniere dediee a l'amelioration de la vie grace a la technologie. Specialisee dans le conseil, la mise en oeuvre et la formation en analyse de donnees, intelligence artificielle, cybersecurite et monnaie numerique de banque centrale (CBDC).",
+    "keywords": "conseil IT, analyse de donnees, intelligence artificielle, solutions IA, cybersecurite, CBDC, blockchain, transformation numerique"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "about": "A Propos",
+    "services": "Services",
+    "products": "Produits",
+    "insights": "Actualites",
+    "caseStudies": "Etudes de Cas",
+    "industries": "Industries",
+    "training": "Formation",
+    "blogs": "Blog",
+    "careers": "Carrieres",
+    "contact": "Contact",
+    "webSummit": "Web Summit Qatar",
+    "toggleMenu": "Basculer le Menu",
+    "getStarted": "Commencer"
+  },
+  "common": {
+    "learnMore": "En Savoir Plus",
+    "getStarted": "Commencer",
+    "submit": "Soumettre",
+    "loading": "Chargement...",
+    "readMore": "Lire la Suite",
+    "viewAll": "Voir Tout",
+    "viewDetails": "Voir les Details",
+    "backToHome": "Retour a l'Accueil",
+    "previous": "Precedent",
+    "next": "Suivant",
+    "close": "Fermer",
+    "open": "Ouvrir",
+    "search": "Rechercher",
+    "searchPlaceholder": "Rechercher...",
+    "noResults": "Aucun resultat trouve",
+    "error": "Erreur",
+    "success": "Succes",
+    "warning": "Avertissement",
+    "info": "Information",
+    "yes": "Oui",
+    "no": "Non",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "download": "Telecharger",
+    "upload": "Envoyer",
+    "share": "Partager",
+    "copy": "Copier",
+    "copied": "Copie !",
+    "seeAll": "Voir Tout",
+    "showMore": "Voir Plus",
+    "showLess": "Voir Moins",
+    "required": "Requis",
+    "optional": "Optionnel",
+    "selectLanguage": "Selectionner la Langue"
+  },
+  "hero": {
+    "slides": {
+      "slide1": {
+        "tagline": "LE SUCCES PAR L'INNOVATION",
+        "title": "Transformer les Idees en",
+        "highlight": "Realite Numerique",
+        "description": "Global Digitalbit Limited est une entreprise informatique pionniere dediee a l'amelioration de la vie grace a la puissance de la technologie. Specialisee dans le conseil, la mise en oeuvre et la formation.",
+        "primaryCTA": "Nos Services",
+        "secondaryCTA": "Nous Contacter"
+      },
+      "slide2": {
+        "tagline": "EXPERTISE TECHNOLOGIQUE",
+        "title": "Renforcer les Entreprises avec",
+        "highlight": "l'IA et la Cybersecurite",
+        "description": "Nous fournissons des solutions de pointe en intelligence artificielle, cybersecurite et implementation de CBDC pour des clients locaux et internationaux avec excellence.",
+        "primaryCTA": "Nos Produits",
+        "secondaryCTA": "En Savoir Plus"
+      },
+      "slide3": {
+        "tagline": "INNOVATION ET EXCELLENCE",
+        "title": "Construire l'Avenir avec",
+        "highlight": "l'Analyse de Donnees",
+        "description": "Specialises dans l'analyse de donnees, la technologie blockchain et la transformation numerique pour servir les marches locaux et internationaux avec innovation.",
+        "primaryCTA": "Commencer",
+        "secondaryCTA": "Voir les Etudes de Cas"
+      }
+    },
+    "previousSlide": "Diapositive precedente",
+    "nextSlide": "Diapositive suivante",
+    "goToSlide": "Aller a la diapositive {number}",
+    "carouselLabel": "Diaporama presentant les services de Global Digitalbit",
+    "scroll": "Defiler",
+    "stats": {
+      "projectsDelivered": "Projets Livres",
+      "globalClients": "Clients Mondiaux",
+      "yearsExperience": "Annees d'Experience",
+      "clientSatisfaction": "Satisfaction Client"
+    }
+  },
+  "about": {
+    "title": "A Propos",
+    "subtitle": "Solutions Technologiques Pionnieres",
+    "description": "Global Digitalbit Limited est une entreprise informatique pionniere dediee a l'amelioration de la vie grace a la technologie.",
+    "hero": {
+      "kicker": "Partenaires Technologiques d'Entreprise",
+      "scroll": "Faites defiler pour decouvrir",
+      "cta": {
+        "primary": "Nous Contacter",
+        "secondary": "Nos Services"
+      },
+      "heading": {
+        "line1": "Technologie Pionniere",
+        "line2": "Transformer des Vies"
+      },
+      "subtitle": "Global Digitalbit Limited est une entreprise informatique pionniere dediee a l'amelioration de la vie grace a la technologie. Nous nous specialisons dans l'analyse de donnees, l'IA, la cybersecurite et les solutions de monnaie numerique.",
+      "stats": {
+        "years": "Annees d'Excellence",
+        "countries": "Pays Desservis",
+        "projects": "Projets Realises"
+      }
+    },
+    "story": {
+      "overline": "Notre Histoire",
+      "heading": {
+        "line1": "Une Decennie d'",
+        "line2": "Excellence Numerique"
+      },
+      "description": {
+        "para1": "<company>Global Digitalbit Limited</company> est nee d'une vision audacieuse : combler le fosse entre les technologies emergentes et les entreprises qui en ont le plus besoin. Ce qui a commence comme une petite equipe de technologues passionnes est devenu une entreprise de services informatiques reconnue mondialement.",
+        "para2": "Notre parcours a ete defini par une innovation constante, un engagement inebranlable envers nos clients et une conviction profonde que la technologie peut transformer des vies. Aujourd'hui, nous servons des clients dans <highlight>plus de 50 pays</highlight>, offrant des solutions de classe mondiale en <highlight>analyse de donnees</highlight>, <highlight>intelligence artificielle</highlight>, <highlight>cybersecurite</highlight> et <highlight>monnaie numerique de banque centrale</highlight>."
+      },
+      "milestones": {
+        "foundation": {
+          "title": "Fondation",
+          "description": "Global Digitalbit Limited a ete fondee avec la vision de transformer les entreprises grace a la technologie."
+        },
+        "expansion": {
+          "title": "Expansion Regionale",
+          "description": "Expansion des operations a travers l'Afrique de l'Ouest, creation d'un reseau solide de clients et de partenariats."
+        },
+        "global": {
+          "title": "Portee Mondiale",
+          "description": "Etablissement d'une presence internationale servant des clients dans plus de 50 pays avec des solutions de pointe."
+        },
+        "innovation": {
+          "title": "Leader de l'Innovation",
+          "description": "Reconnu comme un leader en IA, cybersecurite et implementation de CBDC a l'echelle mondiale."
+        }
+      },
+      "badge": {
+        "title": "Etabli en 2014",
+        "subtitle": "Une decennie d'excellence numerique"
+      }
+    },
+    "missionVision": {
+      "overline": "But & Direction",
+      "heading": "Guide par un Objectif",
+      "subheading": "Notre mission et notre vision guident chaque decision que nous prenons, assurant un impact significatif pour nos clients et communautes."
+    },
+    "mission": {
+      "title": "Notre Mission",
+      "heading": "Autonomiser par la Technologie",
+      "description": "Fournir des services de conseil, de mise en oeuvre et de formation informatiques de classe mondiale qui autonomisent les entreprises et les individus. Nous nous engageons a exploiter notre expertise en analyse de donnees, intelligence artificielle, cybersecurite et monnaie numerique de banque centrale pour stimuler la croissance et creer une valeur durable pour nos clients a travers le monde."
+    },
+    "vision": {
+      "title": "Notre Vision",
+      "heading": "Diriger l'Avenir Numerique",
+      "description": "Etre une entreprise mondiale de services informatiques de premier plan qui autonomise les entreprises et les individus grace a des solutions technologiques transformatrices, stimulant la croissance economique et creant un avenir plus connecte. Nous envisageons un monde ou chaque organisation a acces aux outils technologiques dont elle a besoin pour prosperer a l'ere numerique."
+    },
+    "values": {
+      "title": "Nos Valeurs",
+      "description": "Nos valeurs sont plus que des mots. Ce sont les principes qui guident chaque decision que nous prenons et chaque solution que nous livrons.",
+      "declarations": {
+        "build": "Nous Construisons Ce Que Nous Recommandons",
+        "complexity": "La Complexite Est Notre Zone de Confort",
+        "security": "La Securite N'est Pas Negociable"
+      },
+      "overline": "Nos Valeurs Fondamentales",
+      "heading": "Les Principes Qui Nous Guident",
+      "subheading": "Nos valeurs sont le fondement de tout ce que nous faisons. Elles faconnent notre culture, guident nos decisions et alimentent notre engagement envers l'excellence.",
+      "innovation": {
+        "title": "Innovation",
+        "desc": "Nous explorons constamment de nouvelles technologies et idees pour fournir des solutions de pointe qui maintiennent nos clients en avance sur la concurrence."
+      },
+      "reliability": {
+        "title": "Fiabilite",
+        "desc": "Nos clients nous font confiance pour fournir des solutions securisees et fiables qui assurent la continuite des activites et le succes a long terme."
+      },
+      "integrity": {
+        "title": "Integrite",
+        "desc": "Nous nous engageons a mener nos affaires avec le plus haut niveau d'ethique, de transparence et d'honnetete dans chaque engagement."
+      },
+      "teamwork": {
+        "title": "Travail d'Equipe",
+        "desc": "La collaboration est au coeur de tout ce que nous faisons. Travailler ensemble conduit aux meilleurs resultats pour nos clients et partenaires."
+      },
+      "excellence": {
+        "title": "Excellence",
+        "desc": "Nous poursuivons l'excellence dans chaque projet, fournissant des solutions qui depassent les attentes et etablissent de nouvelles normes industrielles."
+      },
+      "growth": {
+        "title": "Croissance",
+        "desc": "Nous investissons dans nos collaborateurs et nos clients, favorisant l'apprentissage continu et le developpement pour stimuler une croissance durable."
+      }
+    },
+    "team": {
+      "overline": "Notre Direction",
+      "heading": "Rencontrez les Visionnaires",
+      "subheading": "Notre equipe de direction apporte des decennies d'experience combinee en technologie, strategie commerciale et innovation pour fournir des resultats exceptionnels.",
+      "viewProfile": "Voir le Profil",
+      "members": {
+        "ceo": {
+          "name": "Hajiya Rakiya Mohammed",
+          "role": "Directrice Generale",
+          "bio": "Leader visionnaire avec plus de 35 ans d'experience en conseil informatique, stimulant la croissance strategique et la transformation numerique sur les marches emergents."
+        },
+        "cto": {
+          "name": "Micha Abdul",
+          "role": "Directeur Technique",
+          "bio": "Expert en intelligence artificielle et cybersecurite, dirigeant notre innovation technique et assurant des solutions de classe mondiale pour les clients mondiaux."
+        },
+        "headAnalytics": {
+          "name": "Sarah Ibrahim",
+          "role": "Responsable Analyse de Donnees",
+          "bio": "Pionniere de la prise de decision basee sur les donnees, specialisee dans l'intelligence d'affaires et l'analytique predictive pour les clients entreprises."
+        },
+        "headCybersecurity": {
+          "name": "David Okonkwo",
+          "role": "Responsable Cybersecurite",
+          "bio": "Professionnel certifie en cybersecurite assurant des cadres de securite robustes et des normes de conformite dans tous les engagements clients."
+        }
+      }
+    },
+    "stats": {
+      "projects": "Projets Realises",
+      "countries": "Pays Desservis",
+      "years": "Annees d'Experience",
+      "satisfaction": "Satisfaction Client"
+    },
+    "metrics": {
+      "projects": "Projets Livres",
+      "projectsDesc": "Dans toutes les industries majeures",
+      "countries": "Pays Desservis",
+      "countriesDesc": "De Lagos a Doha et au-dela",
+      "satisfaction": "Satisfaction Client",
+      "satisfactionDesc": "Mesuree. Verifiee. Maintenue.",
+      "years": "Annees d'Experience",
+      "yearsDesc": "D'excellence numerique",
+      "experts": "Experts Certifies",
+      "expertsDesc": "Professionnels certifies"
+    },
+    "timeline": {
+      "overline": "Notre Parcours",
+      "heading": {
+        "part1": "Une Decennie d'",
+        "part2": "Excellence Numerique"
+      },
+      "subheading": "D'une petite equipe de technologues passionnes a une entreprise de services informatiques reconnue mondialement.",
+      "milestones": {
+        "foundation": {
+          "title": "Fondation",
+          "description": "Global Digitalbit Limited a ete fondee avec la vision de transformer les entreprises grace a la technologie."
+        },
+        "expansion": {
+          "title": "Expansion Regionale",
+          "description": "Expansion des operations a travers l'Afrique de l'Ouest, creation d'un reseau solide de clients et de partenariats."
+        },
+        "global": {
+          "title": "Portee Mondiale",
+          "description": "Etablissement d'une presence internationale servant des clients dans plus de 50 pays avec des solutions de pointe."
+        },
+        "innovation": {
+          "title": "Leader de l'Innovation",
+          "description": "Reconnu comme un leader en IA, cybersecurite et implementation de CBDC a l'echelle mondiale."
+        },
+        "future": {
+          "title": "Vision d'Avenir",
+          "description": "Nous continuons a etre pionniers dans les solutions technologiques qui transforment les entreprises et ameliorent les vies."
+        }
+      }
+    },
+    "globalPresence": {
+      "overline": "Presence Mondiale",
+      "heading": {
+        "part1": "Ou Nous",
+        "part2": "Operons"
+      },
+      "subheading": "Strategiquement situes pour servir les clients a travers l'Afrique, le Moyen-Orient et au-dela avec une expertise locale et des normes mondiales.",
+      "countriesServed": "50+ Pays Desservis",
+      "labels": {
+        "address": "Adresse",
+        "phone": "Telephone",
+        "email": "Email",
+        "timezone": "Fuseau Horaire"
+      },
+      "offices": {
+        "abuja": {
+          "city": "Abuja",
+          "country": "Nigeria",
+          "type": "Siege Social",
+          "address": "15 D Yalinga Crescent Off Adedokumbo Ademola Crescent, Wuse 2, Abuja, Nigeria"
+        },
+        "doha": {
+          "city": "Doha",
+          "country": "Qatar",
+          "type": "Bureau Regional",
+          "address": "Level 14, Commercial Bank Plaza, West Bay, Doha"
+        }
+      }
+    },
+    "cta": {
+      "heading": {
+        "part1": "Pret a Transformer Votre",
+        "part2": "Entreprise?"
+      },
+      "description": "Associez-vous a Global Digitalbit et liberez le pouvoir de la technologie pour votre organisation. Construisons quelque chose d'extraordinaire ensemble.",
+      "primaryButton": "Contactez-Nous",
+      "secondaryButton": "Explorer les Services"
+    },
+    "whyChooseUs": {
+      "title": "Pourquoi Nous Choisir",
+      "subtitle": "Ce Qui Nous Distingue",
+      "reason1": {
+        "title": "Equipe d'Experts",
+        "description": "Notre equipe est composee de professionnels certifies dans l'industrie avec des decennies d'experience combinee."
+      },
+      "reason2": {
+        "title": "Bilan Eprouve",
+        "description": "Nous avons realise avec succes des projets pour des agences gouvernementales, des institutions financieres et des entreprises."
+      },
+      "reason3": {
+        "title": "Presence Mondiale",
+        "description": "Avec des bureaux au Nigeria et au Qatar, nous servons des clients a travers l'Afrique, le Moyen-Orient et au-dela."
+      },
+      "reason4": {
+        "title": "Solutions Completes",
+        "description": "De la strategie a la mise en oeuvre en passant par la formation, nous fournissons des services technologiques complets."
+      }
+    }
+  },
+  "services": {
+    "label": "Ce Que Nous Faisons",
+    "title": "Nos Services",
+    "subtitle": "Solutions Technologiques Completes",
+    "description": "Nous offrons une large gamme de services technologiques pour aider votre entreprise a prosperer a l'ere numerique.",
+    "learnMore": "En Savoir Plus",
+    "viewAll": "Voir Tous les Services",
+    "items": {
+      "businessProcessManagement": {
+        "name": "Gestion des Processus Metier",
+        "description": "Rationalisez et optimisez vos operations commerciales avec nos services de conseil et d'implementation en gestion des processus."
+      },
+      "cyberSecurity": {
+        "name": "Solutions de Cybersecurite",
+        "description": "Protegez vos actifs numeriques avec nos services complets de cybersecurite, incluant l'evaluation des risques, la detection des menaces et la conformite."
+      },
+      "blockchain": {
+        "name": "Blockchain et DLT",
+        "description": "Exploitez la technologie blockchain pour des solutions securisees, transparentes et immuables adaptees a vos besoins commerciaux."
+      },
+      "itConsultation": {
+        "name": "Consultation IT",
+        "description": "Services de conseil technologique strategique pour vous aider a prendre des decisions eclairees et a conduire la transformation numerique."
+      }
+    },
+    "categories": {
+      "cybersecurity": {
+        "name": "Conseil en Cybersecurite et Gestion des Risques",
+        "shortName": "Cybersecurite",
+        "description": "Construire des defenses resilientes pour les infrastructures critiques en alignement avec les normes QCB, NIA et ISO."
+      },
+      "aiData": {
+        "name": "Intelligence Artificielle et Strategie de Donnees",
+        "shortName": "IA et Donnees",
+        "description": "Exploiter les actifs de donnees pour l'analyse predictive, l'efficacite operationnelle et la prise de decision strategique."
+      },
+      "blockchain": {
+        "name": "Blockchain et Technologie de Registre Distribue",
+        "shortName": "Blockchain",
+        "description": "Implementer des solutions securisees, transparentes et immuables pour l'economie numerique moderne."
+      },
+      "itGovernance": {
+        "name": "Gouvernance IT, Risques et Conformite",
+        "shortName": "Gouvernance IT",
+        "description": "Assurer que les initiatives technologiques soutiennent la strategie d'entreprise et repondent a toutes les exigences reglementaires."
+      }
+    },
+    "cta": {
+      "title": "Pret a Transformer Votre Entreprise ?",
+      "description": "Contactez-nous aujourd'hui pour discuter de la facon dont nos services peuvent vous aider a atteindre vos objectifs.",
+      "button": "Nous Contacter"
+    }
+  },
+  "products": {
+    "label": "Nos Produits",
+    "title": "Solutions de Niveau Entreprise",
+    "subtitle": "Decouvrez notre suite de produits innovants congus pour resoudre des defis commerciaux complexes.",
+    "description": "Decouvrez notre suite de produits innovants congus pour resoudre des defis commerciaux complexes.",
+    "viewProduct": "Voir le Produit",
+    "requestDemo": "Demander une Demo",
+    "learnMore": "En Savoir Plus",
+    "exploreAll": "Explorer Tous les Produits",
+    "features": "Fonctionnalites",
+    "useCases": "Cas d'Utilisation",
+    "valuePropositions": "Propositions de Valeur",
+    "items": {
+      "trustMe": {
+        "name": "DigiTrust",
+        "badge": "Confiance et Securite",
+        "tagline": "Confiance Immuable pour un Monde Numerique",
+        "description": "DigiTrust, propulse par la plateforme TrustMe, est une solution basee sur la blockchain pour emettre, verifier et gerer des identifiants numeriques inviolables."
+      },
+      "digiGate": {
+        "name": "DigiGate",
+        "badge": "Gestion API",
+        "tagline": "Le Centre de Commande de Votre Ecosysteme Numerique",
+        "description": "DigiGate est une solution complete de passerelle API et de gestion du cycle de vie qui agit comme la couche de controle centralisee pour l'ensemble de l'infrastructure numerique d'une organisation."
+      },
+      "digiTrack": {
+        "name": "DigiTrack",
+        "badge": "Suivi et Analytique",
+        "tagline": "Visibilite Complete sur Vos Operations Numeriques",
+        "description": "DigiTrack fournit un suivi et une tracabilite en temps reel pour les actifs physiques, les transactions numeriques et les flux de travail de livraison de services."
+      },
+      "trustMeHub": {
+        "name": "TrustMeHub",
+        "badge": "Confiance Numerique",
+        "tagline": "Batir la Confiance. Favoriser la Croissance.",
+        "description": "TrustMeHub est une infrastructure de confiance numerique mondiale pour la verification instantanee des identifiants ancres sur la blockchain."
+      },
+      "boaCRM": {
+        "name": "BoaCRM",
+        "badge": "Plateforme CRM",
+        "tagline": "Le Systeme d'Exploitation pour les Relations Bancaires Africaines",
+        "description": "BoaCRM est une plateforme CRM complete de niveau entreprise specialement concue pour les institutions financieres africaines."
+      }
+    }
+  },
+  "training": {
+    "title": "Programmes de Formation",
+    "subtitle": "Developpez les Competences de Votre Equipe",
+    "description": "Nous offrons des programmes de formation complets pour aider votre equipe a maitriser les dernieres technologies et les meilleures pratiques.",
+    "programs": "Programmes",
+    "duration": "Duree",
+    "level": "Niveau",
+    "format": "Format",
+    "enrollNow": "S'inscrire",
+    "levels": {
+      "beginner": "Debutant",
+      "intermediate": "Intermediaire",
+      "advanced": "Avance",
+      "executive": "Executif"
+    },
+    "formats": {
+      "onsite": "Sur Site",
+      "online": "En Ligne",
+      "hybrid": "Hybride"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Perspectives et Actualites",
+    "description": "Restez informe des dernieres nouvelles, perspectives et reflexions de nos experts.",
+    "readArticle": "Lire l'Article",
+    "publishedOn": "Publie le",
+    "author": "Auteur",
+    "categories": "Categories",
+    "tags": "Tags",
+    "relatedPosts": "Articles Connexes",
+    "sharePost": "Partager cet article",
+    "noPostsFound": "Aucun article de blog trouve."
+  },
+  "contact": {
+    "title": "Contactez-Nous",
+    "subtitle": "Entrer en Contact",
+    "description": "Vous avez des questions ? Nous serions ravis de vous entendre. Envoyez-nous un message et nous vous repondrons des que possible.",
+    "form": {
+      "name": "Nom Complet",
+      "namePlaceholder": "Entrez votre nom complet",
+      "email": "Adresse Email",
+      "emailPlaceholder": "Entrez votre adresse email",
+      "phone": "Numero de Telephone",
+      "phonePlaceholder": "Entrez votre numero de telephone",
+      "company": "Nom de l'Entreprise",
+      "companyPlaceholder": "Entrez le nom de votre entreprise",
+      "subject": "Sujet",
+      "subjectPlaceholder": "De quoi s'agit-il ?",
+      "message": "Message",
+      "messagePlaceholder": "Dites-nous comment nous pouvons vous aider...",
+      "submit": "Envoyer le Message",
+      "submitting": "Envoi en cours...",
+      "successMessage": "Merci ! Votre message a ete envoye avec succes. Nous vous repondrons bientot.",
+      "errorMessage": "Oups ! Quelque chose s'est mal passe. Veuillez reessayer plus tard."
+    },
+    "info": {
+      "title": "Coordonnees",
+      "email": "Email",
+      "phone": "Telephone",
+      "address": "Adresse",
+      "workingHours": "Heures d'Ouverture",
+      "workingHoursValue": "Lundi - Vendredi : 9h00 - 18h00"
+    },
+    "locations": {
+      "title": "Nos Emplacements",
+      "headquarters": "Siege Social",
+      "nigeria": {
+        "name": "Nigeria",
+        "city": "Abuja",
+        "address": "15 D Yalinga Crescent Off Adedokumbo Ademola Crescent, Wuse 2, Abuja, Nigeria",
+        "phone": "+234 (0) 816 177 8448"
+      },
+      "qatar": {
+        "name": "Qatar",
+        "city": "Doha",
+        "address": "Level 14, Commercial Bank Plaza, West Bay, Doha",
+        "phone": "+974 3147 5305"
+      }
+    }
+  },
+  "footer": {
+    "preFooter": {
+      "headline": "Prêt à transformer votre entreprise ?",
+      "subtext": "Associez-vous à nous pour libérer tout le potentiel de votre parcours numérique. Nos experts sont prêts à vous aider à innover, à évoluer et à réussir.",
+      "primaryCta": "Obtenir une Consultation",
+      "secondaryCta": "Voir Notre Travail"
+    },
+    "headquarters": "Siege Social",
+    "description": "Entreprise informatique pionniere dediee a l'amelioration de la vie grace a la technologie. Specialisee dans l'analyse de donnees, l'IA, la cybersecurite et les solutions CBDC.",
+    "services": {
+      "title": "Services",
+      "cybersecurity": "Cybersecurite",
+      "aiData": "IA et Analyse de Donnees",
+      "blockchain": "Blockchain et DLT",
+      "itGovernance": "Gouvernance IT",
+      "consulting": "Conseil IT",
+      "training": "Programmes de Formation"
+    },
+    "products": {
+      "title": "Produits",
+      "digigate": "DigiGate",
+      "digitrust": "DigiTrust",
+      "digitrack": "DigiTrack",
+      "trustmehub": "TrustMeHub",
+      "boacrm": "BoaCRM"
+    },
+    "company": {
+      "title": "Entreprise",
+      "about": "A Propos",
+      "caseStudies": "Etudes de Cas",
+      "industries": "Industries",
+      "insights": "Perspectives",
+      "careers": "Carrieres"
+    },
+    "contact": {
+      "title": "Contact",
+      "getInTouch": "Contactez-Nous",
+      "scheduleCall": "Planifier un Appel",
+      "support": "Support"
+    },
+    "locations": {
+      "title": "Nos Emplacements",
+      "subtitle": "Ou nous trouver"
+    },
+    "quickLinks": {
+      "title": "Liens Rapides"
+    },
+    "socialLinks": {
+      "title": "Entrer en Contact",
+      "subtitle": "Reseaux Sociaux",
+      "description": "Connectez-vous avec nous sur les reseaux sociaux pour des mises a jour et des perspectives."
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Abonnez-vous pour les mises a jour",
+      "placeholder": "Entrez votre email",
+      "subscribe": "S'abonner",
+      "subscribing": "Abonnement en cours...",
+      "success": "Merci de votre abonnement !",
+      "error": "Echec de l'abonnement. Veuillez reessayer."
+    },
+    "copyright": "Global Digitalbit Limited. Tous droits reserves.",
+    "privacyPolicy": "Politique de Confidentialite",
+    "termsOfService": "Conditions d'Utilisation",
+    "backToTop": "Retour en haut"
+  },
+  "errors": {
+    "404": {
+      "title": "Page Non Trouvee",
+      "description": "Desole, la page que vous recherchez n'existe pas ou a ete deplacee.",
+      "backHome": "Retour a l'Accueil"
+    },
+    "500": {
+      "title": "Erreur Serveur",
+      "description": "Desole, quelque chose s'est mal passe de notre cote. Veuillez reessayer plus tard.",
+      "retry": "Reessayer"
+    },
+    "generic": {
+      "title": "Quelque Chose s'est Mal Passe",
+      "description": "Une erreur inattendue s'est produite. Veuillez reessayer.",
+      "retry": "Reessayer"
+    }
+  },
+  "accessibility": {
+    "skipToContent": "Aller au contenu principal",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "expandSection": "Developper la section",
+    "collapseSection": "Reduire la section",
+    "newWindow": "S'ouvre dans une nouvelle fenetre",
+    "externalLink": "Lien externe"
+  },
+  "dates": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "tomorrow": "Demain",
+    "daysAgo": "Il y a {count} jours",
+    "weeksAgo": "Il y a {count} semaines",
+    "monthsAgo": "Il y a {count} mois",
+    "yearsAgo": "Il y a {count} ans"
+  },
+  "numbers": {
+    "currency": "{value, number, currency}",
+    "decimal": "{value, number, decimal}",
+    "percent": "{value, number, percent}"
+  },
+  "notFound": {
+    "title": "Page Non Trouvee",
+    "subtitle": "Oups ! Perdu dans l'Espace Numerique",
+    "description": "Il semble que vous vous soyez aventure en territoire inconnu. La page que vous recherchez n'existe pas ou a ete deplacee.",
+    "searchSuggestion": "Essayez de rechercher ce dont vous avez besoin",
+    "goHome": "Retour a l'Accueil",
+    "contactUs": "Contactez-Nous",
+    "exploreSuggestion": "Ou explorez ces pages populaires :",
+    "pages": {
+      "services": "Services",
+      "products": "Produits",
+      "about": "A Propos",
+      "blog": "Blog",
+      "contact": "Contact"
+    }
+  },
+  "error": {
+    "title": "Quelque Chose s'est Mal Passe",
+    "subtitle": "Nous avons rencontre un probleme",
+    "description": "Nous nous excusons pour le desagrement. Une erreur inattendue s'est produite. Veuillez reessayer ou contacter le support si le probleme persiste.",
+    "showDetails": "Details techniques",
+    "tryAgain": "Reessayer",
+    "goHome": "Aller a l'Accueil",
+    "contactSupport": "Contacter le Support",
+    "errorId": "ID d'Erreur"
+  },
+  "faqs": {
+    "title": "Questions Frequemment Posees",
+    "subtitle": "Trouvez des reponses aux questions courantes sur nos services et solutions",
+    "searchPlaceholder": "Rechercher des questions...",
+    "noResults": "Aucune question trouvee correspondant a votre recherche",
+    "clearSearch": "Effacer la recherche",
+    "stillHaveQuestions": "Vous avez encore des questions ?",
+    "supportMessage": "Notre equipe est la pour vous aider 24h/24 et 7j/7",
+    "contactUs": "Contactez-Nous",
+    "categories": {
+      "services": "Services",
+      "gettingStarted": "Pour Commencer",
+      "international": "International",
+      "training": "Formation",
+      "aboutUs": "A Propos de Nous"
+    },
+    "questions": {
+      "services1": {
+        "question": "Quels services Global Digitalbit offre-t-elle ?",
+        "answer": "Nous sommes specialises dans le conseil, la mise en oeuvre et la formation en informatique dans des domaines cles tels que l'analyse de donnees, l'intelligence artificielle, la cybersecurite et la monnaie numerique de banque centrale (CBDC). Nous offrons egalement la gestion des processus metier, les services blockchain et des solutions informatiques completes adaptees a vos besoins."
+      },
+      "services2": {
+        "question": "Comment vos solutions peuvent-elles aider mon entreprise a croitre ?",
+        "answer": "Nos solutions sont concues pour rationaliser les operations, renforcer la securite et exploiter les technologies de pointe comme l'IA et la blockchain. Nous aidons les entreprises a optimiser leurs processus, a prendre des decisions basees sur les donnees et a garder une longueur d'avance sur la concurrence grace a la transformation numerique."
+      },
+      "training": {
+        "question": "Proposez-vous une formation pour notre equipe ?",
+        "answer": "Oui ! Nous offrons des programmes de formation complets pour les individus et les organisations afin d'ameliorer leurs competences informatiques. Notre formation couvre divers sujets, notamment l'analyse de donnees, la cybersecurite, la technologie blockchain et plus encore, garantissant que votre equipe reste a jour avec les dernieres technologies."
+      },
+      "different": {
+        "question": "Qu'est-ce qui differencie Global Digitalbit des autres entreprises informatiques ?",
+        "answer": "Nous combinons innovation, fiabilite, integrite et travail d'equipe pour offrir une valeur exceptionnelle. Nos plateformes phares (DigiGate, TrustMe et DigiTrack) fournissent des solutions de niveau entreprise, et nous nous engageons a ameliorer les vies grace a la technologie tout en maintenant les plus hauts standards ethiques."
+      },
+      "gettingStarted": {
+        "question": "Comment puis-je commencer avec vos services ?",
+        "answer": "Commencer est facile ! Contactez-nous simplement via notre site web ou appelez-nous. Nous planifierons une consultation pour comprendre vos besoins et defis commerciaux uniques, puis developperons une solution sur mesure alignee sur vos objectifs a long terme."
+      },
+      "international": {
+        "question": "Travaillez-vous avec des clients internationaux ?",
+        "answer": "Absolument ! Global Digitalbit est positionnee pour servir les clients locaux et internationaux avec excellence et innovation. Nous avons des bureaux au Nigeria et au Qatar, et nous travaillons avec des clients du monde entier pour fournir des solutions technologiques transformatrices."
+      }
+    },
+    "helpful": "Cela vous a-t-il aide ?",
+    "yes": "Oui",
+    "no": "Non",
+    "thankYou": "Merci pour votre retour !"
+  },
+  "testimonials": {
+    "title": "Temoignages Clients",
+    "subtitle": "Ce Que Disent Nos Clients",
+    "clientSince": "Client depuis",
+    "items": {
+      "testimonial1": {
+        "quote": "Les solutions logicielles personnalisees de Global Digibit ont transforme nos operations. Leur equipe a compris nos exigences complexes et a livre un systeme qui a depasse nos attentes.",
+        "author": "David M.",
+        "role": "Client Apprecie"
+      },
+      "testimonial2": {
+        "quote": "Leurs solutions de cybersecurite nous ont donne la tranquillite d'esprit. L'expertise de l'equipe dans la protection de nos actifs numeriques a ete inestimable pour notre organisation.",
+        "author": "Sarah K.",
+        "role": "Directrice IT"
+      },
+      "testimonial3": {
+        "quote": "Les services d'integration IA fournis par Global Digibit ont revolutionne nos capacites d'analyse de donnees. Nous prenons maintenant des decisions plus intelligentes et plus rapides.",
+        "author": "Michael O.",
+        "role": "Responsable des Operations"
+      },
+      "testimonial4": {
+        "quote": "Travailler avec Global Digibit sur notre implementation blockchain a ete fluide. Leur expertise technique et leur approche professionnelle ont fait toute la difference.",
+        "author": "Amina B.",
+        "role": "Directrice Financiere"
+      },
+      "testimonial5": {
+        "quote": "Les programmes de formation offerts par Global Digibit ont ameliore les competences de toute notre equipe. L'approche pratique et concrete a assure une applicabilite immediate.",
+        "author": "James T.",
+        "role": "Responsable RH"
+      },
+      "testimonial6": {
+        "quote": "Les services de conseil CBDC de Global Digibit nous ont aides a naviguer dans des exigences reglementaires complexes. Leur expertise dans ce domaine emergent est inegalee.",
+        "author": "Fatima A.",
+        "role": "Cadre Bancaire"
+      }
+    }
+  },
+  "process": {
+    "label": "Notre Processus",
+    "title": "Comment Nous Travaillons",
+    "heading1": "Nous assurons que vos systemes sont securises",
+    "heading2": "et optimises pour la croissance",
+    "subtitle": "Notre methodologie eprouvee en quatre etapes garantit des resultats exceptionnels pour chaque projet",
+    "steps": {
+      "step1": {
+        "title": "Consultation Client et Evaluation des Besoins",
+        "description": "Nous commencons chaque projet en comprenant en profondeur vos besoins commerciaux uniques, vos defis et vos objectifs a travers des consultations completes."
+      },
+      "step2": {
+        "title": "Developpement de Solutions Basees sur les Donnees",
+        "description": "Nos experts developpent des solutions sur mesure utilisant des approches basees sur les donnees et les meilleures pratiques de l'industrie pour repondre a vos exigences specifiques."
+      },
+      "step3": {
+        "title": "Mise en OEuvre et Integration",
+        "description": "Nous implementons les solutions de maniere transparente dans votre infrastructure existante, assurant une perturbation minimale et une efficacite maximale."
+      },
+      "step4": {
+        "title": "Support Continu et Optimisation",
+        "description": "Apres la mise en oeuvre, nous fournissons un support continu, une surveillance et une optimisation pour assurer un succes et une croissance durables."
+      }
+    }
+  },
+  "websummit": {
+    "event": {
+      "name": "Web Summit Qatar 2026",
+      "dates": "1-4 Fev",
+      "fullDates": "1-4 Fevrier 2026",
+      "location": "Doha, Qatar"
+    },
+    "hero": {
+      "tagline": "Transformer les Idees en Realite Numerique",
+      "subtitle": "Solutions IT pionnieres en Intelligence Artificielle, Blockchain, Cybersecurite et Transformation Numerique pour les entreprises du monde entier.",
+      "stats": {
+        "years": "Annees d'Excellence",
+        "countries": "Pays Servis",
+        "projects": "Projets Livres",
+        "satisfaction": "Satisfaction Client"
+      },
+      "expertise": {
+        "ai": "Intelligence Artificielle",
+        "blockchain": "Blockchain",
+        "cybersecurity": "Cybersecurite",
+        "digitalTransform": "Transformation Numerique"
+      },
+      "buttons": {
+        "explore": "Explorez Nos Solutions",
+        "schedule": "Planifiez une Reunion"
+      }
+    },
+    "pillars": {
+      "ai": {
+        "title": "Intelligence Artificielle",
+        "description": "Construire des systemes intelligents qui apprennent, s'adaptent et conduisent la transformation des entreprises."
+      },
+      "blockchain": {
+        "title": "Solutions Blockchain",
+        "description": "Implementer des solutions securisees, transparentes et immuables pour l'economie numerique moderne."
+      },
+      "cybersecurity": {
+        "title": "Cybersecurite",
+        "description": "Proteger vos actifs numeriques avec des solutions de securite de niveau entreprise."
+      },
+      "governance": {
+        "title": "Gouvernance IT",
+        "description": "Assurer que les initiatives technologiques soutiennent la strategie commerciale et la conformite."
+      }
+    },
+    "whyPartner": {
+      "label": "Pourquoi Digibit ?",
+      "title": "Le Bon Partenaire pour Chaque Partie Prenante",
+      "subtitle": "Nous reunissons expertise, innovation et engagement pour livrer des resultats exceptionnels.",
+      "audiences": {
+        "investors": {
+          "label": "POUR LES INVESTISSEURS",
+          "bullets": {
+            "1": "Les entreprises du portefeuille ont besoin de nos solutions",
+            "2": "Bilan eprouve (500+ projets)",
+            "3": "Expertise regionale (CCG et Afrique)",
+            "4": "Focus sur les technologies emergentes (IA, Blockchain)",
+            "5": "Opportunites de co-investissement"
+          }
+        },
+        "enterprises": {
+          "label": "POUR LES ENTREPRISES",
+          "bullets": {
+            "1": "Transformation numerique de bout en bout",
+            "2": "22 tours de services sous un meme toit",
+            "3": "Expertise locale en conformite (QCB, NIA, Protection des donnees Qatar)",
+            "4": "Produits de niveau entreprise",
+            "5": "99% de satisfaction client"
+          }
+        },
+        "governments": {
+          "label": "POUR LES GOUVERNEMENTS",
+          "bullets": {
+            "1": "Infrastructure numerique a l'echelle nationale",
+            "2": "Expertise CBDC et monnaie numerique",
+            "3": "Systemes de verification des identifiants",
+            "4": "Solutions de ville intelligente",
+            "5": "Cadres de conformite reglementaire"
+          }
+        },
+        "startups": {
+          "label": "POUR LES STARTUPS",
+          "bullets": {
+            "1": "Opportunites de partenariat technique",
+            "2": "Solutions API et integration",
+            "3": "Conseils en securite et conformite",
+            "4": "Acces au marche regional",
+            "5": "Introductions aux clients entreprise"
+          }
+        }
+      }
+    },
+    "compliance": {
+      "label": "Conformite et Confiance",
+      "title": "Certifie. Conforme. Fiable.",
+      "subtitle": "Nous respectons les normes les plus elevees afin que nos clients puissent operer en toute confiance dans chaque juridiction que nous servons.",
+      "certifications": {
+        "iso27001": "Implementeur Principal ISO 27001",
+        "nist": "Cadre de Cybersecurite NIST",
+        "qcb": "Normes de la Banque Centrale du Qatar (QCB)",
+        "nia": "Assurance Nationale de l'Information du Qatar (NIA)",
+        "qdpl": "Loi sur la Protection des Donnees du Qatar",
+        "gdpr": "Conforme au RGPD",
+        "ndpr": "NDPR/NDPA (Nigeria)",
+        "pci": "PCI-DSS"
+      }
+    },
+    "successStories": {
+      "label": "Temoignages de Succes",
+      "title": "Impact Prouve a Travers les Industries",
+      "readMore": "En savoir plus"
+    },
+    "products": {
+      "badge": "NOS PRODUITS PHARES",
+      "title": "Des Solutions qui Faconnent l'Avenir",
+      "subtitle": "Cinq plateformes de niveau entreprise concues pour transformer la confiance, la connectivite et les operations a travers les industries du monde entier.",
+      "cta": "Explorer Tous les Produits",
+      "learnMore": "En savoir plus"
+    },
+    "services": {
+      "label": "Services de Conseil",
+      "title1": "22 Tours de Services.",
+      "title2": "Un Partenaire Integre.",
+      "subtitle": "De la strategie a l'execution, notre pratique de conseil couvre 22 tours de services concues pour aborder chaque dimension de la transformation numerique.",
+      "engagementModels": "Modeles d'Engagement"
+    },
+    "industries": {
+      "label": "Expertise Sectorielle",
+      "title1": "Connaissance Approfondie du Domaine",
+      "title2": "Dans les Secteurs Cles",
+      "subtitle": "Nos consultants apportent des annees d'experience pratique dans les industries qu'ils servent, garantissant des solutions conformes, pratiques et impactantes."
+    },
+    "meetUs": {
+      "label": "Rencontrez-nous",
+      "title1": "Retrouvez-nous au",
+      "title2": "Web Summit Qatar",
+      "venue": "Centre d'Exposition et de Convention de Doha, West Bay, Doha",
+      "booth": "Stand A5-35",
+      "whatToExpect": "A Quoi S'attendre",
+      "expectations": {
+        "1": "Demonstrations de produits en direct",
+        "2": "Consultations d'architecture de solutions",
+        "3": "Discussions de partenariat",
+        "4": "Briefings executifs",
+        "5": "Approfondissements techniques"
+      }
+    },
+    "training": {
+      "label": "Programmes de Formation",
+      "title1": "Developper des Competences qui",
+      "title2": "Comptent"
+    },
+    "contactSection": {
+      "label": "Connectons-nous",
+      "title1": "Entamons une",
+      "title2": "Conversation",
+      "form": {
+        "name": "Votre Nom",
+        "company": "Entreprise",
+        "email": "Adresse Email",
+        "selectRole": "Selectionnez un Role",
+        "message": "Votre Message",
+        "submit": "Envoyer le Message",
+        "successTitle": "Message Envoye !",
+        "successMessage": "Nous vous recontacterons avant le sommet."
+      },
+      "scheduleMeeting": {
+        "title": "Planifier une Reunion",
+        "subtitle": "Reservez un creneau pendant le sommet",
+        "button": "Reserver un Creneau"
+      },
+      "footer": {
+        "company": "Digibit Global Solutions",
+        "copyright": "© 2026 Global Digitalbit Limited. Tous droits reserves.",
+        "eventInfo": "Web Summit Qatar 2026 | 1-4 Fevrier, Doha",
+        "tagline": "Cree avec amour pour le Web Summit Qatar"
+      }
+    },
+    "contact": {
+      "title": "Rencontrons-nous au Web Summit",
+      "subtitle": "Planifiez une reunion pour discuter de la facon dont nous pouvons aider a transformer votre entreprise",
+      "cta": "Planifier une Reunion"
+    },
+    "section": {
+      "whoweare": "Qui Nous Sommes",
+      "heading1": "Technologie Pionniere",
+      "heading2": "Pour un Meilleur Demain"
+    }
+  },
+  "search": {
+    "placeholder": "Rechercher services, produits, actualites...",
+    "recentSearches": "Recherches Recentes",
+    "trending": "Tendances",
+    "quickLinks": "Liens Rapides",
+    "noResults": "Aucun resultat trouve pour",
+    "resultsFor": "Resultats pour",
+    "clearRecent": "Effacer les recherches recentes"
+  },
+  "cookieConsent": {
+    "title": "Preferences des Cookies",
+    "description": "Nous utilisons des cookies pour ameliorer votre experience de navigation, servir du contenu personnalise et analyser notre trafic. En cliquant sur 'Accepter Tout', vous consentez a notre utilisation des cookies.",
+    "acceptAll": "Accepter Tout",
+    "rejectAll": "Tout Refuser",
+    "customize": "Personnaliser",
+    "savePreferences": "Enregistrer les Preferences",
+    "categories": {
+      "essential": {
+        "title": "Cookies Essentiels",
+        "description": "Requis pour le bon fonctionnement du site. Ne peuvent pas etre desactives."
+      },
+      "analytics": {
+        "title": "Cookies Analytiques",
+        "description": "Nous aident a comprendre comment les visiteurs interagissent avec notre site."
+      },
+      "marketing": {
+        "title": "Cookies Marketing",
+        "description": "Utilises pour diffuser des publicites personnalisees et suivre les campagnes marketing."
+      }
+    }
+  },
+  "newsletter": {
+    "success": "Inscription reussie !",
+    "error": "Veuillez entrer une adresse email valide.",
+    "placeholder": "Entrez votre email"
+  },
+  "language": "Langue",
+  "careers": {
+    "applyButton": "Postuler",
+    "hero": {
+      "kicker": "Rejoignez Notre Equipe",
+      "title": {
+        "line1": "Construisez l'Avenir de la",
+        "highlight": "Technologie"
+      },
+      "subtitle": "Rejoignez une equipe mondiale d'innovateurs qui faconnent l'avenir de l'analyse de donnees, de l'IA, de la cybersecurite et de la finance numerique. Nous recherchons des personnes passionnees pretes a avoir un impact.",
+      "scroll": "Explorez les opportunites",
+      "stats": {
+        "employees": "Membres de l'Equipe",
+        "countries": "Pays Desservis",
+        "openings": "Postes Ouverts"
+      }
+    },
+    "benefits": {
+      "overline": "Pourquoi Nous Rejoindre",
+      "title": "Avantages et Benefices",
+      "description": "Nous croyons en la prise en charge de notre equipe. Voici ce que vous pouvez attendre en rejoignant Global Digitalbit.",
+      "items": {
+        "remote-work": {
+          "title": "Culture Teletravail",
+          "description": "Travaillez de n'importe ou dans le monde. Nous croyons que le bon travail se fait partout."
+        },
+        "health": {
+          "title": "Sante et Bien-etre",
+          "description": "Assurance maladie complete et programmes de bien-etre pour vous et votre famille."
+        },
+        "learning": {
+          "title": "Formation et Developpement",
+          "description": "Budget formation annuel, parrainage de certifications et participation aux conferences."
+        },
+        "equity": {
+          "title": "Actions et Croissance",
+          "description": "Remuneration competitive avec options d'actions et progression de carriere claire."
+        },
+        "time-off": {
+          "title": "Conges Flexibles",
+          "description": "Politique de conges genereuse plus jours feries et jours personnels."
+        },
+        "team": {
+          "title": "Evenements d'Equipe",
+          "description": "Retraites annuelles, activites de team building et celebration des reussites."
+        }
+      }
+    },
+    "positions": {
+      "overline": "Postes Ouverts",
+      "title": "Trouvez Votre Role",
+      "description": "Explorez nos opportunites actuelles et trouvez l'opportunite parfaite pour developper votre carriere.",
+      "allDepartments": "Tous les Departements",
+      "remote": "Teletravail",
+      "apply": "Postuler",
+      "noPositions": "Aucun poste disponible dans ce departement pour le moment.",
+      "dontSee": "Vous ne trouvez pas le poste ideal ?",
+      "generalApplication": "Envoyez-nous une candidature spontanee"
+    },
+    "culture": {
+      "overline": "Notre Culture",
+      "title": "Ou l'Innovation Rencontre le Sens",
+      "description": "Chez Global Digitalbit, nous construisons plus que des produits - nous construisons une culture ou chaque voix compte, chaque idee est valorisee et chaque membre de l'equipe peut s'epanouir.",
+      "satisfaction": {
+        "value": "Satisfaction des Employes",
+        "label": "Base sur des enquetes internes"
+      },
+      "values": {
+        "innovation": {
+          "title": "Innovation d'Abord",
+          "description": "Nous repoussons les limites et adoptons les nouvelles technologies pour resoudre des problemes complexes."
+        },
+        "excellence": {
+          "title": "Excellence Toujours",
+          "description": "Nous nous tenons aux plus hauts standards dans tout ce que nous faisons."
+        },
+        "collaboration": {
+          "title": "Esprit Collaboratif",
+          "description": "Nous croyons que les perspectives diverses menent a de meilleures solutions."
+        },
+        "impact": {
+          "title": "Impact Significatif",
+          "description": "Nous nous concentrons sur le travail qui fait une vraie difference pour nos clients et communautes."
+        }
+      }
+    },
+    "cta": {
+      "title": "Pret a Avoir un Impact ?",
+      "description": "Rejoignez notre equipe d'innovateurs et aidez-nous a faconner l'avenir de la technologie. Nous sommes ravis de vous entendre.",
+      "primary": "Voir les Postes Ouverts",
+      "secondary": "Envoyez-nous un Email",
+      "trustedBy": "Fait confiance par les organisations leaders dans le monde"
+    },
+    "apply": {
+      "title": "Postuler a ce Poste",
+      "subtitle": "Remplissez le formulaire ci-dessous pour soumettre votre candidature.",
+      "firstNameLabel": "Prenom",
+      "firstNamePlaceholder": "Entrez votre prenom",
+      "lastNameLabel": "Nom de Famille",
+      "lastNamePlaceholder": "Entrez votre nom de famille",
+      "emailLabel": "Adresse Email",
+      "emailPlaceholder": "vous@exemple.com",
+      "phoneLabel": "Numero de Telephone (Optionnel)",
+      "phonePlaceholder": "+33 6 00 00 00 00",
+      "resumeLabel": "CV",
+      "dragDropResume": "Glissez-deposez votre CV ici, ou cliquez pour parcourir",
+      "resumeFormats": "PDF, DOC ou DOCX (max 5 Mo)",
+      "coverLetterLabel": "Lettre de Motivation (Optionnel)",
+      "coverLetterPlaceholder": "Dites-nous pourquoi ce poste vous interesse et ce qui fait de vous un excellent candidat...",
+      "linkedinLabel": "Profil LinkedIn (Optionnel)",
+      "linkedinPlaceholder": "https://linkedin.com/in/votreprofil",
+      "portfolioLabel": "Portfolio / Site Web (Optionnel)",
+      "portfolioPlaceholder": "https://votreportfolio.com",
+      "submitButton": "Soumettre la Candidature",
+      "submitting": "Envoi en cours...",
+      "successTitle": "Candidature Soumise !",
+      "successMessage": "Merci pour votre candidature ! Nous examinerons votre dossier et vous recontacterons bientot.",
+      "applyAgain": "Soumettre une Autre Candidature",
+      "errorMessage": "Une erreur s'est produite. Veuillez reessayer plus tard.",
+      "networkError": "Impossible de soumettre la candidature. Verifiez votre connexion et reessayez.",
+      "rateLimitError": "Trop de requetes. Veuillez patienter un moment et reessayer.",
+      "privacyNote": "En soumettant ce formulaire, vous acceptez notre",
+      "privacyLink": "Politique de Confidentialite",
+      "validation": {
+        "firstNameRequired": "Le prenom est requis",
+        "firstNameMinLength": "Le prenom doit contenir au moins 2 caracteres",
+        "lastNameRequired": "Le nom de famille est requis",
+        "lastNameMinLength": "Le nom de famille doit contenir au moins 2 caracteres",
+        "emailRequired": "L'adresse email est requise",
+        "emailInvalid": "Veuillez entrer une adresse email valide",
+        "resumeRequired": "Veuillez telecharger votre CV",
+        "invalidFileType": "Veuillez telecharger un fichier PDF, DOC ou DOCX",
+        "fileTooLarge": "La taille du fichier doit etre inferieure a 5 Mo",
+        "linkedinInvalid": "Veuillez entrer une URL LinkedIn valide",
+        "portfolioInvalid": "Veuillez entrer une URL valide"
+      }
+    }
+  }
+}

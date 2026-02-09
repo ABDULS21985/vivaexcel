@@ -1,0 +1,155 @@
+@import "tailwindcss";
+@source "../../../packages/ui";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Custom Colors */
+  --primary: #1E4DB7;
+  --secondary: #143A8F;
+  --secondary-yellow: #F9C623;
+  --accent-yellow: #FFE63B;
+  --accent-orange: #F59A23;
+  --accent-red: #E86A1D;
+  --neutral-black: #000000;
+  --neutral-white: #FFFFFF;
+  --neutral-light: #F5F7FA;
+  --neutral-gray: #6B7280;
+
+  /* Shadcn UI Variables */
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+  --primary-foreground: #ffffff;
+  --secondary-foreground: #ffffff;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #171717;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #1E4DB7;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --popover: #09090b;
+  --popover-foreground: #fafafa;
+  --primary: #5A85E6; /* Slightly lighter primary for dark mode */
+  --primary-foreground: #fafafa;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #1E4DB7;
+  
+  /* Custom colors adjusted for dark */
+  --neutral-black: #ffffff;
+  --neutral-white: #000000;
+  --neutral-light: #18181b;
+  --neutral-gray: #a1a1aa;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-aptos);
+
+  /* Custom Colors */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-secondary-yellow: var(--secondary-yellow);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-red: var(--accent-red);
+  --color-neutral-black: var(--neutral-black);
+  --color-neutral-white: var(--neutral-white);
+  --color-neutral-light: var(--neutral-light);
+  --color-neutral-gray: var(--neutral-gray);
+
+  /* Shadcn UI Mappings */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius: var(--radius);
+}
+
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-aptos), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar specifically for other elements if needed, but body covers page scroll */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Aptos Font Weight Utilities */
+.font-aptos-light {
+  font-family: var(--font-aptos), system-ui, sans-serif;
+  font-weight: 300;
+}
+
+.font-aptos-regular {
+  font-family: var(--font-aptos), system-ui, sans-serif;
+  font-weight: 400;
+}
+
+.font-aptos-medium {
+  font-family: var(--font-aptos), system-ui, sans-serif;
+  font-weight: 500;
+}
+
+.font-aptos-semibold {
+  font-family: var(--font-aptos), system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.font-aptos-bold {
+  font-family: var(--font-aptos), system-ui, sans-serif;
+  font-weight: 700;
+}

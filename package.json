@@ -1,0 +1,19 @@
+{
+  "name": "vivaexcel-blog",
+  "private": true,
+  "packageManager": "npm@10.9.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "turbo": "latest",
+    "prettier": "latest"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to DigiWeb!</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2563eb;
+    }
+    h1 {
+      color: #1f2937;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    p {
+      color: #4b5563;
+      margin-bottom: 15px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #2563eb;
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 6px;
+      font-weight: 600;
+      margin: 10px 5px;
+    }
+    .button.secondary {
+      background-color: #6b7280;
+    }
+    .button-container {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .features {
+      background-color: #f3f4f6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 25px 0;
+    }
+    .features h3 {
+      color: #1f2937;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    .features ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .features li {
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+    .highlight {
+      background: linear-gradient(120deg, #2563eb 0%, #7c3aed 100%);
+      color: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      text-align: center;
+      margin: 25px 0;
+    }
+    .highlight h2 {
+      margin: 0 0 10px 0;
+      font-size: 22px;
+    }
+    .highlight p {
+      color: rgba(255, 255, 255, 0.9);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">DigiWeb</div>
+    </div>
+
+    <h1>Welcome to DigiWeb!</h1>
+
+    <p>Hello {{name}},</p>
+
+    <p>We're thrilled to have you join the DigiWeb community! Your account has been successfully created and you're ready to explore everything we have to offer.</p>
+
+    <div class="highlight">
+      <h2>Your Journey Starts Here</h2>
+      <p>Discover powerful tools and services designed to help you succeed.</p>
+    </div>
+
+    <div class="features">
+      <h3>What You Can Do Now:</h3>
+      <ul>
+        <li>Explore our comprehensive product catalog</li>
+        <li>Browse our professional services</li>
+        <li>Read insightful articles on our blog</li>
+        <li>Customize your account settings</li>
+        <li>Connect with our support team anytime</li>
+      </ul>
+    </div>
+
+    <div class="button-container">
+      <a href="{{dashboardUrl}}" class="button">Go to Dashboard</a>
+      <a href="{{loginUrl}}" class="button secondary">Login</a>
+    </div>
+
+    <p>If you have any questions or need assistance getting started, our support team is always here to help. Simply reply to this email or reach out to us directly.</p>
+
+    <p>Welcome aboard!</p>
+    <p><strong>The DigiWeb Team</strong></p>
+
+    <div class="footer">
+      <p>&copy; {{year}} DigiWeb. All rights reserved.</p>
+      <p>Questions? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+    </div>
+  </div>
+</body>
+</html>
