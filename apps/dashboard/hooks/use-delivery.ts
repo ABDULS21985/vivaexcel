@@ -111,6 +111,7 @@ export interface DownloadLinkFilters {
     status?: string;
     cursor?: string;
     limit?: number;
+    [key: string]: unknown;
 }
 
 export interface LicenseFilters {
@@ -119,6 +120,7 @@ export interface LicenseFilters {
     status?: string;
     cursor?: string;
     limit?: number;
+    [key: string]: unknown;
 }
 
 interface CursorMeta {

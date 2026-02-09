@@ -363,7 +363,7 @@ export default function EditSolutionDocumentPage({ params }: { params: { id: str
 
     const applyTechStack = () => {
         const accepted = aiTechStack.filter((t) => t.accepted).map((t) => t.tech);
-        setFormData((prev) => ({ ...prev, technologyStack: [...new Set([...(prev.technologyStack || []), ...accepted])] }));
+        setFormData((prev) => ({ ...prev, technologyStack: Array.from(new Set([...(prev.technologyStack || []), ...accepted])) }));
         toast.success("Applied", `${accepted.length} technologies added.`);
     };
 
@@ -407,7 +407,7 @@ export default function EditSolutionDocumentPage({ params }: { params: { id: str
     const handleSave = () => {
         if (!validate()) { toast.error("Validation error", "Please fix the errors."); setActiveTab("details"); return; }
         const data: UpdateSolutionDocumentDto = {
-            ...formData,
+            ...formData as unknown as UpdateSolutionDocumentDto,
             documentType: formData.documentType as DocumentType,
             domain: formData.domain as Domain,
             maturityLevel: formData.maturityLevel as MaturityLevel,
@@ -613,7 +613,7 @@ export default function EditSolutionDocumentPage({ params }: { params: { id: str
                                     { key: "includes.implementationChecklist", label: "Implementation Checklist", desc: "Step-by-step checklist" },
                                     { key: "includes.costEstimator", label: "Cost Estimator", desc: "Includes cost estimation" },
                                 ] as const).map((feature) => {
-                                    const checked = feature.key.startsWith("includes.") ? (formData.includes as Record<string, boolean>)?.[feature.key.split(".")[1]] ?? false : (formData as Record<string, boolean>)[feature.key] ?? false;
+                                    const checked = feature.key.startsWith("includes.") ? (formData.includes as unknown as Record<string, boolean>)?.[feature.key.split(".")[1]] ?? false : (formData as unknown as Record<string, boolean>)[feature.key] ?? false;
                                     return (
                                         <div key={feature.key} className="flex items-center justify-between rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
                                             <div className="space-y-0.5"><Label className="text-sm font-medium">{feature.label}</Label><p className="text-xs text-zinc-500 dark:text-zinc-400">{feature.desc}</p></div>

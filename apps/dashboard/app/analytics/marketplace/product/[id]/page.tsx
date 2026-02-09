@@ -380,10 +380,10 @@ export default function ProductAnalyticsPage() {
                                                 borderRadius: "8px",
                                                 color: "#F9FAFB",
                                             }}
-                                            formatter={(value: number, _: string, entry: any) => [
-                                                `${formatNumber(value)} (${entry.payload.percentage.toFixed(1)}%)`,
+                                            formatter={((value: number | undefined, _: string, entry: any) => [
+                                                `${formatNumber(value ?? 0)} (${entry.payload.percentage.toFixed(1)}%)`,
                                                 "Visits",
-                                            ]}
+                                            ]) as any}
                                         />
                                         <Bar dataKey="visits" radius={[0, 4, 4, 0]} animationDuration={1500}>
                                             {analytics.trafficSources.map((_, index) => (
@@ -461,10 +461,10 @@ export default function ProductAnalyticsPage() {
                                                 borderRadius: "8px",
                                                 color: "#F9FAFB",
                                             }}
-                                            formatter={(value: number, _name: string, entry: any) => [
-                                                `${value.toLocaleString()} (${entry.payload.percentage.toFixed(1)}%)`,
+                                            formatter={((value: number | undefined, _name: string, entry: any) => [
+                                                `${(value ?? 0).toLocaleString()} (${entry.payload.percentage.toFixed(1)}%)`,
                                                 entry.payload.device,
-                                            ]}
+                                            ]) as any}
                                         />
                                     </PieChart>
                                 </ResponsiveContainer>

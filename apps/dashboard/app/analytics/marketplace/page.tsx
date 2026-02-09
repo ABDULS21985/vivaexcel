@@ -693,7 +693,7 @@ export default function MarketplaceAnalyticsPage() {
                                             borderRadius: "8px",
                                             color: "#F9FAFB",
                                         }}
-                                        formatter={(value: number) => [formatNumber(value), "Visits"]}
+                                        formatter={(value: number | undefined) => [formatNumber(value ?? 0), "Visits"]}
                                     />
                                     <Bar
                                         dataKey="visits"
@@ -743,10 +743,10 @@ export default function MarketplaceAnalyticsPage() {
                                                 borderRadius: "8px",
                                                 color: "#F9FAFB",
                                             }}
-                                            formatter={(value: number, _name: string, entry: any) => [
-                                                `${value.toLocaleString()} (${entry.payload.percentage.toFixed(1)}%)`,
+                                            formatter={((value: number | undefined, _name: string, entry: any) => [
+                                                `${(value ?? 0).toLocaleString()} (${entry.payload.percentage.toFixed(1)}%)`,
                                                 entry.payload.device,
-                                            ]}
+                                            ]) as any}
                                         />
                                     </PieChart>
                                 </ResponsiveContainer>

@@ -159,7 +159,7 @@ export default function EditPresentationPage({
     const [keywordInput, setKeywordInput] = React.useState("");
     const [aiDescription, setAiDescription] = React.useState("");
     const [aiTags, setAiTags] = React.useState<{ tag: string; accepted: boolean }[]>([]);
-    const [aiPrice, setAiPrice] = React.useState<{ price: number; reasoning: string } | null>(null);
+    const [aiPrice, setAiPrice] = React.useState<{ suggestedPrice: number; reasoning: string } | null>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const [formData, setFormData] = React.useState<FormValues>({
@@ -386,7 +386,7 @@ export default function EditPresentationPage({
 
     const applyAcceptedTags = () => {
         const accepted = aiTags.filter((t) => t.accepted).map((t) => t.tag);
-        setFormData((prev) => ({ ...prev, tags: [...new Set([...(prev.tags || []), ...accepted])] }));
+        setFormData((prev) => ({ ...prev, tags: Array.from(new Set([...(prev.tags || []), ...accepted])) }));
         toast.success("Tags applied", `${accepted.length} tags added.`);
     };
 
@@ -484,6 +484,7 @@ export default function EditPresentationPage({
             ...formData,
             industry: formData.industry as PresentationIndustry,
             type: formData.type as PresentationType,
+            aspectRatio: formData.aspectRatio as PresentationAspectRatio | undefined,
             colorSchemes,
         };
 

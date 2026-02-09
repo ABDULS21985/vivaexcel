@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 
 // Routes that should not show the sidebar
-const noSidebarRoutes = ["/login", "/forgot-password", "/reset-password"];
+const noSidebarRoutes = ["/login", "/forgot-password", "/reset-password", "/verify-otp", "/update-password"];
 
 interface DashboardLayoutProps {
     children: React.ReactNode;

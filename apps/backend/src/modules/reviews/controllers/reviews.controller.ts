@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   Query,
@@ -41,6 +42,74 @@ import { Role } from '../../../common/constants/roles.constant';
 @UseGuards(RolesGuard, PermissionsGuard)
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
+
+  // ──────────────────────────────────────────────
+  //  Admin list & stats endpoints (must be before :id routes)
+  // ──────────────────────────────────────────────
+
+  @Get()
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get all reviews (admin)' })
+  @SwaggerResponse({ status: 200, description: 'All reviews retrieved successfully' })
+  @ApiQuery({ name: 'cursor', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'status', required: false })
+  @ApiQuery({ name: 'rating', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'sortOrder', required: false })
+  async getAllReviews(
+    @Query('cursor') cursor?: string,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+    @Query('rating') rating?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
+  ) {
+    return this.reviewsService.getAllReviews({
+      cursor,
+      limit,
+      search,
+      status: status !== 'all' ? status : undefined,
+      rating: rating && rating !== 'all' ? parseInt(rating, 10) : undefined,
+      sortBy,
+      sortOrder: sortOrder as 'ASC' | 'DESC',
+    });
+  }
+
+  @Get('stats')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get global review statistics (admin dashboard)' })
+  @SwaggerResponse({ status: 200, description: 'Global review stats retrieved successfully' })
+  async getGlobalStats() {
+    return this.reviewsService.getGlobalStats();
+  }
+
+  @Get('analytics')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get review analytics (admin dashboard)' })
+  @SwaggerResponse({ status: 200, description: 'Review analytics retrieved successfully' })
+  async getAnalytics() {
+    return this.reviewsService.getAnalytics();
+  }
+
+  @Get('moderation-queue')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get reviews pending moderation (alias)' })
+  @SwaggerResponse({ status: 200, description: 'Moderation queue retrieved successfully' })
+  @ApiQuery({ name: 'cursor', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  async getModerationQueueAlias(
+    @Query('cursor') cursor?: string,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
+  ) {
+    return this.reviewsService.getModerationQueue(cursor, limit);
+  }
 
   // ──────────────────────────────────────────────
   //  Public endpoints (must be declared before :id routes)
@@ -214,6 +283,23 @@ export class ReviewsController {
   }
 
   // ──────────────────────────────────────────────
+  //  Single review detail
+  // ──────────────────────────────────────────────
+
+  @Get(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @ApiOperation({ summary: 'Get a single review with full details (admin)' })
+  @ApiParam({ name: 'id', description: 'Review ID' })
+  @SwaggerResponse({ status: 200, description: 'Review retrieved successfully' })
+  @SwaggerResponse({ status: 404, description: 'Review not found' })
+  async getReviewById(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.reviewsService.getReviewById(id);
+  }
+
+  // ──────────────────────────────────────────────
   //  Admin endpoints
   // ──────────────────────────────────────────────
 
@@ -229,5 +315,33 @@ export class ReviewsController {
     @Body() dto: ModerateReviewDto,
   ) {
     return this.reviewsService.moderateReview(id, dto);
+  }
+
+  @Post(':id/dismiss-reports')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Dismiss all reports for a review' })
+  @ApiParam({ name: 'id', description: 'Review ID' })
+  @SwaggerResponse({ status: 200, description: 'Reports dismissed successfully' })
+  @SwaggerResponse({ status: 404, description: 'Review not found' })
+  async dismissReports(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.reviewsService.dismissReports(id);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Remove a review (soft delete)' })
+  @ApiParam({ name: 'id', description: 'Review ID' })
+  @SwaggerResponse({ status: 200, description: 'Review removed successfully' })
+  @SwaggerResponse({ status: 404, description: 'Review not found' })
+  async removeReview(
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.reviewsService.removeReview(id);
   }
 }

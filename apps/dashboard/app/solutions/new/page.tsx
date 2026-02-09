@@ -545,7 +545,7 @@ export default function NewSolutionDocumentPage() {
         const accepted = aiTechStack.filter((t) => t.accepted).map((t) => t.tech);
         setFormData((prev) => ({
             ...prev,
-            technologyStack: [...new Set([...(prev.technologyStack || []), ...accepted])],
+            technologyStack: Array.from(new Set([...(prev.technologyStack || []), ...accepted])),
         }));
         toast.success("Applied", `${accepted.length} technologies added.`);
     };
@@ -579,7 +579,7 @@ export default function NewSolutionDocumentPage() {
         }
 
         const data: CreateSolutionDocumentDto = {
-            ...formData,
+            ...formData as unknown as CreateSolutionDocumentDto,
             status,
             documentType: formData.documentType as DocumentType,
             domain: formData.domain as Domain,
@@ -1117,7 +1117,7 @@ export default function NewSolutionDocumentPage() {
                                         {tocItems.length > 0 ? (
                                             <div className="space-y-1.5">
                                                 {tocItems.map((item) => {
-                                                    const Tag = `h${Math.min(item.level + 1, 6)}` as keyof JSX.IntrinsicElements;
+                                                    const Tag = `h${Math.min(item.level + 1, 6)}` as keyof React.JSX.IntrinsicElements;
                                                     return (
                                                         <div key={item.id} style={{ paddingLeft: `${(item.level - 1) * 16}px` }}>
                                                             <p className={`text-zinc-700 dark:text-zinc-300 ${

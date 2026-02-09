@@ -4,15 +4,10 @@ import {
   Index,
   ManyToOne,
   OneToMany,
-  ManyToMany,
-  JoinTable,
   JoinColumn,
-  VersionColumn,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { User } from './user.entity';
-import { DigitalProductCategory } from './digital-product-category.entity';
-import { DigitalProductTag } from './digital-product-tag.entity';
 import { TemplateLicense } from './template-license.entity';
 import { TemplateDemo } from './template-demo.entity';
 
@@ -29,7 +24,7 @@ export enum TemplateType {
   COMPONENT_LIBRARY = 'COMPONENT_LIBRARY',
 }
 
-export enum TemplateFramework {
+export enum Framework {
   NEXTJS = 'NEXTJS',
   REACT = 'REACT',
   VUE = 'VUE',
@@ -44,21 +39,21 @@ export enum TemplateFramework {
   SHOPIFY = 'SHOPIFY',
 }
 
-export enum TemplateLicenseType {
-  SINGLE_USE = 'SINGLE_USE',
-  MULTI_USE = 'MULTI_USE',
-  EXTENDED = 'EXTENDED',
-  UNLIMITED = 'UNLIMITED',
-}
-
-export enum TemplatePackageManager {
+export enum PackageManager {
   NPM = 'NPM',
   YARN = 'YARN',
   PNPM = 'PNPM',
   BUN = 'BUN',
 }
 
-export enum TemplateStatus {
+export enum LicenseType {
+  SINGLE_USE = 'SINGLE_USE',
+  MULTI_USE = 'MULTI_USE',
+  EXTENDED = 'EXTENDED',
+  UNLIMITED = 'UNLIMITED',
+}
+
+export enum WebTemplateStatus {
   DRAFT = 'DRAFT',
   PUBLISHED = 'PUBLISHED',
   ARCHIVED = 'ARCHIVED',
@@ -67,170 +62,139 @@ export enum TemplateStatus {
 
 @Entity('web_templates')
 export class WebTemplate extends BaseEntity {
-  @Index()
-  @Column({ type: 'varchar', length: 255 })
+  @Column()
   title: string;
 
-  @Index({ unique: true })
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ unique: true })
+  @Index()
   slug: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string | null;
+  description?: string;
 
-  @Column({ type: 'varchar', length: 500, nullable: true })
-  shortDescription: string | null;
+  @Column({ name: 'short_description', type: 'text', nullable: true })
+  shortDescription?: string;
 
-  @Index()
-  @Column({ type: 'enum', enum: TemplateType })
+  @Column({ name: 'template_type', type: 'enum', enum: TemplateType })
   templateType: TemplateType;
 
-  @Index()
-  @Column({ type: 'enum', enum: TemplateFramework })
-  framework: TemplateFramework;
+  @Column({ type: 'enum', enum: Framework })
+  framework: Framework;
 
   @Column({ type: 'jsonb', default: '[]' })
   features: string[];
 
-  @Column({ type: 'varchar', nullable: true })
-  demoUrl: string | null;
+  @Column({ name: 'demo_url', nullable: true })
+  demoUrl?: string;
 
-  @Column({ type: 'jsonb', nullable: true, default: null })
-  demoCredentials: Record<string, string> | null;
+  @Column({ name: 'demo_credentials', type: 'jsonb', nullable: true })
+  demoCredentials?: Record<string, string>;
 
-  @Column({ type: 'varchar', nullable: true })
-  githubRepoUrl: string | null;
+  @Column({ name: 'github_repo_url', nullable: true })
+  githubRepoUrl?: string;
 
-  @Column({ type: 'jsonb', nullable: true, default: null })
-  techStack: {
+  @Column({ name: 'tech_stack', type: 'jsonb', nullable: true })
+  techStack?: {
     frontend: string[];
     backend: string[];
     database: string[];
     hosting: string[];
     services: string[];
-  } | null;
+  };
 
-  @Column({ type: 'jsonb', default: '[]' })
+  @Column({
+    name: 'browser_support',
+    type: 'jsonb',
+    default: '["Chrome","Firefox","Safari","Edge"]',
+  })
   browserSupport: string[];
 
-  @Column({ type: 'jsonb', nullable: true, default: null })
-  responsiveBreakpoints: {
-    mobile: boolean;
-    tablet: boolean;
-    desktop: boolean;
-  } | null;
+  @Column({
+    name: 'responsive_breakpoints',
+    type: 'jsonb',
+    default: '{"mobile":true,"tablet":true,"desktop":true}',
+  })
+  responsiveBreakpoints: { mobile: boolean; tablet: boolean; desktop: boolean };
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ name: 'page_count', type: 'int', default: 0 })
   pageCount: number;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ name: 'component_count', type: 'int', default: 0 })
   componentCount: number;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ name: 'has_typescript', default: false })
   hasTypeScript: boolean;
 
-  @Column({ type: 'varchar', nullable: true })
-  nodeVersion: string | null;
+  @Column({ name: 'node_version', nullable: true })
+  nodeVersion?: string;
 
-  @Column({ type: 'enum', enum: TemplatePackageManager, nullable: true })
-  packageManager: TemplatePackageManager | null;
+  @Column({
+    name: 'package_manager',
+    type: 'enum',
+    enum: PackageManager,
+    nullable: true,
+  })
+  packageManager?: PackageManager;
 
-  @Column({ type: 'enum', enum: TemplateLicenseType, default: TemplateLicenseType.SINGLE_USE })
-  license: TemplateLicenseType;
+  @Column({
+    type: 'enum',
+    enum: LicenseType,
+    default: LicenseType.SINGLE_USE,
+  })
+  license: LicenseType;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ name: 'support_duration', type: 'int', default: 6 })
   supportDuration: number;
 
-  @Column({ type: 'varchar', nullable: true })
-  documentationUrl: string | null;
+  @Column({ name: 'documentation_url', nullable: true })
+  documentationUrl?: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  changelogUrl: string | null;
+  @Column({ name: 'changelog_url', nullable: true })
+  changelogUrl?: string;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, nullable: true })
-  compareAtPrice: number | null;
+  @Column({
+    name: 'compare_at_price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
+  compareAtPrice?: number;
 
-  @Column({ type: 'varchar', default: 'USD' })
-  currency: string;
+  @Column({
+    type: 'enum',
+    enum: WebTemplateStatus,
+    default: WebTemplateStatus.DRAFT,
+  })
+  status: WebTemplateStatus;
 
-  @Index()
-  @Column({ type: 'enum', enum: TemplateStatus, default: TemplateStatus.DRAFT })
-  status: TemplateStatus;
+  @Column({ name: 'featured_image', nullable: true })
+  featuredImage?: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  featuredImage: string | null;
+  @Column({ name: 'preview_images', type: 'jsonb', nullable: true })
+  previewImages?: string[];
 
-  @Column({ type: 'jsonb', nullable: true, default: null })
-  previewImages: string[] | null;
+  @Column({ type: 'jsonb', nullable: true })
+  metadata?: Record<string, any>;
 
-  @Column({ type: 'jsonb', nullable: true, default: null })
-  metadata: Record<string, any> | null;
+  @Column({ name: 'organization_id', nullable: true })
+  organizationId?: string;
 
-  @Column({ type: 'int', default: 0 })
-  downloadCount: number;
-
-  @Column({ type: 'int', default: 0 })
-  viewCount: number;
-
-  @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
-  averageRating: number;
-
-  @Column({ type: 'int', default: 0 })
-  totalReviews: number;
-
-  @Column({ type: 'boolean', default: false })
-  isFeatured: boolean;
-
-  @Column({ type: 'boolean', default: false })
-  isBestseller: boolean;
-
-  @Column({ type: 'varchar', nullable: true })
-  seoTitle: string | null;
-
-  @Column({ type: 'varchar', nullable: true })
-  seoDescription: string | null;
-
-  @Column({ type: 'varchar', nullable: true })
-  seoKeywords: string | null;
-
-  @Column({ type: 'varchar', nullable: true })
-  organizationId: string | null;
-
-  @Column({ type: 'varchar', nullable: true })
-  createdBy: string | null;
-
-  @Column({ type: 'timestamp', nullable: true })
-  publishedAt: Date | null;
-
-  @VersionColumn()
-  version: number;
+  @Column({ name: 'created_by', nullable: true })
+  createdBy?: string;
 
   // Relations
-  @ManyToOne(() => User, { nullable: true, eager: false })
-  @JoinColumn({ name: 'createdBy' })
-  creator: User;
 
-  @ManyToOne(() => DigitalProductCategory, { nullable: true, eager: false })
-  @JoinColumn({ name: 'categoryId' })
-  category: DigitalProductCategory;
-
-  @Column({ type: 'uuid', nullable: true })
-  categoryId: string | null;
-
-  @ManyToMany(() => DigitalProductTag, { eager: false })
-  @JoinTable({
-    name: 'web_template_tags',
-    joinColumn: { name: 'templateId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'tagId', referencedColumnName: 'id' },
-  })
-  tags: DigitalProductTag[];
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'created_by' })
+  creator?: User;
 
   @OneToMany(() => TemplateLicense, (license) => license.template)
-  licenses: TemplateLicense[];
+  licenses?: TemplateLicense[];
 
   @OneToMany(() => TemplateDemo, (demo) => demo.template)
-  demos: TemplateDemo[];
+  demos?: TemplateDemo[];
 }

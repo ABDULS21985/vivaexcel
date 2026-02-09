@@ -548,6 +548,183 @@ export class ReviewsService {
   }
 
   // ──────────────────────────────────────────────
+  //  All reviews (admin list)
+  // ──────────────────────────────────────────────
+
+  async getAllReviews(
+    query: {
+      cursor?: string;
+      limit?: number;
+      search?: string;
+      status?: string;
+      rating?: number;
+      sortBy?: string;
+      sortOrder?: 'ASC' | 'DESC';
+    },
+  ): Promise<ApiResponse<PaginatedResponse<Review>>> {
+    const statusValue =
+      query.status && Object.values(ReviewStatus).includes(query.status as ReviewStatus)
+        ? (query.status as ReviewStatus)
+        : undefined;
+
+    const result = await this.repository.findAllReviews({
+      ...query,
+      status: statusValue,
+    });
+
+    return {
+      status: 'success',
+      message: 'Reviews retrieved successfully',
+      data: result,
+      meta: result.meta,
+    };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Single review detail
+  // ──────────────────────────────────────────────
+
+  async getReviewById(
+    reviewId: string,
+  ): Promise<ApiResponse<Review>> {
+    const review = await this.repository.findByIdWithRelations(reviewId);
+    if (!review) {
+      throw new NotFoundException(`Review with ID "${reviewId}" not found`);
+    }
+
+    return {
+      status: 'success',
+      message: 'Review retrieved successfully',
+      data: review,
+    };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Global stats (dashboard)
+  // ──────────────────────────────────────────────
+
+  async getGlobalStats(): Promise<ApiResponse<{
+    totalReviews: number;
+    averageRating: number;
+    pendingModeration: number;
+    flaggedCount: number;
+    approvedCount: number;
+    rejectedCount: number;
+    ratingDistribution: { rating: number; count: number }[];
+    verifiedPurchaseCount: number;
+    unverifiedCount: number;
+    responseRate: number;
+  }>> {
+    const cacheKey = this.cacheService.generateKey('reviews', 'global-stats');
+
+    const stats = await this.cacheService.wrap(
+      cacheKey,
+      () => this.repository.getGlobalReviewStats(),
+      { ttl: CACHE_TTL_STATS, tags: [CACHE_TAG, 'reviews:global-stats'] },
+    );
+
+    return {
+      status: 'success',
+      message: 'Global review statistics retrieved successfully',
+      data: stats,
+    };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Analytics
+  // ──────────────────────────────────────────────
+
+  async getAnalytics(): Promise<ApiResponse<{
+    averageByCategory: { category: string; averageRating: number; reviewCount: number }[];
+    trends: { date: string; count: number; averageRating: number }[];
+    topRatedProducts: { productId: string; productTitle: string; averageRating: number; reviewCount: number }[];
+    lowestRatedProducts: { productId: string; productTitle: string; averageRating: number; reviewCount: number }[];
+  }>> {
+    const cacheKey = this.cacheService.generateKey('reviews', 'analytics');
+
+    const analytics = await this.cacheService.wrap(
+      cacheKey,
+      () => this.repository.getReviewAnalytics(),
+      { ttl: CACHE_TTL_STATS, tags: [CACHE_TAG, 'reviews:analytics'] },
+    );
+
+    return {
+      status: 'success',
+      message: 'Review analytics retrieved successfully',
+      data: analytics,
+    };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Dismiss reports
+  // ──────────────────────────────────────────────
+
+  async dismissReports(reviewId: string): Promise<ApiResponse<null>> {
+    const review = await this.repository.findById(reviewId);
+    if (!review) {
+      throw new NotFoundException(`Review with ID "${reviewId}" not found`);
+    }
+
+    await this.repository.dismissAllReports(reviewId);
+
+    // If the review was flagged, set it back to approved
+    if (review.status === ReviewStatus.FLAGGED) {
+      await this.repository.update(reviewId, {
+        status: ReviewStatus.APPROVED,
+      });
+    }
+
+    // Invalidate cache
+    await this.cacheService.invalidateByTags([
+      CACHE_TAG,
+      `review:${reviewId}`,
+      `reviews:product:${review.digitalProductId}`,
+    ]);
+
+    this.logger.log(`All reports dismissed for review ${reviewId}`);
+
+    return {
+      status: 'success',
+      message: 'All reports dismissed successfully',
+      data: null,
+    };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Remove review (soft delete)
+  // ──────────────────────────────────────────────
+
+  async removeReview(reviewId: string): Promise<ApiResponse<null>> {
+    const review = await this.repository.findById(reviewId);
+    if (!review) {
+      throw new NotFoundException(`Review with ID "${reviewId}" not found`);
+    }
+
+    await this.repository.softDelete(reviewId);
+
+    // Recalculate product rating
+    this.eventEmitter.emit('review.updated', {
+      productId: review.digitalProductId,
+      reviewId,
+    });
+
+    // Invalidate cache
+    await this.cacheService.invalidateByTags([
+      CACHE_TAG,
+      `review:${reviewId}`,
+      `reviews:product:${review.digitalProductId}`,
+    ]);
+
+    this.logger.log(`Review ${reviewId} removed`);
+
+    return {
+      status: 'success',
+      message: 'Review removed successfully',
+      data: null,
+    };
+  }
+
+  // ──────────────────────────────────────────────
   //  AI moderation
   // ──────────────────────────────────────────────
 

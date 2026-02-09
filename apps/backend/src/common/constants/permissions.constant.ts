@@ -68,6 +68,16 @@ export enum Permission {
   /** Delete products */
   PRODUCT_DELETE = 'product:delete',
 
+  // Template Management
+  /** View templates */
+  TEMPLATE_READ = 'template:read',
+  /** Create templates */
+  TEMPLATE_CREATE = 'template:create',
+  /** Update templates */
+  TEMPLATE_UPDATE = 'template:update',
+  /** Delete templates */
+  TEMPLATE_DELETE = 'template:delete',
+
   // Service Management
   /** View services */
   SERVICE_READ = 'service:read',
@@ -218,6 +228,12 @@ export const PermissionDisplayName: Record<Permission, string> = {
   [Permission.PRODUCT_UPDATE]: 'Update Products',
   [Permission.PRODUCT_DELETE]: 'Delete Products',
 
+  // Template Management
+  [Permission.TEMPLATE_READ]: 'View Templates',
+  [Permission.TEMPLATE_CREATE]: 'Create Templates',
+  [Permission.TEMPLATE_UPDATE]: 'Update Templates',
+  [Permission.TEMPLATE_DELETE]: 'Delete Templates',
+
   // Service Management
   [Permission.SERVICE_READ]: 'View Services',
   [Permission.SERVICE_CREATE]: 'Create Services',
@@ -295,6 +311,7 @@ export enum PermissionCategory {
   PROJECT = 'Project',
   CONTENT = 'Content',
   PRODUCT = 'Product',
+  TEMPLATE = 'Template',
   SERVICE = 'Service',
   BLOG = 'Blog',
   COMMENT = 'Comment',
@@ -345,6 +362,11 @@ export const PermissionCategoryMap: Record<Permission, PermissionCategory> = {
   [Permission.PRODUCT_CREATE]: PermissionCategory.PRODUCT,
   [Permission.PRODUCT_UPDATE]: PermissionCategory.PRODUCT,
   [Permission.PRODUCT_DELETE]: PermissionCategory.PRODUCT,
+
+  [Permission.TEMPLATE_READ]: PermissionCategory.TEMPLATE,
+  [Permission.TEMPLATE_CREATE]: PermissionCategory.TEMPLATE,
+  [Permission.TEMPLATE_UPDATE]: PermissionCategory.TEMPLATE,
+  [Permission.TEMPLATE_DELETE]: PermissionCategory.TEMPLATE,
 
   [Permission.SERVICE_READ]: PermissionCategory.SERVICE,
   [Permission.SERVICE_CREATE]: PermissionCategory.SERVICE,

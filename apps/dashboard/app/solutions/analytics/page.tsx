@@ -245,7 +245,7 @@ export default function SolutionAnalyticsPage() {
                                     </div>
                                 </div>
                                 <p className="text-2xl font-bold text-zinc-900 dark:text-white">
-                                    {(statsData?.avgPageCount ?? 0).toLocaleString()}
+                                    {(statsData?.averagePageCount ?? 0).toLocaleString()}
                                 </p>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Avg Page Count</p>
                             </div>
@@ -257,7 +257,7 @@ export default function SolutionAnalyticsPage() {
                                     </div>
                                 </div>
                                 <p className="text-2xl font-bold text-zinc-900 dark:text-white">
-                                    {((statsData?.publishedCount ?? 0) / Math.max(statsData?.totalDocuments ?? 1, 1) * 100).toFixed(1)}%
+                                    {(((statsData as unknown as Record<string, number>)?.publishedCount ?? 0) / Math.max(statsData?.totalDocuments ?? 1, 1) * 100).toFixed(1)}%
                                 </p>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Published Rate</p>
                             </div>
@@ -409,9 +409,9 @@ export default function SolutionAnalyticsPage() {
                                     Maturity Level Distribution
                                 </h3>
                                 <div className="space-y-3">
-                                    {(statsData?.byMaturity ?? []).length > 0 ? (
-                                        statsData!.byMaturity.map((item: { maturityLevel: string; count: number }) => {
-                                            const total = statsData!.byMaturity.reduce(
+                                    {(statsData?.byMaturityLevel ?? []).length > 0 ? (
+                                        statsData!.byMaturityLevel.map((item: { maturityLevel: string; count: number }) => {
+                                            const total = statsData!.byMaturityLevel.reduce(
                                                 (acc: number, i: { count: number }) => acc + i.count, 0
                                             );
                                             const pct = total > 0 ? (item.count / total) * 100 : 0;

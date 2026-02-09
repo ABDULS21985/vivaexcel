@@ -73,7 +73,7 @@ const digitalProductSchema = z.object({
     seoTitle: z.string().max(255, "SEO title must be 255 characters or less").optional(),
     seoDescription: z.string().max(500, "SEO description must be 500 characters or less").optional(),
     seoKeywords: z.array(z.string()).optional(),
-    metadata: z.record(z.any()).optional(),
+    metadata: z.record(z.string(), z.any()).optional(),
 });
 
 type DigitalProductFormValues = z.infer<typeof digitalProductSchema>;

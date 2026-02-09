@@ -47,6 +47,7 @@ export interface CouponFilters {
     limit?: number;
     sortBy?: string;
     sortOrder?: string;
+    [key: string]: unknown;
 }
 
 // ─── Flash Sale Types ────────────────────────────────────────────────────────
@@ -83,6 +84,7 @@ export interface FlashSaleFilters {
     limit?: number;
     sortBy?: string;
     sortOrder?: string;
+    [key: string]: unknown;
 }
 
 // ─── Bundle Types ────────────────────────────────────────────────────────────
@@ -118,6 +120,7 @@ export interface BundleFilters {
     limit?: number;
     sortBy?: string;
     sortOrder?: string;
+    [key: string]: unknown;
 }
 
 // ─── Loyalty Types ───────────────────────────────────────────────────────────

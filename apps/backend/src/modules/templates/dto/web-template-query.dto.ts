@@ -6,103 +6,77 @@ import {
   IsNumber,
   IsBoolean,
   IsArray,
+  IsUUID,
   Min,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { CursorPaginationDto } from '../../../common/dto/cursor-pagination.dto';
+import { CursorPaginationDto } from '../../../common/dto/pagination.dto';
 import {
   TemplateType,
-  TemplateFramework,
-  TemplateLicenseType,
-  TemplateStatus,
+  Framework,
+  LicenseType,
+  WebTemplateStatus,
 } from '../../../entities/web-template.entity';
 
 export class WebTemplateQueryDto extends CursorPaginationDto {
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Search by title or description', example: 'dashboard' })
   @IsOptional()
   @IsString()
   search?: string;
 
-  @ApiPropertyOptional({ enum: TemplateStatus })
-  @IsOptional()
-  @IsEnum(TemplateStatus)
-  status?: TemplateStatus;
-
-  @ApiPropertyOptional({ enum: TemplateType })
+  @ApiPropertyOptional({ enum: TemplateType, description: 'Filter by template type' })
   @IsOptional()
   @IsEnum(TemplateType)
   templateType?: TemplateType;
 
-  @ApiPropertyOptional({ enum: TemplateFramework })
+  @ApiPropertyOptional({ enum: Framework, description: 'Filter by framework' })
   @IsOptional()
-  @IsEnum(TemplateFramework)
-  framework?: TemplateFramework;
+  @IsEnum(Framework)
+  framework?: Framework;
 
-  @ApiPropertyOptional({ enum: TemplateLicenseType })
+  @ApiPropertyOptional({ enum: LicenseType, description: 'Filter by license type' })
   @IsOptional()
-  @IsEnum(TemplateLicenseType)
-  licenseType?: TemplateLicenseType;
+  @IsEnum(LicenseType)
+  licenseType?: LicenseType;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: WebTemplateStatus, description: 'Filter by status' })
   @IsOptional()
-  @IsString()
-  categorySlug?: string;
+  @IsEnum(WebTemplateStatus)
+  status?: WebTemplateStatus;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  tagSlug?: string;
-
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Minimum price', example: 0 })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(0)
   minPrice?: number;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Maximum price', example: 199.99 })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   @Min(0)
   maxPrice?: number;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  minRating?: number;
-
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ description: 'Filter by TypeScript support', example: true })
   @IsOptional()
   @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
   hasTypeScript?: boolean;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Transform(({ value }) => value === 'true' || value === true)
-  @IsBoolean()
-  isFeatured?: boolean;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @Transform(({ value }) => value === 'true' || value === true)
-  @IsBoolean()
-  isBestseller?: boolean;
-
-  @ApiPropertyOptional({ type: [String] })
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'Filter by features (templates must contain all specified features)',
+    example: ['authentication', 'dark-mode'],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   @Transform(({ value }) => (typeof value === 'string' ? value.split(',') : value))
   features?: string[];
 
-  @ApiPropertyOptional({ type: [String] })
+  @ApiPropertyOptional({ description: 'Filter by organization ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  @Transform(({ value }) => (typeof value === 'string' ? value.split(',') : value))
-  browserSupport?: string[];
+  @IsUUID()
+  organizationId?: string;
 }

@@ -2111,3 +2111,166 @@ p, li, blockquote {
     margin-top: 2cm;
   }
 }
+
+/* =============================================================================
+   PRODUCT DETAIL PAGE — PREMIUM ANIMATIONS
+   ============================================================================= */
+
+/* Star rating fill wave */
+@keyframes star-fill {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+.animate-star-fill {
+  animation: star-fill 0.6s var(--ease-out-expo) forwards;
+}
+
+/* Count up number animation */
+@keyframes count-up-fade {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-count-up {
+  animation: count-up-fade 0.6s var(--ease-out-expo) forwards;
+}
+
+/* Heart fill animation */
+@keyframes heart-fill {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.animate-heart-fill {
+  animation: heart-fill 0.4s var(--ease-spring) forwards;
+}
+
+/* Cart bounce */
+@keyframes cart-bounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-6px); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(-3px); }
+}
+
+.animate-cart-bounce {
+  animation: cart-bounce 0.5s ease-out;
+}
+
+/* Shimmer effect for CTA buttons */
+@keyframes btn-shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+.btn-premium-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-premium-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  animation: btn-shimmer 3s ease-in-out infinite;
+}
+
+/* Stagger fade in up for trust signals */
+.stagger-fade-in > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+}
+
+.stagger-fade-in.is-visible > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0ms; }
+.stagger-fade-in.is-visible > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 100ms; }
+.stagger-fade-in.is-visible > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 200ms; }
+.stagger-fade-in.is-visible > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 300ms; }
+.stagger-fade-in.is-visible > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 400ms; }
+
+/* Reading progress bar */
+.reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--gradient-premium);
+  z-index: 9999;
+  transition: width 50ms linear;
+}
+
+/* Floating cart bar */
+.floating-cart-bar {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dark .floating-cart-bar {
+  background: rgba(10, 10, 10, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Product tag hover */
+.product-tag {
+  transition: transform 0.2s var(--ease-spring), color 0.2s ease, background-color 0.2s ease;
+}
+.product-tag:hover {
+  transform: scale(1.05);
+}
+
+/* Gradient border for selected variant */
+.variant-selected {
+  position: relative;
+  background: linear-gradient(white, white) padding-box,
+              var(--gradient-premium) border-box;
+  border: 2px solid transparent;
+}
+
+.dark .variant-selected {
+  background: linear-gradient(#0a0a0a, #0a0a0a) padding-box,
+              var(--gradient-premium) border-box;
+}
+
+/* Accordion smooth height */
+.accordion-content {
+  overflow: hidden;
+  transition: max-height 0.3s var(--ease-out-expo);
+}
+
+/* Timeline dot pulse */
+@keyframes timeline-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(30, 77, 183, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(30, 77, 183, 0); }
+}
+
+.timeline-dot-active {
+  animation: timeline-pulse 2s ease-in-out infinite;
+}
+
+/* Free badge animation */
+.free-badge {
+  background: var(--gradient-premium);
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}

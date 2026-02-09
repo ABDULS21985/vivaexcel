@@ -11,23 +11,23 @@ import { WebTemplate } from './web-template.entity';
 @Entity('template_demos')
 export class TemplateDemo extends BaseEntity {
   @Index()
-  @Column({ type: 'uuid' })
+  @Column({ name: 'template_id', type: 'uuid' })
   templateId: string;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ name: 'demo_url', type: 'varchar' })
   demoUrl: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ name: 'screenshot_url', type: 'varchar', nullable: true })
   screenshotUrl: string | null;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ name: 'sort_order', type: 'int', default: 0 })
   sortOrder: number;
 
   // Relations
   @ManyToOne(() => WebTemplate, (template) => template.demos, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'templateId' })
+  @JoinColumn({ name: 'template_id' })
   template: WebTemplate;
 }

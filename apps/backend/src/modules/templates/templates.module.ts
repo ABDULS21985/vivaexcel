@@ -5,12 +5,8 @@ import { TemplateLicense } from '../../entities/template-license.entity';
 import { TemplateDemo } from '../../entities/template-demo.entity';
 import { DigitalProductTag } from '../../entities/digital-product-tag.entity';
 import { TemplatesRepository } from './templates.repository';
-import { TemplatesService } from './services/templates.service';
-import { TemplateLicensesService } from './services/template-licenses.service';
-import { TemplateDemosService } from './services/template-demos.service';
-import { TemplatesController } from './controllers/templates.controller';
-import { TemplateLicensesController } from './controllers/template-licenses.controller';
-import { TemplateDemosController } from './controllers/template-demos.controller';
+import { TemplatesService } from './templates.service';
+import { TemplatesController } from './templates.controller';
 
 @Module({
   imports: [
@@ -21,21 +17,8 @@ import { TemplateDemosController } from './controllers/template-demos.controller
       DigitalProductTag,
     ]),
   ],
-  controllers: [
-    TemplatesController,
-    TemplateLicensesController,
-    TemplateDemosController,
-  ],
-  providers: [
-    TemplatesRepository,
-    TemplatesService,
-    TemplateLicensesService,
-    TemplateDemosService,
-  ],
-  exports: [
-    TemplatesService,
-    TemplateLicensesService,
-    TemplateDemosService,
-  ],
+  controllers: [TemplatesController],
+  providers: [TemplatesRepository, TemplatesService],
+  exports: [TemplatesService, TemplatesRepository],
 })
 export class TemplatesModule {}

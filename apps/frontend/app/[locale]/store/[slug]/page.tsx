@@ -10,11 +10,12 @@ import {
 import type { DigitalProduct } from "@/types/digital-product";
 import { DIGITAL_PRODUCT_TYPE_LABELS } from "@/types/digital-product";
 import { JsonLd } from "@/components/shared/json-ld";
-import { generateBreadcrumbSchema } from "@/lib/schema";
+import { generateBreadcrumbSchema, generateFAQSchema } from "@/lib/schema";
 import { ProductGallery } from "@/components/store/product-gallery";
 import { ProductInfo } from "@/components/store/product-info";
 import { ProductDescriptionTabs } from "./product-description-tabs";
 import { RelatedProducts } from "@/components/store/related-products";
+import { FloatingElements } from "@/components/store/floating-elements";
 
 // =============================================================================
 // Types
@@ -23,6 +24,66 @@ import { RelatedProducts } from "@/components/store/related-products";
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
+
+// =============================================================================
+// Helpers
+// =============================================================================
+
+function formatPrice(price: number, currency: string = "USD"): string {
+  if (price === 0) return "Free";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(price);
+}
+
+function generateDefaultFAQs(product: DigitalProduct) {
+  const faqs = [
+    {
+      question: `What do I get when I purchase ${product.title}?`,
+      answer:
+        "You'll receive instant access to download all included files immediately after purchase.",
+    },
+    {
+      question: "Can I get a refund?",
+      answer:
+        "Yes, we offer a 30-day money-back guarantee. If you're not satisfied, contact our support team for a full refund.",
+    },
+    {
+      question: "Do I get free updates?",
+      answer:
+        "Yes, all future updates to this product are included free of charge with your purchase.",
+    },
+  ];
+
+  // Add type-specific FAQs
+  if (product.type === "powerpoint") {
+    faqs.push({
+      question: "Can I edit the slides?",
+      answer:
+        "Absolutely! All slides are fully editable in Microsoft PowerPoint 2016 or later, Google Slides, and Keynote.",
+    });
+  } else if (
+    product.type === "web_template" ||
+    product.type === "code_template"
+  ) {
+    faqs.push({
+      question: "Is the template responsive?",
+      answer:
+        "Yes, the template is fully responsive and works on all modern browsers and devices.",
+    });
+  } else if (product.type === "document") {
+    faqs.push({
+      question: "Can I customize the content?",
+      answer:
+        "Yes, all documents are fully editable in Microsoft Word, Google Docs, or compatible editors.",
+    });
+  }
+
+  return faqs;
+}
 
 // =============================================================================
 // Static Params (on-demand ISR)
@@ -53,6 +114,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: product.title,
     author: product.creator?.name ?? "KTBlog",
     category: product.category?.name ?? typeLabel,
+    price:
+      product.price > 0
+        ? formatPrice(product.price, product.currency)
+        : "Free",
+    rating:
+      product.averageRating > 0 ? product.averageRating.toFixed(1) : "",
     date: product.publishedAt
       ? new Date(product.publishedAt).toLocaleDateString("en-US", {
           year: "numeric",
@@ -60,7 +127,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           day: "numeric",
         })
       : "",
-    type: "post",
+    type: "product",
   }).toString()}`;
 
   return {
@@ -200,6 +267,9 @@ export default async function ProductDetailPage({ params }: Props) {
 
   const typeLabel = DIGITAL_PRODUCT_TYPE_LABELS[product.type] || "Product";
 
+  // Generate default FAQs based on product type
+  const faqs = generateDefaultFAQs(product);
+
   return (
     <>
       {/* Structured Data */}
@@ -219,6 +289,7 @@ export default async function ProductDetailPage({ params }: Props) {
         ])}
       />
       <JsonLd data={generateProductSchema(product)} />
+      <JsonLd data={generateFAQSchema(faqs)} />
 
       <div className="min-h-screen bg-white dark:bg-neutral-950">
         {/* Breadcrumbs */}
@@ -262,12 +333,12 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                {/* Gallery */}
+                {/* Gallery - scrolls normally (no sticky) */}
                 <div>
                   <ProductGallery product={product} />
                 </div>
 
-                {/* Product Info */}
+                {/* Product Info - component handles sticky internally */}
                 <div>
                   <ProductInfo product={product} />
                 </div>
@@ -279,7 +350,7 @@ export default async function ProductDetailPage({ params }: Props) {
         {/* Description Tabs */}
         <section className="py-12 md:py-16 border-t border-neutral-100 dark:border-neutral-800">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               <ProductDescriptionTabs product={product} />
             </div>
           </div>
@@ -331,6 +402,17 @@ export default async function ProductDetailPage({ params }: Props) {
           </div>
         </section>
       </div>
+
+      {/* Floating Elements (client component) */}
+      <FloatingElements
+        product={{
+          title: product.title,
+          price: product.price,
+          currency: product.currency,
+          featuredImage: product.featuredImage,
+          id: product.id,
+        }}
+      />
     </>
   );
 }

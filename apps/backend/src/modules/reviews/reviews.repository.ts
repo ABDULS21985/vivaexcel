@@ -436,6 +436,337 @@ export class ReviewsRepository {
   }
 
   // ──────────────────────────────────────────────
+  //  All reviews (admin)
+  // ──────────────────────────────────────────────
+
+  async findAllReviews(query: {
+    cursor?: string;
+    limit?: number;
+    search?: string;
+    status?: ReviewStatus;
+    rating?: number;
+    sortBy?: string;
+    sortOrder?: 'ASC' | 'DESC';
+  }): Promise<PaginatedResponse<Review>> {
+    const {
+      cursor,
+      limit = 20,
+      search,
+      status,
+      rating,
+      sortOrder = 'DESC',
+    } = query;
+
+    const qb = this.reviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.user', 'user')
+      .leftJoin('review.digitalProduct', 'product')
+      .addSelect(['product.id', 'product.title', 'product.slug']);
+
+    if (status) {
+      qb.andWhere('review.status = :status', { status });
+    }
+
+    if (rating) {
+      qb.andWhere('review.rating = :rating', { rating });
+    }
+
+    if (search) {
+      qb.andWhere(
+        '(review.title ILIKE :search OR review.body ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    if (cursor) {
+      const decodedCursor = this.decodeCursor(cursor);
+      if (decodedCursor.id && decodedCursor.createdAt) {
+        if (sortOrder === 'DESC') {
+          qb.andWhere(
+            '(review.createdAt < :cursorCreatedAt OR (review.createdAt = :cursorCreatedAt AND review.id < :cursorId))',
+            { cursorCreatedAt: decodedCursor.createdAt, cursorId: decodedCursor.id },
+          );
+        } else {
+          qb.andWhere(
+            '(review.createdAt > :cursorCreatedAt OR (review.createdAt = :cursorCreatedAt AND review.id > :cursorId))',
+            { cursorCreatedAt: decodedCursor.createdAt, cursorId: decodedCursor.id },
+          );
+        }
+      }
+    }
+
+    qb.orderBy('review.createdAt', sortOrder);
+    qb.addOrderBy('review.id', sortOrder);
+    qb.take(limit + 1);
+
+    const items = await qb.getMany();
+    const hasNextPage = items.length > limit;
+
+    if (hasNextPage) {
+      items.pop();
+    }
+
+    // Get total count
+    const totalQb = this.reviewRepository.createQueryBuilder('review');
+    if (status) totalQb.andWhere('review.status = :status', { status });
+    if (rating) totalQb.andWhere('review.rating = :rating', { rating });
+    if (search) {
+      totalQb.andWhere(
+        '(review.title ILIKE :search OR review.body ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+    const total = await totalQb.getCount();
+
+    const lastItem = items[items.length - 1];
+    const nextCursor =
+      hasNextPage && lastItem
+        ? this.encodeCursor({ id: lastItem.id, createdAt: lastItem.createdAt })
+        : undefined;
+
+    return {
+      items,
+      meta: {
+        total,
+        hasNextPage,
+        hasPreviousPage: !!cursor,
+        nextCursor,
+        previousCursor: cursor,
+      },
+    };
+  }
+
+  async findByIdWithRelations(id: string): Promise<Review | null> {
+    return this.reviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.user', 'user')
+      .leftJoin('review.digitalProduct', 'product')
+      .addSelect(['product.id', 'product.title', 'product.slug'])
+      .leftJoinAndSelect('review.reports', 'reports')
+      .leftJoin('reports.reporter', 'reporter')
+      .addSelect(['reporter.id', 'reporter.firstName', 'reporter.lastName', 'reporter.email'])
+      .where('review.id = :id', { id })
+      .getOne();
+  }
+
+  // ──────────────────────────────────────────────
+  //  Global stats (no productId filter)
+  // ──────────────────────────────────────────────
+
+  async getGlobalReviewStats(): Promise<{
+    totalReviews: number;
+    averageRating: number;
+    pendingModeration: number;
+    flaggedCount: number;
+    approvedCount: number;
+    rejectedCount: number;
+    ratingDistribution: { rating: number; count: number }[];
+    verifiedPurchaseCount: number;
+    unverifiedCount: number;
+    responseRate: number;
+  }> {
+    // Total approved reviews stats
+    const approvedStats = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('AVG(review.rating)', 'averageRating')
+      .addSelect('COUNT(review.id)', 'totalReviews')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .getRawOne();
+
+    const totalReviews = parseInt(approvedStats?.totalReviews, 10) || 0;
+    const averageRating = parseFloat(approvedStats?.averageRating) || 0;
+
+    // Status counts
+    const statusCounts = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('review.status', 'status')
+      .addSelect('COUNT(review.id)', 'count')
+      .groupBy('review.status')
+      .getRawMany();
+
+    const statusMap: Record<string, number> = {};
+    for (const row of statusCounts) {
+      statusMap[row.status] = parseInt(row.count, 10);
+    }
+
+    const pendingModeration = statusMap[ReviewStatus.PENDING_MODERATION] || 0;
+    const flaggedCount = statusMap[ReviewStatus.FLAGGED] || 0;
+    const approvedCount = statusMap[ReviewStatus.APPROVED] || 0;
+    const rejectedCount = statusMap[ReviewStatus.REJECTED] || 0;
+
+    // Rating distribution
+    const distributionResults = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('review.rating', 'rating')
+      .addSelect('COUNT(review.id)', 'count')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .groupBy('review.rating')
+      .orderBy('review.rating', 'DESC')
+      .getRawMany();
+
+    const ratingDistribution = [5, 4, 3, 2, 1].map((r) => {
+      const found = distributionResults.find(
+        (d) => parseInt(d.rating, 10) === r,
+      );
+      return { rating: r, count: found ? parseInt(found.count, 10) : 0 };
+    });
+
+    // Verified purchase count
+    const verifiedResult = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('COUNT(review.id)', 'count')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .andWhere('review.isVerifiedPurchase = :verified', { verified: true })
+      .getRawOne();
+
+    const verifiedPurchaseCount = parseInt(verifiedResult?.count, 10) || 0;
+    const unverifiedCount = totalReviews - verifiedPurchaseCount;
+
+    // Response rate (reviews with seller response / total approved)
+    const respondedResult = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('COUNT(review.id)', 'count')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .andWhere('review.sellerResponse IS NOT NULL')
+      .getRawOne();
+
+    const respondedCount = parseInt(respondedResult?.count, 10) || 0;
+    const responseRate = totalReviews > 0 ? respondedCount / totalReviews : 0;
+
+    return {
+      totalReviews,
+      averageRating,
+      pendingModeration,
+      flaggedCount,
+      approvedCount,
+      rejectedCount,
+      ratingDistribution,
+      verifiedPurchaseCount,
+      unverifiedCount,
+      responseRate,
+    };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Analytics
+  // ──────────────────────────────────────────────
+
+  async getReviewAnalytics(): Promise<{
+    averageByCategory: { category: string; averageRating: number; reviewCount: number }[];
+    trends: { date: string; count: number; averageRating: number }[];
+    topRatedProducts: { productId: string; productTitle: string; averageRating: number; reviewCount: number }[];
+    lowestRatedProducts: { productId: string; productTitle: string; averageRating: number; reviewCount: number }[];
+  }> {
+    // Average rating by product type (as "category")
+    const categoryResults = await this.reviewRepository
+      .createQueryBuilder('review')
+      .innerJoin('review.digitalProduct', 'product')
+      .select('product.type', 'category')
+      .addSelect('AVG(review.rating)', 'averageRating')
+      .addSelect('COUNT(review.id)', 'reviewCount')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .groupBy('product.type')
+      .orderBy('"reviewCount"', 'DESC')
+      .getRawMany();
+
+    const averageByCategory = categoryResults.map((row) => ({
+      category: row.category,
+      averageRating: parseFloat(row.averageRating) || 0,
+      reviewCount: parseInt(row.reviewCount, 10),
+    }));
+
+    // Reviews over time (last 30 days, grouped by day)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const trendResults = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select("DATE_TRUNC('day', review.created_at)", 'date')
+      .addSelect('COUNT(review.id)', 'count')
+      .addSelect('AVG(review.rating)', 'averageRating')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .andWhere('review.createdAt >= :since', { since: thirtyDaysAgo })
+      .groupBy("DATE_TRUNC('day', review.created_at)")
+      .orderBy('date', 'ASC')
+      .getRawMany();
+
+    const trends = trendResults.map((row) => ({
+      date: row.date,
+      count: parseInt(row.count, 10),
+      averageRating: parseFloat(row.averageRating) || 0,
+    }));
+
+    // Top rated products (min 2 reviews)
+    const topRatedResults = await this.reviewRepository
+      .createQueryBuilder('review')
+      .innerJoin('review.digitalProduct', 'product')
+      .select('product.id', 'productId')
+      .addSelect('product.title', 'productTitle')
+      .addSelect('AVG(review.rating)', 'averageRating')
+      .addSelect('COUNT(review.id)', 'reviewCount')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .groupBy('product.id')
+      .addGroupBy('product.title')
+      .having('COUNT(review.id) >= 2')
+      .orderBy('"averageRating"', 'DESC')
+      .addOrderBy('"reviewCount"', 'DESC')
+      .limit(10)
+      .getRawMany();
+
+    const topRatedProducts = topRatedResults.map((row) => ({
+      productId: row.productId,
+      productTitle: row.productTitle,
+      averageRating: parseFloat(row.averageRating) || 0,
+      reviewCount: parseInt(row.reviewCount, 10),
+    }));
+
+    // Lowest rated products (min 2 reviews)
+    const lowestRatedResults = await this.reviewRepository
+      .createQueryBuilder('review')
+      .innerJoin('review.digitalProduct', 'product')
+      .select('product.id', 'productId')
+      .addSelect('product.title', 'productTitle')
+      .addSelect('AVG(review.rating)', 'averageRating')
+      .addSelect('COUNT(review.id)', 'reviewCount')
+      .where('review.status = :status', { status: ReviewStatus.APPROVED })
+      .groupBy('product.id')
+      .addGroupBy('product.title')
+      .having('COUNT(review.id) >= 2')
+      .orderBy('"averageRating"', 'ASC')
+      .addOrderBy('"reviewCount"', 'DESC')
+      .limit(10)
+      .getRawMany();
+
+    const lowestRatedProducts = lowestRatedResults.map((row) => ({
+      productId: row.productId,
+      productTitle: row.productTitle,
+      averageRating: parseFloat(row.averageRating) || 0,
+      reviewCount: parseInt(row.reviewCount, 10),
+    }));
+
+    return {
+      averageByCategory,
+      trends,
+      topRatedProducts,
+      lowestRatedProducts,
+    };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Report management
+  // ──────────────────────────────────────────────
+
+  async dismissAllReports(reviewId: string): Promise<void> {
+    await this.reportRepository
+      .createQueryBuilder()
+      .update(ReviewReport)
+      .set({ status: ReportStatus.DISMISSED })
+      .where('reviewId = :reviewId', { reviewId })
+      .andWhere('status = :status', { status: ReportStatus.PENDING })
+      .execute();
+  }
+
+  // ──────────────────────────────────────────────
   //  Cursor helpers
   // ──────────────────────────────────────────────
 

@@ -459,6 +459,17 @@ export const queryKeys = {
         details: () => [...queryKeys.media.all, "detail"] as const,
         detail: (id: string) => [...queryKeys.media.details(), id] as const,
     },
+    // Reviews
+    reviews: {
+        all: ["reviews"] as const,
+        lists: () => [...queryKeys.reviews.all, "list"] as const,
+        list: (filters?: Record<string, unknown>) =>
+            [...queryKeys.reviews.lists(), filters] as const,
+        details: () => [...queryKeys.reviews.all, "detail"] as const,
+        detail: (id: string) => [...queryKeys.reviews.details(), id] as const,
+        stats: () => [...queryKeys.reviews.all, "stats"] as const,
+        analytics: () => [...queryKeys.reviews.all, "analytics"] as const,
+    },
     // AI
     ai: {
         all: ["ai"] as const,

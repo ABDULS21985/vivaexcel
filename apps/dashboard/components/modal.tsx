@@ -79,6 +79,7 @@ export interface ConfirmModalProps {
     cancelLabel?: string;
     variant?: "danger" | "warning" | "info" | "success";
     isLoading?: boolean;
+    children?: React.ReactNode;
 }
 
 const variantConfig = {
@@ -118,6 +119,7 @@ export function ConfirmModal({
     cancelLabel = "Cancel",
     variant = "danger",
     isLoading = false,
+    children,
 }: ConfirmModalProps) {
     const config = variantConfig[variant];
     const IconComponent = config.icon;
@@ -143,6 +145,7 @@ export function ConfirmModal({
                         </p>
                     )}
                 </div>
+                {children}
                 <DialogFooter className="flex gap-3 sm:gap-3 py-2">
                     <Button
                         variant="outline"

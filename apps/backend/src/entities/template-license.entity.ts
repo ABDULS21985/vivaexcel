@@ -6,47 +6,47 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { WebTemplate, TemplateLicenseType } from './web-template.entity';
+import { WebTemplate, LicenseType } from './web-template.entity';
 import { User } from './user.entity';
 
 @Entity('template_licenses')
 export class TemplateLicense extends BaseEntity {
   @Index()
-  @Column({ type: 'uuid' })
+  @Column({ name: 'template_id', type: 'uuid' })
   templateId: string;
 
   @Index()
-  @Column({ type: 'uuid' })
+  @Column({ name: 'user_id', type: 'uuid' })
   userId: string;
 
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ name: 'order_id', type: 'uuid', nullable: true })
   orderId: string | null;
 
   @Index({ unique: true })
-  @Column({ type: 'varchar', unique: true })
+  @Column({ name: 'license_key', type: 'varchar', unique: true })
   licenseKey: string;
 
-  @Column({ type: 'enum', enum: TemplateLicenseType })
-  licenseType: TemplateLicenseType;
+  @Column({ name: 'license_type', type: 'enum', enum: LicenseType })
+  licenseType: LicenseType;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ name: 'activation_count', type: 'int', default: 0 })
   activationCount: number;
 
-  @Column({ type: 'int', default: 1 })
+  @Column({ name: 'max_activations', type: 'int', default: 1 })
   maxActivations: number;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'expires_at', type: 'timestamptz', nullable: true })
   expiresAt: Date | null;
 
-  @Column({ type: 'boolean', default: true })
+  @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
   // Relations
   @ManyToOne(() => WebTemplate, (template) => template.licenses, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'templateId' })
+  @JoinColumn({ name: 'template_id' })
   template: WebTemplate;
 
   @ManyToOne(() => User, { nullable: false, eager: false })
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 }
