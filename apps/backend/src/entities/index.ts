@@ -42,3 +42,7 @@ export * from './download-log.entity';
 export * from './license.entity';
 export * from './license-activation.entity';
 export * from './product-update.entity';
+export * from './product-view.entity';
+export * from './conversion-event.entity';
+export * from './revenue-record.entity';
+export * from './analytics-snapshot.entity';
