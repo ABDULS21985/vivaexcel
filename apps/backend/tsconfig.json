@@ -1,5 +1,5 @@
 {
-  "extends": "@digibit/typescript-config/nestjs.json",
+  "extends": "@ktblog/typescript-config/nestjs.json",
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist",

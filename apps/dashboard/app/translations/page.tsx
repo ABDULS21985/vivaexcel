@@ -4,7 +4,7 @@ import * as React from "react";
 import { PageHeader, PageHeaderButton } from "@/components/page-header";
 import { DataTable, Column } from "@/components/data-table";
 import { useToast } from "@/components/toast";
-import { Button, Input } from "@digibit/ui/components";
+import { Button, Input } from "@ktblog/ui/components";
 import { Plus, Languages, Save } from "lucide-react";
 
 interface Translation {

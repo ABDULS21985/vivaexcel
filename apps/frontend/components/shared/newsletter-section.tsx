@@ -2,7 +2,9 @@
 
 import { useState, FormEvent } from "react";
 import { Mail, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
+import { useSubscribeNewsletter } from "@/hooks/use-newsletter";
+import { toast } from "sonner";
 
 interface NewsletterSectionProps {
     heading?: string;
@@ -22,10 +24,11 @@ export function NewsletterSection({
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [message, setMessage] = useState("");
+    const subscribeMutation = useSubscribeNewsletter();
 
-    const validateEmail = (email: string): boolean => {
+    const validateEmail = (emailValue: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        return emailRegex.test(emailValue);
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -47,26 +50,20 @@ export function NewsletterSection({
         setMessage("");
 
         try {
-            const response = await fetch("/api/v1/newsletter/subscribe", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            });
+            const result = await subscribeMutation.mutateAsync({ email });
 
-            if (response.ok) {
-                setStatus("success");
-                setMessage("Thank you for subscribing! Check your inbox for confirmation.");
-                setEmail("");
-            } else {
-                const data = await response.json();
-                setStatus("error");
-                setMessage(data.message || "Something went wrong. Please try again.");
-            }
-        } catch {
+            setStatus("success");
+            setMessage(result.message || "Thank you for subscribing! Check your inbox for confirmation.");
+            toast.success(result.message || "Successfully subscribed!");
+            setEmail("");
+        } catch (error) {
             setStatus("error");
-            setMessage("Unable to connect. Please try again later.");
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : "Something went wrong. Please try again.";
+            setMessage(errorMessage);
+            toast.error(errorMessage);
         }
     };
 

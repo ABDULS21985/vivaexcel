@@ -23,7 +23,7 @@ import {
     Fingerprint,
     type LucideIcon,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { CTASection } from "@/components/shared";
 import { UseCaseCard } from "@/components/products/trustmehub";
 import {
@@ -78,7 +78,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title: `${useCase.title} - TrustMeHub`,
             description: useCase.shortDescription,
-            url: `https://globaldigibit.com/products/trustmehub/use-cases/${slug}`,
+            url: `https://drkatangablog.com/products/trustmehub/use-cases/${slug}`,
         },
     };
 }

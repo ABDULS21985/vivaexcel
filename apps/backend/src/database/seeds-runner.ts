@@ -13,9 +13,9 @@ async function runSeeds() {
         ...dataSourceOptions,
         host: process.env.POSTGRES_HOST || 'localhost',
         port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
-        username: process.env.POSTGRES_USER || 'digiweb',
-        password: process.env.POSTGRES_PASSWORD || 'digiweb123',
-        database: process.env.POSTGRES_DB || 'digiweb',
+        username: process.env.POSTGRES_USER || 'ktblog',
+        password: process.env.POSTGRES_PASSWORD || 'ktblog123',
+        database: process.env.POSTGRES_DB || 'ktblog',
         entities: Object.values(Entities).filter(e => typeof e === 'function'),
         synchronize: true,
     } as any);

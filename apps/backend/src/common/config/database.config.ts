@@ -24,13 +24,13 @@ class DatabaseConfigValidation {
   DB_PORT: number = 5433;
 
   @IsString()
-  DB_USERNAME: string = 'digiweb';
+  DB_USERNAME: string = 'ktblog';
 
   @IsString()
   DB_PASSWORD: string = '';
 
   @IsString()
-  DB_NAME: string = 'digiweb';
+  DB_NAME: string = 'ktblog';
 
   @IsBoolean()
   @Type(() => Boolean)

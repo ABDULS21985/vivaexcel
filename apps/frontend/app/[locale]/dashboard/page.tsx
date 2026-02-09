@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import {
   BookOpen,
@@ -10,94 +9,19 @@ import {
   ArrowRight,
   X,
   TrendingUp,
+  Loader2,
 } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useAuth } from "@/providers/auth-provider";
+import { useBookmarks, useRemoveBookmark } from "@/hooks/use-bookmarks";
+import { useReadingHistory, useReadingStats } from "@/hooks/use-reading-history";
+import { toast } from "sonner";
 
 // =============================================================================
 // Member Dashboard
 // =============================================================================
 // User dashboard with welcome header, stats, reading history, bookmarks,
-// and subscription info. Wrapped in ProtectedRoute.
-
-// Mock data for demonstration
-const MOCK_READING_HISTORY = [
-  {
-    id: "1",
-    title: "Understanding React Server Components in 2026",
-    slug: "understanding-rsc-2026",
-    category: "React",
-    readAt: "2 hours ago",
-    progress: 85,
-  },
-  {
-    id: "2",
-    title: "The Complete Guide to TypeScript 5.5",
-    slug: "typescript-55-guide",
-    category: "TypeScript",
-    readAt: "Yesterday",
-    progress: 100,
-  },
-  {
-    id: "3",
-    title: "Building Scalable APIs with Hono and Bun",
-    slug: "scalable-apis-hono-bun",
-    category: "Backend",
-    readAt: "2 days ago",
-    progress: 45,
-  },
-  {
-    id: "4",
-    title: "CSS Container Queries: A Practical Guide",
-    slug: "css-container-queries",
-    category: "CSS",
-    readAt: "3 days ago",
-    progress: 100,
-  },
-  {
-    id: "5",
-    title: "AI-Powered Development Workflows",
-    slug: "ai-dev-workflows",
-    category: "AI",
-    readAt: "1 week ago",
-    progress: 60,
-  },
-];
-
-const MOCK_BOOKMARKS = [
-  {
-    id: "1",
-    title: "Mastering Tailwind CSS 4",
-    slug: "mastering-tailwind-4",
-    category: "CSS",
-    coverImage: null,
-    readTime: "8 min read",
-  },
-  {
-    id: "2",
-    title: "Next.js 16 Deep Dive",
-    slug: "nextjs-16-deep-dive",
-    category: "Next.js",
-    coverImage: null,
-    readTime: "12 min read",
-  },
-  {
-    id: "3",
-    title: "Database Design Patterns",
-    slug: "database-design-patterns",
-    category: "Database",
-    coverImage: null,
-    readTime: "15 min read",
-  },
-  {
-    id: "4",
-    title: "Modern Authentication Strategies",
-    slug: "modern-auth-strategies",
-    category: "Security",
-    coverImage: null,
-    readTime: "10 min read",
-  },
-];
+// and subscription info. Data fetched from real backend APIs.
 
 const PLAN_LABELS: Record<string, { name: string; color: string }> = {
   free: { name: "Free", color: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300" },
@@ -108,12 +32,41 @@ const PLAN_LABELS: Record<string, { name: string; color: string }> = {
 
 function DashboardContent() {
   const { user } = useAuth();
-  const [bookmarks, setBookmarks] = useState(MOCK_BOOKMARKS);
+  const { data: bookmarksData, isLoading: bookmarksLoading } = useBookmarks();
+  const { data: historyData, isLoading: historyLoading } = useReadingHistory();
+  const { data: statsData } = useReadingStats();
+  const removeBookmark = useRemoveBookmark();
 
   const planInfo = PLAN_LABELS[user?.plan || "free"];
+  const bookmarks = bookmarksData?.bookmarks ?? [];
+  const readingHistory = historyData?.history ?? [];
+  const totalArticlesRead = statsData?.totalArticlesRead ?? readingHistory.length;
 
-  function removeBookmark(id: string) {
-    setBookmarks((prev) => prev.filter((b) => b.id !== id));
+  function handleRemoveBookmark(postId: string, title: string) {
+    removeBookmark.mutate(postId, {
+      onSuccess: () => {
+        toast.success(`Removed "${title}" from bookmarks`);
+      },
+      onError: () => {
+        toast.error("Failed to remove bookmark. Please try again.");
+      },
+    });
+  }
+
+  function formatTimeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+    return date.toLocaleDateString();
   }
 
   return (
@@ -137,7 +90,7 @@ function DashboardContent() {
             </div>
             <div>
               <p className="text-2xl font-bold text-[var(--foreground)]">
-                {MOCK_READING_HISTORY.length}
+                {totalArticlesRead}
               </p>
               <p className="text-xs text-[var(--muted-foreground)]">
                 Articles Read
@@ -151,7 +104,7 @@ function DashboardContent() {
             </div>
             <div>
               <p className="text-2xl font-bold text-[var(--foreground)]">
-                {bookmarks.length}
+                {bookmarksData?.total ?? bookmarks.length}
               </p>
               <p className="text-xs text-[var(--muted-foreground)]">
                 Bookmarks
@@ -196,46 +149,68 @@ function DashboardContent() {
                 </Link>
               </div>
 
-              <div className="divide-y divide-[var(--border)]">
-                {MOCK_READING_HISTORY.map((article) => (
+              {historyLoading ? (
+                <div className="flex items-center justify-center p-12">
+                  <Loader2 className="h-6 w-6 animate-spin text-[var(--muted-foreground)]" />
+                </div>
+              ) : readingHistory.length === 0 ? (
+                <div className="p-12 text-center">
+                  <BookOpen className="h-12 w-12 mx-auto text-[var(--muted-foreground)] mb-3" />
+                  <p className="text-[var(--muted-foreground)]">
+                    No reading history yet. Start exploring articles!
+                  </p>
                   <Link
-                    key={article.id}
-                    href={`/blogs/${article.slug}`}
-                    className="flex items-center gap-4 p-4 hover:bg-[var(--surface-1)] transition-colors"
+                    href="/blogs"
+                    className="inline-flex items-center gap-1.5 mt-4 text-sm text-[var(--primary)] hover:underline"
                   >
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-[var(--foreground)] truncate">
-                        {article.title}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-2)] text-[var(--muted-foreground)]">
-                          {article.category}
-                        </span>
-                        <span className="text-xs text-[var(--muted-foreground)]">
-                          {article.readAt}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Progress */}
-                    <div className="flex items-center gap-2 shrink-0">
-                      <div className="w-20 h-1.5 rounded-full bg-[var(--surface-3)]">
-                        <div
-                          className={`h-full rounded-full transition-all ${
-                            article.progress === 100
-                              ? "bg-green-500"
-                              : "bg-[var(--primary)]"
-                          }`}
-                          style={{ width: `${article.progress}%` }}
-                        />
-                      </div>
-                      <span className="text-xs text-[var(--muted-foreground)] w-8 text-right">
-                        {article.progress}%
-                      </span>
-                    </div>
+                    Browse Articles
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
-                ))}
-              </div>
+                </div>
+              ) : (
+                <div className="divide-y divide-[var(--border)]">
+                  {readingHistory.slice(0, 5).map((entry) => (
+                    <Link
+                      key={entry.id}
+                      href={`/blogs/${entry.post.slug}`}
+                      className="flex items-center gap-4 p-4 hover:bg-[var(--surface-1)] transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-medium text-[var(--foreground)] truncate">
+                          {entry.post.title}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          {entry.post.category && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-2)] text-[var(--muted-foreground)]">
+                              {entry.post.category.name}
+                            </span>
+                          )}
+                          <span className="text-xs text-[var(--muted-foreground)]">
+                            {formatTimeAgo(entry.readAt)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Progress */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="w-20 h-1.5 rounded-full bg-[var(--surface-3)]">
+                          <div
+                            className={`h-full rounded-full transition-all ${
+                              entry.progress >= 100
+                                ? "bg-green-500"
+                                : "bg-[var(--primary)]"
+                            }`}
+                            style={{ width: `${Math.min(entry.progress, 100)}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-[var(--muted-foreground)] w-8 text-right">
+                          {entry.progress}%
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -327,12 +302,23 @@ function DashboardContent() {
             </div>
           </div>
 
-          {bookmarks.length === 0 ? (
+          {bookmarksLoading ? (
+            <div className="flex items-center justify-center p-12">
+              <Loader2 className="h-6 w-6 animate-spin text-[var(--muted-foreground)]" />
+            </div>
+          ) : bookmarks.length === 0 ? (
             <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-12 text-center">
               <Bookmark className="h-12 w-12 mx-auto text-[var(--muted-foreground)] mb-3" />
               <p className="text-[var(--muted-foreground)]">
                 No bookmarks yet. Start saving articles you love.
               </p>
+              <Link
+                href="/blogs"
+                className="inline-flex items-center gap-1.5 mt-4 text-sm text-[var(--primary)] hover:underline"
+              >
+                Browse Articles
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -343,29 +329,43 @@ function DashboardContent() {
                 >
                   {/* Placeholder cover */}
                   <div className="h-32 bg-gradient-to-br from-[var(--primary)]/10 to-[var(--primary)]/5 flex items-center justify-center">
-                    <BookOpen className="h-8 w-8 text-[var(--primary)]/30" />
+                    {bookmark.post.featuredImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={bookmark.post.featuredImage}
+                        alt={bookmark.post.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <BookOpen className="h-8 w-8 text-[var(--primary)]/30" />
+                    )}
                   </div>
 
                   <div className="p-4">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-2)] text-[var(--muted-foreground)]">
-                      {bookmark.category}
-                    </span>
+                    {bookmark.post.category && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-2)] text-[var(--muted-foreground)]">
+                        {bookmark.post.category.name}
+                      </span>
+                    )}
                     <h3 className="text-sm font-medium text-[var(--foreground)] mt-2 line-clamp-2">
-                      <Link href={`/blogs/${bookmark.slug}`} className="hover:underline">
-                        {bookmark.title}
+                      <Link href={`/blogs/${bookmark.post.slug}`} className="hover:underline">
+                        {bookmark.post.title}
                       </Link>
                     </h3>
-                    <p className="text-xs text-[var(--muted-foreground)] mt-1">
-                      {bookmark.readTime}
-                    </p>
+                    {bookmark.post.readingTime && (
+                      <p className="text-xs text-[var(--muted-foreground)] mt-1">
+                        {bookmark.post.readingTime} min read
+                      </p>
+                    )}
                   </div>
 
                   {/* Remove button */}
                   <button
                     type="button"
-                    onClick={() => removeBookmark(bookmark.id)}
-                    className="absolute top-2 right-2 p-1.5 rounded-full bg-[var(--background)]/80 backdrop-blur-sm text-[var(--muted-foreground)] hover:text-[var(--error)] opacity-0 group-hover:opacity-100 transition-all"
-                    aria-label={`Remove ${bookmark.title} from bookmarks`}
+                    onClick={() => handleRemoveBookmark(bookmark.postId, bookmark.post.title)}
+                    disabled={removeBookmark.isPending}
+                    className="absolute top-2 right-2 p-1.5 rounded-full bg-[var(--background)]/80 backdrop-blur-sm text-[var(--muted-foreground)] hover:text-[var(--error)] opacity-0 group-hover:opacity-100 transition-all disabled:opacity-50"
+                    aria-label={`Remove ${bookmark.post.title} from bookmarks`}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

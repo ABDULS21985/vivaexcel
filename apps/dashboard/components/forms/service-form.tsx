@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
     cn,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { Loader2, Plus, X } from "lucide-react";
 
 export interface ServiceFormData {

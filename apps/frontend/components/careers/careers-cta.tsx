@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { ArrowRight, Mail, Send } from "lucide-react";
 import { Link } from "@/i18n/routing";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 export function CareersCta() {
     const sectionRef = useRef<HTMLElement>(null);
@@ -94,7 +94,7 @@ export function CareersCta() {
                             size="lg"
                             className="border-white/30 text-white hover:bg-white/10 px-8 py-6 rounded-xl"
                         >
-                            <a href="mailto:careers@globaldigibit.com" className="flex items-center gap-2">
+                            <a href="mailto:careers@drkatangablog.com" className="flex items-center gap-2">
                                 <Mail className="w-5 h-5" />
                                 {t("cta.secondary")}
                             </a>

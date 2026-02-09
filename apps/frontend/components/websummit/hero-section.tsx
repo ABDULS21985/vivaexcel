@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -61,7 +61,7 @@ interface TimeUnit {
 // CONSTANTS
 // ============================================
 
-const HEADLINE_WORDS = ["DIGIBIT", "GLOBAL", "SOLUTIONS"];
+const HEADLINE_WORDS = ["KTBLOG", "DR", "KATANGA"];
 
 const STATS_DATA = [
   { value: 10, suffix: "+", labelKey: "years", icon: <Calendar className="w-4 h-4" /> },
@@ -933,7 +933,7 @@ export function WebSummitHero() {
               {HEADLINE_WORDS.join(" ")}
             </span>
             {/* Accessible hidden text for screen readers */}
-            <span className="sr-only">Digibit Global Solutions</span>
+            <span className="sr-only">KTBlog</span>
           </h1>
 
           {/* Tagline */}

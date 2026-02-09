@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import {
     Search,
     Grid3X3,

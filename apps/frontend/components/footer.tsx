@@ -18,7 +18,7 @@ import {
     ArrowRight,
     Eye,
 } from "lucide-react";
-import { Button, Input } from "@digibit/ui/components";
+import { Button, Input } from "@ktblog/ui/components";
 import { Link } from "@/i18n/routing";
 import { motion, useScroll, useInView, AnimatePresence, useMotionValueEvent } from "framer-motion";
 import { LanguageSwitcher } from "./language-switcher";
@@ -27,19 +27,19 @@ import { LanguageSwitcher } from "./language-switcher";
 const socialLinks = [
     {
         icon: Facebook,
-        href: "https://www.facebook.com/globaldigibit",
+        href: "https://www.facebook.com/drkatangablog",
         label: "Facebook",
         hoverClass: "hover:bg-[#1877F2] hover:border-[#1877F2]",
     },
     {
         icon: Twitter,
-        href: "https://x.com/digibitsoltn",
+        href: "https://x.com/drkatangablog",
         label: "Twitter",
         hoverClass: "hover:bg-[#1DA1F2] hover:border-[#1DA1F2]",
     },
     {
         icon: Linkedin,
-        href: "https://www.linkedin.com/company/digibit-solutions",
+        href: "https://www.linkedin.com/company/drkatangablog",
         label: "LinkedIn",
         hoverClass: "hover:bg-[#0A66C2] hover:border-[#0A66C2]",
     },
@@ -482,8 +482,8 @@ export function Footer() {
                         <motion.div className="lg:col-span-1 space-y-6" variants={itemVariants}>
                             <Link href="/" className="inline-block">
                                 <Image
-                                    src="/logo/digibit.png"
-                                    alt="Digibit Logo"
+                                    src="/logo/ktblog.png"
+                                    alt="KTBlog Logo"
                                     width={150}
                                     height={50}
                                     className="h-10 w-auto object-contain brightness-0 invert"
@@ -501,7 +501,7 @@ export function Footer() {
                                 </div>
                                 <div className="flex items-center text-neutral-400 hover:text-white transition-colors">
                                     <Mail className="h-4 w-4 mr-3 text-primary flex-shrink-0" />
-                                    <span>connect@globaldigibit.com</span>
+                                    <span>connect@drkatangablog.com</span>
                                 </div>
                                 <div className="flex items-start text-neutral-400">
                                     <MapPin className="h-4 w-4 mr-3 text-primary flex-shrink-0 mt-0.5" />

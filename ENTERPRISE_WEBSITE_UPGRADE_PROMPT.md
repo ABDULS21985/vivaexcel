@@ -2,14 +2,14 @@
 
 ## PROJECT CONTEXT
 
-You are upgrading the **Global Digitalbit (Digibit)** corporate website from a "high-quality startup" level to a **world-class enterprise consulting powerhouse** on par with EY.com, PwC.com, IBM.com, McKinsey.com, Deloitte.com, and Accenture.com.
+You are upgrading the **KTBlog** corporate website from a "high-quality startup" level to a **world-class enterprise consulting powerhouse** on par with EY.com, PwC.com, IBM.com, McKinsey.com, Deloitte.com, and Accenture.com.
 
 ### Tech Stack (DO NOT CHANGE)
 - **Framework:** Next.js 16.1.4 (App Router) with React 19.2.3
 - **Language:** TypeScript 5
 - **Styling:** Tailwind CSS 4 via `@tailwindcss/postcss`
 - **Monorepo:** Turborepo with npm workspaces
-- **Shared UI:** `@digibit/ui` package (Radix UI + CVA + Tailwind)
+- **Shared UI:** `@ktblog/ui` package (Radix UI + CVA + Tailwind)
 - **i18n:** next-intl (English, Arabic, French, Spanish, Portuguese)
 - **Forms:** React Hook Form + Zod
 - **Data fetching:** TanStack React Query
@@ -191,7 +191,7 @@ You are upgrading the **Global Digitalbit (Digibit)** corporate website from a "
 ```
 
 ### Brand Colors (defined in globals.css)
-- Primary: `#1E4DB7` (Digibit Blue)
+- Primary: `#1E4DB7` (KTBlog Blue)
 - Secondary: `#143A8F` (Dark Blue)
 - Secondary Yellow: `#F9C623`
 - Accent Orange: `#F59A23`
@@ -219,7 +219,7 @@ Execute ALL tasks below in order. Each phase must be FULLY completed before movi
 ### TASK 1.1: Install New Dependencies
 
 ```bash
-cd /Users/mac/codes/digiweb
+cd /Users/mac/codes/ktblog
 npm install gsap @gsap/react lottie-react --workspace=apps/frontend
 ```
 
@@ -980,8 +980,8 @@ export interface CaseStudy {
     role: string;
     company: string;
   };
-  services: string[]; // Which Digibit services were used
-  products: string[]; // Which Digibit products were used
+  services: string[]; // Which KTBlog services were used
+  products: string[]; // Which KTBlog products were used
   heroImage: string; // URL placeholder
   duration: string; // "6 months", "12 weeks", etc.
   publishedAt: string;
@@ -1076,7 +1076,7 @@ Create `/apps/frontend/components/shared/certifications-bar.tsx`:
 
 Create `/apps/frontend/app/[locale]/careers/page.tsx`:
 - Hero: "Join Our Team" with overline "CAREERS"
-- "Why Digibit" section: 3-4 value proposition cards (Innovation, Impact, Growth, Culture)
+- "Why KTBlog" section: 3-4 value proposition cards (Innovation, Impact, Growth, Culture)
 - "Open Positions" section: List of placeholder roles grouped by department
 - Each role: Title → Department → Location → Type (Full-time) → "Apply →"
 - CTA: "Don't see your role? Send us your CV" → email link
@@ -1276,7 +1276,7 @@ Ensure the following JSON-LD schemas are present:
 - `twitter:card` (summary_large_image), `twitter:title`, `twitter:description`, `twitter:image`
 - `canonical` URL
 
-Ensure EVERY page's `metadata` export includes these. Create a default OG image at `/public/og-default.jpg` (1200x630px placeholder — blue gradient with Digibit logo centered).
+Ensure EVERY page's `metadata` export includes these. Create a default OG image at `/public/og-default.jpg` (1200x630px placeholder — blue gradient with KTBlog logo centered).
 
 ---
 

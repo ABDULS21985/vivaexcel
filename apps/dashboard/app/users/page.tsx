@@ -8,14 +8,14 @@ import { StatsCard } from "@/components/stats-card";
 import { ConfirmModal } from "@/components/modal";
 import { StatusModal } from "@/components/modals/status-modal";
 import { useToast } from "@/components/toast";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { Plus, Users, ShieldCheck, UserCheck, UserPlus, Edit, Eye, UserX } from "lucide-react";
 import { User, UserStatus, UserRole } from "../../types/user";
 
 const initialUsers: User[] = [
     {
         id: "1",
-        email: "admin@globaldigibit.com",
+        email: "admin@drkatangablog.com",
         firstName: "Admin",
         lastName: "User",
         name: "Admin User",
@@ -28,7 +28,7 @@ const initialUsers: User[] = [
     },
     {
         id: "2",
-        email: "editor@globaldigibit.com",
+        email: "editor@drkatangablog.com",
         firstName: "Sarah",
         lastName: "Jenkins",
         name: "Sarah Jenkins",
@@ -41,7 +41,7 @@ const initialUsers: User[] = [
     },
     {
         id: "3",
-        email: "support@globaldigibit.com",
+        email: "support@drkatangablog.com",
         firstName: "Michael",
         lastName: "Chen",
         name: "Michael Chen",

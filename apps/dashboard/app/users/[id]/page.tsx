@@ -11,7 +11,7 @@ import { User, UserStatus, UserRole } from "../../../types/user";
 const mockUsers: User[] = [
     {
         id: "1",
-        email: "admin@globaldigibit.com",
+        email: "admin@drkatangablog.com",
         firstName: "Admin",
         lastName: "User",
         roles: [UserRole.SUPER_ADMIN],
@@ -23,7 +23,7 @@ const mockUsers: User[] = [
     },
     {
         id: "2",
-        email: "editor@globaldigibit.com",
+        email: "editor@drkatangablog.com",
         firstName: "Sarah",
         lastName: "Jenkins",
         roles: [UserRole.EDITOR],

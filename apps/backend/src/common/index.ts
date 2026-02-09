@@ -1,5 +1,5 @@
 /**
- * DigiWeb Common Module
+ * KTBlog Common Module
  *
  * This module provides shared infrastructure components for the NestJS backend:
  * - Configuration modules with validation

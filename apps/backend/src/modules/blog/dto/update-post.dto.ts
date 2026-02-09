@@ -64,6 +64,11 @@ export class UpdatePostDto {
   @MaxLength(255)
   series?: string;
 
+  @ApiPropertyOptional({ description: 'ID of the series this post belongs to' })
+  @IsOptional()
+  @IsUUID()
+  seriesId?: string;
+
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()
   @IsInt()

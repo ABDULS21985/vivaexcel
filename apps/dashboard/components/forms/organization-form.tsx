@@ -10,7 +10,7 @@ import {
     Textarea,
     Switch,
     Label,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { Loader2, Building, Globe, ImageIcon } from "lucide-react";
 
 const organizationSchema = z.object({

@@ -39,8 +39,8 @@ import {
     LayoutGrid,
     List,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
-import { cn } from "@digibit/ui/lib/utils";
+import { Button } from "@ktblog/ui/components";
+import { cn } from "@ktblog/ui/lib/utils";
 import type { ServiceTower } from "@/types/services-global";
 import {
     EngagementModels,
@@ -891,13 +891,13 @@ export function ServicesPageClient({ towers }: ServicesPageClientProps) {
                         {/* Quick Contact Info */}
                         <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-white/60">
                             <a
-                                href="mailto:connect@globaldigibit.com"
+                                href="mailto:connect@drkatangablog.com"
                                 className="flex items-center gap-2 hover:text-white transition-colors"
                             >
                                 <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
                                     <ArrowRight className="h-4 w-4 rotate-[-45deg]" />
                                 </span>
-                                connect@globaldigibit.com
+                                connect@drkatangablog.com
                             </a>
                             <a
                                 href="tel:+97477953122"

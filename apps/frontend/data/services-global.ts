@@ -19,7 +19,7 @@ function generateSlug(name: string): string {
 }
 
 /**
- * Service Tower data - 22 towers covering Global Digibit's consulting services
+ * Service Tower data - 22 towers covering KTBlog's consulting services
  */
 export const serviceTowers: ServiceTower[] = [
   // TOWER 1: CORPORATE, DIGITAL & BUSINESS STRATEGY
@@ -1173,7 +1173,7 @@ export const serviceTowers: ServiceTower[] = [
       { name: 'Training & Enablement Program', slug: generateSlug('Training & Enablement Program'), description: 'Design and deliver training programs.', icon: 'BookOpen', typicalDeliverables: ['Training needs analysis', 'Curriculum design', 'Training materials'] },
       { name: 'Digital Adoption Platform', slug: generateSlug('Digital Adoption Platform'), description: 'Implement digital adoption tools and practices.', icon: 'MousePointer', typicalDeliverables: ['DAP strategy', 'Content design', 'Adoption metrics'] },
       { name: 'Leadership Development', slug: generateSlug('Leadership Development'), description: 'Develop leadership capabilities for change.', icon: 'Crown', typicalDeliverables: ['Leadership competency framework', 'Development programs', 'Coaching support'] },
-      { name: 'Digibit Academy Programs', slug: generateSlug('Digibit Academy Programs'), description: 'Role-based certification academies.', icon: 'Award', typicalDeliverables: ['Academy curriculum', 'Assessment frameworks', 'Certification pathways'] },
+      { name: 'KTBlog Academy Programs', slug: generateSlug('KTBlog Academy Programs'), description: 'Role-based certification academies.', icon: 'Award', typicalDeliverables: ['Academy curriculum', 'Assessment frameworks', 'Certification pathways'] },
     ],
   },
   // TOWER 15: ESG / SUSTAINABILITY & CLIMATE RISK

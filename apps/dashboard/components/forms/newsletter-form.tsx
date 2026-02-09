@@ -14,7 +14,7 @@ import {
     SelectValue,
     Textarea,
     Label,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { Loader2, Send, Save } from "lucide-react";
 import Link from "next/link";
 

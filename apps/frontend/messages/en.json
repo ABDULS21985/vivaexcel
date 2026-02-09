@@ -715,7 +715,7 @@
     "clientSince": "Client since",
     "items": {
       "testimonial1": {
-        "quote": "Global Digibit's custom software solutions have transformed our operations. Their team understood our complex requirements and delivered a system that exceeded expectations.",
+        "quote": "KTBlog's custom software solutions have transformed our operations. Their team understood our complex requirements and delivered a system that exceeded expectations.",
         "author": "David M.",
         "role": "Valued Customer",
         "company": "FinTech Solutions"
@@ -727,25 +727,25 @@
         "company": "SecureNet Systems"
       },
       "testimonial3": {
-        "quote": "The AI integration services provided by Global Digibit have revolutionized our data analytics capabilities. We're now making smarter, faster decisions.",
+        "quote": "The AI integration services provided by KTBlog have revolutionized our data analytics capabilities. We're now making smarter, faster decisions.",
         "author": "Michael O.",
         "role": "Operations Manager",
         "company": "Retail Giants"
       },
       "testimonial4": {
-        "quote": "Working with Global Digibit on our blockchain implementation was seamless. Their technical knowledge and professional approach made all the difference.",
+        "quote": "Working with KTBlog on our blockchain implementation was seamless. Their technical knowledge and professional approach made all the difference.",
         "author": "Amina B.",
         "role": "Finance Director",
         "company": "Global Bank"
       },
       "testimonial5": {
-        "quote": "The training programs offered by Global Digibit have upskilled our entire team. The practical, hands-on approach ensured immediate applicability.",
+        "quote": "The training programs offered by KTBlog have upskilled our entire team. The practical, hands-on approach ensured immediate applicability.",
         "author": "James T.",
         "role": "HR Manager",
         "company": "EduTech Inc"
       },
       "testimonial6": {
-        "quote": "Global Digibit's CBDC consulting services helped us navigate complex regulatory requirements. Their expertise in this emerging field is unmatched.",
+        "quote": "KTBlog's CBDC consulting services helped us navigate complex regulatory requirements. Their expertise in this emerging field is unmatched.",
         "author": "Fatima A.",
         "role": "Banking Executive",
         "company": "National Bank"
@@ -823,7 +823,7 @@
       }
     },
     "whyPartner": {
-      "label": "Why Digibit?",
+      "label": "Why KTBlog?",
       "title": "The Right Partner for Every Stakeholder",
       "subtitle": "We bring together expertise, innovation, and commitment to deliver exceptional results.",
       "audiences": {
@@ -949,7 +949,7 @@
         "button": "Book a Time Slot"
       },
       "footer": {
-        "company": "Digibit Global Solutions",
+        "company": "KTBlog",
         "copyright": "\u00A9 2026 Global Digitalbit Limited. All rights reserved.",
         "eventInfo": "Web Summit Qatar 2026 | February 1-4, Doha",
         "tagline": "Built with love for Web Summit Qatar"

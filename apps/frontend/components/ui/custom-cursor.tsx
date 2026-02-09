@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { gsap } from "gsap";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 // ============================================================================
 // Types

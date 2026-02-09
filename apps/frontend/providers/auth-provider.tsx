@@ -10,14 +10,23 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { apiClient } from "@/lib/api-client";
+import {
+  apiClient,
+  apiPost,
+  apiPatch,
+  setTokens,
+  clearTokens,
+  getToken,
+  hasToken,
+} from "@/lib/api-client";
 
 // =============================================================================
 // Auth Provider
 // =============================================================================
 // Provides authentication state and methods to the entire application.
-// Stores JWT via httpOnly cookies (set by the API), manages user state,
-// and redirects unauthenticated users from protected routes.
+// Uses JWT tokens stored in localStorage, validates with GET /auth/me,
+// handles token refresh automatically via the API client, and redirects
+// unauthenticated users from protected routes.
 
 export interface User {
   id: string;
@@ -33,6 +42,9 @@ export interface User {
     github?: string;
   };
   plan: "free" | "basic" | "pro" | "premium";
+  stripeCustomerId?: string;
+  subscriptionStatus?: string;
+  subscriptionEndDate?: string;
   createdAt: string;
 }
 
@@ -46,6 +58,9 @@ interface AuthContextValue {
   logout: () => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  deleteAccount: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 interface RegisterData {
@@ -53,6 +68,12 @@ interface RegisterData {
   lastName: string;
   email: string;
   password: string;
+}
+
+interface AuthResponse {
+  user: User;
+  accessToken: string;
+  refreshToken?: string;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -72,21 +93,54 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const isAuthenticated = !!user;
 
-  // Check auth status on mount
+  // Check auth status on mount using stored JWT token
   useEffect(() => {
     async function checkAuth() {
+      // Only attempt auth check if we have a stored token
+      if (!hasToken()) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const response = await apiClient<{ user: User }>("/auth/me", {
-          credentials: "include",
-        });
+        const response = await apiClient<{ user: User }>("/auth/me");
         setUser(response.user);
       } catch {
+        // Token is invalid or expired - clear it
+        clearTokens();
         setUser(null);
       } finally {
         setIsLoading(false);
       }
     }
     checkAuth();
+  }, []);
+
+  // Handle OAuth callback tokens from URL hash/query params
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get("accessToken") || params.get("token");
+    const refreshToken = params.get("refreshToken");
+
+    if (accessToken) {
+      setTokens(accessToken, refreshToken || undefined);
+      // Clean URL
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, "", cleanUrl);
+
+      // Fetch user data with new token
+      apiClient<{ user: User }>("/auth/me")
+        .then((response) => {
+          setUser(response.user);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          clearTokens();
+          setIsLoading(false);
+        });
+    }
   }, []);
 
   // Redirect to login for protected routes
@@ -108,11 +162,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const response = await apiClient<{ user: User }>("/auth/login", {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
+      const response = await apiPost<AuthResponse>("/auth/login", {
+        email,
+        password,
       });
+      setTokens(response.accessToken, response.refreshToken);
       setUser(response.user);
       router.push("/dashboard");
     },
@@ -121,7 +175,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const loginWithProvider = useCallback(
     async (provider: "google" | "github") => {
-      // Redirect to OAuth provider endpoint
       const baseUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:4001/api/v1";
       window.location.href = `${baseUrl}/auth/${provider}`;
@@ -130,32 +183,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 
   const loginWithMagicLink = useCallback(async (email: string) => {
-    await apiClient("/auth/magic-link", {
-      method: "POST",
-      body: JSON.stringify({ email }),
-    });
+    await apiPost("/auth/magic-link", { email });
   }, []);
 
   const logout = useCallback(async () => {
     try {
-      await apiClient("/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await apiPost("/auth/logout");
     } catch {
       // Proceed with local logout even if API call fails
     }
+    clearTokens();
     setUser(null);
     router.push("/");
   }, [router]);
 
   const register = useCallback(
     async (data: RegisterData) => {
-      const response = await apiClient<{ user: User }>("/auth/register", {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      const response = await apiPost<AuthResponse>("/auth/register", data);
+      setTokens(response.accessToken, response.refreshToken);
       setUser(response.user);
       router.push("/dashboard");
     },
@@ -163,12 +208,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 
   const updateProfile = useCallback(async (data: Partial<User>) => {
-    const response = await apiClient<{ user: User }>("/auth/profile", {
-      method: "PATCH",
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    const response = await apiPatch<{ user: User }>("/auth/profile", data);
     setUser(response.user);
+  }, []);
+
+  const changePassword = useCallback(
+    async (currentPassword: string, newPassword: string) => {
+      await apiPost("/auth/change-password", {
+        currentPassword,
+        newPassword,
+      });
+    },
+    []
+  );
+
+  const deleteAccount = useCallback(async () => {
+    await apiClient("/auth/account", { method: "DELETE" });
+    clearTokens();
+    setUser(null);
+    router.push("/");
+  }, [router]);
+
+  const refreshUser = useCallback(async () => {
+    if (!hasToken()) return;
+    try {
+      const response = await apiClient<{ user: User }>("/auth/me");
+      setUser(response.user);
+    } catch {
+      clearTokens();
+      setUser(null);
+    }
   }, []);
 
   const value = useMemo<AuthContextValue>(
@@ -182,6 +251,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       logout,
       register,
       updateProfile,
+      changePassword,
+      deleteAccount,
+      refreshUser,
     }),
     [
       user,
@@ -193,6 +265,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       logout,
       register,
       updateProfile,
+      changePassword,
+      deleteAccount,
+      refreshUser,
     ]
   );
 

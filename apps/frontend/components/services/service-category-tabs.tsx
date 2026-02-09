@@ -10,7 +10,7 @@ import {
     ArrowRight,
     CheckCircle,
 } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent, Button } from "@digibit/ui/components";
+import { Tabs, TabsList, TabsTrigger, TabsContent, Button } from "@ktblog/ui/components";
 import { serviceCategories } from "@/data/services";
 import { ServiceCard } from "./service-card";
 

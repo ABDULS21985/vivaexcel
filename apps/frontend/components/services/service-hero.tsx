@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Brain, Blocks, ClipboardCheck } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 const categoryQuickLinks = [
     {

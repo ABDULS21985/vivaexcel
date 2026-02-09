@@ -4,8 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useTransition, useRef, useEffect } from "react";
 import { Globe, ChevronDown, Check } from "lucide-react";
-import { Button } from "@digibit/ui/components";
-import { cn } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
+import { cn } from "@ktblog/ui/components";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   locales,

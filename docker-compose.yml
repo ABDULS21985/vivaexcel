@@ -1,34 +1,34 @@
 services:
   frontend:
-    image: ${DOCKERHUB_USERNAME}/digibit-frontend:latest
-    container_name: digibit-frontend
+    image: ${DOCKERHUB_USERNAME}/ktblog-frontend:latest
+    container_name: ktblog-frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
     env_file:
-      - /root/.env/digibit.env
+      - /root/.env/ktblog.env
     depends_on:
       - backend
 
   dashboard:
-    image: ${DOCKERHUB_USERNAME}/digibit-dashboard:latest
-    container_name: digibit-dashboard
+    image: ${DOCKERHUB_USERNAME}/ktblog-dashboard:latest
+    container_name: ktblog-dashboard
     restart: unless-stopped
     ports:
       - "3001:3000"
     env_file:
-      - /root/.env/digibit.env
+      - /root/.env/ktblog.env
     depends_on:
       - backend
 
   backend:
-    image: ${DOCKERHUB_USERNAME}/digibit-backend:latest
-    container_name: digibit-backend
+    image: ${DOCKERHUB_USERNAME}/ktblog-backend:latest
+    container_name: ktblog-backend
     restart: unless-stopped
     ports:
       - "4001:4001"
     env_file:
-      - /root/.env/digibit.env
+      - /root/.env/ktblog.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -37,23 +37,23 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: digiweb-postgres
+    container_name: ktblog-postgres
     restart: unless-stopped
     env_file:
-      - /root/.env/digibit.env
+      - /root/.env/ktblog.env
     ports:
       - "${POSTGRES_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-digiweb}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ktblog}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: digiweb-redis
+    container_name: ktblog-redis
     restart: unless-stopped
     ports:
       - "${REDIS_PORT:-6379}:6379"

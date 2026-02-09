@@ -16,7 +16,7 @@ import {
     Sparkles,
     Users,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { TrustIndicators, CTASection, AnimateOnScroll, FloatingOrbs, GradientDivider } from "@/components/shared";
 import {
     CostSavingsCalculator,
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         title: "BoaCRM - The Operating System for Customer Relationships",
         description:
             "35 integrated modules, native African compliance, and 2M+ customers managed in production.",
-        url: "https://globaldigibit.com/products/boacrm",
+        url: "https://drkatangablog.com/products/boacrm",
         images: [
             {
                 url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2670&auto=format&fit=crop",

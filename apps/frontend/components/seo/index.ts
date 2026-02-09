@@ -1,6 +1,9 @@
 // Organization Schema
 export { OrganizationSchema } from "./organization-schema";
 
+// Website Schema
+export { WebSiteSchema } from "./website-schema";
+
 // Product Schemas
 export {
   ProductSchema,

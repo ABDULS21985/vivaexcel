@@ -19,7 +19,7 @@ const initialLogs: AuditLog[] = [
     {
         id: "1",
         action: "USER_LOGIN",
-        actor: "admin@digibit.com",
+        actor: "admin@drkatangablog.com",
         target: "System",
         timestamp: "2024-03-21T10:05:23Z",
         status: "success",
@@ -28,7 +28,7 @@ const initialLogs: AuditLog[] = [
     {
         id: "2",
         action: "CREATE_POST",
-        actor: "editor@digibit.com",
+        actor: "editor@drkatangablog.com",
         target: "Blog: Future of Trust",
         timestamp: "2024-03-21T09:45:00Z",
         status: "success",
@@ -37,7 +37,7 @@ const initialLogs: AuditLog[] = [
     {
         id: "3",
         action: "DELETE_USER",
-        actor: "admin@digibit.com",
+        actor: "admin@drkatangablog.com",
         target: "User: john.doe",
         timestamp: "2024-03-20T16:20:10Z",
         status: "failure",

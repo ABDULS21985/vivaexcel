@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   Timer,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import type {
   DiagramLayer,
   ReadinessQuizConfig,

@@ -37,7 +37,7 @@ import {
     Bot,
     BarChart3,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { products } from "@/data/products";
 import type { Product } from "@/types/products";
 import { AnimateOnScroll } from "@/components/shared";

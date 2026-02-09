@@ -10,19 +10,19 @@ import {
     MapPin,
     CheckCircle,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { TrainingSection } from "@/components/training/training-section";
 import { CTASection } from "@/components/shared";
 
 export const metadata: Metadata = {
-    title: "Training Academy | Digibit",
+    title: "Training Academy | KTBlog",
     description:
         "Build your team's capabilities with industry-leading training programs. Executive workshops, technical certifications, and compliance training designed for Qatar and the GCC region.",
     openGraph: {
-        title: "Training Academy | Digibit",
+        title: "Training Academy | KTBlog",
         description:
             "Empower your workforce with expert-led training in AI, cybersecurity, blockchain, and IT governance.",
-        url: "https://globaldigibit.com/training",
+        url: "https://drkatangablog.com/training",
     },
 };
 

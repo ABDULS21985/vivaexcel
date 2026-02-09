@@ -14,7 +14,7 @@ import {
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
-  private readonly client: Anthropic;
+  private readonly client: Anthropic | null;
   private readonly model = 'claude-sonnet-4-5-20250929';
 
   constructor(private readonly configService: ConfigService) {
@@ -24,11 +24,19 @@ export class AiService {
       this.logger.warn(
         'ANTHROPIC_API_KEY is not configured. AI features will be unavailable.',
       );
+      this.client = null;
+    } else {
+      this.client = new Anthropic({ apiKey });
     }
+  }
 
-    this.client = new Anthropic({
-      apiKey: apiKey || '',
-    });
+  private getClient(): Anthropic {
+    if (!this.client) {
+      throw new ServiceUnavailableException(
+        'AI features are not configured. Please set the ANTHROPIC_API_KEY environment variable.',
+      );
+    }
+    return this.client;
   }
 
   /**
@@ -291,16 +299,8 @@ Return only the improved text, nothing else. Do not add explanations or notes.`;
     systemPrompt: string,
     userMessage: string,
   ): Promise<string> {
-    const apiKey = this.configService.get<string>('ANTHROPIC_API_KEY');
-
-    if (!apiKey) {
-      throw new ServiceUnavailableException(
-        'AI features are not configured. Please set the ANTHROPIC_API_KEY environment variable.',
-      );
-    }
-
     try {
-      const response = await this.client.messages.create({
+      const response = await this.getClient().messages.create({
         model: this.model,
         max_tokens: 2048,
         system: systemPrompt,

@@ -30,7 +30,7 @@ const teamMembers: TeamMember[] = [
         key: "ceo",
         initials: "HRM",
         gender: "female",
-        socialLinks: { linkedin: "#", twitter: "#", email: "ceo@globaldigibit.com" },
+        socialLinks: { linkedin: "#", twitter: "#", email: "ceo@drkatangablog.com" },
         gradient: "from-primary to-secondary",
         avatarColors: {
             skin: "#D4A574",
@@ -44,7 +44,7 @@ const teamMembers: TeamMember[] = [
         key: "cto",
         initials: "MA",
         gender: "male",
-        socialLinks: { linkedin: "#", email: "cto@globaldigibit.com" },
+        socialLinks: { linkedin: "#", email: "cto@drkatangablog.com" },
         gradient: "from-accent-orange to-accent-red",
         avatarColors: {
             skin: "#E8C4A0",

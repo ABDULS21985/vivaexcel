@@ -8,7 +8,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { Modal } from "../modal";
 import { UserStatus } from "../../types/user";
 

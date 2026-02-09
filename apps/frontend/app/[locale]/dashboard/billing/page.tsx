@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   CreditCard,
   Download,
@@ -11,61 +12,26 @@ import {
   AlertTriangle,
   X,
   Sparkles,
+  Loader2,
+  ExternalLink,
 } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useAuth } from "@/providers/auth-provider";
+import {
+  useBillingInfo,
+  useOpenBillingPortal,
+  useCancelSubscription,
+  useCreateCheckout,
+  type Invoice,
+} from "@/hooks/use-billing";
+import { toast } from "sonner";
 
 // =============================================================================
 // Billing Page
 // =============================================================================
 // Subscription management: current plan, change plan, billing history,
 // payment method, and cancel subscription with feedback form.
-
-interface Invoice {
-  id: string;
-  date: string;
-  amount: string;
-  status: "paid" | "pending" | "failed";
-  downloadUrl: string;
-}
-
-const MOCK_INVOICES: Invoice[] = [
-  {
-    id: "INV-001",
-    date: "Feb 1, 2026",
-    amount: "$15.00",
-    status: "paid",
-    downloadUrl: "#",
-  },
-  {
-    id: "INV-002",
-    date: "Jan 1, 2026",
-    amount: "$15.00",
-    status: "paid",
-    downloadUrl: "#",
-  },
-  {
-    id: "INV-003",
-    date: "Dec 1, 2025",
-    amount: "$15.00",
-    status: "paid",
-    downloadUrl: "#",
-  },
-  {
-    id: "INV-004",
-    date: "Nov 1, 2025",
-    amount: "$15.00",
-    status: "paid",
-    downloadUrl: "#",
-  },
-  {
-    id: "INV-005",
-    date: "Oct 1, 2025",
-    amount: "$5.00",
-    status: "paid",
-    downloadUrl: "#",
-  },
-];
+// All data is fetched from the real backend APIs.
 
 interface PlanOption {
   id: string;
@@ -107,18 +73,85 @@ const STATUS_STYLES: Record<string, string> = {
   paid: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
   failed: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  void: "bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400",
 };
 
 function BillingContent() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const { data: billingData, isLoading: billingLoading } = useBillingInfo();
+  const openPortal = useOpenBillingPortal();
+  const cancelSub = useCancelSubscription();
+  const createCheckout = useCreateCheckout();
+  const searchParams = useSearchParams();
+
   const currentPlan = user?.plan || "free";
 
   const [showChangePlan, setShowChangePlan] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [cancelFeedback, setCancelFeedback] = useState("");
+  const [changingPlanId, setChangingPlanId] = useState<string | null>(null);
 
   const currentPlanDetails = PLAN_OPTIONS.find((p) => p.id === currentPlan);
+
+  // Real data from API, with fallbacks
+  const invoices: Invoice[] = billingData?.invoices ?? [];
+  const paymentMethods = billingData?.paymentMethods ?? [];
+  const subscription = billingData?.subscription;
+  const defaultPayment = paymentMethods.find((pm) => pm.isDefault) || paymentMethods[0];
+
+  // Handle success callback from Stripe
+  useEffect(() => {
+    if (searchParams.get("success") === "true") {
+      toast.success("Subscription activated successfully! Welcome aboard.");
+      refreshUser();
+      // Clean the URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("success");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, [searchParams, refreshUser]);
+
+  async function handleManageBilling() {
+    try {
+      await openPortal.mutateAsync();
+    } catch {
+      toast.error("Failed to open billing portal. Please try again.");
+    }
+  }
+
+  async function handleCancelSubscription() {
+    if (!cancelReason) return;
+
+    try {
+      await cancelSub.mutateAsync({
+        reason: cancelReason,
+        feedback: cancelFeedback || undefined,
+      });
+      toast.success("Subscription canceled. You will retain access until the end of your billing period.");
+      setShowCancelModal(false);
+      setCancelReason("");
+      setCancelFeedback("");
+      refreshUser();
+    } catch {
+      toast.error("Failed to cancel subscription. Please try again.");
+    }
+  }
+
+  async function handleChangePlan(planId: string) {
+    if (planId === currentPlan || planId === "free") return;
+
+    setChangingPlanId(planId);
+    try {
+      await createCheckout.mutateAsync({
+        tierId: planId,
+        interval: "month",
+      });
+    } catch {
+      toast.error("Failed to start plan change. Please try again.");
+      setChangingPlanId(null);
+    }
+  }
 
   return (
     <div className="min-h-screen py-8 md:py-12">
@@ -136,261 +169,336 @@ function BillingContent() {
           Billing & Subscription
         </h1>
 
-        {/* Current Plan */}
-        <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 md:p-8 mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center">
-                <Crown className="h-5 w-5 text-[var(--primary)]" />
+        {billingLoading ? (
+          <div className="flex items-center justify-center p-20">
+            <Loader2 className="h-8 w-8 animate-spin text-[var(--muted-foreground)]" />
+          </div>
+        ) : (
+          <>
+            {/* Current Plan */}
+            <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 md:p-8 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center">
+                    <Crown className="h-5 w-5 text-[var(--primary)]" />
+                  </div>
+                  <div>
+                    <h2 className="font-semibold text-[var(--foreground)]">
+                      Current Plan
+                    </h2>
+                    <p className="text-sm text-[var(--muted-foreground)]">
+                      {currentPlan === "free"
+                        ? "You're on the free plan"
+                        : subscription?.cancelAtPeriodEnd
+                          ? "Cancels at end of billing period"
+                          : "Your subscription is active"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-[var(--foreground)]">
+                    ${currentPlanDetails?.monthlyPrice || 0}
+                  </span>
+                  {currentPlan !== "free" && (
+                    <span className="text-sm text-[var(--muted-foreground)]">
+                      /month
+                    </span>
+                  )}
+                  <span className="ml-2 px-3 py-1 rounded-full text-xs font-semibold bg-[var(--primary)]/10 text-[var(--primary)]">
+                    {currentPlanDetails?.name}
+                  </span>
+                </div>
               </div>
-              <div>
-                <h2 className="font-semibold text-[var(--foreground)]">
-                  Current Plan
-                </h2>
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  {currentPlan === "free"
-                    ? "You're on the free plan"
-                    : "Your subscription is active"}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-[var(--foreground)]">
-                ${currentPlanDetails?.monthlyPrice || 0}
-              </span>
-              {currentPlan !== "free" && (
-                <span className="text-sm text-[var(--muted-foreground)]">
-                  /month
-                </span>
+
+              {/* Current Plan Features */}
+              {currentPlanDetails && (
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
+                  {currentPlanDetails.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]"
+                    >
+                      <Check className="h-4 w-4 text-green-500 shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
               )}
-              <span className="ml-2 px-3 py-1 rounded-full text-xs font-semibold bg-[var(--primary)]/10 text-[var(--primary)]">
-                {currentPlanDetails?.name}
-              </span>
-            </div>
-          </div>
 
-          {/* Current Plan Features */}
-          {currentPlanDetails && (
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
-              {currentPlanDetails.features.map((feature) => (
-                <li
-                  key={feature}
-                  className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]"
+              {/* Subscription end date */}
+              {subscription?.currentPeriodEnd && currentPlan !== "free" && (
+                <p className="text-xs text-[var(--muted-foreground)] mb-4">
+                  {subscription.cancelAtPeriodEnd
+                    ? `Access until: ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
+                    : `Next billing date: ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`}
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowChangePlan(!showChangePlan)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity btn-press"
                 >
-                  <Check className="h-4 w-4 text-green-500 shrink-0" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={() => setShowChangePlan(!showChangePlan)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity btn-press"
-            >
-              <Sparkles className="h-4 w-4" />
-              {showChangePlan ? "Hide Plans" : "Change Plan"}
-            </button>
-            {currentPlan !== "free" && (
-              <button
-                type="button"
-                onClick={() => setShowCancelModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] text-[var(--muted-foreground)] text-sm font-medium hover:text-[var(--error)] hover:border-[var(--error)] transition-colors"
-              >
-                Cancel Subscription
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Change Plan Comparison */}
-        {showChangePlan && (
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 md:p-8 mb-6 animate-fade-in-up">
-            <h3 className="font-semibold text-[var(--foreground)] mb-6">
-              Choose a Plan
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {PLAN_OPTIONS.map((plan) => {
-                const isCurrent = plan.id === currentPlan;
-                return (
-                  <div
-                    key={plan.id}
-                    className={`relative rounded-xl p-5 border-2 transition-all ${
-                      plan.highlighted && !isCurrent
-                        ? "border-[var(--primary)] shadow-md"
-                        : isCurrent
-                          ? "border-green-500 bg-green-50/50 dark:bg-green-900/10"
-                          : "border-[var(--border)] hover:border-[var(--primary)]/30"
-                    }`}
-                  >
-                    {plan.highlighted && !isCurrent && (
-                      <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[var(--primary)] text-white text-[10px] font-semibold">
-                        Recommended
-                      </span>
-                    )}
-                    {isCurrent && (
-                      <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-green-500 text-white text-[10px] font-semibold">
-                        Current
-                      </span>
-                    )}
-
-                    <h4 className="font-semibold text-[var(--foreground)] mb-1">
-                      {plan.name}
-                    </h4>
-                    <div className="flex items-baseline gap-0.5 mb-3">
-                      <span className="text-2xl font-bold text-[var(--foreground)]">
-                        ${plan.monthlyPrice}
-                      </span>
-                      {plan.monthlyPrice > 0 && (
-                        <span className="text-xs text-[var(--muted-foreground)]">
-                          /mo
-                        </span>
-                      )}
-                    </div>
-
-                    <ul className="space-y-1.5 mb-4">
-                      {plan.features.map((f) => (
-                        <li
-                          key={f}
-                          className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]"
-                        >
-                          <Check className="h-3 w-3 text-green-500 shrink-0" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-
+                  <Sparkles className="h-4 w-4" />
+                  {showChangePlan ? "Hide Plans" : "Change Plan"}
+                </button>
+                {currentPlan !== "free" && (
+                  <>
                     <button
                       type="button"
-                      disabled={isCurrent}
-                      className={`w-full py-2 rounded-lg text-xs font-medium transition-all ${
-                        isCurrent
-                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-default"
-                          : "bg-[var(--primary)] text-white hover:opacity-90 btn-press"
-                      }`}
+                      onClick={handleManageBilling}
+                      disabled={openPortal.isPending}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] text-[var(--foreground)] text-sm font-medium hover:bg-[var(--surface-1)] transition-colors disabled:opacity-50"
                     >
-                      {isCurrent ? "Current Plan" : "Switch to this plan"}
+                      {openPortal.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ExternalLink className="h-4 w-4" />
+                      )}
+                      Manage on Stripe
                     </button>
-                  </div>
-                );
-              })}
+                    {!subscription?.cancelAtPeriodEnd && (
+                      <button
+                        type="button"
+                        onClick={() => setShowCancelModal(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--border)] text-[var(--muted-foreground)] text-sm font-medium hover:text-[var(--error)] hover:border-[var(--error)] transition-colors"
+                      >
+                        Cancel Subscription
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* Payment Method */}
-        {currentPlan !== "free" && (
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 md:p-8 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-[var(--muted-foreground)]" />
+            {/* Change Plan Comparison */}
+            {showChangePlan && (
+              <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 md:p-8 mb-6 animate-fade-in-up">
+                <h3 className="font-semibold text-[var(--foreground)] mb-6">
+                  Choose a Plan
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {PLAN_OPTIONS.map((plan) => {
+                    const isCurrent = plan.id === currentPlan;
+                    const isChanging = changingPlanId === plan.id;
+                    return (
+                      <div
+                        key={plan.id}
+                        className={`relative rounded-xl p-5 border-2 transition-all ${
+                          plan.highlighted && !isCurrent
+                            ? "border-[var(--primary)] shadow-md"
+                            : isCurrent
+                              ? "border-green-500 bg-green-50/50 dark:bg-green-900/10"
+                              : "border-[var(--border)] hover:border-[var(--primary)]/30"
+                        }`}
+                      >
+                        {plan.highlighted && !isCurrent && (
+                          <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[var(--primary)] text-white text-[10px] font-semibold">
+                            Recommended
+                          </span>
+                        )}
+                        {isCurrent && (
+                          <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-green-500 text-white text-[10px] font-semibold">
+                            Current
+                          </span>
+                        )}
+
+                        <h4 className="font-semibold text-[var(--foreground)] mb-1">
+                          {plan.name}
+                        </h4>
+                        <div className="flex items-baseline gap-0.5 mb-3">
+                          <span className="text-2xl font-bold text-[var(--foreground)]">
+                            ${plan.monthlyPrice}
+                          </span>
+                          {plan.monthlyPrice > 0 && (
+                            <span className="text-xs text-[var(--muted-foreground)]">
+                              /mo
+                            </span>
+                          )}
+                        </div>
+
+                        <ul className="space-y-1.5 mb-4">
+                          {plan.features.map((f) => (
+                            <li
+                              key={f}
+                              className="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]"
+                            >
+                              <Check className="h-3 w-3 text-green-500 shrink-0" />
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
+
+                        <button
+                          type="button"
+                          disabled={isCurrent || isChanging || plan.id === "free"}
+                          onClick={() => handleChangePlan(plan.id)}
+                          className={`w-full py-2 rounded-lg text-xs font-medium transition-all ${
+                            isCurrent
+                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-default"
+                              : plan.id === "free"
+                                ? "bg-[var(--surface-2)] text-[var(--muted-foreground)] cursor-default"
+                                : "bg-[var(--primary)] text-white hover:opacity-90 btn-press"
+                          } disabled:opacity-60 disabled:cursor-not-allowed`}
+                        >
+                          {isChanging ? (
+                            <span className="inline-flex items-center gap-1">
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                              Redirecting...
+                            </span>
+                          ) : isCurrent ? (
+                            "Current Plan"
+                          ) : plan.id === "free" ? (
+                            "Free"
+                          ) : (
+                            "Switch to this plan"
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Payment Method */}
+            {currentPlan !== "free" && defaultPayment && (
+              <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 md:p-8 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-[var(--muted-foreground)]" />
+                    <h2 className="font-semibold text-[var(--foreground)]">
+                      Payment Method
+                    </h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleManageBilling}
+                    disabled={openPortal.isPending}
+                    className="text-sm text-[var(--primary)] hover:underline disabled:opacity-50"
+                  >
+                    {openPortal.isPending ? "Opening..." : "Update"}
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 rounded-lg bg-[var(--surface-1)] border border-[var(--border)]">
+                  <div className="w-10 h-7 rounded bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center">
+                    <span className="text-[8px] text-white font-bold tracking-widest uppercase">
+                      {defaultPayment.brand}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[var(--foreground)]">
+                      {defaultPayment.brand.charAt(0).toUpperCase() + defaultPayment.brand.slice(1)} ending in {defaultPayment.last4}
+                    </p>
+                    <p className="text-xs text-[var(--muted-foreground)]">
+                      Expires {String(defaultPayment.expMonth).padStart(2, "0")}/{defaultPayment.expYear}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Billing History */}
+            <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl overflow-hidden mb-6">
+              <div className="flex items-center justify-between p-5 border-b border-[var(--border)]">
                 <h2 className="font-semibold text-[var(--foreground)]">
-                  Payment Method
+                  Billing History
                 </h2>
               </div>
-              <button
-                type="button"
-                className="text-sm text-[var(--primary)] hover:underline"
-              >
-                Update
-              </button>
-            </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-lg bg-[var(--surface-1)] border border-[var(--border)]">
-              <div className="w-10 h-7 rounded bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center">
-                <span className="text-[8px] text-white font-bold tracking-widest">
-                  VISA
-                </span>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-[var(--foreground)]">
-                  Visa ending in 4242
-                </p>
-                <p className="text-xs text-[var(--muted-foreground)]">
-                  Expires 12/2027
-                </p>
-              </div>
+              {invoices.length === 0 ? (
+                <div className="p-12 text-center">
+                  <CreditCard className="h-12 w-12 mx-auto text-[var(--muted-foreground)] mb-3" />
+                  <p className="text-[var(--muted-foreground)] text-sm">
+                    {currentPlan === "free"
+                      ? "No billing history. Upgrade to a paid plan to get started."
+                      : "No invoices yet."}
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-[var(--border)] bg-[var(--surface-1)]">
+                        <th className="text-left text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
+                          Date
+                        </th>
+                        <th className="text-left text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
+                          Amount
+                        </th>
+                        <th className="text-left text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
+                          Status
+                        </th>
+                        <th className="text-right text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
+                          Invoice
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border)]">
+                      {invoices.map((invoice) => (
+                        <tr
+                          key={invoice.id}
+                          className="hover:bg-[var(--surface-1)] transition-colors"
+                        >
+                          <td className="px-5 py-4">
+                            <span className="text-sm text-[var(--foreground)]">
+                              {new Date(invoice.date).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </span>
+                          </td>
+                          <td className="px-5 py-4">
+                            <span className="text-sm font-medium text-[var(--foreground)]">
+                              {invoice.amountFormatted || `$${(invoice.amount / 100).toFixed(2)}`}
+                            </span>
+                          </td>
+                          <td className="px-5 py-4">
+                            <span
+                              className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
+                                STATUS_STYLES[invoice.status] || STATUS_STYLES.pending
+                              }`}
+                            >
+                              {invoice.status}
+                            </span>
+                          </td>
+                          <td className="px-5 py-4 text-right">
+                            {invoice.pdfUrl ? (
+                              <a
+                                href={invoice.pdfUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
+                              >
+                                <Download className="h-3.5 w-3.5" />
+                                PDF
+                              </a>
+                            ) : invoice.invoiceUrl ? (
+                              <a
+                                href={invoice.invoiceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
+                              >
+                                <ExternalLink className="h-3.5 w-3.5" />
+                                View
+                              </a>
+                            ) : (
+                              <span className="text-xs text-[var(--muted-foreground)]">--</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
-          </div>
+          </>
         )}
-
-        {/* Billing History */}
-        <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl overflow-hidden mb-6">
-          <div className="flex items-center justify-between p-5 border-b border-[var(--border)]">
-            <h2 className="font-semibold text-[var(--foreground)]">
-              Billing History
-            </h2>
-          </div>
-
-          {currentPlan === "free" ? (
-            <div className="p-12 text-center">
-              <CreditCard className="h-12 w-12 mx-auto text-[var(--muted-foreground)] mb-3" />
-              <p className="text-[var(--muted-foreground)] text-sm">
-                No billing history. Upgrade to a paid plan to get started.
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[var(--border)] bg-[var(--surface-1)]">
-                    <th className="text-left text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
-                      Date
-                    </th>
-                    <th className="text-left text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
-                      Amount
-                    </th>
-                    <th className="text-left text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
-                      Status
-                    </th>
-                    <th className="text-right text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-5 py-3">
-                      Invoice
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--border)]">
-                  {MOCK_INVOICES.map((invoice) => (
-                    <tr
-                      key={invoice.id}
-                      className="hover:bg-[var(--surface-1)] transition-colors"
-                    >
-                      <td className="px-5 py-4">
-                        <span className="text-sm text-[var(--foreground)]">
-                          {invoice.date}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="text-sm font-medium text-[var(--foreground)]">
-                          {invoice.amount}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium capitalize ${
-                            STATUS_STYLES[invoice.status]
-                          }`}
-                        >
-                          {invoice.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-right">
-                        <a
-                          href={invoice.downloadUrl}
-                          className="inline-flex items-center gap-1 text-xs text-[var(--primary)] hover:underline"
-                        >
-                          <Download className="h-3.5 w-3.5" />
-                          PDF
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
 
         {/* Cancel Subscription Modal */}
         {showCancelModal && (
@@ -481,10 +589,18 @@ function BillingContent() {
                 </button>
                 <button
                   type="button"
-                  disabled={!cancelReason}
+                  disabled={!cancelReason || cancelSub.isPending}
+                  onClick={handleCancelSubscription}
                   className="flex-1 py-2.5 rounded-lg border border-[var(--error)] text-[var(--error)] text-sm font-medium hover:bg-[var(--error)] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Confirm Cancel
+                  {cancelSub.isPending ? (
+                    <span className="inline-flex items-center gap-1 justify-center">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Canceling...
+                    </span>
+                  ) : (
+                    "Confirm Cancel"
+                  )}
                 </button>
               </div>
             </div>

@@ -8,7 +8,7 @@ echo "Starting build and push process for Docker Hub: ${DOCKERHUB_USERNAME}"
 
 # Loop through apps and build/push
 for APP in "${APPS[@]}"; do
-    IMAGE_NAME="${DOCKERHUB_USERNAME}/digibit-${APP}:latest"
+    IMAGE_NAME="${DOCKERHUB_USERNAME}/ktblog-${APP}:latest"
     
     echo "-----------------------------------------------"
     echo "Building ${APP} image: ${IMAGE_NAME}..."

@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 /* ===========================================
    PRESS EFFECT WRAPPER

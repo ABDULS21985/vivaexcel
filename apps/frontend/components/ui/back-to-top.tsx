@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { ChevronUp } from "lucide-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 export interface BackToTopProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

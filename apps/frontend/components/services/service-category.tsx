@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, CheckCircle, Award } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import type { ServiceCategory as ServiceCategoryType } from "@/types/services";
 import { ServiceCard } from "./service-card";
 

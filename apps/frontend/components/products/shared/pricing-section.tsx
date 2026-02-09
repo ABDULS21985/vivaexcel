@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Check, X, Sparkles, ArrowRight, HelpCircle } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */

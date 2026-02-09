@@ -90,7 +90,7 @@ export function WebSummitFooter() {
               Company
             </h3>
             <p className="text-white font-bold text-lg mb-1">
-              Digibit Global Solutions
+              KTBlog
             </p>
             <p className="text-white/70 text-sm italic mb-3">
               Transforming Ideas into Digital Reality
@@ -129,33 +129,33 @@ export function WebSummitFooter() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:connect@globaldigibit.com"
+                  href="mailto:connect@drkatangablog.com"
                   className="flex items-center gap-2 text-white/60 hover:text-accent-orange transition-colors duration-300 text-sm"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  connect@globaldigibit.com
+                  connect@drkatangablog.com
                 </a>
               </li>
               <li>
                 <a
-                  href="https://globaldigibit.com"
+                  href="https://drkatangablog.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-white/60 hover:text-accent-orange transition-colors duration-300 text-sm"
                 >
                   <Globe className="h-4 w-4 shrink-0" />
-                  globaldigibit.com
+                  drkatangablog.com
                 </a>
               </li>
               <li>
                 <a
-                  href="https://www.linkedin.com/company/digibit-global-solutions"
+                  href="https://www.linkedin.com/company/drkatangablog"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-white/60 hover:text-accent-orange transition-colors duration-300 text-sm"
                 >
                   <Linkedin className="h-4 w-4 shrink-0" />
-                  Digibit Global Solutions
+                  KTBlog
                 </a>
               </li>
               <li>

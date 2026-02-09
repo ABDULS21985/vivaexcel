@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Check,
   Sparkles,
   ChevronDown,
   ChevronUp,
+  Loader2,
 } from "lucide-react";
+import { useAuth } from "@/providers/auth-provider";
+import { useCreateCheckout } from "@/hooks/use-billing";
+import { toast } from "sonner";
 
 // =============================================================================
 // Membership / Pricing Page
 // =============================================================================
-// Beautiful pricing page with monthly/annual toggle, 4 tier cards, and FAQ.
-// Responsive: stacks on mobile, 2x2 tablet, 4-across desktop.
+// Pricing page with monthly/annual toggle, 4 tier cards, FAQ, and real
+// Stripe checkout integration for authenticated users.
 
 interface PricingTier {
   id: string;
@@ -165,6 +170,72 @@ function FaqAccordion({ item }: { item: FaqItem }) {
 
 export default function MembershipPage() {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [loadingTierId, setLoadingTierId] = useState<string | null>(null);
+  const { isAuthenticated, user } = useAuth();
+  const createCheckout = useCreateCheckout();
+  const searchParams = useSearchParams();
+
+  // Handle cancel callback from Stripe
+  useEffect(() => {
+    if (searchParams.get("canceled") === "true") {
+      toast.info("Checkout was canceled. You can try again anytime.");
+      // Clean the URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("canceled");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, [searchParams]);
+
+  async function handleSubscribe(tier: PricingTier) {
+    if (tier.id === "free") {
+      // Free tier just goes to register
+      if (!isAuthenticated) {
+        window.location.href = "/register";
+      }
+      return;
+    }
+
+    if (!isAuthenticated) {
+      // Redirect to register with plan info
+      toast.info("Please create an account first to subscribe.");
+      window.location.href = `/register?plan=${tier.id}`;
+      return;
+    }
+
+    // Already on this plan
+    if (user?.plan === tier.id) {
+      toast.info("You are already on this plan.");
+      return;
+    }
+
+    setLoadingTierId(tier.id);
+
+    try {
+      await createCheckout.mutateAsync({
+        tierId: tier.id,
+        interval: isAnnual ? "year" : "month",
+      });
+      // The mutation's onSuccess will redirect to Stripe
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to start checkout. Please try again.";
+      toast.error(message);
+      setLoadingTierId(null);
+    }
+  }
+
+  function getCtaText(tier: PricingTier): string {
+    if (isAuthenticated && user?.plan === tier.id) {
+      return "Current Plan";
+    }
+    return tier.cta;
+  }
+
+  function isCurrentPlan(tierId: string): boolean {
+    return isAuthenticated && user?.plan === tierId;
+  }
 
   return (
     <div className="min-h-screen">
@@ -230,146 +301,170 @@ export default function MembershipPage() {
       <section className="relative pb-16 md:pb-24 -mt-4">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {TIERS.map((tier, index) => (
-              <div
-                key={tier.id}
-                className={`relative flex flex-col rounded-2xl p-6 lg:p-8 transition-all duration-300 animate-fade-in-up ${
-                  tier.highlighted
-                    ? "bg-[var(--primary)] text-white ring-2 ring-[var(--primary)] shadow-xl scale-[1.02] md:scale-105 z-10"
-                    : "bg-[var(--card)] border border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-lg"
-                }`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {/* Badge */}
-                {tier.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent-orange)] text-white text-xs font-semibold shadow-md">
-                      <Sparkles className="h-3 w-3" />
-                      {tier.badge}
-                    </span>
-                  </div>
-                )}
+            {TIERS.map((tier, index) => {
+              const isCurrent = isCurrentPlan(tier.id);
+              const isLoading = loadingTierId === tier.id;
 
-                {/* Tier Name */}
-                <h3
-                  className={`text-lg font-semibold mb-1 ${
+              return (
+                <div
+                  key={tier.id}
+                  className={`relative flex flex-col rounded-2xl p-6 lg:p-8 transition-all duration-300 animate-fade-in-up ${
                     tier.highlighted
-                      ? "text-white"
-                      : "text-[var(--foreground)]"
+                      ? "bg-[var(--primary)] text-white ring-2 ring-[var(--primary)] shadow-xl scale-[1.02] md:scale-105 z-10"
+                      : "bg-[var(--card)] border border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-lg"
                   }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  {tier.name}
-                </h3>
-                <p
-                  className={`text-sm mb-5 ${
-                    tier.highlighted
-                      ? "text-white/70"
-                      : "text-[var(--muted-foreground)]"
-                  }`}
-                >
-                  {tier.description}
-                </p>
+                  {/* Badge */}
+                  {tier.badge && !isCurrent && (
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--accent-orange)] text-white text-xs font-semibold shadow-md">
+                        <Sparkles className="h-3 w-3" />
+                        {tier.badge}
+                      </span>
+                    </div>
+                  )}
+                  {isCurrent && (
+                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500 text-white text-xs font-semibold shadow-md">
+                        <Check className="h-3 w-3" />
+                        Current Plan
+                      </span>
+                    </div>
+                  )}
 
-                {/* Price */}
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span
-                      className={`text-4xl font-bold ${
-                        tier.highlighted
-                          ? "text-white"
-                          : "text-[var(--foreground)]"
-                      }`}
-                    >
-                      $
-                      {isAnnual
-                        ? tier.annualPrice === 0
-                          ? "0"
-                          : Math.round(tier.annualPrice / 12)
-                        : tier.monthlyPrice}
-                    </span>
-                    {tier.monthlyPrice > 0 && (
+                  {/* Tier Name */}
+                  <h3
+                    className={`text-lg font-semibold mb-1 ${
+                      tier.highlighted
+                        ? "text-white"
+                        : "text-[var(--foreground)]"
+                    }`}
+                  >
+                    {tier.name}
+                  </h3>
+                  <p
+                    className={`text-sm mb-5 ${
+                      tier.highlighted
+                        ? "text-white/70"
+                        : "text-[var(--muted-foreground)]"
+                    }`}
+                  >
+                    {tier.description}
+                  </p>
+
+                  {/* Price */}
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
                       <span
-                        className={`text-sm ${
+                        className={`text-4xl font-bold ${
                           tier.highlighted
-                            ? "text-white/70"
+                            ? "text-white"
+                            : "text-[var(--foreground)]"
+                        }`}
+                      >
+                        $
+                        {isAnnual
+                          ? tier.annualPrice === 0
+                            ? "0"
+                            : Math.round(tier.annualPrice / 12)
+                          : tier.monthlyPrice}
+                      </span>
+                      {tier.monthlyPrice > 0 && (
+                        <span
+                          className={`text-sm ${
+                            tier.highlighted
+                              ? "text-white/70"
+                              : "text-[var(--muted-foreground)]"
+                          }`}
+                        >
+                          /month
+                        </span>
+                      )}
+                    </div>
+                    {isAnnual && tier.annualPrice > 0 && (
+                      <p
+                        className={`text-xs mt-1 ${
+                          tier.highlighted
+                            ? "text-white/60"
                             : "text-[var(--muted-foreground)]"
                         }`}
                       >
-                        /month
-                      </span>
+                        ${tier.annualPrice} billed annually
+                      </p>
+                    )}
+                    {isAnnual && tier.monthlyPrice > 0 && (
+                      <p
+                        className={`text-xs mt-0.5 ${
+                          tier.highlighted
+                            ? "text-green-300"
+                            : "text-green-600 dark:text-green-400"
+                        }`}
+                      >
+                        Save ${tier.monthlyPrice * 12 - tier.annualPrice}/year
+                      </p>
                     )}
                   </div>
-                  {isAnnual && tier.annualPrice > 0 && (
-                    <p
-                      className={`text-xs mt-1 ${
-                        tier.highlighted
-                          ? "text-white/60"
-                          : "text-[var(--muted-foreground)]"
-                      }`}
-                    >
-                      ${tier.annualPrice} billed annually
-                    </p>
-                  )}
-                  {isAnnual && tier.monthlyPrice > 0 && (
-                    <p
-                      className={`text-xs mt-0.5 ${
-                        tier.highlighted
-                          ? "text-green-300"
-                          : "text-green-600 dark:text-green-400"
-                      }`}
-                    >
-                      Save ${tier.monthlyPrice * 12 - tier.annualPrice}/year
-                    </p>
-                  )}
-                </div>
 
-                {/* Features */}
-                <ul className="space-y-3 mb-8 flex-1">
-                  {tier.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2.5">
-                      <div
-                        className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 ${
-                          tier.highlighted
-                            ? "bg-white/20"
-                            : "bg-[var(--primary)]/10"
-                        }`}
-                      >
-                        <Check
-                          className={`h-3 w-3 ${
+                  {/* Features */}
+                  <ul className="space-y-3 mb-8 flex-1">
+                    {tier.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2.5">
+                        <div
+                          className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 ${
                             tier.highlighted
-                              ? "text-white"
-                              : "text-[var(--primary)]"
+                              ? "bg-white/20"
+                              : "bg-[var(--primary)]/10"
                           }`}
-                        />
-                      </div>
-                      <span
-                        className={`text-sm ${
-                          tier.highlighted
-                            ? "text-white/90"
-                            : "text-[var(--muted-foreground)]"
-                        }`}
-                      >
-                        {feature}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                        >
+                          <Check
+                            className={`h-3 w-3 ${
+                              tier.highlighted
+                                ? "text-white"
+                                : "text-[var(--primary)]"
+                            }`}
+                          />
+                        </div>
+                        <span
+                          className={`text-sm ${
+                            tier.highlighted
+                              ? "text-white/90"
+                              : "text-[var(--muted-foreground)]"
+                          }`}
+                        >
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
 
-                {/* CTA Button */}
-                <Link
-                  href={tier.id === "free" ? "/register" : `/register?plan=${tier.id}`}
-                  className={`block w-full text-center py-3 px-4 rounded-xl font-medium text-sm transition-all btn-press ${
-                    tier.highlighted
-                      ? "bg-white text-[var(--primary)] hover:bg-white/90 shadow-md"
-                      : tier.id === "free"
-                        ? "bg-[var(--surface-2)] text-[var(--foreground)] hover:bg-[var(--surface-3)]"
-                        : "bg-[var(--primary)] text-white hover:opacity-90 shadow-md"
-                  }`}
-                >
-                  {tier.cta}
-                </Link>
-              </div>
-            ))}
+                  {/* CTA Button */}
+                  <button
+                    type="button"
+                    onClick={() => handleSubscribe(tier)}
+                    disabled={isCurrent || isLoading}
+                    className={`block w-full text-center py-3 px-4 rounded-xl font-medium text-sm transition-all btn-press ${
+                      isCurrent
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 cursor-default"
+                        : tier.highlighted
+                          ? "bg-white text-[var(--primary)] hover:bg-white/90 shadow-md"
+                          : tier.id === "free"
+                            ? "bg-[var(--surface-2)] text-[var(--foreground)] hover:bg-[var(--surface-3)]"
+                            : "bg-[var(--primary)] text-white hover:opacity-90 shadow-md"
+                    } disabled:opacity-70 disabled:cursor-not-allowed`}
+                  >
+                    {isLoading ? (
+                      <span className="inline-flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Redirecting...
+                      </span>
+                    ) : (
+                      getCtaText(tier)
+                    )}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -51,7 +51,7 @@ export function AuthLayout({
                     <div>
                         <div className="flex items-center gap-3">
                             <Image
-                                src="/logo/digibit.png"
+                                src="/logo/ktblog.png"
                                 alt="Global Digitalbit"
                                 width={150}
                                 height={150}
@@ -161,7 +161,7 @@ export function AuthLayout({
                     <div className="lg:hidden flex justify-center mb-8">
                         <div className="flex items-center gap-3">
                             <Image
-                                src="/logo/digibit.png"
+                                src="/logo/ktblog.png"
                                 alt="Global Digitalbit"
                                 width={150}
                                 height={150}

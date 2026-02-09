@@ -12,7 +12,7 @@ import {
     Quote,
     CheckCircle2,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { FadeUp } from "@/components/ui/animations/scroll-reveal";
 import { CTASection } from "@/components/shared";
 import {
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title: caseStudy.title,
             description: caseStudy.excerpt,
-            url: `https://globaldigibit.com/case-studies/${slug}`,
+            url: `https://drkatangablog.com/case-studies/${slug}`,
             images: caseStudy.heroImage ? [{ url: caseStudy.heroImage }] : undefined,
             type: "article",
         },

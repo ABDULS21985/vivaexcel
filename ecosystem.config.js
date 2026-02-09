@@ -20,8 +20,8 @@ module.exports = {
     {
       name: 'frontend',
       cwd: './apps/frontend',
-      script: 'node_modules/.bin/next',
-      args: 'dev -p 3000',
+      script: 'npm',
+      args: 'run dev -- -p 3000',
       instances: 1,
       autorestart: true,
       watch: false,
@@ -34,8 +34,8 @@ module.exports = {
     {
       name: 'dashboard',
       cwd: './apps/dashboard',
-      script: 'node_modules/.bin/next',
-      args: 'start -p 3002',
+      script: 'npm',
+      args: 'run start -- -p 3002',
       instances: 1,
       autorestart: true,
       watch: false,

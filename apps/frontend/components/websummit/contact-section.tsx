@@ -591,24 +591,24 @@ export function WebSummitContact() {
             <ContactInfoCard
               icon={<Mail className="w-5 h-5 text-accent-orange" />}
               label="Email"
-              value="connect@globaldigibit.com"
-              href="mailto:connect@globaldigibit.com"
+              value="connect@drkatangablog.com"
+              href="mailto:connect@drkatangablog.com"
               isVisible={isVisible}
               delay={400}
             />
             <ContactInfoCard
               icon={<Globe className="w-5 h-5 text-accent-orange" />}
               label="Website"
-              value="www.globaldigibit.com"
-              href="https://www.globaldigibit.com"
+              value="www.drkatangablog.com"
+              href="https://www.drkatangablog.com"
               isVisible={isVisible}
               delay={500}
             />
             <ContactInfoCard
               icon={<Linkedin className="w-5 h-5 text-primary" />}
               label="LinkedIn"
-              value="Digibit Global Solutions"
-              href="https://linkedin.com/company/globaldigibit"
+              value="KTBlog"
+              href="https://linkedin.com/company/drkatangablog"
               isVisible={isVisible}
               delay={600}
             />

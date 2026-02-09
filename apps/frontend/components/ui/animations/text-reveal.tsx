@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useMemo } from "react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 // Custom easing for premium feel
 const PREMIUM_EASE = [0.22, 1, 0.36, 1] as const;

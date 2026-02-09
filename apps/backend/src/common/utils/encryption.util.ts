@@ -94,7 +94,7 @@ export class EncryptionUtil {
       // Note: For truly secure password-based encryption, use encryptWithPassword
       const salt = crypto
         .createHash('sha256')
-        .update('digiweb-static-salt')
+        .update('ktblog-static-salt')
         .digest();
       this.key = crypto.pbkdf2Sync(
         encryptionKey,

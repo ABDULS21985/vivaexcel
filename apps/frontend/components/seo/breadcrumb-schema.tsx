@@ -1,5 +1,7 @@
 import Script from "next/script";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://drkatangablog.com";
+
 export interface BreadcrumbItem {
   name: string;
   url: string;
@@ -10,8 +12,6 @@ interface BreadcrumbSchemaProps {
 }
 
 export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
-  const baseUrl = "https://globaldigibit.com";
-
   const breadcrumbData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -19,7 +19,7 @@ export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url.startsWith("http") ? item.url : `${baseUrl}${item.url}`,
+      item: item.url.startsWith("http") ? item.url : `${SITE_URL}${item.url}`,
     })),
   };
 
@@ -34,12 +34,14 @@ export function BreadcrumbSchema({ items }: BreadcrumbSchemaProps) {
   );
 }
 
-// Helper function to generate breadcrumb items
+/**
+ * Generate breadcrumb items from a URL path.
+ * Automatically creates hierarchical breadcrumbs.
+ */
 export function generateBreadcrumbs(path: string): BreadcrumbItem[] {
-  const baseUrl = "https://globaldigibit.com";
   const segments = path.split("/").filter(Boolean);
   const breadcrumbs: BreadcrumbItem[] = [
-    { name: "Home", url: baseUrl },
+    { name: "Home", url: SITE_URL },
   ];
 
   let currentPath = "";
@@ -49,7 +51,7 @@ export function generateBreadcrumbs(path: string): BreadcrumbItem[] {
     const name = formatBreadcrumbName(segment);
     breadcrumbs.push({
       name,
-      url: `${baseUrl}${currentPath}`,
+      url: `${SITE_URL}${currentPath}`,
     });
   });
 
@@ -61,24 +63,28 @@ function formatBreadcrumbName(segment: string): string {
   const nameMap: Record<string, string> = {
     about: "About Us",
     contact: "Contact",
-    products: "Products",
-    services: "Services",
-    training: "Training",
     blogs: "Blog",
     blog: "Blog",
-    digigate: "DigiGate",
-    digitrust: "DigiTrust",
-    digitrack: "DigiTrack",
-    trustmehub: "TrustMeHub",
-    boacrm: "BoaCRM",
+    membership: "Membership",
+    search: "Search",
+    author: "Authors",
+    category: "Categories",
+    tag: "Tags",
+    dashboard: "Dashboard",
+    login: "Login",
+    register: "Register",
+    services: "Services",
+    products: "Products",
+    training: "Training",
+    careers: "Careers",
+    industries: "Industries",
+    "case-studies": "Case Studies",
     cybersecurity: "Cybersecurity",
     "ai-data": "AI & Data",
     blockchain: "Blockchain",
     "it-governance": "IT Governance",
+    "digital-transformation": "Digital Transformation",
     "products-services": "Products & Services",
-    pricing: "Pricing",
-    docs: "Documentation",
-    "use-cases": "Use Cases",
   };
 
   return (
@@ -94,7 +100,7 @@ function formatBreadcrumbName(segment: string): string {
 export function HomeBreadcrumb() {
   return (
     <BreadcrumbSchema
-      items={[{ name: "Home", url: "https://globaldigibit.com" }]}
+      items={[{ name: "Home", url: SITE_URL }]}
     />
   );
 }
@@ -103,8 +109,8 @@ export function AboutBreadcrumb() {
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "About Us", url: "https://globaldigibit.com/about" },
+        { name: "Home", url: SITE_URL },
+        { name: "About Us", url: `${SITE_URL}/about` },
       ]}
     />
   );
@@ -114,8 +120,8 @@ export function ContactBreadcrumb() {
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "Contact", url: "https://globaldigibit.com/contact" },
+        { name: "Home", url: SITE_URL },
+        { name: "Contact", url: `${SITE_URL}/contact` },
       ]}
     />
   );
@@ -125,8 +131,8 @@ export function ProductsBreadcrumb() {
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "Products", url: "https://globaldigibit.com/products" },
+        { name: "Home", url: SITE_URL },
+        { name: "Products", url: `${SITE_URL}/products` },
       ]}
     />
   );
@@ -142,11 +148,11 @@ export function ProductDetailBreadcrumb({
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "Products", url: "https://globaldigibit.com/products" },
+        { name: "Home", url: SITE_URL },
+        { name: "Products", url: `${SITE_URL}/products` },
         {
           name: productName,
-          url: `https://globaldigibit.com/products/${productId}`,
+          url: `${SITE_URL}/products/${productId}`,
         },
       ]}
     />
@@ -157,8 +163,8 @@ export function ServicesBreadcrumb() {
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "Services", url: "https://globaldigibit.com/services" },
+        { name: "Home", url: SITE_URL },
+        { name: "Services", url: `${SITE_URL}/services` },
       ]}
     />
   );
@@ -174,11 +180,11 @@ export function ServiceDetailBreadcrumb({
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "Services", url: "https://globaldigibit.com/services" },
+        { name: "Home", url: SITE_URL },
+        { name: "Services", url: `${SITE_URL}/services` },
         {
           name: serviceName,
-          url: `https://globaldigibit.com/services/${serviceId}`,
+          url: `${SITE_URL}/services/${serviceId}`,
         },
       ]}
     />
@@ -189,8 +195,8 @@ export function TrainingBreadcrumb() {
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "Training", url: "https://globaldigibit.com/training" },
+        { name: "Home", url: SITE_URL },
+        { name: "Training", url: `${SITE_URL}/training` },
       ]}
     />
   );
@@ -200,8 +206,8 @@ export function BlogBreadcrumb() {
   return (
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://globaldigibit.com" },
-        { name: "Blog", url: "https://globaldigibit.com/blogs" },
+        { name: "Home", url: SITE_URL },
+        { name: "Blog", url: `${SITE_URL}/blogs` },
       ]}
     />
   );

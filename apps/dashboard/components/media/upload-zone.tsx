@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { Upload, X, File, Image, FileText, Video, AlertCircle } from "lucide-react";
-import { cn, Button } from "@digibit/ui/components";
+import { cn, Button } from "@ktblog/ui/components";
 
 interface UploadFile {
   file: File;

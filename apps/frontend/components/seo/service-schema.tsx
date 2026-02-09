@@ -17,7 +17,7 @@ export function ServiceSchema({
   deliverables = [],
   url,
 }: ServiceSchemaProps) {
-  const baseUrl = "https://globaldigibit.com";
+  const baseUrl = "https://drkatangablog.com";
   const serviceUrl = url || `${baseUrl}/services/${serviceId}`;
 
   const serviceData = {
@@ -87,7 +87,7 @@ export function ServiceCategorySchema({
   description,
   services,
 }: ServiceCategorySchemaProps) {
-  const baseUrl = "https://globaldigibit.com";
+  const baseUrl = "https://drkatangablog.com";
   const categoryUrl = `${baseUrl}/services/${categoryId}`;
 
   const categoryData = {
@@ -306,7 +306,7 @@ export function ITGovernanceServiceSchema() {
 
 // All Services Schema for the main services page
 export function AllServicesSchema() {
-  const baseUrl = "https://globaldigibit.com";
+  const baseUrl = "https://drkatangablog.com";
 
   const servicesData = {
     "@context": "https://schema.org",

@@ -51,6 +51,15 @@ export { CookieConsent, type CookieConsentProps } from "./cookie-consent";
 // Scroll components
 export { BackToTop, type BackToTopProps } from "./back-to-top";
 
+// Lightbox components
+export {
+  Lightbox,
+  LightboxGalleryProvider,
+  useLightboxContext,
+  useLightbox,
+  type LightboxImage,
+} from "./lightbox";
+
 // Custom cursor components
 export {
   CustomCursor,

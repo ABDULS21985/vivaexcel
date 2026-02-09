@@ -4,9 +4,9 @@ export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5433', 10),
-  username: process.env.DB_USER || 'digiweb',
-  password: process.env.DB_PASSWORD || 'digiweb123',
-  database: process.env.DB_NAME || 'digiweb',
+  username: process.env.DB_USER || 'ktblog',
+  password: process.env.DB_PASSWORD || 'ktblog123',
+  database: process.env.DB_NAME || 'ktblog',
 
   // Connection pooling
   poolSize: 20,

@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
     cn,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { Loader2 } from "lucide-react";
 
 export interface ProductFormData {
@@ -276,7 +276,7 @@ export function ProductForm({
                     <p className="text-sm text-red-500">{errors.websiteUrl}</p>
                 )}
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Path relative to globaldigibit.com
+                    Path relative to drkatangablog.com
                 </p>
             </div>
 

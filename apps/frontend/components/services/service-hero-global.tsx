@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Shield, Award, CheckCircle, BadgeCheck } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 interface ServiceHeroGlobalProps {
     stats?: {
@@ -189,7 +189,7 @@ export function ServiceHeroGlobal({ stats = defaultStats }: ServiceHeroGlobalPro
                         className="text-lg md:text-xl text-white/80 text-center max-w-3xl mx-auto mb-12 animate-fade-in-up"
                         style={{ animationDelay: "300ms" }}
                     >
-                        Digibit combines <span className="text-white font-semibold">strategy-led transformation</span>,{" "}
+                        KTBlog combines <span className="text-white font-semibold">strategy-led transformation</span>,{" "}
                         <span className="text-accent-orange font-semibold">technology delivery excellence</span>, and{" "}
                         <span className="text-white font-semibold">deep risk & cyber expertise</span> to help enterprises
                         navigate the complexities of digital transformation with confidence.

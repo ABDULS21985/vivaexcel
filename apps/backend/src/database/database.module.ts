@@ -11,9 +11,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         type: 'postgres',
         host: configService.get<string>('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 5432),
-        username: configService.get<string>('DB_USER', 'digiweb'),
-        password: configService.get<string>('DB_PASSWORD', 'digiweb123'),
-        database: configService.get<string>('DB_NAME', 'digiweb'),
+        username: configService.get<string>('DB_USER', 'ktblog'),
+        password: configService.get<string>('DB_PASSWORD', 'ktblog123'),
+        database: configService.get<string>('DB_NAME', 'ktblog'),
 
         // Connection pooling
         poolSize: 20,

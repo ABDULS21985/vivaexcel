@@ -23,10 +23,10 @@ class JwtConfigValidation {
   JWT_REFRESH_EXPIRES_IN: number = 604800; // 7 days in seconds
 
   @IsString()
-  JWT_ISSUER: string = 'digiweb';
+  JWT_ISSUER: string = 'ktblog';
 
   @IsString()
-  JWT_AUDIENCE: string = 'digiweb-api';
+  JWT_AUDIENCE: string = 'ktblog-api';
 }
 
 /**

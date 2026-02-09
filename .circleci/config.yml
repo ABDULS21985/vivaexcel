@@ -24,7 +24,7 @@ jobs:
           name: Build and push Docker image
           command: |
             echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
-            IMAGE_NAME="${DOCKERHUB_USERNAME}/digibit-<< parameters.app_name >>:latest"
+            IMAGE_NAME="${DOCKERHUB_USERNAME}/ktblog-<< parameters.app_name >>:latest"
             docker build --build-arg APP_NAME=<< parameters.app_name >> -t ${IMAGE_NAME} .
             docker push ${IMAGE_NAME}
 
@@ -41,15 +41,15 @@ jobs:
             ssh-keyscan -H "${VPS_HOST}" >> ~/.ssh/known_hosts
             
             # Ensure target directory exists
-            ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no "${VPS_USER}@${VPS_HOST}" "mkdir -p ~/digiweb"
+            ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no "${VPS_USER}@${VPS_HOST}" "mkdir -p ~/ktblog"
             
             # Transfer docker-compose.yml
-            scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no docker-compose.yml "${VPS_USER}@${VPS_HOST}:~/digiweb/docker-compose.yml"
+            scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no docker-compose.yml "${VPS_USER}@${VPS_HOST}:~/ktblog/docker-compose.yml"
             
             # Run deployment commands
             ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no "${VPS_USER}@${VPS_HOST}" bash << EOF
               set -e
-              cd ~/digiweb
+              cd ~/ktblog
               
               # Export Dockerhub username for docker-compose
               export DOCKERHUB_USERNAME="${DOCKERHUB_USERNAME}"

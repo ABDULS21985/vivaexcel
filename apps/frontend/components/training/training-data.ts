@@ -97,7 +97,7 @@ export const technicalPrograms: TrainingProgram[] = [
             "Model evaluation and tuning",
             "MLOps deployment pipelines",
         ],
-        certification: "Digibit Certified ML Practitioner",
+        certification: "KTBlog Certified ML Practitioner",
         icon: Brain,
     },
     {

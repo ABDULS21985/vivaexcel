@@ -1,55 +1,36 @@
 // JSON-LD Schema Generators for SEO
 // All schemas follow https://schema.org specifications
 
-const BASE_URL = "https://globaldigibit.com";
-const ORG_NAME = "Global Digitalbit Limited";
-const LOGO_URL = `${BASE_URL}/logo/digibit.png`;
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://drkatangablog.com";
+const SITE_NAME = "KTBlog";
+const LOGO_URL = `${BASE_URL}/logo/ktblog.png`;
 
 // --- Organization Schema (site-wide) ---
 export function generateOrganizationSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: ORG_NAME,
+    "@id": `${BASE_URL}/#organization`,
+    name: SITE_NAME,
     url: BASE_URL,
-    logo: LOGO_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: LOGO_URL,
+      width: 512,
+      height: 512,
+    },
     description:
-      "Global Digitalbit Limited is a pioneering IT company dedicated to improving lives through technology. Specializing in consultancy, implementation, and training in data analytics, artificial intelligence, cybersecurity, and central bank digital currency (CBDC).",
-    contactPoint: [
-      {
-        "@type": "ContactPoint",
-        telephone: "+234-816-177-8448",
-        contactType: "customer service",
-        areaServed: "NG",
-        availableLanguage: ["English"],
-      },
-      {
-        "@type": "ContactPoint",
-        telephone: "+974-3147-5305",
-        contactType: "customer service",
-        areaServed: "QA",
-        availableLanguage: ["English", "Arabic"],
-      },
-    ],
-    address: [
-      {
-        "@type": "PostalAddress",
-        streetAddress: "15 D Yalinga Crescent Off Adedokumbo Ademola Crescent, Wuse 2",
-        addressLocality: "Abuja",
-        addressCountry: "NG",
-      },
-      {
-        "@type": "PostalAddress",
-        streetAddress: "Level 14, Commercial Bank Plaza, West Bay",
-        addressLocality: "Doha",
-        addressCountry: "QA",
-      },
-    ],
+      "KTBlog is a best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
     sameAs: [
-      "https://www.facebook.com/globaldigibit",
-      "https://x.com/globaldigibit",
-      "https://www.linkedin.com/company/globaldigibit",
+      "https://www.linkedin.com/company/ktblog",
+      "https://twitter.com/ktblog",
+      "https://www.facebook.com/ktblog",
     ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer service",
+      availableLanguage: ["English", "Arabic"],
+    },
   };
 }
 
@@ -58,16 +39,23 @@ export function generateWebSiteSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: ORG_NAME,
+    "@id": `${BASE_URL}/#website`,
+    name: SITE_NAME,
     url: BASE_URL,
+    description:
+      "Expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
+    publisher: {
+      "@id": `${BASE_URL}/#organization`,
+    },
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${BASE_URL}/blogs?q={search_term_string}`,
+        urlTemplate: `${BASE_URL}/search?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
+    inLanguage: ["en", "ar"],
   };
 }
 
@@ -105,7 +93,7 @@ export function generateFAQSchema(
   };
 }
 
-// --- Article Schema (blog posts) ---
+// --- Article Schema (blog posts) — Full spec ---
 export function generateArticleSchema(post: {
   title: string;
   excerpt: string;
@@ -113,35 +101,72 @@ export function generateArticleSchema(post: {
   publishedAt: string;
   updatedAt: string;
   slug: string;
-  author: { name: string; role: string };
+  content?: string;
+  author: { name: string; role: string; slug?: string; avatar?: string };
   category: { name: string };
+  tags?: { name: string }[];
+  viewsCount?: number;
 }) {
+  const postUrl = `${BASE_URL}/blogs/${post.slug}`;
+  const wordCount = post.content
+    ? post.content.split(/\s+/).filter(Boolean).length
+    : 0;
+
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
+    "@id": `${postUrl}#article`,
     headline: post.title,
     description: post.excerpt,
-    image: post.featuredImage,
+    image: post.featuredImage
+      ? {
+          "@type": "ImageObject",
+          url: post.featuredImage,
+          width: 1200,
+          height: 630,
+        }
+      : undefined,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
+    wordCount,
+    articleSection: post.category.name,
+    keywords: post.tags ? post.tags.map((t) => t.name).join(", ") : undefined,
     author: {
       "@type": "Person",
       name: post.author.name,
       jobTitle: post.author.role,
+      url: post.author.slug
+        ? `${BASE_URL}/author/${post.author.slug}`
+        : undefined,
+      image: post.author.avatar || undefined,
     },
     publisher: {
       "@type": "Organization",
-      name: ORG_NAME,
+      name: SITE_NAME,
       logo: {
         "@type": "ImageObject",
         url: LOGO_URL,
+        width: 512,
+        height: 512,
       },
+      url: BASE_URL,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${BASE_URL}/blogs/${post.slug}`,
+      "@id": postUrl,
     },
-    articleSection: post.category.name,
+    url: postUrl,
+    isPartOf: {
+      "@type": "Blog",
+      name: SITE_NAME,
+      url: `${BASE_URL}/blogs`,
+    },
+    interactionStatistic: {
+      "@type": "InteractionCounter",
+      interactionType: "https://schema.org/ReadAction",
+      userInteractionCount: post.viewsCount || 0,
+    },
+    inLanguage: "en",
   };
 }
 
@@ -161,7 +186,7 @@ export function generateProductSchema(product: {
     url: `${BASE_URL}/products/${product.id}`,
     brand: {
       "@type": "Organization",
-      name: ORG_NAME,
+      name: SITE_NAME,
     },
     offers: {
       "@type": "Offer",
@@ -169,52 +194,6 @@ export function generateProductSchema(product: {
       url: `${BASE_URL}/products/${product.id}`,
     },
   };
-}
-
-// --- LocalBusiness Schema (contact page) ---
-export function generateLocalBusinessSchema() {
-  return [
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      name: "Global Digitalbit Limited - Nigeria",
-      telephone: "+234-816-177-8448",
-      email: "connect@globaldigibit.com",
-      url: BASE_URL,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "15 D Yalinga Crescent Off Adedokumbo Ademola Crescent, Wuse 2",
-        addressLocality: "Abuja",
-        addressCountry: "NG",
-      },
-      openingHoursSpecification: {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "09:00",
-        closes: "17:00",
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      name: "Global Digitalbit Limited - Qatar",
-      telephone: "+974-3147-5305",
-      email: "connect@globaldigibit.com",
-      url: BASE_URL,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Level 14, Commercial Bank Plaza, West Bay",
-        addressLocality: "Doha",
-        addressCountry: "QA",
-      },
-      openingHoursSpecification: {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
-        opens: "08:00",
-        closes: "17:00",
-      },
-    },
-  ];
 }
 
 // --- Service Schema ---
@@ -229,9 +208,8 @@ export function generateServiceSchema(service: {
     description: service.description,
     provider: {
       "@type": "Organization",
-      name: ORG_NAME,
+      name: SITE_NAME,
       url: BASE_URL,
     },
-    areaServed: ["NG", "QA", "GH", "AE"],
   };
 }

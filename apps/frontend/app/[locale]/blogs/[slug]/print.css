@@ -1,0 +1,428 @@
+/* =============================================================================
+   BLOG POST PRINT STYLES
+   =============================================================================
+   Clean print layout that removes interactive elements and navigation,
+   presents content in a printer-friendly format with proper page breaks.
+   ============================================================================= */
+
+@media print {
+  /* =========================================================================
+     GLOBAL RESETS
+     ========================================================================= */
+
+  /* Force white background and black text */
+  *,
+  *::before,
+  *::after {
+    color: #000 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #ccc !important;
+  }
+
+  html,
+  body {
+    font-size: 12pt !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* =========================================================================
+     PAGE MARGINS
+     ========================================================================= */
+
+  @page {
+    margin: 2cm 2.5cm;
+    size: A4;
+  }
+
+  @page :first {
+    margin-top: 1.5cm;
+  }
+
+  /* =========================================================================
+     HIDE NON-ESSENTIAL ELEMENTS
+     ========================================================================= */
+
+  /* Navigation, header, footer */
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
+
+  /* TOC sidebar */
+  aside,
+  [class*="StickyTOC"],
+  [class*="sticky-toc"],
+  .lg\:col-span-3 {
+    display: none !important;
+  }
+
+  /* Social sharing */
+  [class*="StickyShareBar"],
+  [class*="sticky-share"],
+  [class*="share-bar"],
+  [data-share-bar] {
+    display: none !important;
+  }
+
+  /* Reading progress bar */
+  [class*="ReadingProgress"],
+  [class*="reading-progress"],
+  [class*="scroll-progress"] {
+    display: none !important;
+  }
+
+  /* Comments section */
+  #comments,
+  [class*="CommentSection"],
+  [class*="comment-section"] {
+    display: none !important;
+  }
+
+  /* Newsletter CTA */
+  [class*="newsletter"],
+  [class*="cta-section"],
+  section[class*="bg-gradient-to-br"][class*="from-\\[\\#1E4DB7\\]"] {
+    display: none !important;
+  }
+
+  /* Cookie consent, back-to-top, cursor, etc. */
+  [class*="cookie-consent"],
+  [class*="BackToTop"],
+  [class*="back-to-top"],
+  [class*="custom-cursor"],
+  [class*="CommandPalette"],
+  [class*="command-palette"] {
+    display: none !important;
+  }
+
+  /* Interactive buttons (copy, like, reply, etc.) */
+  button:not([type="submit"]),
+  [role="button"] {
+    display: none !important;
+  }
+
+  /* Lightbox overlay */
+  [role="dialog"],
+  [class*="lightbox"] {
+    display: none !important;
+  }
+
+  /* Skip link */
+  [class*="skip-link"],
+  [class*="SkipLink"] {
+    display: none !important;
+  }
+
+  /* Tags section in sidebar */
+  [class*="Related Topics"] {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     LAYOUT ADJUSTMENTS
+     ========================================================================= */
+
+  /* Full-width article */
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Remove grid layout - full width for article */
+  .grid {
+    display: block !important;
+  }
+
+  article,
+  [data-content] {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* =========================================================================
+     TYPOGRAPHY
+     ========================================================================= */
+
+  h1 {
+    font-size: 24pt !important;
+    margin-bottom: 0.5em !important;
+    page-break-after: avoid;
+  }
+
+  h2 {
+    font-size: 18pt !important;
+    margin-top: 1.5em !important;
+    margin-bottom: 0.5em !important;
+    page-break-after: avoid;
+    border-bottom: 1px solid #ddd !important;
+    padding-bottom: 0.3em !important;
+  }
+
+  h3 {
+    font-size: 14pt !important;
+    margin-top: 1.2em !important;
+    margin-bottom: 0.4em !important;
+    page-break-after: avoid;
+  }
+
+  p {
+    font-size: 11pt !important;
+    margin-bottom: 0.8em !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Remove drop cap styling for print */
+  p:first-of-type {
+    font-size: 11pt !important;
+  }
+
+  p:first-of-type::first-letter {
+    float: none !important;
+    font-size: inherit !important;
+    margin-right: 0 !important;
+  }
+
+  /* =========================================================================
+     LINKS
+     ========================================================================= */
+
+  /* Show URL after link text */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666 !important;
+    font-style: italic;
+    word-break: break-all;
+  }
+
+  /* Don't show URL for internal links, anchors, or email */
+  a[href^="#"]::after,
+  a[href^="javascript"]::after,
+  a[href^="mailto"]::after {
+    content: "";
+  }
+
+  /* Don't show URL for very long links */
+  a[href*="drkatangablog.com"]::after {
+    content: "";
+  }
+
+  /* =========================================================================
+     IMAGES
+     ========================================================================= */
+
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+  }
+
+  figure {
+    page-break-inside: avoid;
+    margin: 1em 0 !important;
+  }
+
+  figcaption {
+    font-size: 9pt !important;
+    font-style: italic;
+    text-align: center;
+    margin-top: 0.3em !important;
+  }
+
+  /* Remove zoom overlays on images */
+  figure [class*="zoom"],
+  figure [class*="overlay"] {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     CODE BLOCKS
+     ========================================================================= */
+
+  pre,
+  code {
+    font-family: "Courier New", Courier, monospace !important;
+    font-size: 9pt !important;
+  }
+
+  pre {
+    border: 1px solid #ddd !important;
+    padding: 0.8em !important;
+    overflow-x: visible !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    page-break-inside: avoid;
+    margin: 1em 0 !important;
+    border-radius: 4px !important;
+  }
+
+  /* Hide code block header (copy button, traffic lights, etc.) */
+  pre + button,
+  [class*="code-block"] > div:first-child {
+    display: none !important;
+  }
+
+  code {
+    padding: 0.15em 0.3em !important;
+    border: 1px solid #eee !important;
+    border-radius: 2px !important;
+  }
+
+  pre code {
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* =========================================================================
+     BLOCKQUOTES
+     ========================================================================= */
+
+  blockquote {
+    border-left: 3px solid #333 !important;
+    padding-left: 1em !important;
+    margin: 1em 0 !important;
+    font-style: italic;
+    page-break-inside: avoid;
+  }
+
+  /* =========================================================================
+     LISTS
+     ========================================================================= */
+
+  ul,
+  ol {
+    padding-left: 1.5em !important;
+    margin: 0.5em 0 !important;
+  }
+
+  li {
+    margin-bottom: 0.3em !important;
+    page-break-inside: avoid;
+  }
+
+  /* =========================================================================
+     TABLES
+     ========================================================================= */
+
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  th,
+  td {
+    border: 1px solid #ccc !important;
+    padding: 0.4em 0.6em !important;
+    text-align: left;
+    font-size: 10pt !important;
+  }
+
+  th {
+    font-weight: bold !important;
+  }
+
+  /* =========================================================================
+     AUTHOR BIO
+     ========================================================================= */
+
+  /* Keep author bio but simplify */
+  [class*="AuthorBio"],
+  [class*="author-bio"] {
+    border-top: 1px solid #ddd !important;
+    padding-top: 1em !important;
+    margin-top: 2em !important;
+    page-break-inside: avoid;
+  }
+
+  /* Hide social links in author bio */
+  [class*="AuthorBio"] a[href*="twitter"],
+  [class*="AuthorBio"] a[href*="linkedin"],
+  [class*="AuthorBio"] a[href*="mailto"],
+  [class*="author-bio"] a[href*="twitter"],
+  [class*="author-bio"] a[href*="linkedin"] {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     RELATED ARTICLES
+     ========================================================================= */
+
+  /* Hide related articles section for print */
+  [class*="RelatedArticles"],
+  [class*="related-articles"],
+  [class*="Continue Reading"] {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     PAGE BREAK CONTROL
+     ========================================================================= */
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  img,
+  figure,
+  table,
+  pre,
+  blockquote {
+    page-break-inside: avoid;
+  }
+
+  /* =========================================================================
+     HERO SECTION
+     ========================================================================= */
+
+  /* Simplify the hero: keep article metadata but remove parallax effects */
+  [class*="ParallaxHero"],
+  [class*="parallax-hero"] {
+    position: static !important;
+    transform: none !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 1em 0 !important;
+    margin-bottom: 1em !important;
+    border-bottom: 2px solid #333 !important;
+  }
+
+  /* Ensure hero background image doesn't consume ink */
+  [class*="ParallaxHero"] img,
+  [class*="parallax-hero"] img {
+    display: none !important;
+  }
+
+  /* =========================================================================
+     UTILITY: PRINT-SPECIFIC URL FOOTER
+     ========================================================================= */
+
+  /* Add URL at bottom of article for reference */
+  article::after {
+    content: "Printed from drkatangablog.com";
+    display: block;
+    margin-top: 3em;
+    padding-top: 1em;
+    border-top: 1px solid #ccc;
+    font-size: 9pt;
+    color: #999 !important;
+    text-align: center;
+    font-style: italic;
+  }
+}

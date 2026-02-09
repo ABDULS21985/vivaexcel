@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import * as z from "zod";
 import {
     Input,
@@ -15,10 +14,10 @@ import {
     Textarea,
     Switch,
     Label,
-    cn,
-} from "@digibit/ui/components";
-import { Loader2, Save, ArrowLeft, Globe, Clock, FileText } from "lucide-react";
+} from "@ktblog/ui/components";
+import { Loader2, Globe } from "lucide-react";
 import Link from "next/link";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 
 const blogPostSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -53,25 +52,12 @@ function generateSlug(title: string): string {
         .replace(/^-|-$/g, "");
 }
 
-function countWords(text: string): number {
-    if (!text.trim()) return 0;
-    return text.trim().split(/\s+/).length;
-}
-
-function estimateReadingTime(wordCount: number): string {
-    const minutes = Math.ceil(wordCount / 250);
-    if (minutes < 1) return "Less than 1 min read";
-    if (minutes === 1) return "1 min read";
-    return `${minutes} min read`;
-}
-
 export function BlogPostForm({
     initialData,
     onSubmit,
     isLoading,
     mode = "create",
 }: BlogPostFormProps) {
-    const router = useRouter();
     const [formData, setFormData] = useState<BlogPostFormValues>(
         initialData || {
             title: "",
@@ -92,8 +78,19 @@ export function BlogPostForm({
     );
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const wordCount = useMemo(() => countWords(formData.content || ""), [formData.content]);
-    const readingTime = useMemo(() => estimateReadingTime(wordCount), [wordCount]);
+    const handleContentChange = React.useCallback(
+        (html: string) => {
+            setFormData((prev) => ({ ...prev, content: html }));
+            if (errors.content) {
+                setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors.content;
+                    return newErrors;
+                });
+            }
+        },
+        [errors.content]
+    );
 
     const validate = () => {
         const result = blogPostSchema.safeParse(formData);
@@ -240,35 +237,18 @@ export function BlogPostForm({
                     </div>
 
                     {/* Content Section */}
-                    <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl border border-zinc-200 dark:border-zinc-700 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <h3 className="font-semibold text-lg text-zinc-900 dark:text-white">
-                                Content
-                            </h3>
-                            <div className="flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400">
-                                <span className="flex items-center gap-1.5">
-                                    <FileText className="h-4 w-4" />
-                                    {wordCount.toLocaleString()} words
-                                </span>
-                                <span className="flex items-center gap-1.5">
-                                    <Clock className="h-4 w-4" />
-                                    {readingTime}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="space-y-2 flex-1 flex flex-col">
-                            <Textarea
-                                name="content"
-                                placeholder="Write your post content here..."
-                                className="min-h-[400px] h-full font-mono text-sm flex-1"
-                                value={formData.content || ""}
-                                onChange={handleChange}
-                            />
-                            {errors.content && (
-                                <p className="text-sm font-medium text-red-500">{errors.content}</p>
-                            )}
-                        </div>
+                    <div className="space-y-2">
+                        <Label className="text-lg font-semibold text-zinc-900 dark:text-white">
+                            Content
+                        </Label>
+                        <RichTextEditor
+                            initialContent={formData.content || ""}
+                            onChange={handleContentChange}
+                            placeholder="Start writing your post..."
+                        />
+                        {errors.content && (
+                            <p className="text-sm font-medium text-red-500">{errors.content}</p>
+                        )}
                     </div>
 
                     {/* SEO Preview */}

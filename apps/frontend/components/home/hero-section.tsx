@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useId, useRef } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import Link from "next/link";
 import { ChevronDown, ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import { LiveRegion, SrOnly } from "../ui/accessibility";

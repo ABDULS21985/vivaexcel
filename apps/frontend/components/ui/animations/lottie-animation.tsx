@@ -10,7 +10,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 // Types for Lottie animation data
 export interface LottieAnimationData {

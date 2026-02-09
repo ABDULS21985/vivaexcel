@@ -24,12 +24,12 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "Digibit Global Solutions | Web Summit Qatar 2026",
+  title: "KTBlog | Web Summit Qatar 2026",
   description:
-    "Meet Digibit Global Solutions at Web Summit Qatar 2026. Discover our AI, Blockchain, and Cybersecurity solutions for investors, enterprises, and governments. February 1-4, Doha.",
+    "Meet KTBlog at Web Summit Qatar 2026. Discover our AI, Blockchain, and Cybersecurity solutions for investors, enterprises, and governments. February 1-4, Doha.",
   keywords: [
     "Web Summit Qatar",
-    "Digibit",
+    "KTBlog",
     "AI Solutions",
     "Blockchain",
     "Cybersecurity",
@@ -40,16 +40,16 @@ export const metadata: Metadata = {
     "Enterprise Solutions",
   ],
   openGraph: {
-    title: "Digibit Global Solutions | Web Summit Qatar 2026",
+    title: "KTBlog | Web Summit Qatar 2026",
     description:
       "Transforming Ideas into Digital Reality. Meet us at Web Summit Qatar 2026, February 1-4, Doha.",
-    url: "https://globaldigibit.com/websummit-qatar-2026",
+    url: "https://drkatangablog.com/websummit-qatar-2026",
     siteName: "Global Digitalbit Limited",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Digibit Global Solutions | Web Summit Qatar 2026",
+    title: "KTBlog | Web Summit Qatar 2026",
     description:
       "AI, Blockchain, Cybersecurity Solutions. February 1-4, Doha.",
   },

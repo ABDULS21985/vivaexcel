@@ -4,7 +4,7 @@ import { useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronRight, Shield, Database, Cloud, Brain, Lock, Code, Headphones, Monitor, Building2, BadgeCheck } from "lucide-react";
 import { Link } from "@/i18n/routing";
-import { cn } from "@digibit/ui/components";
+import { cn } from "@ktblog/ui/components";
 import Image from "next/image";
 
 // ============================================

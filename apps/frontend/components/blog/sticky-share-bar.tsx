@@ -11,8 +11,9 @@ import {
     Share2,
     Check,
     X,
+    Printer,
 } from "lucide-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 interface StickyShareBarProps {
     url: string;
@@ -187,6 +188,24 @@ export function StickyShareBar({
                                     <Link2 className="h-4 w-4" />
                                 )}
                             </motion.button>
+
+                            {/* Print button */}
+                            <motion.button
+                                onClick={() => window.print()}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className={cn(
+                                    "print-visible w-10 h-10 rounded-xl flex items-center justify-center",
+                                    "bg-neutral-100 border border-neutral-200",
+                                    "text-neutral-600 hover:text-white",
+                                    "hover:bg-[#1E4DB7] hover:border-[#1E4DB7]",
+                                    "transition-all duration-300"
+                                )}
+                                title="Print article"
+                            >
+                                <Printer className="h-4 w-4" />
+                            </motion.button>
                         </div>
                     </motion.aside>
                 )}
@@ -251,6 +270,19 @@ export function StickyShareBar({
                                             ) : (
                                                 <Link2 className="h-5 w-5" />
                                             )}
+                                        </button>
+                                        <button
+                                            onClick={() => window.print()}
+                                            className={cn(
+                                                "print-visible w-12 h-12 rounded-xl flex flex-col items-center justify-center gap-1",
+                                                "bg-neutral-100 border border-neutral-200",
+                                                "text-neutral-600 hover:text-white",
+                                                "hover:bg-[#1E4DB7] hover:border-[#1E4DB7]",
+                                                "transition-all duration-300"
+                                            )}
+                                            title="Print article"
+                                        >
+                                            <Printer className="h-5 w-5" />
                                         </button>
                                     </div>
                                 </div>

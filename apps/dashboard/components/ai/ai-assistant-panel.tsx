@@ -11,7 +11,7 @@ import {
     TabsTrigger,
     TabsContent,
     Textarea,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import {
     Sparkles,
     Type,

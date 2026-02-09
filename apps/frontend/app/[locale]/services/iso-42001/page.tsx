@@ -12,7 +12,7 @@ import {
   Target,
   Zap,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { CTASection } from "@/components/shared";
 import {
   getServiceTowerBySlug,
@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${tower.name} - AI Governance Control Center`,
       description: tower.description,
-      url: `https://globaldigibit.com/services/${slug}`,
+      url: `https://drkatangablog.com/services/${slug}`,
     },
   };
 }

@@ -9,7 +9,7 @@ import { Role } from '../../common/constants/roles.constant';
 export async function seedUsers(dataSource: DataSource): Promise<void> {
     const userRepository = dataSource.getRepository(User);
 
-    const adminEmail = 'admin@globaldigibit.com';
+    const adminEmail = 'admin@drkatangablog.com';
     const existingUser = await userRepository.findOne({
         where: { email: adminEmail },
     });

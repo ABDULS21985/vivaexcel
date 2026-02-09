@@ -2,7 +2,7 @@
 
 import { Component, ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import { Button } from "./ui/button";
 import {
   AlertTriangle,

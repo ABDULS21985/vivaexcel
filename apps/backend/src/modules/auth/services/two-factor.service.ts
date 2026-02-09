@@ -36,7 +36,7 @@ export class TwoFactorService implements OnModuleDestroy {
       },
     });
 
-    this.appName = this.configService.get<string>('APP_NAME') || 'DigiWeb';
+    this.appName = this.configService.get<string>('APP_NAME') || 'KTBlog';
 
     // Initialize TOTP instance
     this.totp = new TOTP({

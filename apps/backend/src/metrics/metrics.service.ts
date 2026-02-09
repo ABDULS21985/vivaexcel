@@ -30,7 +30,7 @@ export class MetricsService implements OnModuleInit {
 
     // Set default labels
     this.registry.setDefaultLabels({
-      app: this.configService.get<string>('APP_NAME', 'digiweb-backend'),
+      app: this.configService.get<string>('APP_NAME', 'ktblog-backend'),
       env: this.configService.get<string>('NODE_ENV', 'development'),
     });
 

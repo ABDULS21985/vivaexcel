@@ -15,8 +15,11 @@ import {
     Mail,
     FileText,
 } from "lucide-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import type { BlogPostWithRelations } from "@/data/blog";
+import { CodeBlock } from "./code-block";
+import { BlogImage } from "./blog-image";
+import { LightboxGalleryProvider } from "@/components/ui/lightbox";
 
 // Get initials from name
 function getInitials(name: string): string {
@@ -75,24 +78,19 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
         let isFirstParagraph = true;
 
         return parts.map((part, index) => {
-            // Handle code blocks
+            // Handle fenced code blocks - use the new CodeBlock component with shiki
             if (part.startsWith("```")) {
                 const match = part.match(/```(\w*)\n?([\s\S]*?)```/);
                 if (match) {
                     const language = match[1] || "text";
                     const code = match[2].trim();
                     return (
-                        <div key={index} className="relative group my-8">
-                            {/* Language badge */}
-                            {language && language !== "text" && (
-                                <div className="absolute top-0 right-0 px-3 py-1 bg-neutral-700 text-neutral-300 text-xs font-mono rounded-bl-lg rounded-tr-xl">
-                                    {language}
-                                </div>
-                            )}
-                            <pre className="bg-neutral-900 text-neutral-100 rounded-2xl p-6 overflow-x-auto text-sm leading-relaxed font-mono border border-neutral-800 shadow-lg">
-                                <code className={`language-${language}`}>{code}</code>
-                            </pre>
-                        </div>
+                        <CodeBlock
+                            key={index}
+                            code={code}
+                            language={language}
+                            showLineNumbers={code.split("\n").length > 3}
+                        />
                     );
                 }
             }
@@ -107,6 +105,21 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                     return null;
                 }
 
+                // Markdown images: ![alt](src)
+                const imageMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+                if (imageMatch) {
+                    const alt = imageMatch[1] || "image";
+                    const src = imageMatch[2];
+                    return (
+                        <BlogImage
+                            key={key}
+                            src={src}
+                            alt={alt}
+                            caption={alt !== "image" ? alt : undefined}
+                        />
+                    );
+                }
+
                 // Headers
                 if (line.startsWith("### ")) {
                     const text = line.slice(4);
@@ -115,7 +128,7 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                         <h3
                             key={key}
                             id={id}
-                            className="text-xl md:text-2xl font-bold text-neutral-900 mt-12 mb-4 scroll-mt-28 group"
+                            className="text-xl md:text-2xl font-bold text-neutral-900 dark:text-white mt-12 mb-4 scroll-mt-28 group"
                         >
                             <span className="bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] bg-clip-text text-transparent">
                                 {text}
@@ -130,7 +143,7 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                         <h2
                             key={key}
                             id={id}
-                            className="text-2xl md:text-3xl font-bold text-neutral-900 mt-16 mb-6 scroll-mt-28 pb-3 border-b border-neutral-200"
+                            className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white mt-16 mb-6 scroll-mt-28 pb-3 border-b border-neutral-200 dark:border-neutral-700"
                         >
                             {text}
                         </h2>
@@ -147,7 +160,7 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                             <div className="absolute -left-3 -top-3 text-4xl text-[#F59A23]/30 font-serif">
                                 &ldquo;
                             </div>
-                            <p className="text-lg italic text-neutral-700 leading-relaxed">
+                            <p className="text-lg italic text-neutral-700 dark:text-neutral-300 leading-relaxed">
                                 {line.slice(2)}
                             </p>
                         </blockquote>
@@ -161,8 +174,8 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                         return (
                             <li key={key} className="flex items-start gap-4 my-3 ml-1">
                                 <span className="w-2 h-2 rounded-full bg-gradient-to-r from-[#1E4DB7] to-[#F59A23] mt-2.5 flex-shrink-0" />
-                                <span className="text-neutral-700 leading-relaxed">
-                                    <strong className="text-neutral-900 font-semibold">
+                                <span className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                                    <strong className="text-neutral-900 dark:text-white font-semibold">
                                         {match[1]}
                                     </strong>
                                     {match[2] && `: ${match[2]}`}
@@ -175,7 +188,7 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                     return (
                         <li key={key} className="flex items-start gap-4 my-3 ml-1">
                             <span className="w-2 h-2 rounded-full bg-[#1E4DB7] mt-2.5 flex-shrink-0" />
-                            <span className="text-neutral-700 leading-relaxed">
+                            <span className="text-neutral-700 dark:text-neutral-300 leading-relaxed">
                                 {processInlineMarkdown(line.slice(2))}
                             </span>
                         </li>
@@ -190,8 +203,8 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                             <span className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1E4DB7] to-[#143A8F] text-white text-sm flex items-center justify-center flex-shrink-0 font-bold shadow-md">
                                 {numberedMatch[1]}
                             </span>
-                            <span className="text-neutral-700 leading-relaxed pt-0.5">
-                                <strong className="text-neutral-900 font-semibold">
+                            <span className="text-neutral-700 dark:text-neutral-300 leading-relaxed pt-0.5">
+                                <strong className="text-neutral-900 dark:text-white font-semibold">
                                     {numberedMatch[2]}
                                 </strong>
                                 {numberedMatch[3] && `: ${numberedMatch[3]}`}
@@ -207,7 +220,7 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                             <span className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1E4DB7] to-[#143A8F] text-white text-sm flex items-center justify-center flex-shrink-0 font-bold shadow-md">
                                 {simpleNumberedMatch[1]}
                             </span>
-                            <span className="text-neutral-700 leading-relaxed pt-0.5">
+                            <span className="text-neutral-700 dark:text-neutral-300 leading-relaxed pt-0.5">
                                 {processInlineMarkdown(simpleNumberedMatch[2])}
                             </span>
                         </li>
@@ -218,9 +231,9 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                 if (line === "---") {
                     return (
                         <div key={key} className="my-12 flex items-center gap-4">
-                            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
-                            <div className="w-2 h-2 rounded-full bg-neutral-300" />
-                            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
+                            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent" />
+                            <div className="w-2 h-2 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+                            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent" />
                         </div>
                     );
                 }
@@ -233,12 +246,10 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                     }
 
                     if (shouldDropCap) {
-                        const firstChar = line.trim().charAt(0);
-                        const restOfParagraph = line.trim().slice(1);
                         return (
                             <p
                                 key={key}
-                                className="text-neutral-700 leading-[1.8] my-6 text-lg first-letter:text-5xl first-letter:font-bold first-letter:text-[#1E4DB7] first-letter:float-left first-letter:mr-3 first-letter:mt-1"
+                                className="text-neutral-700 dark:text-neutral-300 leading-[1.8] my-6 text-lg first-letter:text-5xl first-letter:font-bold first-letter:text-[#1E4DB7] first-letter:float-left first-letter:mr-3 first-letter:mt-1"
                             >
                                 {processInlineMarkdown(line)}
                             </p>
@@ -248,7 +259,7 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
                     return (
                         <p
                             key={key}
-                            className="text-neutral-700 leading-[1.8] my-6 text-lg"
+                            className="text-neutral-700 dark:text-neutral-300 leading-[1.8] my-6 text-lg"
                         >
                             {processInlineMarkdown(line)}
                         </p>
@@ -265,15 +276,25 @@ function EnhancedMarkdownContent({ content }: { content: string }) {
         // Handle inline code
         text = text.replace(
             /`([^`]+)`/g,
-            '<code class="bg-[#1E4DB7]/10 text-[#1E4DB7] px-2 py-0.5 rounded-md text-sm font-mono font-medium">$1</code>'
+            '<code class="bg-[#1E4DB7]/10 text-[#1E4DB7] dark:bg-blue-400/10 dark:text-blue-400 px-2 py-0.5 rounded-md text-sm font-mono font-medium">$1</code>'
         );
         // Handle bold
         text = text.replace(
             /\*\*([^*]+)\*\*/g,
-            '<strong class="font-semibold text-neutral-900">$1</strong>'
+            '<strong class="font-semibold text-neutral-900 dark:text-white">$1</strong>'
         );
         // Handle italic
         text = text.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+        // Handle inline images within text: ![alt](src)
+        text = text.replace(
+            /!\[([^\]]*)\]\(([^)]+)\)/g,
+            '<img src="$2" alt="$1" class="inline-block max-h-6 align-text-bottom" />'
+        );
+        // Handle links: [text](url)
+        text = text.replace(
+            /\[([^\]]+)\]\(([^)]+)\)/g,
+            '<a href="$2" class="text-[#1E4DB7] dark:text-blue-400 underline underline-offset-2 hover:text-[#143A8F] dark:hover:text-blue-300 transition-colors" target="_blank" rel="noopener noreferrer">$1</a>'
+        );
 
         return <span dangerouslySetInnerHTML={{ __html: text }} />;
     };
@@ -685,72 +706,74 @@ export function BlogArticleClient({
     };
 
     return (
-        <section className="w-full py-12 md:py-20 bg-white">
-            <div className="container mx-auto px-4 md:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
-                    {/* Sticky TOC Sidebar - Desktop Only */}
-                    <StickyTOCSidebar
-                        headings={headings}
-                        activeId={activeId}
-                        onHeadingClick={scrollToHeading}
-                    />
+        <LightboxGalleryProvider>
+            <section className="w-full py-12 md:py-20 bg-white dark:bg-neutral-950">
+                <div className="container mx-auto px-4 md:px-6 lg:px-8">
+                    <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
+                        {/* Sticky TOC Sidebar - Desktop Only */}
+                        <StickyTOCSidebar
+                            headings={headings}
+                            activeId={activeId}
+                            onHeadingClick={scrollToHeading}
+                        />
 
-                    {/* Main Article Content */}
-                    <article
-                        ref={articleRef}
-                        className={cn(
-                            "lg:col-span-9",
-                            headings.length < 3 && "lg:col-span-8 lg:col-start-3"
-                        )}
-                        data-content
-                    >
-                        {/* Tags */}
-                        {post.tags && post.tags.length > 0 && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5 }}
-                                className="flex flex-wrap gap-2 mb-10"
-                            >
-                                {post.tags.map((tag) => (
-                                    <span
-                                        key={tag.id}
-                                        className="px-4 py-1.5 bg-[#1E4DB7]/10 text-[#1E4DB7] text-sm font-medium rounded-full hover:bg-[#1E4DB7]/20 transition-colors cursor-pointer"
-                                    >
-                                        #{tag.name}
-                                    </span>
-                                ))}
-                            </motion.div>
-                        )}
-
-                        {/* Article Body with Prose Typography */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="max-w-[75ch] mx-auto lg:mx-0"
-                            style={{
-                                // Optimal reading width: 65-75 characters
-                                maxWidth: "75ch",
-                            }}
-                        >
-                            {post.content ? (
-                                <EnhancedMarkdownContent content={post.content} />
-                            ) : (
-                                <p className="text-neutral-600 text-lg">
-                                    No content available.
-                                </p>
+                        {/* Main Article Content */}
+                        <article
+                            ref={articleRef}
+                            className={cn(
+                                "lg:col-span-9",
+                                headings.length < 3 && "lg:col-span-8 lg:col-start-3"
                             )}
-                        </motion.div>
+                            data-content
+                        >
+                            {/* Tags */}
+                            {post.tags && post.tags.length > 0 && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                    className="flex flex-wrap gap-2 mb-10"
+                                >
+                                    {post.tags.map((tag) => (
+                                        <span
+                                            key={tag.id}
+                                            className="px-4 py-1.5 bg-[#1E4DB7]/10 text-[#1E4DB7] text-sm font-medium rounded-full hover:bg-[#1E4DB7]/20 transition-colors cursor-pointer"
+                                        >
+                                            #{tag.name}
+                                        </span>
+                                    ))}
+                                </motion.div>
+                            )}
 
-                        {/* Author Bio */}
-                        <AuthorBioSection author={post.author} />
+                            {/* Article Body with Prose Typography */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.2 }}
+                                className="max-w-[75ch] mx-auto lg:mx-0"
+                                style={{
+                                    // Optimal reading width: 65-75 characters
+                                    maxWidth: "75ch",
+                                }}
+                            >
+                                {post.content ? (
+                                    <EnhancedMarkdownContent content={post.content} />
+                                ) : (
+                                    <p className="text-neutral-600 dark:text-neutral-400 text-lg">
+                                        No content available.
+                                    </p>
+                                )}
+                            </motion.div>
 
-                        {/* Related Articles */}
-                        <RelatedArticlesSection posts={relatedPosts} />
-                    </article>
+                            {/* Author Bio */}
+                            <AuthorBioSection author={post.author} />
+
+                            {/* Related Articles */}
+                            <RelatedArticlesSection posts={relatedPosts} />
+                        </article>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </LightboxGalleryProvider>
     );
 }

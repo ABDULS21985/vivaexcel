@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, Shield, Blocks, Activity, Zap, Users } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { productPreviews } from "@/data/products";
 
 const productConfig = {

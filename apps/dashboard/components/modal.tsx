@@ -10,7 +10,7 @@ import {
     DialogTitle,
     Button,
     cn,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { X, AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 
 export interface ModalProps {

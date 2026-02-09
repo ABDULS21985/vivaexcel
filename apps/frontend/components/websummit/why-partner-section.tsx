@@ -42,7 +42,7 @@ function useScrollReveal(threshold = 0.15) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  SECTION 1 – Why Partner With Digibit                                      */
+/*  SECTION 1 – Why Partner With KTBlog                                      */
 /* -------------------------------------------------------------------------- */
 
 const AUDIENCES_CONFIG = [

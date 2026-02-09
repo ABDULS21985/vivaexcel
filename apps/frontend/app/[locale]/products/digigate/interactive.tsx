@@ -14,7 +14,7 @@ import {
   Code2,
   Settings,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   Shield,

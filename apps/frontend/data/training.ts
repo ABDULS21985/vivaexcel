@@ -48,7 +48,7 @@ export const trainingCategories: TrainingCategory[] = [
                 title: "Applied Machine Learning",
                 duration: "5 days",
                 audience: "Data Scientists",
-                certification: "Digibit Certified ML Practitioner",
+                certification: "KTBlog Certified ML Practitioner",
             },
             {
                 id: "incident-response",

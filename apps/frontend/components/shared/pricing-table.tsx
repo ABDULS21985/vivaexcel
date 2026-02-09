@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import type { PricingTier } from "@/types/trustmehub";
 
 interface PricingTableProps {

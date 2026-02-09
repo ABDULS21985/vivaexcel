@@ -14,7 +14,7 @@ import {
     CreditCard,
     Shield,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 const features = [
     {

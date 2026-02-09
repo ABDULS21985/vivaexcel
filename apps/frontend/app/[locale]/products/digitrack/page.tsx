@@ -15,7 +15,7 @@ import {
     Shield,
     Sparkles,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { TrustIndicators, CTASection, AnimateOnScroll, FloatingOrbs, GradientDivider } from "@/components/shared";
 import {
     ROICalculator,
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         title: "DigiTrack - Complete Visibility Across Your Digital Operations",
         description:
             "Real-time tracking and traceability for physical assets, digital transactions, and service delivery workflows.",
-        url: "https://globaldigibit.com/products/digitrack",
+        url: "https://drkatangablog.com/products/digitrack",
         images: [
             {
                 url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop",

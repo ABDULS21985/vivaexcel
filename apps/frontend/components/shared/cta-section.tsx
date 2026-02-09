@@ -11,7 +11,7 @@ import {
     Download,
     Send,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 interface CTASectionProps {
     title?: string;
@@ -162,11 +162,11 @@ export function CTASection({
                                     <span>+974 7795 3122</span>
                                 </a>
                                 <a
-                                    href="mailto:connect@globaldigibit.com"
+                                    href="mailto:connect@drkatangablog.com"
                                     className="flex items-center gap-3 text-white/80 hover:text-white transition-colors text-sm"
                                 >
                                     <Mail className="h-4 w-4 text-accent-orange" />
-                                    <span>connect@globaldigibit.com</span>
+                                    <span>connect@drkatangablog.com</span>
                                 </a>
                                 <a
                                     href="tel:+97477953122"
@@ -269,11 +269,11 @@ export function CTASection({
                                 <span>+974 7795 3122</span>
                             </a>
                             <a
-                                href="mailto:connect@globaldigibit.com"
+                                href="mailto:connect@drkatangablog.com"
                                 className="flex items-center justify-center gap-3 text-white/80 hover:text-white transition-colors"
                             >
                                 <Mail className="h-5 w-5" />
-                                <span>connect@globaldigibit.com</span>
+                                <span>connect@drkatangablog.com</span>
                             </a>
                             <Link
                                 href="/contact"

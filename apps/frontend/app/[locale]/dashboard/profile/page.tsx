@@ -17,6 +17,8 @@ import {
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useAuth } from "@/providers/auth-provider";
 import { PasswordStrength } from "@/components/auth/password-strength";
+import { apiClient } from "@/lib/api-client";
+import { toast } from "sonner";
 
 // =============================================================================
 // Profile Settings Page
@@ -25,7 +27,7 @@ import { PasswordStrength } from "@/components/auth/password-strength";
 // change password, and delete account with confirmation modal.
 
 function ProfileContent() {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, changePassword, deleteAccount } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Profile form state
@@ -51,18 +53,57 @@ function ProfileContent() {
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
+  // Avatar upload state
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
   // Delete account
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image must be smaller than 2MB.");
+      return;
+    }
+
+    // Show preview immediately
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to API
+    setIsUploadingAvatar(true);
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const response = await apiClient<{ user: { avatar: string } }>(
+        "/auth/avatar",
+        {
+          method: "POST",
+          body: formData,
+          headers: {},
+        }
+      );
+      setAvatarPreview(response.user.avatar);
+      toast.success("Avatar updated successfully!");
+    } catch (error) {
+      // Revert preview on failure
+      setAvatarPreview(user?.avatar || "");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to upload avatar. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsUploadingAvatar(false);
     }
   }
 
@@ -81,9 +122,15 @@ function ProfileContent() {
         socialLinks: { twitter, linkedin, github },
       });
       setSaveSuccess(true);
+      toast.success("Profile updated successfully!");
       setTimeout(() => setSaveSuccess(false), 3000);
-    } catch {
-      setSaveError("Failed to update profile. Please try again.");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to update profile. Please try again.";
+      setSaveError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -94,6 +141,10 @@ function ProfileContent() {
     setPasswordError("");
     setPasswordSuccess(false);
 
+    if (!currentPassword) {
+      setPasswordError("Current password is required");
+      return;
+    }
     if (newPassword.length < 8) {
       setPasswordError("New password must be at least 8 characters");
       return;
@@ -105,17 +156,39 @@ function ProfileContent() {
 
     setIsChangingPassword(true);
     try {
-      // In a real app, this would call a password change endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await changePassword(currentPassword, newPassword);
       setPasswordSuccess(true);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
+      toast.success("Password changed successfully!");
       setTimeout(() => setPasswordSuccess(false), 3000);
-    } catch {
-      setPasswordError("Failed to change password. Please check your current password.");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to change password. Please check your current password.";
+      setPasswordError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsChangingPassword(false);
+    }
+  }
+
+  async function handleDeleteAccount() {
+    if (deleteConfirmText !== "DELETE") return;
+
+    setIsDeleting(true);
+    try {
+      await deleteAccount();
+      toast.success("Your account has been deleted.");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to delete account. Please try again.";
+      toast.error(errorMessage);
+      setIsDeleting(false);
     }
   }
 
@@ -158,10 +231,15 @@ function ProfileContent() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  disabled={isUploadingAvatar}
+                  className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-100"
                   aria-label="Upload avatar"
                 >
-                  <Camera className="h-5 w-5 text-white" />
+                  {isUploadingAvatar ? (
+                    <Loader2 className="h-5 w-5 text-white animate-spin" />
+                  ) : (
+                    <Camera className="h-5 w-5 text-white" />
+                  )}
                 </button>
                 <input
                   ref={fileInputRef}
@@ -527,14 +605,23 @@ function ProfileContent() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={() => setShowDeleteModal(false)}
+              onClick={() => {
+                if (!isDeleting) {
+                  setShowDeleteModal(false);
+                }
+              }}
               role="presentation"
             />
             <div className="relative bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl animate-fade-in-scale">
               <button
                 type="button"
-                onClick={() => setShowDeleteModal(false)}
-                className="absolute top-4 right-4 text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                onClick={() => {
+                  if (!isDeleting) {
+                    setShowDeleteModal(false);
+                  }
+                }}
+                disabled={isDeleting}
+                className="absolute top-4 right-4 text-[var(--muted-foreground)] hover:text-[var(--foreground)] disabled:opacity-50"
                 aria-label="Close modal"
               >
                 <X className="h-5 w-5" />
@@ -573,20 +660,29 @@ function ProfileContent() {
               <div className="flex gap-3">
                 <button
                   type="button"
+                  disabled={isDeleting}
                   onClick={() => {
                     setShowDeleteModal(false);
                     setDeleteConfirmText("");
                   }}
-                  className="flex-1 py-2.5 rounded-lg border border-[var(--border)] text-[var(--foreground)] text-sm font-medium hover:bg-[var(--surface-1)] transition-colors"
+                  className="flex-1 py-2.5 rounded-lg border border-[var(--border)] text-[var(--foreground)] text-sm font-medium hover:bg-[var(--surface-1)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  disabled={deleteConfirmText !== "DELETE"}
-                  className="flex-1 py-2.5 rounded-lg bg-[var(--error)] text-white text-sm font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+                  disabled={deleteConfirmText !== "DELETE" || isDeleting}
+                  onClick={handleDeleteAccount}
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[var(--error)] text-white text-sm font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
                 >
-                  Delete Account
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    "Delete Account"
+                  )}
                 </button>
               </div>
             </div>

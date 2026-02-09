@@ -15,7 +15,7 @@ import { EmailService } from '../email/email.service';
 @Injectable()
 export class StripeService {
   private readonly logger = new Logger(StripeService.name);
-  private readonly stripe: Stripe;
+  private readonly stripe: Stripe | null;
   private readonly webhookSecret: string;
 
   constructor(
@@ -29,13 +29,21 @@ export class StripeService {
     const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     if (!secretKey) {
       this.logger.warn('STRIPE_SECRET_KEY is not configured. Stripe integration will not work.');
+      this.stripe = null;
+    } else {
+      this.stripe = new Stripe(secretKey, {
+        apiVersion: '2025-02-24.acacia',
+      });
     }
 
-    this.stripe = new Stripe(secretKey || '', {
-      apiVersion: '2025-02-24.acacia',
-    });
-
     this.webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET') || '';
+  }
+
+  private getStripeClient(): Stripe {
+    if (!this.stripe) {
+      throw new InternalServerErrorException('Stripe is not configured. Set STRIPE_SECRET_KEY.');
+    }
+    return this.stripe;
   }
 
   /**
@@ -43,7 +51,7 @@ export class StripeService {
    */
   async createCustomer(email: string, name: string): Promise<Stripe.Customer> {
     try {
-      const customer = await this.stripe.customers.create({
+      const customer = await this.getStripeClient().customers.create({
         email,
         name,
         metadata: { source: 'ktblog' },
@@ -70,7 +78,7 @@ export class StripeService {
     cancelUrl: string,
   ): Promise<Stripe.Checkout.Session> {
     try {
-      const session = await this.stripe.checkout.sessions.create({
+      const session = await this.getStripeClient().checkout.sessions.create({
         customer: customerId,
         mode: 'subscription',
         payment_method_types: ['card'],
@@ -106,7 +114,7 @@ export class StripeService {
     returnUrl: string,
   ): Promise<Stripe.BillingPortal.Session> {
     try {
-      const session = await this.stripe.billingPortal.sessions.create({
+      const session = await this.getStripeClient().billingPortal.sessions.create({
         customer: customerId,
         return_url: returnUrl,
       });
@@ -127,7 +135,7 @@ export class StripeService {
    */
   async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
     try {
-      const subscription = await this.stripe.subscriptions.cancel(subscriptionId);
+      const subscription = await this.getStripeClient().subscriptions.cancel(subscriptionId);
 
       this.logger.log(`Subscription canceled: ${subscriptionId}`);
       return subscription;
@@ -145,7 +153,7 @@ export class StripeService {
    */
   async getSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
     try {
-      return await this.stripe.subscriptions.retrieve(subscriptionId);
+      return await this.getStripeClient().subscriptions.retrieve(subscriptionId);
     } catch (error) {
       this.logger.error(
         `Failed to retrieve subscription ${subscriptionId}`,
@@ -160,7 +168,7 @@ export class StripeService {
    */
   async listPrices(): Promise<Stripe.Price[]> {
     try {
-      const prices = await this.stripe.prices.list({
+      const prices = await this.getStripeClient().prices.list({
         active: true,
         expand: ['data.product'],
         limit: 100,
@@ -183,7 +191,7 @@ export class StripeService {
     let event: Stripe.Event;
 
     try {
-      event = this.stripe.webhooks.constructEvent(
+      event = this.getStripeClient().webhooks.constructEvent(
         payload,
         signature,
         this.webhookSecret,
@@ -269,7 +277,7 @@ export class StripeService {
     }
 
     // Retrieve the full subscription to get details
-    const stripeSubscription = await this.stripe.subscriptions.retrieve(subscriptionId);
+    const stripeSubscription = await this.getStripeClient().subscriptions.retrieve(subscriptionId);
 
     // Check if a subscription record already exists
     let subscription = await this.subscriptionRepository.findOne({

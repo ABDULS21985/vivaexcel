@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Loader2, Check, Mail, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSubscribeNewsletter } from "@/hooks/use-newsletter";
+import { toast } from "sonner";
 
 // ============================================
 // TYPES
@@ -40,6 +42,7 @@ export function NewsletterSignup({
   const [email, setEmail] = useState("");
   const [state, setState] = useState<NewsletterState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const subscribeMutation = useSubscribeNewsletter();
 
   const validateEmail = (value: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,17 +68,28 @@ export function NewsletterSignup({
 
     setState("loading");
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const result = await subscribeMutation.mutateAsync({ email });
 
-    setState("success");
+      setState("success");
+      toast.success(result.message || "Successfully subscribed to the newsletter!");
 
-    // Reset after showing success
-    setTimeout(() => {
-      setState("idle");
-      setEmail("");
-      setErrorMessage("");
-    }, 4000);
+      // Reset after showing success
+      setTimeout(() => {
+        setState("idle");
+        setEmail("");
+        setErrorMessage("");
+      }, 4000);
+    } catch (error) {
+      setState("error");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.";
+      setErrorMessage(message);
+      toast.error(message);
+      setTimeout(() => setState("idle"), 3000);
+    }
   };
 
   const isLoading = state === "loading";

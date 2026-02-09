@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Careers at Global Digitalbit Limited",
         description: "Join our team of innovators. Explore exciting career opportunities in technology, consulting, and more.",
-        url: "https://globaldigibit.com/careers",
+        url: "https://drkatangablog.com/careers",
     },
 };
 

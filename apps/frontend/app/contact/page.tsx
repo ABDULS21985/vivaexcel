@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Contact Global Digitalbit Limited",
         description: "Reach our offices in Nigeria and Doha for world-class IT solutions and consultancy.",
-        url: "https://globaldigibit.com/contact",
+        url: "https://drkatangablog.com/contact",
     },
 };
 
@@ -42,7 +42,7 @@ export default function ContactPage() {
                             </div>
                             <div className="flex items-center">
                                 <Mail className="h-6 w-6 text-primary mr-4 shrink-0" />
-                                <p className="text-neutral-600">connect@globaldigibit.com</p>
+                                <p className="text-neutral-600">connect@drkatangablog.com</p>
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,7 @@ export default function ContactPage() {
                             </div>
                             <div className="flex items-center">
                                 <Mail className="h-6 w-6 text-primary mr-4 shrink-0" />
-                                <p className="text-neutral-600">connect@globaldigibit.com</p>
+                                <p className="text-neutral-600">connect@drkatangablog.com</p>
                             </div>
                         </div>
                     </div>

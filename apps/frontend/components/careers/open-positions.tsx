@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { jobPositions, departments } from "@/data/careers";
-import { cn } from "@digibit/ui/components";
+import { cn } from "@ktblog/ui/components";
 
 const departmentIcons: Record<string, React.ComponentType<{ className?: string }>> = {
     code: Code,

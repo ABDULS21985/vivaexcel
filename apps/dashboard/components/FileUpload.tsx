@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Upload, X, File, Loader2, CheckCircle2 } from "lucide-react";
-import { Button, cn } from "@digibit/ui/components";
+import { Button, cn } from "@ktblog/ui/components";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/components/toast";
 

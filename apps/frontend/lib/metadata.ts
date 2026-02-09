@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const BASE_URL = "https://globaldigibit.com";
+const BASE_URL = "https://drkatangablog.com";
 const SITE_NAME = "Global Digitalbit Limited";
 const DEFAULT_LOCALE = "en_US";
 
@@ -128,8 +128,8 @@ export function generatePageMetadata({
       title,
       description,
       images: [ogImage],
-      creator: "@globaldigibit",
-      site: "@globaldigibit",
+      creator: "@drkatangablog",
+      site: "@drkatangablog",
     },
     robots: noIndex
       ? {

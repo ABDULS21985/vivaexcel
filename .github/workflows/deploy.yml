@@ -38,8 +38,8 @@ jobs:
           push: true
           build-args: |
             APP_NAME=${{ matrix.app_name }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/digibit-${{ matrix.app_name }}:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/digibit-${{ matrix.app_name }}:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ktblog-${{ matrix.app_name }}:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/ktblog-${{ matrix.app_name }}:latest
           cache-to: type=inline
           platforms: linux/amd64
 
@@ -64,15 +64,15 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           # Ensure target directory exists
-          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no "${VPS_USER}@${VPS_HOST}" "mkdir -p ~/digiweb"
+          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no "${VPS_USER}@${VPS_HOST}" "mkdir -p ~/ktblog"
           
           # Transfer docker-compose.yml
-          scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no docker-compose.yml "${VPS_USER}@${VPS_HOST}:~/digiweb/docker-compose.yml"
+          scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no docker-compose.yml "${VPS_USER}@${VPS_HOST}:~/ktblog/docker-compose.yml"
           
           # Run deployment commands
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no "${VPS_USER}@${VPS_HOST}" bash << EOF
             set -e
-            cd ~/digiweb
+            cd ~/ktblog
             
             # Export Dockerhub username for docker-compose
             export DOCKERHUB_USERNAME="${DOCKERHUB_USERNAME}"

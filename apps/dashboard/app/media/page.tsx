@@ -3,7 +3,7 @@
 import * as React from "react";
 import { PageHeader, PageHeaderButton } from "@/components/page-header";
 import { useToast } from "@/components/toast";
-import { Button, Input, Tabs, TabsList, TabsTrigger, TabsContent } from "@digibit/ui/components";
+import { Button, Input, Tabs, TabsList, TabsTrigger, TabsContent } from "@ktblog/ui/components";
 import {
     Upload,
     Image as ImageIcon,
@@ -22,7 +22,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { ConfirmModal } from "@/components/modal";
 
 interface MediaAsset {

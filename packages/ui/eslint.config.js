@@ -1,3 +1,3 @@
-import { config } from "@digibit/eslint-config/base";
+import { config } from "@ktblog/eslint-config/base";
 
 export default config;

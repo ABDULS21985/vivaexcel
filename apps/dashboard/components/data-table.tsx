@@ -16,7 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
     cn,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import {
     ChevronUp,
     ChevronDown,

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn, Badge } from "@digibit/ui/components";
+import { cn, Badge } from "@ktblog/ui/components";
 import {
     BookOpen,
     Clock,

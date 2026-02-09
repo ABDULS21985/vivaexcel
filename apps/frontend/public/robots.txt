@@ -15,4 +15,4 @@ User-agent: Bingbot
 Allow: /
 Crawl-delay: 2
 
-Sitemap: https://globaldigibit.com/sitemap.xml
+Sitemap: https://drkatangablog.com/sitemap.xml

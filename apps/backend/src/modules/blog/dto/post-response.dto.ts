@@ -101,6 +101,18 @@ export class PostResponseDto {
   paywalled?: boolean;
 
   @Expose()
+  @ApiPropertyOptional({ description: 'Whether the content is gated for unauthorized users' })
+  gated?: boolean;
+
+  @Expose()
+  @ApiPropertyOptional({ description: 'Whether a subscription is required to view full content' })
+  requiresSubscription?: boolean;
+
+  @Expose()
+  @ApiPropertyOptional()
+  seriesId?: string;
+
+  @Expose()
   @ApiPropertyOptional()
   featuredImage?: string;
 

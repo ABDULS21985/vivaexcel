@@ -25,7 +25,7 @@ export function ProductSchema({
   image,
   url,
 }: ProductSchemaProps) {
-  const baseUrl = "https://globaldigibit.com";
+  const baseUrl = "https://drkatangablog.com";
   const productUrl = url || `${baseUrl}/products/${productId}`;
 
   const productData = {

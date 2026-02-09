@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import Link from "next/link";
 import { ArrowLeft, Zap, HelpCircle, ChevronDown } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { PricingTable, ComparisonTable, CTASection } from "@/components/shared";
 import { pricingTiers, comparisonMetrics, faqItems } from "@/data/trustmehub/pricing";
 
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
         title: "TrustMeHub Pricing - Plans for Every Organization",
         description:
             "From $0 to unlimited. Choose the right credential verification plan for your organization.",
-        url: "https://globaldigibit.com/products/trustmehub/pricing",
+        url: "https://drkatangablog.com/products/trustmehub/pricing",
     },
 };
 

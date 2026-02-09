@@ -15,7 +15,7 @@ import {
     ShieldCheck,
     Sparkles,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { TrustIndicators, CTASection, AnimateOnScroll, FloatingOrbs, GradientDivider } from "@/components/shared";
 import {
     VerificationEstimator,
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
         title: "DigiTrust - Immutable Trust for a Digital World",
         description:
             "Blockchain-based solution for issuing, verifying, and managing tamper-proof digital credentials.",
-        url: "https://globaldigibit.com/products/digitrust",
+        url: "https://drkatangablog.com/products/digitrust",
         images: [
             {
                 url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2670&auto=format&fit=crop",

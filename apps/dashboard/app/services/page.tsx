@@ -185,7 +185,7 @@ export default function ServicesPage() {
             header: "Website",
             render: (service) => (
                 <a
-                    href={`https://globaldigibit.com/services/${service.slug}`}
+                    href={`https://drkatangablog.com/services/${service.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
@@ -333,7 +333,7 @@ export default function ServicesPage() {
                                     {categoryServices.length} service{categoryServices.length !== 1 ? "s" : ""}
                                 </p>
                                 <a
-                                    href={`https://globaldigibit.com/services/${key}`}
+                                    href={`https://drkatangablog.com/services/${key}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1 text-sm text-white/90 hover:text-white"

@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 
 export interface MediaFile {
   id: string;

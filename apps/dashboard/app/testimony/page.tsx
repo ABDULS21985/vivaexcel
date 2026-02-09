@@ -14,7 +14,7 @@ import {
     Checkbox,
     Label,
     Textarea
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { PageHeader } from "@/components/page-header";
 import { FormModal, ConfirmModal } from "@/components/modal";
 import { FileUpload } from "@/components/FileUpload";

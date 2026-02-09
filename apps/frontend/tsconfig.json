@@ -1,5 +1,5 @@
 {
-  "extends": "@digibit/typescript-config/nextjs.json",
+  "extends": "@ktblog/typescript-config/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
     "moduleResolution": "bundler",

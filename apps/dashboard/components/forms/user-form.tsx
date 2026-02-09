@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
     cn,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { UserStatus, UserRole } from "../../types/user";
 

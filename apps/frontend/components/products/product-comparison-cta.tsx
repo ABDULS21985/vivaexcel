@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, HelpCircle, MessageCircle, FileText, Users, Sparkles } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { AnimateOnScroll } from "@/components/shared";
 
 /* ------------------------------------------------------------------ */

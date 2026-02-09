@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { cn, Button } from "@digibit/ui/components";
+import { cn, Button } from "@ktblog/ui/components";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 
 export interface Breadcrumb {

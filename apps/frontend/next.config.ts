@@ -5,7 +5,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   /* config options here */
-  transpilePackages: ["@digibit/ui"],
+  transpilePackages: ["@ktblog/ui"],
   images: {
     remotePatterns: [
       {

@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: MetadataProps): Promise<Metad
         openGraph: {
             title: `${job.title} at Global Digitalbit Limited`,
             description: job.description,
-            url: `https://globaldigibit.com/careers/${job.slug}`,
+            url: `https://drkatangablog.com/careers/${job.slug}`,
             type: "website",
         },
         twitter: {

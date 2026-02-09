@@ -15,7 +15,7 @@ import {
     Gauge,
     Sparkles,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { TrustIndicators, CTASection, AnimateOnScroll, FloatingOrbs, GradientDivider } from "@/components/shared";
 import {
     PerformanceEstimator,
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         title: "DigiGate - The Command Center for Your Digital Ecosystem",
         description:
             "Comprehensive API gateway and lifecycle management for enterprise digital infrastructure.",
-        url: "https://globaldigibit.com/products/digigate",
+        url: "https://drkatangablog.com/products/digigate",
         images: [
             {
                 url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2670&auto=format&fit=crop",

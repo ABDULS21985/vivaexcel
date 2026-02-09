@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode, type JSX } from "react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 type AnimationType = "fade-up" | "fade-in" | "scale" | "slide-right" | "slide-left";
 

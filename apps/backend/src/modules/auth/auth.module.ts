@@ -62,8 +62,8 @@ import { UsersModule } from '../users/users.module';
           configService.get<string>('JWT_ACCESS_SECRET') || 'default-secret',
         signOptions: {
           expiresIn: 900, // 15 minutes in seconds
-          issuer: configService.get<string>('JWT_ISSUER') || 'digiweb',
-          audience: configService.get<string>('JWT_AUDIENCE') || 'digiweb-api',
+          issuer: configService.get<string>('JWT_ISSUER') || 'ktblog',
+          audience: configService.get<string>('JWT_AUDIENCE') || 'ktblog-api',
         },
       }),
     }),

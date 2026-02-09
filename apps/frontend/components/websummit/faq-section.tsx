@@ -18,22 +18,22 @@ interface FAQItem {
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: "Where can we find Digibit at Web Summit Qatar 2026?",
+    question: "Where can we find KTBlog at Web Summit Qatar 2026?",
     answer:
       "Visit us at Booth A5-35 in the main exhibition hall at the Doha Exhibition and Convention Center. Our exhibition day is Monday, February 2, 2026.",
   },
   {
     question: "How can I schedule a private meeting or demo?",
     answer:
-      "Use our contact form below or email connect@globaldigibit.com to schedule a dedicated meeting slot. We offer 30-minute private demos of TrustMeHub, DigiGate, DigiTrack, DigiTrust, and BoaCRM.",
+      "Use our contact form below or email connect@drkatangablog.com to schedule a dedicated meeting slot. We offer 30-minute private demos of TrustMeHub, DigiGate, DigiTrack, DigiTrust, and BoaCRM.",
   },
   {
-    question: "What solutions will Digibit be showcasing?",
+    question: "What solutions will KTBlog be showcasing?",
     answer:
       "We'll demonstrate our full product suite including TrustMeHub (credential verification), DigiGate (API gateway), DigiTrust (blockchain credentials), DigiTrack (real-time tracking), and BoaCRM (banking CRM), along with our consulting and training services.",
   },
   {
-    question: "Is Digibit's platform compliant with Qatar regulations?",
+    question: "Is KTBlog's platform compliant with Qatar regulations?",
     answer:
       "Yes. Our solutions are designed to comply with Qatar Central Bank standards, Qatar Data Protection Law, National Information Assurance policies, and international frameworks including ISO 27001, NIST, GDPR, and PCI-DSS.",
   },
@@ -55,7 +55,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     question: "How can I access the investor deck or partnership materials?",
     answer:
-      "Request our materials through the contact form below or email partnerships@globaldigibit.com. We'll share our investor deck, product briefs, and partnership frameworks within 24 hours.",
+      "Request our materials through the contact form below or email partnerships@drkatangablog.com. We'll share our investor deck, product briefs, and partnership frameworks within 24 hours.",
   },
 ];
 

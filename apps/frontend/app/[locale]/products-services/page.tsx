@@ -14,7 +14,7 @@ import {
     GraduationCap,
     CheckCircle,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { products } from "@/data/products";
 import { serviceCategories } from "@/data/services";
 import { CTASection } from "@/components/shared";

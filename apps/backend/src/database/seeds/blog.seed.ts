@@ -94,7 +94,7 @@ export const blogTagSeedData = [
 ];
 
 /**
- * Blog Post seed data for Global Digibit Limited
+ * Blog Post seed data for KTBlog Limited
  */
 export const blogPostSeedData = [
   {
@@ -140,7 +140,7 @@ export const blogPostSeedData = [
 <h2>The Path Forward</h2>
 <p>Successful digital transformation in the GCC requires a balanced approach that combines bold vision with pragmatic execution. Organizations should start by assessing their current digital maturity, defining a clear target state aligned with business strategy, and developing a phased roadmap that delivers early wins while building toward long-term transformation goals.</p>
 
-<p>At Global Digibit, we partner with enterprises across the region to navigate their digital transformation journeys. Our deep understanding of local market dynamics, combined with global best practices, enables us to deliver transformation programs that drive measurable business outcomes.</p>
+<p>At KTBlog, we partner with enterprises across the region to navigate their digital transformation journeys. Our deep understanding of local market dynamics, combined with global best practices, enables us to deliver transformation programs that drive measurable business outcomes.</p>
 `,
   },
   {
@@ -262,7 +262,7 @@ export const blogPostSeedData = [
   <li><strong>Measure and iterate:</strong> Define clear success metrics and continuously refine your approach based on results.</li>
 </ul>
 
-<p>The organizations that will thrive in the AI era are those that embrace the technology thoughtfully, balancing innovation with responsibility. Global Digibit is committed to helping enterprises across the GCC navigate this exciting frontier.</p>
+<p>The organizations that will thrive in the AI era are those that embrace the technology thoughtfully, balancing innovation with responsibility. KTBlog is committed to helping enterprises across the GCC navigate this exciting frontier.</p>
 `,
   },
   {
@@ -509,7 +509,7 @@ export const blogPostSeedData = [
 </ul>
 
 <h2>The Path Forward</h2>
-<p>Digital identity transformation will not happen overnight, but the direction is clear. Organizations that begin building capabilities in verifiable credentials and blockchain-based identity will be well-positioned to participate in emerging trust ecosystems. At Global Digibit, we are actively helping organizations across the region explore and implement these transformative technologies through our DigiTrust and TrustMeHub platforms.</p>
+<p>Digital identity transformation will not happen overnight, but the direction is clear. Organizations that begin building capabilities in verifiable credentials and blockchain-based identity will be well-positioned to participate in emerging trust ecosystems. At KTBlog, we are actively helping organizations across the region explore and implement these transformative technologies through our DigiTrust and TrustMeHub platforms.</p>
 `,
   },
   {

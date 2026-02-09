@@ -165,12 +165,12 @@ export const blogAuthors: BlogAuthor[] = [
     name: 'Micha Abdul',
     slug: 'micha-abdul',
     avatar: '/images/authors/placeholder-avatar.jpg',
-    bio: 'Micha Abdul is the Chief Technology Officer at Global Digibit with over 20 years of experience in enterprise architecture and digital transformation. He has led numerous large-scale technology initiatives across the GCC region, specializing in financial services modernization and regulatory technology.',
+    bio: 'Micha Abdul is the Chief Technology Officer at KTBlog with over 20 years of experience in enterprise architecture and digital transformation. He has led numerous large-scale technology initiatives across the GCC region, specializing in financial services modernization and regulatory technology.',
     role: 'Chief Technology Officer',
     socialLinks: {
       linkedin: 'https://linkedin.com/in/micha-abdul',
       twitter: 'https://twitter.com/micha_abdul_tech',
-      email: 'micha.abdul@globaldigibit.com',
+      email: 'micha.abdul@drkatangablog.com',
     },
   },
   {
@@ -178,11 +178,11 @@ export const blogAuthors: BlogAuthor[] = [
     name: 'Fatima Al-Rashid',
     slug: 'fatima-al-rashid',
     avatar: '/images/authors/placeholder-avatar.jpg',
-    bio: 'Fatima Al-Rashid is the Head of Cybersecurity Practice at Global Digibit. With certifications including CISSP, CISM, and CEH, she brings 15 years of experience protecting critical infrastructure across banking, government, and energy sectors in the Middle East.',
+    bio: 'Fatima Al-Rashid is the Head of Cybersecurity Practice at KTBlog. With certifications including CISSP, CISM, and CEH, she brings 15 years of experience protecting critical infrastructure across banking, government, and energy sectors in the Middle East.',
     role: 'Head of Cybersecurity Practice',
     socialLinks: {
       linkedin: 'https://linkedin.com/in/fatima-alrashid',
-      email: 'fatima.alrashid@globaldigibit.com',
+      email: 'fatima.alrashid@drkatangablog.com',
     },
   },
   {
@@ -190,12 +190,12 @@ export const blogAuthors: BlogAuthor[] = [
     name: 'Khalid Mahmoud',
     slug: 'khalid-mahmoud',
     avatar: '/images/authors/placeholder-avatar.jpg',
-    bio: 'Khalid Mahmoud leads the AI & Data Practice at Global Digibit. He holds a Ph.D. in Machine Learning from MIT and has published extensively on responsible AI adoption in regulated industries. His work focuses on practical AI implementation for GCC enterprises.',
+    bio: 'Khalid Mahmoud leads the AI & Data Practice at KTBlog. He holds a Ph.D. in Machine Learning from MIT and has published extensively on responsible AI adoption in regulated industries. His work focuses on practical AI implementation for GCC enterprises.',
     role: 'Director, AI & Data Practice',
     socialLinks: {
       linkedin: 'https://linkedin.com/in/khalid-mahmoud-ai',
       twitter: 'https://twitter.com/khalid_ai',
-      email: 'khalid.mahmoud@globaldigibit.com',
+      email: 'khalid.mahmoud@drkatangablog.com',
     },
   },
   {
@@ -207,7 +207,7 @@ export const blogAuthors: BlogAuthor[] = [
     role: 'Principal Consultant, Cloud & Platform',
     socialLinks: {
       linkedin: 'https://linkedin.com/in/sarah-chen-cloud',
-      email: 'sarah.chen@globaldigibit.com',
+      email: 'sarah.chen@drkatangablog.com',
     },
   },
   {
@@ -215,11 +215,11 @@ export const blogAuthors: BlogAuthor[] = [
     name: 'Omar Al-Farsi',
     slug: 'omar-al-farsi',
     avatar: '/images/authors/placeholder-avatar.jpg',
-    bio: 'Omar Al-Farsi is the Regional Director for GCC Operations at Global Digibit. With two decades of experience in management consulting, he specializes in digital transformation strategy and operational excellence for government and financial services clients.',
+    bio: 'Omar Al-Farsi is the Regional Director for GCC Operations at KTBlog. With two decades of experience in management consulting, he specializes in digital transformation strategy and operational excellence for government and financial services clients.',
     role: 'Regional Director, GCC Operations',
     socialLinks: {
       linkedin: 'https://linkedin.com/in/omar-alfarsi',
-      email: 'omar.alfarsi@globaldigibit.com',
+      email: 'omar.alfarsi@drkatangablog.com',
     },
   },
 ];
@@ -782,7 +782,7 @@ Financial institutions that proactively prepare their infrastructure, processes,
 
 The window for preparation is now. Early movers will establish competitive advantages in customer relationships, operational efficiency, and product innovation. Those who delay risk finding themselves unable to participate in Qatar's digital currency future.
 
-Global Digibit's expertise in payment system modernization, regulatory technology, and digital transformation positions us as an ideal partner for financial institutions navigating this transition. Our team has supported central banks and financial institutions across the GCC in preparing for the digital currency era.
+KTBlog's expertise in payment system modernization, regulatory technology, and digital transformation positions us as an ideal partner for financial institutions navigating this transition. Our team has supported central banks and financial institutions across the GCC in preparing for the digital currency era.
 
 **Contact us today to discuss your CBDC readiness assessment and develop a customized implementation roadmap for your institution.**`,
     featuredImage: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2670&auto=format&fit=crop',
@@ -904,7 +904,7 @@ Regulatory expectations in the GCC are evolving rapidly. The UAE's AI governance
 
 Successful AI transformation in GCC banking requires more than technology investment. It demands disciplined execution across data foundations, MLOps capabilities, governance frameworks, and change management. Banks that master these elements will define the next era of financial services in the region.
 
-Global Digibit's AI & Data Practice combines deep domain expertise in GCC banking with proven delivery capabilities. Contact us for an AI maturity assessment and transformation roadmap.`,
+KTBlog's AI & Data Practice combines deep domain expertise in GCC banking with proven delivery capabilities. Contact us for an AI maturity assessment and transformation roadmap.`,
     featuredImage: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2670&auto=format&fit=crop',
     authorId: 'author-khalid-mahmoud',
     categoryId: 'cat-ai-data',
@@ -1075,7 +1075,7 @@ Effective cybersecurity programs require measurable outcomes:
 
 Meeting evolving cybersecurity regulatory expectations requires sustained investment and disciplined execution. Financial institutions that view compliance as a floor rather than a ceiling will build lasting competitive advantage through enhanced customer trust and operational resilience.
 
-Global Digibit's Cybersecurity Practice combines deep regulatory expertise with practical implementation experience across GCC financial institutions. Contact us for a regulatory gap assessment and remediation roadmap.`,
+KTBlog's Cybersecurity Practice combines deep regulatory expertise with practical implementation experience across GCC financial institutions. Contact us for a regulatory gap assessment and remediation roadmap.`,
     featuredImage: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2670&auto=format&fit=crop',
     authorId: 'author-fatima-al-rashid',
     categoryId: 'cat-cybersecurity',
@@ -1235,7 +1235,7 @@ Effective cloud cost management requires dedicated focus:
 
 Successful cloud migration in the GCC requires careful attention to data residency requirements, compliance obligations, and architectural patterns that balance innovation with regulatory adherence. Organizations that invest in proper planning and governance will realize the full benefits of cloud adoption while maintaining stakeholder trust.
 
-Global Digibit's Cloud & Platform Practice has delivered large-scale migrations for financial services, government, and enterprise clients across the GCC. Contact us for a cloud readiness assessment and migration roadmap.`,
+KTBlog's Cloud & Platform Practice has delivered large-scale migrations for financial services, government, and enterprise clients across the GCC. Contact us for a cloud readiness assessment and migration roadmap.`,
     featuredImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2672&auto=format&fit=crop',
     authorId: 'author-sarah-chen',
     categoryId: 'cat-technology',
@@ -1372,7 +1372,7 @@ Effective measurement requires multiple dimensions:
 
 Qatar's digital government transformation demonstrates both the potential and the complexity of national-scale initiatives. Success requires sustained commitment, thoughtful architecture, and relentless focus on citizen outcomes. The journey continues, with each milestone building foundation for future innovation.
 
-Global Digibit's Public Sector Practice has supported digital transformation programs across the GCC. Contact us to discuss how we can support your agency's digitization journey.`,
+KTBlog's Public Sector Practice has supported digital transformation programs across the GCC. Contact us to discuss how we can support your agency's digitization journey.`,
     featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2670&auto=format&fit=crop',
     authorId: 'author-omar-al-farsi',
     categoryId: 'cat-digital-transformation',
@@ -1524,7 +1524,7 @@ Forward-thinking banks can leverage open banking for competitive advantage:
 
 Open banking transformation is no longer optional for GCC financial institutions. Regulatory mandates, competitive pressures, and customer expectations are converging to make API-enabled financial services the new baseline.
 
-Global Digibit's Financial Services Practice combines deep regulatory expertise with technical delivery capabilities. Contact us for an open banking readiness assessment and implementation roadmap.`,
+KTBlog's Financial Services Practice combines deep regulatory expertise with technical delivery capabilities. Contact us for an open banking readiness assessment and implementation roadmap.`,
     featuredImage: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2670&auto=format&fit=crop',
     authorId: 'author-ahmed-hassan',
     categoryId: 'cat-industry-insights',
@@ -1683,7 +1683,7 @@ Track progress across multiple dimensions:
 
 Zero Trust is not a product to purchase but a strategy to execute. For financial services organizations facing sophisticated threats and stringent regulations, Zero Trust provides a framework for building resilient security architecture.
 
-Global Digibit's Cybersecurity Practice has implemented Zero Trust architectures for leading financial institutions across the GCC. Contact us for a Zero Trust maturity assessment and implementation roadmap.`,
+KTBlog's Cybersecurity Practice has implemented Zero Trust architectures for leading financial institutions across the GCC. Contact us for a Zero Trust maturity assessment and implementation roadmap.`,
     featuredImage: 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=2670&auto=format&fit=crop',
     authorId: 'author-fatima-al-rashid',
     categoryId: 'cat-cybersecurity',
@@ -1841,7 +1841,7 @@ Not all use cases warrant the same governance rigor:
 
 Generative AI represents a genuine transformational opportunity for GCC enterprises. However, realizing this potential requires thoughtful governance, careful risk management, and disciplined implementation. Organizations that build these foundations will accelerate ahead of competitors while maintaining stakeholder trust.
 
-Global Digibit's AI & Data Practice combines deep expertise in responsible AI adoption with practical delivery experience. Contact us for a generative AI readiness assessment and adoption roadmap.`,
+KTBlog's AI & Data Practice combines deep expertise in responsible AI adoption with practical delivery experience. Contact us for a generative AI readiness assessment and adoption roadmap.`,
     featuredImage: 'https://images.unsplash.com/photo-1684391900947-bf652e00c54f?q=80&w=2670&auto=format&fit=crop',
     authorId: 'author-khalid-mahmoud',
     categoryId: 'cat-ai-data',
@@ -2200,7 +2200,7 @@ The transformation followed a structured methodology combining agile delivery wi
 
 - **Total Team Size**: 180 people at peak
 - **Bank Employees**: 85 (47%)
-- **Global Digibit Consultants**: 60 (33%)
+- **KTBlog Consultants**: 60 (33%)
 - **Technology Partners**: 35 (20%)
 
 ## Detailed Implementation Journey
@@ -2612,7 +2612,7 @@ Bot: "Done! Your Visa card ending 4521 is now blocked. You'll receive a
 
 **Capability Transfer Approach:**
 
-1. **Embedded Model**: Global Digibit consultants working alongside bank staff
+1. **Embedded Model**: KTBlog consultants working alongside bank staff
 2. **Shadowing**: Bank staff shadowing experts on critical tasks
 3. **Reverse Shadowing**: Gradual handover with expert oversight
 4. **Documentation**: Comprehensive runbooks and knowledge base
@@ -2722,7 +2722,7 @@ Implementing SAFe provided necessary coordination across 13 squads while maintai
 
 **5. Vendor Partnership Model**
 
-Treating Global Digibit and technology partners as strategic partners rather than vendors created shared accountability for outcomes. Joint KPIs, integrated teams, and long-term commitment improved collaboration.
+Treating KTBlog and technology partners as strategic partners rather than vendors created shared accountability for outcomes. Joint KPIs, integrated teams, and long-term commitment improved collaboration.
 
 ### What We Would Do Differently
 
@@ -2832,7 +2832,7 @@ The results speak for themselves: 300% growth in digital transactions, 45-point 
 
 ---
 
-**Global Digibit served as the strategic transformation partner throughout this journey, providing consulting expertise, technical delivery capabilities, and change management support.** Our integrated team of 60+ consultants worked alongside bank staff for 36 months, transferring knowledge and building sustainable capabilities.
+**KTBlog served as the strategic transformation partner throughout this journey, providing consulting expertise, technical delivery capabilities, and change management support.** Our integrated team of 60+ consultants worked alongside bank staff for 36 months, transferring knowledge and building sustainable capabilities.
 
 **If your institution is considering a similar transformation, contact us to discuss how our experience can accelerate your journey. We offer:**
 
@@ -2987,7 +2987,7 @@ Effective API strategy starts with business outcomes:
 
 Enterprise API management is foundational infrastructure for digital transformation. Organizations that invest in comprehensive API capabilities will accelerate innovation, enable ecosystems, and build sustainable competitive advantage.
 
-Global Digibit's Engineering Practice has implemented enterprise API management for leading organizations across the GCC. Contact us for an API maturity assessment and implementation roadmap.`,
+KTBlog's Engineering Practice has implemented enterprise API management for leading organizations across the GCC. Contact us for an API maturity assessment and implementation roadmap.`,
     featuredImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2670&auto=format&fit=crop',
     authorId: 'author-sarah-chen',
     categoryId: 'cat-technology',

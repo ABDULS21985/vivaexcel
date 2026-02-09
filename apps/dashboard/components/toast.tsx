@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@digibit/ui/components";
+import { cn } from "@ktblog/ui/components";
 import { X, CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react";
 
 export type ToastType = "success" | "error" | "warning" | "info";

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@digibit/ui/components";
+import { cn } from "@ktblog/ui/components";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 export interface StatsCardProps {

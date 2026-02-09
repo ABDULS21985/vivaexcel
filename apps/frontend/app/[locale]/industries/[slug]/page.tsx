@@ -16,7 +16,7 @@ import {
     Truck,
     type LucideIcon,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { industries, getIndustryBySlug, getAllIndustrySlugs } from "@/data/industries";
 import { getCaseStudiesByIndustry } from "@/data/case-studies";
 import { FadeUp } from "@/components/ui/animations";
@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title: `${industry.name} Solutions - Global Digitalbit`,
             description: industry.description,
-            url: `https://globaldigibit.com/industries/${slug}`,
+            url: `https://drkatangablog.com/industries/${slug}`,
             images: [
                 {
                     url: industry.heroImage,

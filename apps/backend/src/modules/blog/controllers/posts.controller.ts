@@ -31,6 +31,7 @@ import { Public } from '../../../common/decorators/public.decorator';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { RolesGuard } from '../../../common/guards/roles.guard';
 import { PermissionsGuard } from '../../../common/guards/permissions.guard';
+import { ContentAccessGuard } from '../../../common/guards/content-access.guard';
 import { Role } from '../../../common/constants/roles.constant';
 import { Permission } from '../../../common/constants/permissions.constant';
 
@@ -60,11 +61,12 @@ export class PostsController {
 
   @Get('slug/:slug')
   @Public()
-  @ApiOperation({ summary: 'Get post by slug' })
+  @UseGuards(ContentAccessGuard)
+  @ApiOperation({ summary: 'Get post by slug (content gating applied based on visibility and user subscription)' })
   @ApiParam({ name: 'slug', description: 'Post slug' })
   @SwaggerResponse({
     status: 200,
-    description: 'Post retrieved successfully',
+    description: 'Post retrieved successfully. For gated posts, returns preview with requiresSubscription and minimumTier fields.',
     type: PostResponseDto,
   })
   @SwaggerResponse({ status: 404, description: 'Post not found' })
@@ -77,11 +79,12 @@ export class PostsController {
 
   @Get(':id')
   @Public()
-  @ApiOperation({ summary: 'Get post by ID' })
+  @UseGuards(ContentAccessGuard)
+  @ApiOperation({ summary: 'Get post by ID (content gating applied based on visibility and user subscription)' })
   @ApiParam({ name: 'id', description: 'Post ID' })
   @SwaggerResponse({
     status: 200,
-    description: 'Post retrieved successfully',
+    description: 'Post retrieved successfully. For gated posts, returns preview with requiresSubscription and minimumTier fields.',
     type: PostResponseDto,
   })
   @SwaggerResponse({ status: 404, description: 'Post not found' })
@@ -116,7 +119,7 @@ export class PostsController {
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.SUPER_ADMIN, Role.EDITOR)
   @RequirePermissions(Permission.BLOG_UPDATE)
-  @ApiOperation({ summary: 'Update a blog post' })
+  @ApiOperation({ summary: 'Update a blog post (automatically creates a revision snapshot)' })
   @ApiParam({ name: 'id', description: 'Post ID' })
   @SwaggerResponse({
     status: 200,
@@ -128,8 +131,9 @@ export class PostsController {
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
+    @CurrentUser('sub') userId: string,
   ) {
-    return this.postsService.update(id, updatePostDto);
+    return this.postsService.update(id, updatePostDto, userId);
   }
 
   @Delete(':id')

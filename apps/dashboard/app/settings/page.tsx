@@ -12,7 +12,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import {
     Save,
     Globe,
@@ -75,13 +75,13 @@ export default function SettingsPage() {
     const [settings, setSettings] = React.useState({
         // General
         siteName: "Global Digitalbit Dashboard",
-        siteUrl: "https://dashboard.globaldigibit.com",
+        siteUrl: "https://dashboard.drkatangablog.com",
         timezone: "UTC",
         language: "en",
 
         // Company
         companyName: "Global Digitalbit Limited",
-        companyEmail: "connect@globaldigibit.com",
+        companyEmail: "connect@drkatangablog.com",
         companyPhone: "+971 4 123 4567",
         companyAddress: "Dubai, United Arab Emirates",
 
@@ -387,7 +387,7 @@ export default function SettingsPage() {
                                 Access the full API documentation to integrate with your applications.
                             </p>
                             <a
-                                href="https://docs.globaldigibit.com/api"
+                                href="https://docs.drkatangablog.com/api"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm text-primary hover:underline"

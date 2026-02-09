@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthLayout } from "../../components/auth-layout";
-import { Input, Button } from "@digibit/ui/components";
+import { Input, Button } from "@ktblog/ui/components";
 import { Mail, Loader2 } from "lucide-react";
 
 // Email regex pattern
@@ -134,7 +134,7 @@ export default function ForgotPasswordPage() {
                                 setEmail(e.target.value);
                                 setError("");
                             }}
-                            placeholder="admin@globaldigibit.com"
+                            placeholder="admin@drkatangablog.com"
                             disabled={isLoading}
                             leftIcon={<Mail className="w-5 h-5" />}
                             autoFocus

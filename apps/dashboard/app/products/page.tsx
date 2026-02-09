@@ -8,7 +8,7 @@ import { StatsCard } from "@/components/stats-card";
 import { FormModal, ConfirmModal } from "@/components/modal";
 import { ProductForm, ProductFormData } from "@/components/forms/product-form";
 import { useToast } from "@/components/toast";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { Plus, Package, CheckCircle, Star, ExternalLink, Eye } from "lucide-react";
 
 interface Product {
@@ -148,7 +148,7 @@ export default function ProductsPage() {
             header: "Website",
             render: (product) => (
                 <a
-                    href={`https://globaldigibit.com${product.websiteUrl}`}
+                    href={`https://drkatangablog.com${product.websiteUrl}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
@@ -315,7 +315,7 @@ export default function ProductsPage() {
                         </div>
                         <div className="flex flex-wrap gap-4">
                             <a
-                                href="https://globaldigibit.com/products/trustmehub"
+                                href="https://drkatangablog.com/products/trustmehub"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="px-4 py-2 bg-white text-emerald-700 rounded-lg font-medium hover:bg-emerald-50 transition-colors"
@@ -323,7 +323,7 @@ export default function ProductsPage() {
                                 View Product Page
                             </a>
                             <a
-                                href="https://globaldigibit.com/products/trustmehub/pricing"
+                                href="https://drkatangablog.com/products/trustmehub/pricing"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="px-4 py-2 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors"
@@ -331,7 +331,7 @@ export default function ProductsPage() {
                                 View Pricing
                             </a>
                             <a
-                                href="https://globaldigibit.com/products/trustmehub/docs"
+                                href="https://drkatangablog.com/products/trustmehub/docs"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="px-4 py-2 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors"

@@ -19,7 +19,7 @@ import {
     X,
     File,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import type { JobPosition } from "@/data/careers";
 
 // ============================================================================
@@ -291,7 +291,7 @@ export function JobApplicationForm({ position }: JobApplicationFormProps) {
                 formData.append("portfolioUrl", data.portfolioUrl.trim());
             }
 
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.globaldigibit.com/api/v1";
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.drkatangablog.com/api/v1";
             const response = await fetch(`${apiUrl}/careers/apply`, {
                 method: "POST",
                 body: formData,

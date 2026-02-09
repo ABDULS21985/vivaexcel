@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import { useTranslations } from "next-intl";
 
 const COOKIE_CONSENT_KEY = "cookie-consent";

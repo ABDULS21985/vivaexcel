@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import { Layers, Briefcase, Sparkles, Grid3X3, LayoutList, Filter } from "lucide-react";
 import { ServiceTowerCard } from "./service-tower-card";
 import type { ServiceTower } from "@/types/services-global";

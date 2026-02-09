@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthLayout } from "../../components/auth-layout";
-import { Input, Button } from "@digibit/ui/components";
+import { Input, Button } from "@ktblog/ui/components";
 import { Lock, Eye, EyeOff, Loader2, CheckCircle2, XCircle } from "lucide-react";
 
 interface PasswordRequirement {

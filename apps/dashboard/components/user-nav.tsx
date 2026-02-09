@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
     Button,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import { User, LogOut } from "lucide-react";
 import { useUser } from "../hooks/use-user";
 
@@ -34,7 +34,7 @@ export function UserNav() {
                             {userData?.displayName || "Admin User"}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                            {userData?.email || "admin@globaldigibit.com"}
+                            {userData?.email || "admin@drkatangablog.com"}
                         </p>
                     </div>
                 </DropdownMenuLabel>

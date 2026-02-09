@@ -7,7 +7,7 @@ import { DataTable, Column } from "@/components/data-table";
 import { StatsCard } from "@/components/stats-card";
 import { ConfirmModal } from "@/components/modal";
 import { useToast } from "@/components/toast";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import {
     Plus,
     Layers,
@@ -351,7 +351,7 @@ export default function ServiceCatalogPage() {
         <div className="min-h-screen">
             <PageHeader
                 title="Service Catalog"
-                description="Manage Global Digibit service towers and catalog offerings"
+                description="Manage KTBlog service towers and catalog offerings"
                 breadcrumbs={[
                     { label: "Dashboard", href: "/" },
                     { label: "Service Catalog" },
@@ -460,7 +460,7 @@ export default function ServiceCatalogPage() {
                 {/* Service Catalog Overview Section */}
                 <div className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white">
                     <div className="max-w-3xl">
-                        <h2 className="text-2xl font-bold mb-2">Global Digibit Service Catalog</h2>
+                        <h2 className="text-2xl font-bold mb-2">KTBlog Service Catalog</h2>
                         <p className="text-blue-100 mb-6">
                             Our comprehensive service catalog spans 22 service towers covering
                             strategy, transformation, technology, cybersecurity, and operations.
@@ -487,7 +487,7 @@ export default function ServiceCatalogPage() {
                         </div>
                         <div className="flex flex-wrap gap-4">
                             <a
-                                href="https://globaldigibit.com/services"
+                                href="https://drkatangablog.com/services"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="px-4 py-2 bg-white text-blue-700 rounded-lg font-medium hover:bg-blue-50 transition-colors"

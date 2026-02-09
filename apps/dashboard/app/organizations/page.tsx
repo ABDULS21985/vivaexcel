@@ -6,14 +6,14 @@ import { PageHeader, PageHeaderButton } from "@/components/page-header";
 import { DataTable, Column } from "@/components/data-table";
 import { ConfirmModal } from "@/components/modal";
 import { useToast } from "@/components/toast";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { Plus, Building, MoreHorizontal, Pencil, Trash, ExternalLink } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 
 interface Organization {
     id: string;

@@ -12,8 +12,8 @@
         "generate:component": "turbo gen react-component"
     },
     "devDependencies": {
-        "@digibit/eslint-config": "*",
-        "@digibit/typescript-config": "*",
+        "@ktblog/eslint-config": "*",
+        "@ktblog/typescript-config": "*",
         "@types/react": "^19.0.1",
         "@types/react-dom": "^19.0.1",
         "eslint": "^9.0.0",

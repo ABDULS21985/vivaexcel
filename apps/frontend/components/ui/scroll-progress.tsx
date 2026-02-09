@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 export interface ScrollProgressProps {
   /** Color of the progress bar */

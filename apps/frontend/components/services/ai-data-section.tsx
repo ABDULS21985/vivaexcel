@@ -8,7 +8,7 @@ import {
     TrendingUp,
     Zap,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { getServiceCategoryById } from "@/data/services";
 import { ServiceCard } from "./service-card";
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plan transforms the Digibit website from "high-quality startup" to "enterprise consulting powerhouse" level, benchmarking against EY, PwC, IBM, McKinsey, Deloitte, and Accenture.
+This plan transforms the KTBlog website from "high-quality startup" to "enterprise consulting powerhouse" level, benchmarking against EY, PwC, IBM, McKinsey, Deloitte, and Accenture.
 
 **Approach:** All 11 phases sequentially, GSAP alongside Framer Motion, sample content generated.
 
@@ -410,7 +410,7 @@ Components:
 ### 6.5 Careers Page
 **Create:** `/app/[locale]/careers/page.tsx`
 - Hero: "Join Our Team"
-- Why Digibit section
+- Why KTBlog section
 - Open Positions list (placeholder)
 
 ---

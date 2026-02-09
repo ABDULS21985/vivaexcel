@@ -47,17 +47,24 @@ const staticPages: Array<{
   priority: number;
 }> = [
   { path: "", changeFrequency: "daily", priority: 1.0 },
-  { path: "/about", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/contact", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/about", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/contact", changeFrequency: "monthly", priority: 0.5 },
   { path: "/blogs", changeFrequency: "daily", priority: 0.9 },
-  { path: "/membership", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/membership", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/search", changeFrequency: "weekly", priority: 0.4 },
+  { path: "/services", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/products", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/training", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/careers", changeFrequency: "weekly", priority: 0.4 },
+  { path: "/industries", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/case-studies", changeFrequency: "monthly", priority: 0.5 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const currentDate = new Date();
   const sitemapEntries: SitemapEntry[] = [];
 
-  // Add static pages
+  // ---- Static pages ----
   staticPages.forEach(({ path, changeFrequency, priority }) => {
     sitemapEntries.push({
       url: `${SITE_URL}${path}`,
@@ -68,7 +75,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   });
 
-  // Add individual blog post pages (/blogs/[slug])
+  // ---- Individual blog post pages (/blogs/[slug]) ----
   blogPosts
     .filter((post) => post.status === "published")
     .forEach((post) => {
@@ -82,19 +89,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       });
     });
 
-  // Add blog category pages (/blogs/category/[slug])
+  // ---- Blog category pages (/blogs/category/[slug]) ----
   blogCategories.forEach((category) => {
     const path = `/blogs/category/${category.slug}`;
     sitemapEntries.push({
       url: `${SITE_URL}${path}`,
       lastModified: currentDate,
       changeFrequency: "weekly",
-      priority: 0.7,
+      priority: 0.6,
       alternates: generateAlternates(path),
     });
   });
 
-  // Add blog tag pages (/blogs/tag/[slug])
+  // ---- Blog tag pages (/blogs/tag/[slug]) ----
   blogTags.forEach((tag) => {
     const path = `/blogs/tag/${tag.slug}`;
     sitemapEntries.push({
@@ -106,7 +113,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   });
 
-  // Add author pages (/author/[slug])
+  // ---- Author pages (/author/[slug]) ----
   blogAuthors.forEach((author) => {
     const path = `/author/${author.slug}`;
     sitemapEntries.push({

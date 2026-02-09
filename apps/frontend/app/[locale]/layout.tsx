@@ -17,7 +17,7 @@ import { SoundProvider } from "../../providers/sound-provider";
 import { ThemeProvider } from "../../providers/theme-provider";
 import { GoogleAnalytics } from "../../components/analytics";
 import { JsonLd } from "../../components/shared/json-ld";
-import { generateOrganizationSchema } from "../../lib/schema";
+import { generateOrganizationSchema, generateWebSiteSchema } from "../../lib/schema";
 import { PageContentWrapper } from "../../components/layout/page-content-wrapper";
 import "../globals.css";
 
@@ -65,12 +65,30 @@ export const metadata: Metadata = {
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
     type: "website",
     siteName: "KTBlog",
+    url: "https://drkatangablog.com",
+    images: [
+      {
+        url: "/api/og?type=default",
+        width: 1200,
+        height: 630,
+        alt: "KTBlog — Insights, Tutorials & Expert Knowledge",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "KTBlog — Insights, Tutorials & Expert Knowledge",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
+    images: [
+      {
+        url: "/api/og?type=default",
+        width: 1200,
+        height: 630,
+        alt: "KTBlog — Insights, Tutorials & Expert Knowledge",
+      },
+    ],
   },
 };
 
@@ -116,6 +134,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
 
         <JsonLd data={generateOrganizationSchema()} />
+        <JsonLd data={generateWebSiteSchema()} />
       </head>
       <body
         suppressHydrationWarning

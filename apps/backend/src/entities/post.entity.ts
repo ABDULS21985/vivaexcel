@@ -4,6 +4,8 @@ import { BlogCategory } from './blog-category.entity';
 import { BlogTag } from './blog-tag.entity';
 import { Comment } from './comment.entity';
 import { User } from './user.entity';
+import { PostRevision } from './post-revision.entity';
+import { PostSeries } from './post-series.entity';
 
 export enum PostStatus {
   DRAFT = 'draft',
@@ -65,6 +67,17 @@ export class Post extends BaseEntity {
   @Column({ nullable: true })
   series?: string;
 
+  @Column({ name: 'series_id', nullable: true })
+  @Index()
+  seriesId?: string;
+
+  @ManyToOne(() => PostSeries, (postSeries) => postSeries.posts, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'series_id' })
+  postSeries?: PostSeries;
+
   @Column({ name: 'series_order', type: 'int', nullable: true })
   seriesOrder?: number;
 
@@ -104,6 +117,9 @@ export class Post extends BaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments?: Comment[];
+
+  @OneToMany(() => PostRevision, (revision) => revision.post)
+  revisions?: PostRevision[];
 
   @Column({ name: 'published_at', nullable: true })
   publishedAt?: Date;

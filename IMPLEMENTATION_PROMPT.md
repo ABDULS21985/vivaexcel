@@ -5,12 +5,12 @@
 **Monorepo:** Turborepo with npm workspaces
 **Frontend:** `apps/frontend/` — Next.js 16.1.4, React 19.2, TypeScript 5, Tailwind CSS 4
 **Backend:** `apps/backend/` — NestJS
-**UI Library:** `packages/ui/` — Shared components (`@digibit/ui`)
+**UI Library:** `packages/ui/` — Shared components (`@ktblog/ui`)
 **i18n:** next-intl 4.7.0 — 5 locales: en (default), ar (RTL), fr, es, pt. Locale prefix: "as-needed"
 **State/Data:** TanStack React Query 5, Zod 4, react-hook-form 7
 **Animations:** GSAP 3.14 + Framer Motion 12
-**Domain:** https://globaldigibit.com
-**Company:** Global Digitalbit Limited — IT consultancy (offices in Abuja, Nigeria + Doha, Qatar)
+**Domain:** https://drkatangablog.com
+**Company:** KTBlog — IT consultancy (offices in Abuja, Nigeria + Doha, Qatar)
 
 ---
 
@@ -33,9 +33,9 @@ Create `apps/frontend/lib/schema.ts` with helper functions that return typed JSO
 **Organization Schema** (used site-wide in layout):
 ```
 - @type: Organization
-- name: "Global Digitalbit Limited"
-- url: "https://globaldigibit.com"
-- logo: "https://globaldigibit.com/logo/digibit.png"
+- name: "KTBlog"
+- url: "https://drkatangablog.com"
+- logo: "https://drkatangablog.com/logo/ktblog.png"
 - description: (from metadata.ts SITE_NAME description)
 - contactPoint: [
     { @type: ContactPoint, telephone: "+234-816-177-8448", contactType: "customer service", areaServed: "NG" },
@@ -51,9 +51,9 @@ Create `apps/frontend/lib/schema.ts` with helper functions that return typed JSO
 **WebSite Schema** (used on homepage):
 ```
 - @type: WebSite
-- name: "Global Digitalbit Limited"
-- url: "https://globaldigibit.com"
-- potentialAction: { @type: SearchAction, target: "https://globaldigibit.com/search?q={search_term_string}" }
+- name: "KTBlog"
+- url: "https://drkatangablog.com"
+- potentialAction: { @type: SearchAction, target: "https://drkatangablog.com/search?q={search_term_string}" }
 ```
 
 **BreadcrumbList Schema** (used on all inner pages):
@@ -82,7 +82,7 @@ Function signature: generateArticleSchema(post: BlogPostWithRelations)
 - datePublished: post.publishedAt
 - dateModified: post.updatedAt
 - author: { @type: Person, name: post.author.name, jobTitle: post.author.role }
-- publisher: { @type: Organization, name: "Global Digitalbit Limited", logo: ... }
+- publisher: { @type: Organization, name: "KTBlog", logo: ... }
 - mainEntityOfPage: canonical URL
 ```
 
@@ -92,7 +92,7 @@ Function signature: generateProductSchema(product: Product)
 - @type: Product
 - name: product.name
 - description: product.description
-- brand: { @type: Organization, name: "Global Digitalbit Limited" }
+- brand: { @type: Organization, name: "KTBlog" }
 - image: product.image
 - offers: { @type: Offer, availability: "https://schema.org/OnlineOnly", price: "0", priceCurrency: "USD" } (or use AggregateOffer if no price)
 ```
@@ -110,7 +110,7 @@ Function signature: generateServiceSchema(category: ServiceCategory)
 - @type: Service
 - name: category.name
 - description: category.description
-- provider: { @type: Organization, name: "Global Digitalbit Limited" }
+- provider: { @type: Organization, name: "KTBlog" }
 - areaServed: ["NG", "QA", "GH", "AE"]
 ```
 
@@ -151,7 +151,7 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
 4. Validate the JSON-LD output against https://validator.schema.org/ expectations:
    - Each schema must have `@context: "https://schema.org"`
    - No missing required fields
-   - URLs must be absolute (start with https://globaldigibit.com)
+   - URLs must be absolute (start with https://drkatangablog.com)
 5. Check that no TypeScript errors are introduced
 
 ---
@@ -456,19 +456,19 @@ In `apps/frontend/components/footer.tsx`, update the `socialLinks` array (lines 
 const socialLinks = [
     {
         icon: Facebook,
-        href: "https://www.facebook.com/globaldigibit",
+        href: "https://www.facebook.com/drkatangablog",
         label: "Facebook",
         hoverClass: "hover:bg-[#1877F2] hover:border-[#1877F2]",
     },
     {
         icon: Twitter,
-        href: "https://x.com/globaldigibit",
+        href: "https://x.com/drkatangablog",
         label: "Twitter",
         hoverClass: "hover:bg-[#1DA1F2] hover:border-[#1DA1F2]",
     },
     {
         icon: Linkedin,
-        href: "https://www.linkedin.com/company/globaldigibit",
+        href: "https://www.linkedin.com/company/drkatangablog",
         label: "LinkedIn",
         hoverClass: "hover:bg-[#0A66C2] hover:border-[#0A66C2]",
     },
@@ -477,7 +477,7 @@ const socialLinks = [
 
 **Key decisions:**
 - Remove Instagram, YouTube, and GitHub if the company doesn't have accounts on those platforms. Dead social links hurt credibility more than having fewer links.
-- If the actual URLs are unknown, use placeholder format `https://www.linkedin.com/company/globaldigibit` and add a code comment `// TODO: Replace with actual company social URLs`
+- If the actual URLs are unknown, use placeholder format `https://www.linkedin.com/company/drkatangablog` and add a code comment `// TODO: Replace with actual company social URLs`
 - Ask the user for actual social media URLs if unsure
 
 #### 5.2 Update Legal Links
@@ -641,7 +641,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 export default withSentryConfig(withNextIntl(nextConfig), {
   silent: true,
   org: "global-digitalbit",
-  project: "digibit-website",
+  project: "ktblog-website",
 });
 ```
 
@@ -700,8 +700,8 @@ Make the site installable as a Progressive Web App with offline capability for k
 Create `apps/frontend/public/manifest.json`:
 ```json
 {
-  "name": "Global Digitalbit Limited",
-  "short_name": "Digibit",
+  "name": "KTBlog",
+  "short_name": "KTBlog",
   "description": "IT Consultancy, AI, Cybersecurity & CBDC Solutions",
   "start_url": "/",
   "display": "standalone",
@@ -748,7 +748,7 @@ const pwaConfig = withPWA({
 
 #### 8.4 Icons
 
-Generate PWA icons from the existing logo at `public/logo/digibit.png`:
+Generate PWA icons from the existing logo at `public/logo/ktblog.png`:
 - 192x192 PNG
 - 512x512 PNG
 - 512x512 maskable PNG
@@ -776,7 +776,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /api/
-Sitemap: https://globaldigibit.com/sitemap.xml
+Sitemap: https://drkatangablog.com/sitemap.xml
 ```
 
 ### Implementation
@@ -798,7 +798,7 @@ User-agent: Bingbot
 Allow: /
 Crawl-delay: 2
 
-Sitemap: https://globaldigibit.com/sitemap.xml
+Sitemap: https://drkatangablog.com/sitemap.xml
 ```
 
 ### Testing (Task 9)

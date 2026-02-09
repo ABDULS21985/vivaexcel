@@ -109,7 +109,7 @@ export const getPinoConfig = (): Params => {
       customProps: (req: IncomingMessage) => ({
         correlationId: req.headers['x-correlation-id'] || (req as any).id,
         environment: process.env.NODE_ENV || 'development',
-        service: process.env.APP_NAME || 'digiweb-backend',
+        service: process.env.APP_NAME || 'ktblog-backend',
       }),
 
       // Don't log health check endpoints

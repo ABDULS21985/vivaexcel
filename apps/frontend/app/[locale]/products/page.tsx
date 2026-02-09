@@ -22,7 +22,7 @@ export const metadata: Metadata = {
         title: "Our Products - Global Digitalbit Limited",
         description:
             "DigiGate, DigiTrust, DigiTrack, TrustMeHub, and BoaCRM - Enterprise-grade solutions for digital transformation.",
-        url: "https://globaldigibit.com/products",
+        url: "https://drkatangablog.com/products",
     },
 };
 

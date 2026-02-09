@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Shield, Blocks, Activity, Zap, Users } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@digibit/ui/components";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@ktblog/ui/components";
 import { products } from "@/data/products";
 import { ProductShowcase } from "./product-showcase";
 

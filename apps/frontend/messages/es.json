@@ -704,7 +704,7 @@
     "clientSince": "Cliente desde",
     "items": {
       "testimonial1": {
-        "quote": "Las soluciones de software personalizadas de Global Digibit han transformado nuestras operaciones. Su equipo entendio nuestros requisitos complejos y entrego un sistema que supero nuestras expectativas.",
+        "quote": "Las soluciones de software personalizadas de KTBlog han transformado nuestras operaciones. Su equipo entendio nuestros requisitos complejos y entrego un sistema que supero nuestras expectativas.",
         "author": "David M.",
         "role": "Cliente Valorado"
       },
@@ -714,22 +714,22 @@
         "role": "Directora de TI"
       },
       "testimonial3": {
-        "quote": "Los servicios de integracion de IA proporcionados por Global Digibit han revolucionado nuestras capacidades de analisis de datos. Ahora estamos tomando decisiones mas inteligentes y rapidas.",
+        "quote": "Los servicios de integracion de IA proporcionados por KTBlog han revolucionado nuestras capacidades de analisis de datos. Ahora estamos tomando decisiones mas inteligentes y rapidas.",
         "author": "Michael O.",
         "role": "Gerente de Operaciones"
       },
       "testimonial4": {
-        "quote": "Trabajar con Global Digibit en nuestra implementacion de blockchain fue fluido. Su conocimiento tecnico y enfoque profesional marcaron toda la diferencia.",
+        "quote": "Trabajar con KTBlog en nuestra implementacion de blockchain fue fluido. Su conocimiento tecnico y enfoque profesional marcaron toda la diferencia.",
         "author": "Amina B.",
         "role": "Directora de Finanzas"
       },
       "testimonial5": {
-        "quote": "Los programas de capacitacion ofrecidos por Global Digibit han mejorado las habilidades de todo nuestro equipo. El enfoque practico y aplicado aseguro una aplicabilidad inmediata.",
+        "quote": "Los programas de capacitacion ofrecidos por KTBlog han mejorado las habilidades de todo nuestro equipo. El enfoque practico y aplicado aseguro una aplicabilidad inmediata.",
         "author": "James T.",
         "role": "Gerente de RRHH"
       },
       "testimonial6": {
-        "quote": "Los servicios de consultoria CBDC de Global Digibit nos ayudaron a navegar requisitos regulatorios complejos. Su experiencia en este campo emergente es incomparable.",
+        "quote": "Los servicios de consultoria CBDC de KTBlog nos ayudaron a navegar requisitos regulatorios complejos. Su experiencia en este campo emergente es incomparable.",
         "author": "Fatima A.",
         "role": "Ejecutiva Bancaria"
       }
@@ -806,7 +806,7 @@
       }
     },
     "whyPartner": {
-      "label": "Por Que Digibit?",
+      "label": "Por Que KTBlog?",
       "title": "El Socio Adecuado para Cada Parte Interesada",
       "subtitle": "Reunimos experiencia, innovacion y compromiso para entregar resultados excepcionales.",
       "audiences": {
@@ -932,7 +932,7 @@
         "button": "Reservar un Horario"
       },
       "footer": {
-        "company": "Digibit Global Solutions",
+        "company": "KTBlog",
         "copyright": "© 2026 Global Digitalbit Limited. Todos los derechos reservados.",
         "eventInfo": "Web Summit Qatar 2026 | 1-4 de Febrero, Doha",
         "tagline": "Hecho con amor para Web Summit Qatar"

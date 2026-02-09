@@ -9,7 +9,7 @@ import {
     Input,
     Textarea,
     Label,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import {
     Plus,
     Edit,

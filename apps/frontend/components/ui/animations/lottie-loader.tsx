@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import Lottie from "lottie-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 
 // Brand colors for the loader animation
 const BRAND_PRIMARY = "#3B82F6"; // blue-500

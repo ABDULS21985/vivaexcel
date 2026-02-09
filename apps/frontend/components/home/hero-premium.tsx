@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";

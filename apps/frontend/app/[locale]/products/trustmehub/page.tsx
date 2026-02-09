@@ -20,7 +20,7 @@ import {
     Home,
     Briefcase,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { TrustIndicators, CTASection, AnimateOnScroll, FloatingOrbs, GradientDivider } from "@/components/shared";
 import {
     ImpactCalculator,
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
         title: "TrustMeHub - Building Trust. Empowering Growth.",
         description:
             "Verify any credential in milliseconds, not weeks. Global digital trust infrastructure for blockchain-anchored credential verification.",
-        url: "https://globaldigibit.com/products/trustmehub",
+        url: "https://drkatangablog.com/products/trustmehub",
         images: [
             {
                 url: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2670&auto=format&fit=crop",

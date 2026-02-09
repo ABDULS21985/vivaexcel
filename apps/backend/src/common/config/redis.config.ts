@@ -127,7 +127,7 @@ export default registerAs('redis', (): RedisConfig => {
     port: config.REDIS_PORT,
     password: config.REDIS_PASSWORD,
     db: config.REDIS_DB ?? 0,
-    keyPrefix: config.REDIS_KEY_PREFIX ?? 'digiweb:',
+    keyPrefix: config.REDIS_KEY_PREFIX ?? 'ktblog:',
     tls: config.REDIS_TLS ?? isProduction,
     connectTimeout: config.REDIS_CONNECT_TIMEOUT ?? 10000,
     maxRetries: config.REDIS_MAX_RETRIES ?? 3,

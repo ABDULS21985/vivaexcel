@@ -12,7 +12,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import {
     Users,
     CreditCard,

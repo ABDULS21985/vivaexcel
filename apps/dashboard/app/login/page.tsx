@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuthContext } from "../../contexts/auth-context";
 import { AuthLayout } from "../../components/auth-layout";
-import { Input, Button, Checkbox } from "@digibit/ui/components";
+import { Input, Button, Checkbox } from "@ktblog/ui/components";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
 // Form validation types
@@ -150,7 +150,7 @@ export default function LoginPage() {
                             setEmail(e.target.value);
                             setFormErrors((prev) => ({ ...prev, email: undefined }));
                         }}
-                        placeholder="admin@globaldigibit.com"
+                        placeholder="admin@drkatangablog.com"
                         disabled={isFormLoading}
                         leftIcon={<Mail className="w-5 h-5" />}
                         autoFocus
@@ -244,7 +244,7 @@ export default function LoginPage() {
                     <p className="text-sm text-zinc-500 dark:text-zinc-400">
                         Need access?{" "}
                         <a
-                            href="mailto:admin@globaldigibit.com"
+                            href="mailto:admin@drkatangablog.com"
                             className="text-primary hover:text-primary/80 font-medium transition-colors"
                         >
                             Contact administrator

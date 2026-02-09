@@ -117,7 +117,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     expertiseTags: ["Leadership", "Strategy", "Digital Policy"],
     focusAreas: ["Enterprise Strategy", "Government Relations", "Innovation"],
     linkedIn: "https://linkedin.com",
-    email: "ceo@digibit.com",
+    email: "ceo@drkatangablog.com",
   },
   {
     name: "Micha Abdul",
@@ -130,7 +130,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     expertiseTags: ["AI/ML", "Blockchain", "Architecture"],
     focusAreas: ["Technical Strategy", "Platform Engineering", "R&D"],
     linkedIn: "https://linkedin.com",
-    email: "cto@digibit.com",
+    email: "cto@drkatangablog.com",
   },
   {
     name: "Fatima Hassan",
@@ -143,7 +143,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     expertiseTags: ["Zero Trust", "Compliance", "Risk"],
     focusAreas: ["Security Operations", "Incident Response", "Compliance"],
     linkedIn: "https://linkedin.com",
-    email: "security@digibit.com",
+    email: "security@drkatangablog.com",
   },
   {
     name: "Dr. Ahmad M",
@@ -156,7 +156,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     expertiseTags: ["ML/AI", "MLOps", "Research"],
     focusAreas: ["AI Strategy", "Model Development", "Data Science"],
     linkedIn: "https://linkedin.com",
-    email: "ai@digibit.com",
+    email: "ai@drkatangablog.com",
   },
   {
     name: "Aisha Aliyu",
@@ -169,7 +169,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     expertiseTags: ["Partnerships", "Business Dev", "Relations"],
     focusAreas: ["Strategic Alliances", "Government Bids", "Client Success"],
     linkedIn: "https://linkedin.com",
-    email: "partnerships@digibit.com",
+    email: "partnerships@drkatangablog.com",
   },
   {
     name: "Khalid Al-Mansoor",
@@ -182,7 +182,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     expertiseTags: ["Cloud", "DevOps", "FinOps"],
     focusAreas: ["Cloud Migration", "Platform Design", "Cost Optimization"],
     linkedIn: "https://linkedin.com",
-    email: "solutions@digibit.com",
+    email: "solutions@drkatangablog.com",
   },
 ];
 

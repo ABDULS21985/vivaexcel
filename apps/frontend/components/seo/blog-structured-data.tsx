@@ -6,14 +6,16 @@ const SITE_NAME = "KTBlog";
 const LOGO_URL = `${SITE_URL}/logo/ktblog.png`;
 
 // ============================================================================
-// ArticleStructuredData — JSON-LD for individual blog posts
+// ArticleStructuredData — Full JSON-LD for individual blog posts
 // ============================================================================
 
 interface ArticleStructuredDataProps {
   post: BlogPostWithRelations;
+  /** Optional comment count for interactionStatistic */
+  commentCount?: number;
 }
 
-export function ArticleStructuredData({ post }: ArticleStructuredDataProps) {
+export function ArticleStructuredData({ post, commentCount = 0 }: ArticleStructuredDataProps) {
   const postUrl = `${SITE_URL}/blogs/${post.slug}`;
   const wordCount = post.content
     ? post.content.split(/\s+/).filter(Boolean).length
@@ -25,7 +27,14 @@ export function ArticleStructuredData({ post }: ArticleStructuredDataProps) {
     "@id": `${postUrl}#article`,
     headline: post.metaTitle || post.title,
     description: post.metaDescription || post.excerpt,
-    image: post.featuredImage,
+    image: post.featuredImage
+      ? {
+          "@type": "ImageObject",
+          url: post.featuredImage,
+          width: 1200,
+          height: 630,
+        }
+      : undefined,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt || post.publishedAt,
     wordCount,
@@ -36,6 +45,7 @@ export function ArticleStructuredData({ post }: ArticleStructuredDataProps) {
       name: post.author.name,
       jobTitle: post.author.role,
       url: `${SITE_URL}/author/${post.author.slug}`,
+      image: post.author.avatar || undefined,
     },
     publisher: {
       "@type": "Organization",
@@ -58,6 +68,20 @@ export function ArticleStructuredData({ post }: ArticleStructuredDataProps) {
       name: SITE_NAME,
       url: `${SITE_URL}/blogs`,
     },
+    commentCount,
+    interactionStatistic: [
+      {
+        "@type": "InteractionCounter",
+        interactionType: "https://schema.org/ReadAction",
+        userInteractionCount: post.viewsCount || 0,
+      },
+      {
+        "@type": "InteractionCounter",
+        interactionType: "https://schema.org/CommentAction",
+        userInteractionCount: commentCount,
+      },
+    ],
+    inLanguage: "en",
   };
 
   return (
@@ -205,7 +229,7 @@ export function WebSiteStructuredData() {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/blogs?q={search_term_string}`,
+        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },

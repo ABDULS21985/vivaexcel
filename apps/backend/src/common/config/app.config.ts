@@ -29,7 +29,7 @@ class AppConfigValidation {
   NODE_ENV: Environment = Environment.Development;
 
   @IsString()
-  APP_NAME: string = 'DigiWeb';
+  APP_NAME: string = 'KTBlog';
 
   @IsInt()
   @Min(1)

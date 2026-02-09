@@ -26,13 +26,14 @@
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.1",
     "sharp": "^0.34.5",
+    "shiki": "^3.22.0",
     "sonner": "^2.0.7",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@digibit/eslint-config": "*",
-    "@digibit/typescript-config": "*",
-    "@digibit/ui": "*",
+    "@ktblog/eslint-config": "*",
+    "@ktblog/typescript-config": "*",
+    "@ktblog/ui": "*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

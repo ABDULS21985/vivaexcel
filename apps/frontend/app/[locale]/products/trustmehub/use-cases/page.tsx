@@ -22,7 +22,7 @@ export const metadata: Metadata = {
         title: "TrustMeHub Use Cases - National-Scale Credential Verification",
         description:
             "10 use cases transforming credential verification with $60B+ economic impact.",
-        url: "https://globaldigibit.com/products/trustmehub/use-cases",
+        url: "https://drkatangablog.com/products/trustmehub/use-cases",
     },
 };
 

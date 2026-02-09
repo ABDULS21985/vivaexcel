@@ -7,7 +7,7 @@ import { StatsCard } from "@/components/stats-card";
 import { Modal, ConfirmModal } from "@/components/modal";
 import { ContactForm, ContactSubmission } from "@/components/forms/contact-form";
 import { useToast } from "@/components/toast";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { Mail, MessageSquare, Clock, CheckCircle, Eye, Download } from "lucide-react";
 
 const initialSubmissions: ContactSubmission[] = [
@@ -18,7 +18,7 @@ const initialSubmissions: ContactSubmission[] = [
         phone: "+1 234 567 890",
         company: "Acme Inc.",
         subject: "Partnership Inquiry",
-        message: "We are interested in exploring potential partnership opportunities with Global Digibit for our digital transformation initiatives.",
+        message: "We are interested in exploring potential partnership opportunities with KTBlog for our digital transformation initiatives.",
         status: "new",
         createdAt: "2024-01-26T10:30:00Z",
     },
@@ -36,7 +36,7 @@ const initialSubmissions: ContactSubmission[] = [
     {
         id: "3",
         name: "Micha Abdul",
-        email: "mabdul@globaldigibit.com",
+        email: "mabdul@drkatangablog.com",
         phone: "+974 5555 1234",
         company: "Government Bank Qatar",
         subject: "CBDC Implementation",

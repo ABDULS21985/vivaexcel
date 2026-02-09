@@ -4,7 +4,7 @@ import * as React from "react";
 import { ThemeToggle } from "./theme-toggle";
 import { UserNav } from "./user-nav";
 import { Menu } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 interface HeaderProps {
     onMenuClick: () => void;

@@ -43,7 +43,7 @@ import {
   BarChart3,
   type LucideIcon,
 } from "lucide-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import type { Product } from "@/types/products";
 
 // Icon mapping for product features

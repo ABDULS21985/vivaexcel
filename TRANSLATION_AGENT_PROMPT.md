@@ -2,7 +2,7 @@
 
 ## PROJECT OVERVIEW
 
-This prompt coordinates multiple AI agents to ensure **complete and accurate internationalization (i18n)** across the Global Digitalbit (Digibit) corporate website. The codebase uses **next-intl** for translations with 5 supported languages.
+This prompt coordinates multiple AI agents to ensure **complete and accurate internationalization (i18n)** across the KTBlog corporate website. The codebase uses **next-intl** for translations with 5 supported languages.
 
 ### Supported Languages
 | Code | Language | Direction | Flag |
@@ -181,7 +181,7 @@ Generate a JSON report:
   "hardcodedStrings": [
     {
       "line": 45,
-      "text": "What services does Global Digitalbit offer?",
+      "text": "What services does KTBlog offer?",
       "context": "FAQ question",
       "suggestedKey": "faqs.questions.services.question"
     }
@@ -325,7 +325,7 @@ export async function ServerComponent() {
      },
      "questions": {
        "services": {
-         "question": "What services does Global Digitalbit offer?",
+         "question": "What services does KTBlog offer?",
          "answer": "We offer comprehensive IT services including..."
        },
        // ... all FAQ items

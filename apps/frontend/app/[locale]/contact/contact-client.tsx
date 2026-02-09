@@ -13,6 +13,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { SOCIAL_LINKS } from "@/lib/constants";
+import { useSubmitContact } from "@/hooks/use-contact";
+import { toast } from "sonner";
 
 /* ------------------------------------------------------------------
    TYPES & VALIDATION
@@ -107,8 +109,10 @@ export function ContactPageClient() {
     message: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const submitContact = useSubmitContact();
+
+  const isSubmitting = submitContact.isPending;
 
   function handleChange(
     e: React.ChangeEvent<
@@ -132,14 +136,19 @@ export function ContactPageClient() {
       return;
     }
 
-    setIsSubmitting(true);
     setErrors({});
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      await submitContact.mutateAsync(formData);
+      setIsSuccess(true);
+      toast.success("Message sent successfully! We will get back to you soon.");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to send message. Please try again.";
+      toast.error(errorMessage);
+    }
   }
 
   function handleReset() {

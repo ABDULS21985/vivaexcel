@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         title: "Industries We Serve | Global Digitalbit",
         description:
             "Deep industry expertise delivering tailored digital transformation solutions across key sectors.",
-        url: "https://globaldigibit.com/industries",
+        url: "https://drkatangablog.com/industries",
     },
 };
 

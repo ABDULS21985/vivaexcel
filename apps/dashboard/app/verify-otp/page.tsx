@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AuthLayout } from "../../components/auth-layout";
-import { Button, OtpInput } from "@digibit/ui/components";
+import { Button, OtpInput } from "@ktblog/ui/components";
 import { Loader2 } from "lucide-react";
 
 export default function VerifyOtpPage() {

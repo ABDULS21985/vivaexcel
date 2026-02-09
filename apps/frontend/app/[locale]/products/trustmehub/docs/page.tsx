@@ -10,7 +10,7 @@ import {
     Copy,
     ExternalLink,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { CTASection } from "@/components/shared";
 import { sdkList, apiFeatures, apiEndpoints, codeExamples } from "@/data/trustmehub/api-docs";
 
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
         title: "TrustMeHub API Documentation - Developer Guide",
         description:
             "Integrate credential verification in minutes with auto-generated SDKs and comprehensive documentation.",
-        url: "https://globaldigibit.com/products/trustmehub/docs",
+        url: "https://drkatangablog.com/products/trustmehub/docs",
     },
 };
 

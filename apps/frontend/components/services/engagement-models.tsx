@@ -10,7 +10,7 @@ import {
     ArrowRight,
     type LucideIcon,
 } from "lucide-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import { engagementModels as defaultModels } from "@/data/services-global";
 import type { EngagementModel } from "@/types/services-global";
 import Link from "next/link";

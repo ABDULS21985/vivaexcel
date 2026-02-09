@@ -10,7 +10,7 @@ import {
   Sparkles,
   Target,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { CTASection } from "@/components/shared";
 import { getServiceTowerBySlug } from "@/data/services-global";
 import type { ServiceTower } from "@/types/services-global";
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${tower.name} - Process Excellence`,
       description: tower.description,
-      url: `https://globaldigibit.com/services/${slug}`,
+      url: `https://drkatangablog.com/services/${slug}`,
     },
   };
 }

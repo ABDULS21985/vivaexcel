@@ -11,14 +11,14 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
-    title: "Enterprise Technology Services | Digibit",
+    title: "Enterprise Technology Services | KTBlog",
     description:
         "22 service towers covering strategy, transformation, technology, cybersecurity, and more. Expert advisory and implementation services for enterprises worldwide.",
     openGraph: {
-        title: "Enterprise Technology Services | Digibit",
+        title: "Enterprise Technology Services | KTBlog",
         description:
             "22 service towers covering strategy, transformation, technology, cybersecurity, and more.",
-        url: "https://globaldigibit.com/services",
+        url: "https://drkatangablog.com/services",
     },
 };
 

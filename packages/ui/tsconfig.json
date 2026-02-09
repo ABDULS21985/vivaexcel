@@ -1,5 +1,5 @@
 {
-    "extends": "@digibit/typescript-config/base.json",
+    "extends": "@ktblog/typescript-config/base.json",
     "compilerOptions": {
         "lib": [
             "ES2015",

@@ -1,8 +1,8 @@
-# VivaExcel Blog — Best-of-Class Blog Platform
+# KTBlog — Best-of-Class Blog Platform
 
 ## Detailed Requirements Document
 
-**Project Name:** VivaExcel Blog
+**Project Name:** KTBlog
 **Document Version:** 1.0
 **Date:** February 9, 2026
 **Status:** Draft
@@ -37,11 +37,11 @@
 
 ## 1. Project Overview
 
-VivaExcel Blog is a **best-of-class, modern blog platform** designed to deliver exceptional content experiences, high performance, built-in monetization, AI-powered workflows, and full data ownership. The platform will serve as a professional publishing hub that combines a world-class reading experience with powerful tools for content creators.
+KTBlog is a **best-of-class, modern blog platform** designed to deliver exceptional content experiences, high performance, built-in monetization, AI-powered workflows, and full data ownership. The platform will serve as a professional publishing hub that combines a world-class reading experience with powerful tools for content creators.
 
 ### 1.1 Problem Statement
 
-Most blog platforms force a trade-off between ease of use, customization, and performance. Writers either use simple but limited hosted platforms, or struggle with complex self-hosted solutions. VivaExcel Blog eliminates this trade-off by providing an intuitive, high-performance, feature-rich platform built on a modern headless architecture.
+Most blog platforms force a trade-off between ease of use, customization, and performance. Writers either use simple but limited hosted platforms, or struggle with complex self-hosted solutions. KTBlog eliminates this trade-off by providing an intuitive, high-performance, feature-rich platform built on a modern headless architecture.
 
 ### 1.2 Vision
 
@@ -69,7 +69,7 @@ To build a blog platform that achieves:
 
 ### 2.2 Secondary Goals
 
-- Establish VivaExcel as an authority in its niche
+- Establish KTBlog as an authority in its niche
 - Generate recurring revenue through memberships
 - Provide an omnichannel presence (web, email, RSS, social)
 - Maintain WCAG 2.2 AA accessibility compliance
@@ -813,9 +813,9 @@ The editor must support the following block types:
 | Environment | Purpose | URL Pattern |
 |-------------|---------|-------------|
 | **Development** | Local development | `localhost:3000` |
-| **Preview** | PR preview deployments | `pr-[number].vivaexcel.vercel.app` |
-| **Staging** | Pre-production testing | `staging.vivaexcel.com` |
-| **Production** | Live site | `www.vivaexcel.com` |
+| **Preview** | PR preview deployments | `pr-[number].drkatangablog.com` |
+| **Staging** | Pre-production testing | `staging.drkatangablog.com` |
+| **Production** | Live site | `www.drkatangablog.com` |
 
 ### 20.2 CI/CD Pipeline
 
@@ -932,4 +932,4 @@ Code Push → GitHub Actions Triggered
 
 ---
 
-*Document prepared for VivaExcel Blog — February 2026*
+*Document prepared for KTBlog — February 2026*

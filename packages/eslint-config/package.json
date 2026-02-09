@@ -1,5 +1,5 @@
 {
-    "name": "@digibit/eslint-config",
+    "name": "@ktblog/eslint-config",
     "version": "0.0.0",
     "private": true,
     "type": "module",

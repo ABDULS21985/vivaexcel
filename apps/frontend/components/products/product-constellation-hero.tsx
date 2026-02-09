@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight, Shield, Blocks, Activity, Zap, Users, type LucideIcon } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { products } from "@/data/products";
 
 /* ------------------------------------------------------------------ */

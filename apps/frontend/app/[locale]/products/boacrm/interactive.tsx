@@ -15,7 +15,7 @@ import {
   Bot,
   BarChart3,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   Users,

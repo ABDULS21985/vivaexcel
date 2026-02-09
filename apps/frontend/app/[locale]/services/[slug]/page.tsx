@@ -89,7 +89,7 @@ import {
     Laptop,
     type LucideIcon,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { CTASection } from "@/components/shared";
 import { ServiceTowerCard } from "@/components/services";
 import {
@@ -262,7 +262,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         openGraph: {
             title: `${tower.name} - Global Digitalbit`,
             description: tower.description,
-            url: `https://globaldigibit.com/services/${slug}`,
+            url: `https://drkatangablog.com/services/${slug}`,
         },
     };
 }

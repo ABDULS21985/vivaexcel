@@ -7,14 +7,14 @@ import { StatsCard } from "@/components/stats-card";
 import { Modal, ConfirmModal } from "@/components/modal";
 import { ApplicationForm } from "@/components/forms/application-form";
 import { useToast } from "@/components/toast";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@digibit/ui/components";
+} from "@ktblog/ui/components";
 import {
     Briefcase,
     UserPlus,
@@ -38,7 +38,7 @@ const initialApplications: JobApplication[] = [
         positionTitle: "Senior Software Engineer",
         department: "Engineering",
         location: "Remote",
-        coverLetter: "I am excited to apply for the Senior Software Engineer position at Global Digibit. With over 8 years of experience in full-stack development and a passion for building scalable systems, I believe I would be a great fit for your team.\n\nIn my current role at TechCorp, I have led the development of microservices architecture that handles millions of requests daily. I am particularly drawn to Global Digibit's mission of transforming digital banking and would love to contribute to your innovative products.",
+        coverLetter: "I am excited to apply for the Senior Software Engineer position at KTBlog. With over 8 years of experience in full-stack development and a passion for building scalable systems, I believe I would be a great fit for your team.\n\nIn my current role at TechCorp, I have led the development of microservices architecture that handles millions of requests daily. I am particularly drawn to KTBlog's mission of transforming digital banking and would love to contribute to your innovative products.",
         linkedinUrl: "https://linkedin.com/in/sarahjohnson",
         portfolioUrl: "https://sarahjohnson.dev",
         resumeUrl: "/uploads/resumes/sarah-johnson-resume.pdf",
@@ -57,7 +57,7 @@ const initialApplications: JobApplication[] = [
         positionTitle: "Product Manager",
         department: "Product",
         location: "Dubai, UAE",
-        coverLetter: "Dear Hiring Team,\n\nI am writing to express my strong interest in the Product Manager position. With 6 years of experience in product management within fintech, I have successfully launched multiple payment products used by millions of users.\n\nI am particularly impressed by Global Digibit's TrustMeHub platform and would be thrilled to contribute to its growth.",
+        coverLetter: "Dear Hiring Team,\n\nI am writing to express my strong interest in the Product Manager position. With 6 years of experience in product management within fintech, I have successfully launched multiple payment products used by millions of users.\n\nI am particularly impressed by KTBlog's TrustMeHub platform and would be thrilled to contribute to its growth.",
         linkedinUrl: "https://linkedin.com/in/michaelchen",
         resumeUrl: "/uploads/resumes/michael-chen-cv.pdf",
         resumeFilename: "michael-chen-cv.pdf",
@@ -97,7 +97,7 @@ const initialApplications: JobApplication[] = [
         positionTitle: "Senior Software Engineer",
         department: "Engineering",
         location: "Doha, Qatar",
-        coverLetter: "I bring 10+ years of experience in backend development with expertise in Go and Python. I have architected high-performance trading systems and am excited about the opportunity to work on Global Digibit's innovative platforms.",
+        coverLetter: "I bring 10+ years of experience in backend development with expertise in Go and Python. I have architected high-performance trading systems and am excited about the opportunity to work on KTBlog's innovative platforms.",
         linkedinUrl: "https://linkedin.com/in/davidkim",
         resumeUrl: "/uploads/resumes/david-kim-resume.pdf",
         resumeFilename: "david-kim-resume.pdf",
@@ -117,7 +117,7 @@ const initialApplications: JobApplication[] = [
         positionTitle: "Marketing Manager",
         department: "Marketing",
         location: "Remote",
-        coverLetter: "With a background in B2B marketing for technology companies, I am eager to help Global Digibit expand its market presence.",
+        coverLetter: "With a background in B2B marketing for technology companies, I am eager to help KTBlog expand its market presence.",
         resumeUrl: "/uploads/resumes/amanda-foster-cv.pdf",
         resumeFilename: "amanda-foster-cv.pdf",
         resumeSize: 275000,

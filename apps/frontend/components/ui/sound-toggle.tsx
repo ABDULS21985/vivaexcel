@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Volume2, VolumeX } from "lucide-react";
-import { cn } from "@digibit/ui/lib/utils";
+import { cn } from "@ktblog/ui/lib/utils";
 import { useSound, useSoundOptional } from "../../providers/sound-provider";
 
 // ============================================================================

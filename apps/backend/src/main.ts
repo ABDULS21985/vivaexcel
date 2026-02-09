@@ -32,7 +32,7 @@ async function bootstrap(): Promise<void> {
   // Environment variables
   const nodeEnv = configService.get<string>('NODE_ENV', 'development');
   const port = configService.get<number>('PORT', 4001);
-  const appName = configService.get<string>('APP_NAME', 'digiweb-backend');
+  const appName = configService.get<string>('APP_NAME', 'ktblog-backend');
   const sentryDsn = configService.get<string>('SENTRY_DSN');
 
   // Initialize Sentry for error tracking (if DSN is configured)
@@ -137,8 +137,8 @@ async function bootstrap(): Promise<void> {
     configService.get<string>('ENABLE_SWAGGER', 'true') === 'true';
   if (enableSwagger && nodeEnv !== 'production') {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('DigiWeb API')
-      .setDescription('DigiWeb Backend API Documentation')
+      .setTitle('KTBlog API')
+      .setDescription('KTBlog Backend API Documentation')
       .setVersion('1.0')
       .addBearerAuth(
         {

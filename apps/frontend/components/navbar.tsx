@@ -5,8 +5,8 @@ import { Menu, X, Search, ChevronRight } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@digibit/ui/components";
-import { cn } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
+import { cn } from "@ktblog/ui/components";
 import { Link, usePathname } from "@/i18n/routing";
 import { LanguageSwitcher } from "./language-switcher";
 import { MegaMenu, MegaMenuTrigger } from "./navigation/mega-menu";
@@ -256,7 +256,7 @@ export function Navbar() {
                                 className="motion-reduce:transform-none"
                             >
                                 <Image
-                                    src="/logo/digibit.png"
+                                    src="/logo/ktblog.png"
                                     alt="Global Digitalbit"
                                     width={120}
                                     height={40}
@@ -431,7 +431,7 @@ export function Navbar() {
                                     className="min-h-[44px] flex items-center"
                                 >
                                     <Image
-                                        src="/logo/digibit.png"
+                                        src="/logo/ktblog.png"
                                         alt="Global Digitalbit"
                                         width={120}
                                         height={40}

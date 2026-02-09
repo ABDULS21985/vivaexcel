@@ -20,8 +20,10 @@ import {
     X,
     LogOut,
     ChevronLeft,
+    Calendar,
+    ArrowRightLeft,
 } from "lucide-react";
-import { cn } from "@digibit/ui/components";
+import { cn } from "@ktblog/ui/components";
 import { useAuthContext } from "../contexts/auth-context";
 import { useUser } from "../hooks/use-user";
 
@@ -41,6 +43,11 @@ const navItems: NavItem[] = [
         label: "Posts",
         href: "/blog",
         icon: <FileText className="h-5 w-5" />,
+    },
+    {
+        label: "Calendar",
+        href: "/calendar",
+        icon: <Calendar className="h-5 w-5" />,
     },
     {
         label: "Categories",
@@ -78,6 +85,11 @@ const navItems: NavItem[] = [
         icon: <CreditCard className="h-5 w-5" />,
     },
     {
+        label: "Redirects",
+        href: "/redirects",
+        icon: <ArrowRightLeft className="h-5 w-5" />,
+    },
+    {
         label: "Analytics",
         href: "/analytics",
         icon: <BarChart className="h-5 w-5" />,
@@ -113,7 +125,7 @@ export function Sidebar({ className, mobileOpen, setMobileOpen }: SidebarProps) 
             <div className="flex items-center justify-between px-4 py-4 border-b border-primary/20 dark:border-primary/20 h-16">
                 <Link href="/" className="flex items-center gap-3">
                     <Image
-                        src="/logo/digibit.png"
+                        src="/logo/ktblog.png"
                         alt="Global Digitalbit"
                         width={150}
                         height={150}

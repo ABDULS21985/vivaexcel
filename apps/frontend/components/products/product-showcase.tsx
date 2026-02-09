@@ -24,7 +24,7 @@ import {
     CheckCircle,
     type LucideIcon,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import type { Product } from "@/types/products";
 
 const iconMap: Record<string, LucideIcon> = {

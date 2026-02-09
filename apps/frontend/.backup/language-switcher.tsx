@@ -4,14 +4,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Globe, ChevronDown, Check } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@digibit/ui/components";
-import { cn } from "@digibit/ui/components";
+} from "@ktblog/ui/components";
+import { cn } from "@ktblog/ui/components";
 import {
   locales,
   localeNames,

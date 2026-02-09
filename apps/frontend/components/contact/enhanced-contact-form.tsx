@@ -21,7 +21,7 @@ import {
     Calendar,
     Briefcase,
 } from "lucide-react";
-import { Button } from "@digibit/ui/components";
+import { Button } from "@ktblog/ui/components";
 import { LiveRegion, SrOnly } from "../ui/accessibility";
 import { Confetti } from "./confetti";
 import { easings, durations } from "@/lib/motion-config";
@@ -769,7 +769,7 @@ export function EnhancedContactForm() {
         setSubmitMessage("");
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.globaldigibit.com/api/v1";
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.drkatangablog.com/api/v1";
             const response = await fetch(`${apiUrl}/contact`, {
                 method: "POST",
                 headers: {

@@ -12,6 +12,7 @@ import { UpdatePostDto } from '../dto/update-post.dto';
 import { PostQueryDto } from '../dto/post-query.dto';
 import { Post, PostStatus, PostVisibility, MembershipTierLevel } from '../../../entities/post.entity';
 import { ReadingHistory } from '../../../entities/reading-history.entity';
+import { PostRevision } from '../../../entities/post-revision.entity';
 import { PaginatedResponse, ApiResponse } from '../../../common/interfaces/response.interface';
 import { CacheService } from '../../../common/cache/cache.service';
 import { MembershipService } from '../../membership/membership.service';
@@ -31,6 +32,8 @@ export class PostsService {
     private readonly membershipService: MembershipService,
     @InjectRepository(ReadingHistory)
     private readonly readingHistoryRepository: Repository<ReadingHistory>,
+    @InjectRepository(PostRevision)
+    private readonly revisionRepository: Repository<PostRevision>,
   ) {}
 
   async findAll(query: PostQueryDto): Promise<ApiResponse<PaginatedResponse<Post>>> {
@@ -162,11 +165,14 @@ export class PostsService {
     };
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto): Promise<ApiResponse<Post>> {
+  async update(id: string, updatePostDto: UpdatePostDto, userId?: string): Promise<ApiResponse<Post>> {
     const existingPost = await this.blogRepository.findPostById(id);
     if (!existingPost) {
       throw new NotFoundException(`Post with ID "${id}" not found`);
     }
+
+    // Create a revision snapshot of the current state before editing
+    await this.createRevisionSnapshot(existingPost, userId);
 
     // Check if new slug already exists (if updating slug)
     if (updatePostDto.slug && updatePostDto.slug !== existingPost.slug) {
@@ -342,9 +348,12 @@ export class PostsService {
 
   /**
    * Return a copy of the post with only the first 3 paragraphs of content
-   * and the `paywalled` flag set to `true`.
+   * and the `paywalled` flag set to `true`. Also includes gating metadata
+   * so the frontend can display subscription prompts.
    */
-  private truncatePost(post: Post): Post & { paywalled: boolean } {
+  private truncatePost(
+    post: Post,
+  ): Post & { paywalled: boolean; gated: boolean; requiresSubscription: boolean; minimumTier?: MembershipTierLevel } {
     let truncatedContent = post.content ?? '';
 
     if (truncatedContent) {
@@ -369,7 +378,54 @@ export class PostsService {
       ...post,
       content: truncatedContent,
       paywalled: true,
+      gated: true,
+      requiresSubscription: post.visibility === PostVisibility.PAID,
+      minimumTier: post.visibility === PostVisibility.PAID
+        ? (post.minimumTier ?? MembershipTierLevel.BASIC)
+        : undefined,
     };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Revision snapshots
+  // ──────────────────────────────────────────────
+
+  /**
+   * Create a revision snapshot of the post's current state before an update.
+   * This is called automatically from `update()`.
+   */
+  private async createRevisionSnapshot(
+    post: Post,
+    userId?: string,
+  ): Promise<void> {
+    try {
+      // Determine the next revision number for this post
+      const lastRevision = await this.revisionRepository.findOne({
+        where: { postId: post.id },
+        order: { revisionNumber: 'DESC' },
+      });
+      const revisionNumber = (lastRevision?.revisionNumber ?? 0) + 1;
+
+      const revision = this.revisionRepository.create({
+        postId: post.id,
+        title: post.title,
+        content: post.content,
+        excerpt: post.excerpt,
+        revisionNumber,
+        changeDescription: 'Auto-snapshot before update',
+        createdBy: userId ?? post.authorId,
+      });
+
+      await this.revisionRepository.save(revision);
+      this.logger.debug(
+        `Created auto-revision #${revisionNumber} for post ${post.id}`,
+      );
+    } catch (err) {
+      // Don't block the update if revision creation fails
+      this.logger.warn(
+        `Failed to create revision snapshot for post ${post.id}: ${(err as Error).message}`,
+      );
+    }
   }
 
   // ──────────────────────────────────────────────

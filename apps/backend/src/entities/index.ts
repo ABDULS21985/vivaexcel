@@ -16,3 +16,5 @@ export * from './media.entity';
 export * from './media-folder.entity';
 export * from '../modules/organizations/entities/organization-member.entity';
 export * from './job-application.entity';
+export * from './post-revision.entity';
+export * from './post-series.entity';
