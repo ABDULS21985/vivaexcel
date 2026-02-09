@@ -985,6 +985,475 @@
     "error": "Por favor, insira um endereco de email valido.",
     "placeholder": "Digite seu email"
   },
+  "store": {
+    "title": "Loja de Produtos Digitais",
+    "badge": "Loja de Produtos Digitais",
+    "hero": {
+      "title": "Produtos Digitais Premium",
+      "titleHighlight": "Produtos Digitais",
+      "subtitle": "Descubra modelos, sistemas de design, kits iniciais e ferramentas projetados profissionalmente para impulsionar seu fluxo de trabalho.",
+      "trustBadges": {
+        "secureCheckout": "Pagamento Seguro",
+        "instantDownload": "Download Instantaneo",
+        "premiumQuality": "Qualidade Premium"
+      },
+      "search": "Buscar produtos..."
+    },
+    "sections": {
+      "browseByCategory": "Navegar por Categoria",
+      "staffPicks": "Escolhas da Equipe",
+      "featuredProducts": "Produtos em Destaque",
+      "mostPopular": "Mais Populares",
+      "bestsellingProducts": "Produtos Mais Vendidos",
+      "freshArrivals": "Novidades",
+      "newThisWeek": "Novo Esta Semana",
+      "exploreProductCatalog": "Explore Nosso Catalogo de Produtos",
+      "browseDescription": "Navegue por {count} produtos digitais premium em {categories} categorias. Use os filtros para encontrar exatamente o que voce precisa.",
+      "youMightAlsoLike": "Voce tambem pode gostar",
+      "personalized": "Personalizado",
+      "basedOnViews": "Baseado no que outros clientes visualizaram"
+    },
+    "filters": {
+      "title": "Filtros",
+      "category": "Categoria",
+      "allCategories": "Todas as Categorias",
+      "productType": "Tipo de Produto",
+      "allTypes": "Todos os Tipos",
+      "priceRange": "Faixa de Preco",
+      "minPrice": "Preco minimo",
+      "maxPrice": "Preco maximo",
+      "min": "Min",
+      "max": "Max",
+      "minimumRating": "Avaliacao Minima",
+      "anyRating": "Qualquer Avaliacao",
+      "starsAndUp": "{count}+ Estrelas",
+      "andUp": "e acima",
+      "clearAll": "Limpar todos os filtros",
+      "clearAllFilters": "Limpar Todos os Filtros",
+      "removeFilter": "Remover filtro {label}",
+      "filterProducts": "Filtrar produtos",
+      "closeFilters": "Fechar filtros",
+      "activeFilters": "{count, plural, one {# filtro ativo} other {# filtros ativos}}"
+    },
+    "sort": {
+      "label": "Ordenar",
+      "sortBy": "Ordenar por",
+      "newest": "Mais Recente",
+      "popular": "Mais Popular",
+      "priceAsc": "Preco: Menor para Maior",
+      "priceDesc": "Preco: Maior para Menor",
+      "topRated": "Melhor Avaliado"
+    },
+    "search": {
+      "placeholder": "Buscar produtos...",
+      "searching": "Buscando...",
+      "label": "Buscar produtos",
+      "resultsCount": "{count, plural, =0 {Nenhum produto} one {# produto} other {# produtos}} encontrado(s)",
+      "showingCount": "Mostrando {shown} de {total} produtos",
+      "loadingMore": "Carregando mais produtos...",
+      "loadMore": "Carregar Mais"
+    },
+    "view": {
+      "grid": "Visualizacao em grade",
+      "list": "Visualizacao em lista"
+    },
+    "empty": {
+      "title": "Nenhum produto encontrado",
+      "filteredDescription": "Nao encontramos produtos que correspondam aos seus filtros. Tente ajustar seus criterios de busca ou navegue por todos os produtos.",
+      "defaultDescription": "Nenhum produto esta disponivel no momento. Volte em breve para novas adicoes."
+    },
+    "product": {
+      "featured": "Destaque",
+      "bestseller": "Mais Vendido",
+      "free": "Gratis",
+      "save": "ECONOMIZE {percent}%",
+      "discount": "-{percent}%",
+      "by": "Por",
+      "downloads": "{count, plural, one {# download} other {# downloads}}",
+      "views": "{count, plural, one {# visualizacao} other {# visualizacoes}}",
+      "reviews": "{count, plural, =0 {Sem avaliacoes} one {# avaliacao} other {# avaliacoes}}",
+      "rating": "Avaliacao de {value} de 5 estrelas",
+      "ratingWithReviews": "Avaliacao de {value} de 5 estrelas baseada em {count, plural, one {# avaliacao} other {# avaliacoes}}",
+      "price": "Preco: {price}",
+      "priceWithDiscount": "Preco: {price}, era {original}, economize {percent}%",
+      "imageOf": "Imagem do produto {current} de {total}",
+      "ariaLabel": "{title}, {type}, {price}",
+      "productImages": "Imagens do produto",
+      "previousImage": "Imagem anterior",
+      "nextImage": "Proxima imagem",
+      "showingImage": "Mostrando imagem {current} de {total}",
+      "imageLightbox": "Visualizador de imagens",
+      "hoverToZoom": "Passe o cursor para ampliar",
+      "quickView": "Visualizacao rapida"
+    },
+    "variants": {
+      "selectVariant": "Selecionar variante",
+      "selected": "Selecionado"
+    },
+    "cta": {
+      "addToCart": "Adicionar ao Carrinho",
+      "addToCartAriaLabel": "Adicionar {title} ao carrinho",
+      "adding": "Adicionando...",
+      "addedToCart": "Adicionado ao Carrinho!",
+      "addedToCartAnnouncement": "{title} adicionado ao carrinho com sucesso",
+      "buyNow": "Comprar Agora",
+      "processing": "Processando...",
+      "livePreview": "Visualizacao ao Vivo",
+      "addToWishlist": "Adicionar aos favoritos",
+      "removeFromWishlist": "Remover dos favoritos",
+      "viewAll": "Ver Tudo",
+      "viewAllProducts": "Ver Todos os Produtos",
+      "contactUs": "Fale Conosco",
+      "browseMore": "Explorar Mais Produtos",
+      "browseStore": "Explorar a Loja",
+      "continueShopping": "Continuar Comprando",
+      "subscribe": "Inscrever-se"
+    },
+    "trust": {
+      "securePayment": "Pagamento Seguro",
+      "securePaymentDesc": "Criptografia SSL de 256 bits",
+      "instantDownload": "Download Instantaneo",
+      "instantDownloadDesc": "Acesse os arquivos imediatamente",
+      "moneyBack": "Garantia de Reembolso",
+      "moneyBackDesc": "Politica de reembolso de 30 dias",
+      "verifiedReviews": "Avaliacoes Verificadas",
+      "verifiedReviewsDesc": "Feedback real de clientes",
+      "support": "Suporte 24/7",
+      "supportDesc": "Estamos aqui para ajudar"
+    },
+    "tabs": {
+      "overview": "Visao Geral",
+      "whatsIncluded": "O Que Esta Incluido",
+      "compatibility": "Compatibilidade",
+      "reviews": "Avaliacoes",
+      "faq": "Perguntas Frequentes",
+      "changelog": "Registro de Alteracoes"
+    },
+    "compatibility": {
+      "platform": "Plataforma",
+      "status": "Status",
+      "version": "Versao",
+      "supported": "Compativel",
+      "notSupported": "Nao Compativel"
+    },
+    "faq": {
+      "stillHaveQuestions": "Ainda tem perguntas?",
+      "contactSupport": "Entre em contato com nossa equipe de suporte e responderemos em 24 horas."
+    },
+    "changelog": {
+      "versionHistory": "Historico de versoes e atualizacoes"
+    },
+    "license": {
+      "singleUse": "Uso Unico",
+      "multiUse": "Uso Multiplo",
+      "extended": "Estendido",
+      "unlimited": "Ilimitado",
+      "selectPlan": "Selecionar Plano",
+      "selected": "Selecionado",
+      "popular": "Mais Popular",
+      "perProject": "por projeto",
+      "lifetime": "Vitalicio"
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "store": "Loja"
+    },
+    "socialProof": {
+      "recentPurchases": "{count} compras nas ultimas 24 horas",
+      "averageRating": "Avaliacao de {rating} por {count} clientes",
+      "totalDownloads": "{count} downloads e contando",
+      "dismiss": "Fechar",
+      "purchased": "comprou",
+      "fromCity": "{name} de {city}",
+      "timeLabels": {
+        "justNow": "agora mesmo",
+        "oneMinuteAgo": "ha 1 minuto",
+        "twoMinutesAgo": "ha 2 minutos",
+        "threeMinutesAgo": "ha 3 minutos",
+        "fiveMinutesAgo": "ha 5 minutos"
+      }
+    },
+    "newsletter": {
+      "title": "Fique Atualizado",
+      "description": "Receba notificacoes sobre novos produtos, ofertas exclusivas e recursos uteis.",
+      "placeholder": "seu@email.com",
+      "subscribe": "Inscrever-se"
+    },
+    "currency": {
+      "label": "Moeda",
+      "select": "Selecionar moeda",
+      "change": "Clique para alterar",
+      "approximatePrice": "Preco aproximado em {currency}"
+    },
+    "accessibility": {
+      "skipToProducts": "Ir para os produtos",
+      "skipToFilters": "Ir para os filtros",
+      "productPagination": "Paginacao de produtos",
+      "loadingProducts": "Carregando produtos",
+      "productsLoaded": "Produtos carregados",
+      "filterChanged": "Mostrando {count} produtos",
+      "sortChanged": "Produtos ordenados por {sort}"
+    }
+  },
+  "cart": {
+    "title": "Carrinho de Compras",
+    "drawerTitle": "Seu Carrinho",
+    "preview": "Visualizacao do Carrinho",
+    "empty": "Seu carrinho esta vazio",
+    "emptyDescription": "Explore nossa loja para encontrar produtos digitais que voce ama.",
+    "item": "{count, plural, one {# item} other {# itens}}",
+    "moreItems": "+{count} {count, plural, one {item} other {itens}} a mais",
+    "subtotal": "Subtotal",
+    "discount": "Desconto",
+    "total": "Total",
+    "viewCart": "Ver Carrinho",
+    "removeItem": "Remover {title} do carrinho",
+    "itemRemoved": "{title} removido do carrinho",
+    "addedToCart": "Adicionado ao carrinho!",
+    "failedToAdd": "Falha ao adicionar ao carrinho",
+    "tryAgain": "Por favor, tente novamente.",
+    "proceedToCheckout": "Prosseguir para o Pagamento",
+    "securePurchase": "Compra Segura",
+    "freeShippingProgress": "Adicione mais {amount} para suporte premium",
+    "youMightAlsoLike": "Voce Tambem Pode Gostar",
+    "recentlyViewed": "Vistos Recentemente",
+    "coupon": {
+      "label": "Tem um cupom?",
+      "placeholder": "Digite o codigo do cupom",
+      "apply": "Aplicar",
+      "applied": "Cupom aplicado!",
+      "invalid": "Codigo de cupom invalido",
+      "remove": "Remover cupom"
+    },
+    "ariaLabel": "Carrinho, {count, plural, =0 {vazio} one {# item} other {# itens}}"
+  },
+  "checkout": {
+    "title": "Pagamento",
+    "orderSummary": "Resumo do Pedido",
+    "paymentSummary": "Resumo do Pagamento",
+    "proceedToPayment": "Prosseguir para o Pagamento",
+    "creatingSession": "Criando sessao...",
+    "securedByStripe": "Protegido por Stripe. Nunca armazenamos os dados do seu cartao.",
+    "breadcrumb": {
+      "home": "Inicio",
+      "store": "Loja",
+      "checkout": "Pagamento"
+    },
+    "alsoAvailable": "Tambem disponivel no pagamento",
+    "item": {
+      "remove": "Remover {title}",
+      "variant": "Variante: {name}",
+      "unitPrice": "Preco unitario: {price}",
+      "count": "{count, plural, one {# item} other {# itens}}"
+    },
+    "coupon": {
+      "haveACoupon": "Tem um cupom?",
+      "placeholder": "Digite o codigo do cupom",
+      "apply": "Aplicar",
+      "applied": "Cupom aplicado! Voce economiza {amount}",
+      "invalid": "Codigo de cupom invalido",
+      "expired": "Este cupom expirou",
+      "hide": "Ocultar cupom",
+      "countdown": "Complete em {time} para garantir o desconto",
+      "remove": "Remover cupom"
+    },
+    "summary": {
+      "subtotal": "Subtotal",
+      "discount": "Desconto",
+      "total": "Total"
+    },
+    "trust": {
+      "securePayment": "Pagamento Seguro",
+      "securePaymentDesc": "Criptografia SSL de 256 bits via Stripe",
+      "sslEncrypted": "Criptografado SSL",
+      "sslEncryptedDesc": "Seguranca padrao da industria",
+      "moneyBack": "Reembolso",
+      "moneyBackDesc": "Garantia de 30 dias",
+      "testimonialQuote": "\u201CProdutos excelentes, entrega instantanea! A qualidade superou minhas expectativas.\u201D",
+      "testimonialAuthor": "\u2014 Sarah M., Compradora Verificada"
+    },
+    "empty": {
+      "title": "Seu carrinho esta vazio",
+      "description": "Adicione alguns produtos ao seu carrinho para prosseguir com o pagamento.",
+      "browseProducts": "Explorar Produtos"
+    },
+    "success": {
+      "title": "Obrigado pela sua compra!",
+      "subtitle": "Obrigado pela sua compra",
+      "description": "Seu pedido foi confirmado e esta pronto para download.",
+      "orderNumber": "Numero do Pedido",
+      "date": "Data",
+      "email": "E-mail",
+      "items": "Itens",
+      "total": "Total",
+      "totalPaid": "Total Pago",
+      "downloadNow": "Baixar Agora",
+      "downloadAll": "Baixar Todos os Itens",
+      "noDownloads": "Nenhum download esta disponivel no momento para este pedido.",
+      "downloadsRemaining": "Downloads restantes: {remaining}/{max}",
+      "yourDownloads": "Seus Downloads",
+      "continueShopping": "Continuar Comprando",
+      "orderDetails": "Detalhes do Pedido",
+      "copied": "Copiado!",
+      "copyOrderNumber": "Copiar numero do pedido",
+      "linkCopied": "Link copiado para a area de transferencia!",
+      "noSession": "Nenhuma sessao encontrada",
+      "noSessionDescription": "Parece que voce chegou aqui sem concluir um pagamento.",
+      "browseProducts": "Explorar Produtos",
+      "errorTitle": "Algo deu errado",
+      "errorDescription": "Nao foi possivel verificar seu pagamento. Se voce foi cobrado, entre em contato com o suporte e resolveremos isso imediatamente.",
+      "backToStore": "Voltar a Loja",
+      "contactSupport": "Contatar Suporte",
+      "confirmationSent": "Confirmacao enviada para {email}",
+      "timeline": {
+        "orderPlaced": "Pedido Realizado",
+        "paymentConfirmed": "Pagamento Confirmado",
+        "readyToDownload": "Pronto para Download"
+      },
+      "whatsNext": "O Que Vem a Seguir?",
+      "ratePurchase": "Avalie Sua Compra",
+      "shareExperience": "Compartilhe sua experiencia",
+      "shareWithFriends": "Compartilhar com Amigos",
+      "browseMore": "Explorar Mais Produtos",
+      "discoverMore": "Descobrir mais ferramentas",
+      "shareOnTwitter": "Compartilhar no Twitter",
+      "shareOnLinkedIn": "Compartilhar no LinkedIn",
+      "copyLink": "Copiar link"
+    },
+    "cancel": {
+      "title": "Pagamento Cancelado",
+      "description": "Seu pagamento nao foi concluido e voce nao foi cobrado. Os itens do seu carrinho ainda estao salvos se voce quiser tentar novamente.",
+      "returnToCart": "Voltar ao Carrinho",
+      "continueShopping": "Continuar Comprando"
+    }
+  },
+  "reviews": {
+    "title": "Avaliacoes de Clientes",
+    "writeReview": "Escrever uma Avaliacao",
+    "editReview": "Editar Avaliacao",
+    "shareExperience": "Compartilhe sua experiencia",
+    "basedOn": "Baseado em {count, plural, one {# avaliacao} other {# avaliacoes}}",
+    "verifiedPurchase": "Compra Verificada",
+    "recommended": "{percent}% recomendam este produto",
+    "rating": {
+      "label": "Avaliacao",
+      "rateProduct": "Avalie este produto",
+      "value": "{value} de 5 estrelas",
+      "starLabel": "{count, plural, one {# estrela} other {# estrelas}}",
+      "labels": {
+        "1": "Ruim",
+        "2": "Regular",
+        "3": "Bom",
+        "4": "Muito Bom",
+        "5": "Excelente"
+      }
+    },
+    "distribution": {
+      "title": "Distribuicao de Avaliacoes",
+      "bar": "{stars, plural, one {# estrela} other {# estrelas}}: {count, plural, one {# avaliacao} other {# avaliacoes}}, {percentage}%",
+      "filterHint": "Clique para filtrar por {stars} estrelas, clique novamente para limpar"
+    },
+    "form": {
+      "title": "Escrever uma Avaliacao",
+      "editTitle": "Editar Sua Avaliacao",
+      "step": "Passo {current} de {total}: {name}",
+      "steps": {
+        "rating": "Avaliacao",
+        "details": "Detalhes",
+        "prosAndCons": "Pros e Contras",
+        "images": "Imagens"
+      },
+      "titleLabel": "Titulo da Avaliacao",
+      "titlePlaceholder": "Resuma sua experiencia",
+      "titleMax": "{count}/{max} caracteres",
+      "bodyLabel": "Sua Avaliacao",
+      "bodyPlaceholder": "Conte aos outros sobre sua experiencia com este produto...",
+      "bodyMin": "Minimo de {min} caracteres",
+      "bodyCount": "{count}/{max} caracteres",
+      "prosLabel": "O que voce gostou?",
+      "prosPlaceholder": "Adicionar um pro",
+      "consLabel": "O que poderia melhorar?",
+      "consPlaceholder": "Adicionar um contra",
+      "addPro": "Adicione um pro e pressione Enter",
+      "addCon": "Adicione um contra e pressione Enter",
+      "removePro": "Remover pro: {text}",
+      "removeCon": "Remover contra: {text}",
+      "imagesLabel": "Adicionar Fotos (opcional)",
+      "imagesDescription": "Arraste e solte ate 5 imagens ou clique para navegar",
+      "removeImage": "Remover imagem",
+      "maxImages": "Numero maximo de imagens atingido",
+      "orClickToBrowse": "ou clique para navegar",
+      "next": "Proximo",
+      "back": "Voltar",
+      "skip": "Pular",
+      "submit": "Enviar Avaliacao",
+      "update": "Atualizar Avaliacao",
+      "submitting": "Enviando...",
+      "success": "Obrigado pela sua avaliacao!",
+      "successDescription": "Sua avaliacao ajuda outros a tomar decisoes informadas.",
+      "error": "Falha ao enviar avaliacao. Por favor, tente novamente.",
+      "draftSaved": "Rascunho salvo",
+      "loginRequired": "Por favor, faca login para escrever uma avaliacao"
+    },
+    "list": {
+      "title": "Avaliacoes de Clientes",
+      "sortBy": "Ordenar por",
+      "searchPlaceholder": "Buscar avaliacoes...",
+      "searchLabel": "Buscar avaliacoes",
+      "all": "Todas",
+      "stars": "{count} Estrelas",
+      "noReviews": "Nenhuma avaliacao ainda",
+      "noReviewsDescription": "Seja o primeiro a compartilhar sua experiencia com este produto.",
+      "noResults": "Nenhuma avaliacao corresponde a sua busca",
+      "noResultsDescription": "Tente um termo de busca diferente ou limpe seus filtros.",
+      "loadMore": "Carregar mais avaliacoes",
+      "loading": "Carregando avaliacoes...",
+      "error": "Falha ao carregar avaliacoes",
+      "errorDescription": "Algo deu errado ao carregar as avaliacoes.",
+      "tryAgain": "Tentar novamente"
+    },
+    "card": {
+      "helpful": "Util",
+      "helpfulCount": "{count, plural, one {# pessoa} other {# pessoas}} acharam isso util",
+      "notHelpful": "Nao util",
+      "report": "Reportar avaliacao",
+      "reported": "Reportado",
+      "readMore": "Ler mais",
+      "readLess": "Ler menos",
+      "sellerResponse": "Resposta do Vendedor",
+      "edited": "Editado",
+      "pros": "Pros",
+      "cons": "Contras",
+      "images": "{count, plural, one {# imagem} other {# imagens}}",
+      "moreImages": "+{count} mais"
+    },
+    "sort": {
+      "mostHelpful": "Mais Util",
+      "newest": "Mais Recente",
+      "highest": "Melhor Avaliado",
+      "lowest": "Pior Avaliado"
+    },
+    "highlights": {
+      "title": "Destaques das Avaliacoes",
+      "aiGenerated": "Resumo gerado por IA",
+      "topPros": "Pros Mais Mencionados",
+      "topCons": "Contras Mais Mencionados",
+      "sentiment": {
+        "exceptional": "Os clientes estao excepcionalmente satisfeitos com este produto.",
+        "positive": "Os clientes estao muito satisfeitos com este produto.",
+        "good": "Os clientes estao geralmente satisfeitos com este produto.",
+        "mixed": "Este produto recebeu avaliacoes mistas.",
+        "negative": "Este produto recebeu avaliacoes abaixo da media."
+      }
+    },
+    "socialStats": {
+      "trending": "Em Alta",
+      "downloads": "{count} downloads",
+      "downloadsLabel": "downloads",
+      "reviews": "{count} avaliacoes",
+      "reviewsLabel": "avaliacoes"
+    }
+  },
   "language": "Idioma",
   "careers": {
     "applyButton": "Candidatar-se",

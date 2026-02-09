@@ -985,6 +985,475 @@
     "error": "يرجى إدخال عنوان بريد إلكتروني صالح.",
     "placeholder": "أدخل بريدك الإلكتروني"
   },
+  "store": {
+    "title": "متجر المنتجات الرقمية",
+    "badge": "متجر المنتجات الرقمية",
+    "hero": {
+      "title": "منتجات رقمية متميزة",
+      "titleHighlight": "منتجات رقمية",
+      "subtitle": "اكتشف القوالب وأنظمة التصميم وأدوات البدء والأدوات المصممة باحترافية لتعزيز سير عملك.",
+      "trustBadges": {
+        "secureCheckout": "دفع آمن",
+        "instantDownload": "تحميل فوري",
+        "premiumQuality": "جودة متميزة"
+      },
+      "search": "البحث عن المنتجات..."
+    },
+    "sections": {
+      "browseByCategory": "تصفح حسب الفئة",
+      "staffPicks": "اختيارات الفريق",
+      "featuredProducts": "المنتجات المميزة",
+      "mostPopular": "الأكثر شعبية",
+      "bestsellingProducts": "المنتجات الأكثر مبيعاً",
+      "freshArrivals": "وصل حديثاً",
+      "newThisWeek": "جديد هذا الأسبوع",
+      "exploreProductCatalog": "استكشف كتالوج المنتجات",
+      "browseDescription": "تصفح {count} منتج رقمي متميز عبر {categories} فئة. استخدم الفلاتر للعثور على ما تحتاجه بالضبط.",
+      "youMightAlsoLike": "قد يعجبك أيضاً",
+      "personalized": "مخصص",
+      "basedOnViews": "بناءً على ما شاهده العملاء الآخرون"
+    },
+    "filters": {
+      "title": "الفلاتر",
+      "category": "الفئة",
+      "allCategories": "جميع الفئات",
+      "productType": "نوع المنتج",
+      "allTypes": "جميع الأنواع",
+      "priceRange": "نطاق السعر",
+      "minPrice": "الحد الأدنى للسعر",
+      "maxPrice": "الحد الأقصى للسعر",
+      "min": "الحد الأدنى",
+      "max": "الحد الأقصى",
+      "minimumRating": "الحد الأدنى للتقييم",
+      "anyRating": "أي تقييم",
+      "starsAndUp": "{count}+ نجوم",
+      "andUp": "وأعلى",
+      "clearAll": "مسح جميع الفلاتر",
+      "clearAllFilters": "مسح جميع الفلاتر",
+      "removeFilter": "إزالة فلتر {label}",
+      "filterProducts": "فلترة المنتجات",
+      "closeFilters": "إغلاق الفلاتر",
+      "activeFilters": "{count, plural, one {فلتر نشط واحد} other {# فلاتر نشطة}}"
+    },
+    "sort": {
+      "label": "ترتيب",
+      "sortBy": "ترتيب حسب",
+      "newest": "الأحدث",
+      "popular": "الأكثر شعبية",
+      "priceAsc": "السعر: من الأقل إلى الأعلى",
+      "priceDesc": "السعر: من الأعلى إلى الأقل",
+      "topRated": "الأعلى تقييماً"
+    },
+    "search": {
+      "placeholder": "البحث عن المنتجات...",
+      "searching": "جارٍ البحث...",
+      "label": "البحث عن المنتجات",
+      "resultsCount": "{count, plural, =0 {لا توجد منتجات} one {منتج واحد} other {# منتجات}} تم العثور عليها",
+      "showingCount": "عرض {shown} من {total} منتج",
+      "loadingMore": "جارٍ تحميل المزيد من المنتجات...",
+      "loadMore": "تحميل المزيد"
+    },
+    "view": {
+      "grid": "عرض شبكي",
+      "list": "عرض قائمة"
+    },
+    "empty": {
+      "title": "لم يتم العثور على منتجات",
+      "filteredDescription": "لم نتمكن من العثور على منتجات تطابق فلاترك. حاول تعديل معايير البحث أو تصفح جميع المنتجات.",
+      "defaultDescription": "لا توجد منتجات متاحة حالياً. تحقق مرة أخرى قريباً للإضافات الجديدة."
+    },
+    "product": {
+      "featured": "مميز",
+      "bestseller": "الأكثر مبيعاً",
+      "free": "مجاني",
+      "save": "وفر {percent}%",
+      "discount": "-{percent}%",
+      "by": "بواسطة",
+      "downloads": "{count, plural, one {تحميل واحد} other {# تحميلات}}",
+      "views": "{count, plural, one {مشاهدة واحدة} other {# مشاهدات}}",
+      "reviews": "{count, plural, =0 {لا توجد مراجعات} one {مراجعة واحدة} other {# مراجعات}}",
+      "rating": "تقييم {value} من 5 نجوم",
+      "ratingWithReviews": "تقييم {value} من 5 نجوم بناءً على {count, plural, one {مراجعة واحدة} other {# مراجعات}}",
+      "price": "السعر: {price}",
+      "priceWithDiscount": "السعر: {price}، كان {original}، وفر {percent}%",
+      "imageOf": "صورة المنتج {current} من {total}",
+      "ariaLabel": "{title}، {type}، {price}",
+      "productImages": "صور المنتج",
+      "previousImage": "الصورة السابقة",
+      "nextImage": "الصورة التالية",
+      "showingImage": "عرض الصورة {current} من {total}",
+      "imageLightbox": "عرض الصور",
+      "hoverToZoom": "مرر للتكبير",
+      "quickView": "عرض سريع"
+    },
+    "variants": {
+      "selectVariant": "اختر الخيار",
+      "selected": "محدد"
+    },
+    "cta": {
+      "addToCart": "أضف إلى السلة",
+      "addToCartAriaLabel": "أضف {title} إلى السلة",
+      "adding": "جارٍ الإضافة...",
+      "addedToCart": "تمت الإضافة إلى السلة!",
+      "addedToCartAnnouncement": "تمت إضافة {title} إلى السلة بنجاح",
+      "buyNow": "اشترِ الآن",
+      "processing": "جارٍ المعالجة...",
+      "livePreview": "معاينة مباشرة",
+      "addToWishlist": "أضف إلى قائمة الرغبات",
+      "removeFromWishlist": "إزالة من قائمة الرغبات",
+      "viewAll": "عرض الكل",
+      "viewAllProducts": "عرض جميع المنتجات",
+      "contactUs": "اتصل بنا",
+      "browseMore": "تصفح المزيد من المنتجات",
+      "browseStore": "تصفح المتجر",
+      "continueShopping": "متابعة التسوق",
+      "subscribe": "اشترك"
+    },
+    "trust": {
+      "securePayment": "دفع آمن",
+      "securePaymentDesc": "تشفير SSL بـ 256 بت",
+      "instantDownload": "تحميل فوري",
+      "instantDownloadDesc": "الوصول إلى الملفات فوراً",
+      "moneyBack": "ضمان استرداد الأموال",
+      "moneyBackDesc": "سياسة استرداد لمدة 30 يوماً",
+      "verifiedReviews": "مراجعات موثقة",
+      "verifiedReviewsDesc": "تقييمات عملاء حقيقيين",
+      "support": "دعم على مدار الساعة",
+      "supportDesc": "نحن هنا لمساعدتك"
+    },
+    "tabs": {
+      "overview": "نظرة عامة",
+      "whatsIncluded": "ما يتضمنه",
+      "compatibility": "التوافق",
+      "reviews": "المراجعات",
+      "faq": "الأسئلة الشائعة",
+      "changelog": "سجل التغييرات"
+    },
+    "compatibility": {
+      "platform": "المنصة",
+      "status": "الحالة",
+      "version": "الإصدار",
+      "supported": "مدعوم",
+      "notSupported": "غير مدعوم"
+    },
+    "faq": {
+      "stillHaveQuestions": "لا تزال لديك أسئلة؟",
+      "contactSupport": "تواصل مع فريق الدعم وسنرد عليك خلال 24 ساعة."
+    },
+    "changelog": {
+      "versionHistory": "تاريخ الإصدارات والتحديثات"
+    },
+    "license": {
+      "singleUse": "استخدام فردي",
+      "multiUse": "استخدام متعدد",
+      "extended": "موسع",
+      "unlimited": "غير محدود",
+      "selectPlan": "اختر الخطة",
+      "selected": "محدد",
+      "popular": "الأكثر شعبية",
+      "perProject": "لكل مشروع",
+      "lifetime": "مدى الحياة"
+    },
+    "breadcrumb": {
+      "home": "الرئيسية",
+      "store": "المتجر"
+    },
+    "socialProof": {
+      "recentPurchases": "{count} عملية شراء في آخر 24 ساعة",
+      "averageRating": "تقييم {rating} من {count} عميل",
+      "totalDownloads": "{count} تحميل وما زال العدد في ازدياد",
+      "dismiss": "إغلاق",
+      "purchased": "اشترى",
+      "fromCity": "{name} من {city}",
+      "timeLabels": {
+        "justNow": "الآن",
+        "oneMinuteAgo": "منذ دقيقة",
+        "twoMinutesAgo": "منذ دقيقتين",
+        "threeMinutesAgo": "منذ 3 دقائق",
+        "fiveMinutesAgo": "منذ 5 دقائق"
+      }
+    },
+    "newsletter": {
+      "title": "ابقَ على اطلاع",
+      "description": "احصل على إشعارات حول المنتجات الجديدة والعروض الحصرية والموارد المفيدة.",
+      "placeholder": "your@email.com",
+      "subscribe": "اشترك"
+    },
+    "currency": {
+      "label": "العملة",
+      "select": "اختر العملة",
+      "change": "انقر للتغيير",
+      "approximatePrice": "السعر التقريبي بالـ {currency}"
+    },
+    "accessibility": {
+      "skipToProducts": "انتقل إلى المنتجات",
+      "skipToFilters": "انتقل إلى الفلاتر",
+      "productPagination": "ترقيم صفحات المنتجات",
+      "loadingProducts": "جارٍ تحميل المنتجات",
+      "productsLoaded": "تم تحميل المنتجات",
+      "filterChanged": "عرض {count} منتج",
+      "sortChanged": "تم ترتيب المنتجات حسب {sort}"
+    }
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "drawerTitle": "سلتك",
+    "preview": "معاينة السلة",
+    "empty": "سلتك فارغة",
+    "emptyDescription": "تصفح متجرنا للعثور على المنتجات الرقمية التي تحبها.",
+    "item": "{count, plural, one {عنصر واحد} other {# عناصر}}",
+    "moreItems": "+{count} {count, plural, one {عنصر} other {عناصر}} إضافية",
+    "subtotal": "المجموع الفرعي",
+    "discount": "الخصم",
+    "total": "الإجمالي",
+    "viewCart": "عرض السلة",
+    "removeItem": "إزالة {title} من السلة",
+    "itemRemoved": "تم إزالة {title} من السلة",
+    "addedToCart": "تمت الإضافة إلى السلة!",
+    "failedToAdd": "فشل في الإضافة إلى السلة",
+    "tryAgain": "يرجى المحاولة مرة أخرى.",
+    "proceedToCheckout": "المتابعة إلى الدفع",
+    "securePurchase": "شراء آمن",
+    "freeShippingProgress": "أضف {amount} أخرى للحصول على الدعم المتميز",
+    "youMightAlsoLike": "قد يعجبك أيضاً",
+    "recentlyViewed": "شوهد مؤخراً",
+    "coupon": {
+      "label": "لديك قسيمة؟",
+      "placeholder": "أدخل رمز القسيمة",
+      "apply": "تطبيق",
+      "applied": "تم تطبيق القسيمة!",
+      "invalid": "رمز قسيمة غير صالح",
+      "remove": "إزالة القسيمة"
+    },
+    "ariaLabel": "السلة، {count, plural, =0 {فارغة} one {عنصر واحد} other {# عناصر}}"
+  },
+  "checkout": {
+    "title": "الدفع",
+    "orderSummary": "ملخص الطلب",
+    "paymentSummary": "ملخص الدفع",
+    "proceedToPayment": "المتابعة إلى الدفع",
+    "creatingSession": "جارٍ إنشاء الجلسة...",
+    "securedByStripe": "مؤمن بواسطة Stripe. لا نقوم أبداً بتخزين تفاصيل بطاقتك.",
+    "breadcrumb": {
+      "home": "الرئيسية",
+      "store": "المتجر",
+      "checkout": "الدفع"
+    },
+    "alsoAvailable": "متاح أيضاً عند الدفع",
+    "item": {
+      "remove": "إزالة {title}",
+      "variant": "الخيار: {name}",
+      "unitPrice": "سعر الوحدة: {price}",
+      "count": "{count, plural, one {عنصر واحد} other {# عناصر}}"
+    },
+    "coupon": {
+      "haveACoupon": "لديك قسيمة؟",
+      "placeholder": "أدخل رمز القسيمة",
+      "apply": "تطبيق",
+      "applied": "تم تطبيق القسيمة! وفرت {amount}",
+      "invalid": "رمز قسيمة غير صالح",
+      "expired": "انتهت صلاحية هذه القسيمة",
+      "hide": "إخفاء القسيمة",
+      "countdown": "أكمل خلال {time} لتثبيت الخصم",
+      "remove": "إزالة القسيمة"
+    },
+    "summary": {
+      "subtotal": "المجموع الفرعي",
+      "discount": "الخصم",
+      "total": "الإجمالي"
+    },
+    "trust": {
+      "securePayment": "دفع آمن",
+      "securePaymentDesc": "تشفير SSL بـ 256 بت عبر Stripe",
+      "sslEncrypted": "مشفر بـ SSL",
+      "sslEncryptedDesc": "أمان بمعايير صناعية",
+      "moneyBack": "استرداد الأموال",
+      "moneyBackDesc": "ضمان 30 يوماً",
+      "testimonialQuote": "\u201Cمنتجات ممتازة، توصيل فوري! الجودة فاقت توقعاتي.\u201D",
+      "testimonialAuthor": "\u2014 سارة م.، مشترٍ موثق"
+    },
+    "empty": {
+      "title": "سلتك فارغة",
+      "description": "أضف بعض المنتجات إلى سلتك للمتابعة إلى الدفع.",
+      "browseProducts": "تصفح المنتجات"
+    },
+    "success": {
+      "title": "شكراً لعملية الشراء!",
+      "subtitle": "شكراً لعملية الشراء",
+      "description": "تم تأكيد طلبك وهو جاهز للتحميل.",
+      "orderNumber": "رقم الطلب",
+      "date": "التاريخ",
+      "email": "البريد الإلكتروني",
+      "items": "العناصر",
+      "total": "الإجمالي",
+      "totalPaid": "المبلغ المدفوع",
+      "downloadNow": "تحميل الآن",
+      "downloadAll": "تحميل جميع العناصر",
+      "noDownloads": "لا توجد تحميلات متاحة حالياً لهذا الطلب.",
+      "downloadsRemaining": "التحميلات المتبقية: {remaining}/{max}",
+      "yourDownloads": "تحميلاتك",
+      "continueShopping": "متابعة التسوق",
+      "orderDetails": "تفاصيل الطلب",
+      "copied": "تم النسخ!",
+      "copyOrderNumber": "نسخ رقم الطلب",
+      "linkCopied": "تم نسخ الرابط إلى الحافظة!",
+      "noSession": "لم يتم العثور على جلسة",
+      "noSessionDescription": "يبدو أنك وصلت إلى هنا دون إكمال عملية الدفع.",
+      "browseProducts": "تصفح المنتجات",
+      "errorTitle": "حدث خطأ ما",
+      "errorDescription": "لم نتمكن من التحقق من دفعتك. إذا تم خصم مبلغ منك، يرجى التواصل مع الدعم وسنحل المشكلة فوراً.",
+      "backToStore": "العودة إلى المتجر",
+      "contactSupport": "التواصل مع الدعم",
+      "confirmationSent": "تم إرسال التأكيد إلى {email}",
+      "timeline": {
+        "orderPlaced": "تم تقديم الطلب",
+        "paymentConfirmed": "تم تأكيد الدفع",
+        "readyToDownload": "جاهز للتحميل"
+      },
+      "whatsNext": "ما التالي؟",
+      "ratePurchase": "قيّم عملية الشراء",
+      "shareExperience": "شارك تجربتك",
+      "shareWithFriends": "شارك مع الأصدقاء",
+      "browseMore": "تصفح المزيد من المنتجات",
+      "discoverMore": "اكتشف المزيد من الأدوات",
+      "shareOnTwitter": "شارك على تويتر",
+      "shareOnLinkedIn": "شارك على لينكد إن",
+      "copyLink": "نسخ الرابط"
+    },
+    "cancel": {
+      "title": "تم إلغاء الدفع",
+      "description": "لم تكتمل عملية الدفع ولم يتم خصم أي مبلغ منك. عناصر سلتك لا تزال محفوظة إذا أردت المحاولة مرة أخرى.",
+      "returnToCart": "العودة إلى السلة",
+      "continueShopping": "متابعة التسوق"
+    }
+  },
+  "reviews": {
+    "title": "مراجعات العملاء",
+    "writeReview": "اكتب مراجعة",
+    "editReview": "تعديل المراجعة",
+    "shareExperience": "شارك تجربتك",
+    "basedOn": "بناءً على {count, plural, one {مراجعة واحدة} other {# مراجعات}}",
+    "verifiedPurchase": "عملية شراء موثقة",
+    "recommended": "{percent}% يوصون بهذا المنتج",
+    "rating": {
+      "label": "التقييم",
+      "rateProduct": "قيّم هذا المنتج",
+      "value": "{value} من 5 نجوم",
+      "starLabel": "{count, plural, one {نجمة واحدة} other {# نجوم}}",
+      "labels": {
+        "1": "سيئ",
+        "2": "مقبول",
+        "3": "جيد",
+        "4": "رائع",
+        "5": "ممتاز"
+      }
+    },
+    "distribution": {
+      "title": "توزيع التقييمات",
+      "bar": "{stars, plural, one {نجمة واحدة} other {# نجوم}}: {count, plural, one {مراجعة واحدة} other {# مراجعات}}، {percentage}%",
+      "filterHint": "انقر للفلترة حسب {stars} نجوم، انقر مرة أخرى للمسح"
+    },
+    "form": {
+      "title": "اكتب مراجعة",
+      "editTitle": "عدّل مراجعتك",
+      "step": "الخطوة {current} من {total}: {name}",
+      "steps": {
+        "rating": "التقييم",
+        "details": "التفاصيل",
+        "prosAndCons": "المزايا والعيوب",
+        "images": "الصور"
+      },
+      "titleLabel": "عنوان المراجعة",
+      "titlePlaceholder": "لخّص تجربتك",
+      "titleMax": "{count}/{max} حرف",
+      "bodyLabel": "مراجعتك",
+      "bodyPlaceholder": "أخبر الآخرين عن تجربتك مع هذا المنتج...",
+      "bodyMin": "الحد الأدنى {min} حرف",
+      "bodyCount": "{count}/{max} حرف",
+      "prosLabel": "ما الذي أعجبك؟",
+      "prosPlaceholder": "أضف ميزة",
+      "consLabel": "ما الذي يمكن تحسينه؟",
+      "consPlaceholder": "أضف عيباً",
+      "addPro": "أضف ميزة واضغط Enter",
+      "addCon": "أضف عيباً واضغط Enter",
+      "removePro": "إزالة الميزة: {text}",
+      "removeCon": "إزالة العيب: {text}",
+      "imagesLabel": "أضف صوراً (اختياري)",
+      "imagesDescription": "اسحب وأفلت حتى 5 صور أو انقر للتصفح",
+      "removeImage": "إزالة الصورة",
+      "maxImages": "تم الوصول إلى الحد الأقصى للصور",
+      "orClickToBrowse": "أو انقر للتصفح",
+      "next": "التالي",
+      "back": "رجوع",
+      "skip": "تخطي",
+      "submit": "إرسال المراجعة",
+      "update": "تحديث المراجعة",
+      "submitting": "جارٍ الإرسال...",
+      "success": "شكراً لمراجعتك!",
+      "successDescription": "مراجعتك تساعد الآخرين في اتخاذ قرارات مستنيرة.",
+      "error": "فشل إرسال المراجعة. يرجى المحاولة مرة أخرى.",
+      "draftSaved": "تم حفظ المسودة",
+      "loginRequired": "يرجى تسجيل الدخول لكتابة مراجعة"
+    },
+    "list": {
+      "title": "مراجعات العملاء",
+      "sortBy": "ترتيب حسب",
+      "searchPlaceholder": "البحث في المراجعات...",
+      "searchLabel": "البحث في المراجعات",
+      "all": "الكل",
+      "stars": "{count} نجوم",
+      "noReviews": "لا توجد مراجعات بعد",
+      "noReviewsDescription": "كن أول من يشارك تجربته مع هذا المنتج.",
+      "noResults": "لا توجد مراجعات تطابق بحثك",
+      "noResultsDescription": "جرب مصطلح بحث مختلف أو امسح الفلاتر.",
+      "loadMore": "تحميل المزيد من المراجعات",
+      "loading": "جارٍ تحميل المراجعات...",
+      "error": "فشل تحميل المراجعات",
+      "errorDescription": "حدث خطأ أثناء تحميل المراجعات.",
+      "tryAgain": "حاول مرة أخرى"
+    },
+    "card": {
+      "helpful": "مفيد",
+      "helpfulCount": "{count, plural, one {شخص واحد} other {# أشخاص}} وجدوا هذا مفيداً",
+      "notHelpful": "غير مفيد",
+      "report": "الإبلاغ عن المراجعة",
+      "reported": "تم الإبلاغ",
+      "readMore": "اقرأ المزيد",
+      "readLess": "اقرأ أقل",
+      "sellerResponse": "رد البائع",
+      "edited": "تم التعديل",
+      "pros": "المزايا",
+      "cons": "العيوب",
+      "images": "{count, plural, one {صورة واحدة} other {# صور}}",
+      "moreImages": "+{count} أخرى"
+    },
+    "sort": {
+      "mostHelpful": "الأكثر فائدة",
+      "newest": "الأحدث أولاً",
+      "highest": "الأعلى تقييماً",
+      "lowest": "الأدنى تقييماً"
+    },
+    "highlights": {
+      "title": "أبرز المراجعات",
+      "aiGenerated": "ملخص مولّد بالذكاء الاصطناعي",
+      "topPros": "أبرز المزايا المذكورة",
+      "topCons": "أبرز العيوب المذكورة",
+      "sentiment": {
+        "exceptional": "العملاء راضون بشكل استثنائي عن هذا المنتج.",
+        "positive": "العملاء راضون جداً عن هذا المنتج.",
+        "good": "العملاء راضون بشكل عام عن هذا المنتج.",
+        "mixed": "تلقى هذا المنتج مراجعات متباينة.",
+        "negative": "تلقى هذا المنتج مراجعات أقل من المتوسط."
+      }
+    },
+    "socialStats": {
+      "trending": "رائج",
+      "downloads": "{count} تحميلات",
+      "downloadsLabel": "تحميلات",
+      "reviews": "{count} مراجعات",
+      "reviewsLabel": "مراجعات"
+    }
+  },
   "language": "اللغة",
   "careers": {
     "applyButton": "قدم الآن",
