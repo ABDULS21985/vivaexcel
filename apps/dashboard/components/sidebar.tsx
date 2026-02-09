@@ -25,6 +25,7 @@ import {
     ShoppingBag,
     Receipt,
     Projector,
+    Globe,
 } from "lucide-react";
 import { cn } from "@ktblog/ui/components";
 import { useAuthContext } from "../contexts/auth-context";
@@ -71,6 +72,11 @@ const navItems: NavItem[] = [
         label: "Digital Products",
         href: "/products/digital",
         icon: <ShoppingBag className="h-5 w-5" />,
+    },
+    {
+        label: "Web Templates",
+        href: "/products/templates",
+        icon: <Globe className="h-5 w-5" />,
     },
     {
         label: "Presentations",

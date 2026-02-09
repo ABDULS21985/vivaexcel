@@ -48,6 +48,7 @@ import { CartModule } from './modules/cart/cart.module';
 import { CheckoutModule } from './modules/checkout/checkout.module';
 import { PresentationsModule } from './modules/presentations/presentations.module';
 import { SolutionDocumentsModule } from './modules/solution-documents/solution-documents.module';
+import { TemplatesModule } from './modules/templates/templates.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -130,6 +131,7 @@ import { AppService } from './app.service';
     CheckoutModule,
     PresentationsModule,
     SolutionDocumentsModule,
+    TemplatesModule,
   ],
   controllers: [AppController],
   providers: [

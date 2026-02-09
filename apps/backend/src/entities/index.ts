@@ -28,3 +28,6 @@ export * from './slide-preview.entity';
 export * from './solution-document.entity';
 export * from './document-bundle.entity';
 export * from './document-update.entity';
+export * from './web-template.entity';
+export * from './template-license.entity';
+export * from './template-demo.entity';
