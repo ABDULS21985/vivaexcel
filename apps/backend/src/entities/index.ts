@@ -31,3 +31,6 @@ export * from './document-update.entity';
 export * from './web-template.entity';
 export * from './template-license.entity';
 export * from './template-demo.entity';
+export * from './review.entity';
+export * from './review-vote.entity';
+export * from './review-report.entity';
