@@ -13,6 +13,7 @@ import {
   SlidersHorizontal,
   Star,
   ChevronDown,
+  Tag,
 } from "lucide-react";
 import type {
   DigitalProduct,
@@ -24,7 +25,7 @@ import {
   DIGITAL_PRODUCT_TYPE_LABELS,
 } from "@/types/digital-product";
 import { useDigitalProducts } from "@/hooks/use-digital-products";
-import { ProductCard } from "@/components/store/product-card";
+import { ProductCard, ProductCardSkeleton } from "@/components/store/product-card";
 
 // =============================================================================
 // Types
@@ -166,10 +167,10 @@ function SortDropdown({
 }
 
 // =============================================================================
-// Mobile Filter Panel
+// Mobile Filter Bottom Sheet
 // =============================================================================
 
-function MobileFilterPanel({
+function MobileFilterSheet({
   isOpen,
   onClose,
   children,
@@ -190,13 +191,17 @@ function MobileFilterPanel({
             onClick={onClose}
           />
           <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-neutral-900 z-50 overflow-y-auto shadow-2xl lg:hidden"
+            className="fixed left-0 right-0 bottom-0 max-h-[85vh] bg-white dark:bg-neutral-900 z-50 overflow-y-auto shadow-2xl lg:hidden rounded-t-3xl"
           >
-            <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-700">
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-2">
+              <div className="w-10 h-1 bg-neutral-300 dark:bg-neutral-600 rounded-full" />
+            </div>
+            <div className="flex items-center justify-between px-5 pb-4 border-b border-neutral-200 dark:border-neutral-700">
               <h2 className="text-lg font-bold text-neutral-900 dark:text-white">
                 Filters
               </h2>
@@ -207,11 +212,138 @@ function MobileFilterPanel({
                 <X className="h-5 w-5 text-neutral-500" />
               </button>
             </div>
-            <div className="p-4">{children}</div>
+            <div className="p-5 pb-safe">{children}</div>
           </motion.div>
         </>
       )}
     </AnimatePresence>
+  );
+}
+
+// =============================================================================
+// Active Filter Chips
+// =============================================================================
+
+function ActiveFilterChips({
+  searchQuery,
+  selectedCategory,
+  selectedType,
+  minPrice,
+  maxPrice,
+  selectedRating,
+  categories,
+  onClearSearch,
+  onClearCategory,
+  onClearType,
+  onClearPrice,
+  onClearRating,
+  onClearAll,
+}: {
+  searchQuery: string;
+  selectedCategory: string;
+  selectedType: string;
+  minPrice: string;
+  maxPrice: string;
+  selectedRating: number;
+  categories: DigitalProductCategory[];
+  onClearSearch: () => void;
+  onClearCategory: () => void;
+  onClearType: () => void;
+  onClearPrice: () => void;
+  onClearRating: () => void;
+  onClearAll: () => void;
+}) {
+  const chips: { key: string; label: string; onRemove: () => void }[] = [];
+
+  if (searchQuery.trim()) {
+    chips.push({
+      key: "search",
+      label: `"${searchQuery.trim()}"`,
+      onRemove: onClearSearch,
+    });
+  }
+
+  if (selectedCategory) {
+    const categoryName =
+      categories.find((c) => c.slug === selectedCategory)?.name ||
+      selectedCategory;
+    chips.push({
+      key: "category",
+      label: categoryName,
+      onRemove: onClearCategory,
+    });
+  }
+
+  if (selectedType) {
+    const typeLabel =
+      DIGITAL_PRODUCT_TYPE_LABELS[selectedType as DigitalProductType] ||
+      selectedType;
+    chips.push({
+      key: "type",
+      label: typeLabel,
+      onRemove: onClearType,
+    });
+  }
+
+  if (minPrice || maxPrice) {
+    const priceLabel =
+      minPrice && maxPrice
+        ? `$${minPrice} - $${maxPrice}`
+        : minPrice
+          ? `From $${minPrice}`
+          : `Up to $${maxPrice}`;
+    chips.push({
+      key: "price",
+      label: priceLabel,
+      onRemove: onClearPrice,
+    });
+  }
+
+  if (selectedRating > 0) {
+    chips.push({
+      key: "rating",
+      label: `${selectedRating}+ Stars`,
+      onRemove: onClearRating,
+    });
+  }
+
+  if (chips.length === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      className="flex items-center gap-2 mb-6 flex-wrap"
+    >
+      <Tag className="h-4 w-4 text-neutral-400 flex-shrink-0" />
+      {chips.map((chip) => (
+        <motion.span
+          key={chip.key}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1E4DB7] text-white text-xs font-medium rounded-full"
+        >
+          {chip.label}
+          <button
+            onClick={chip.onRemove}
+            className="ml-0.5 p-0.5 rounded-full hover:bg-white/20 transition-colors"
+            aria-label={`Remove ${chip.label} filter`}
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </motion.span>
+      ))}
+      {chips.length > 1 && (
+        <button
+          onClick={onClearAll}
+          className="text-xs text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors ml-1"
+        >
+          Clear all
+        </button>
+      )}
+    </motion.div>
   );
 }
 
@@ -450,6 +582,7 @@ export function StoreListingClient({
   initialCategorySlug,
 }: StoreListingClientProps) {
   const gridRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // ---------------------------------------------------------------------------
   // Local UI State
@@ -751,7 +884,26 @@ export function StoreListingClient({
   }, []);
 
   // ---------------------------------------------------------------------------
-  // Filter sidebar content (shared between desktop sidebar & mobile panel)
+  // IntersectionObserver for infinite scroll
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    if (!sentinelRef.current || !hasMore || isLoadingResults || loadMoreLoading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          handleLoadMore();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, isLoadingResults, loadMoreLoading, handleLoadMore]);
+
+  // ---------------------------------------------------------------------------
+  // Filter sidebar content (shared between desktop sidebar & mobile sheet)
   // ---------------------------------------------------------------------------
   const filterContent = (
     <FilterContent
@@ -774,7 +926,7 @@ export function StoreListingClient({
   return (
     <div ref={gridRef} className="w-full">
       {/* Top Bar: Search + Sort + View Toggle */}
-      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
         {/* Search Bar */}
         <div className="relative flex-1 max-w-lg">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
@@ -844,37 +996,46 @@ export function StoreListingClient({
         </div>
       </div>
 
-      {/* Results Count + Active Filters */}
-      {(hasActiveFilters || isLoadingResults) && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex items-center gap-3 mb-6 flex-wrap"
-        >
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            {isLoadingResults ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Searching...
-              </span>
-            ) : (
-              <>
-                {totalResults} {totalResults === 1 ? "product" : "products"}{" "}
-                found
-              </>
-            )}
-          </span>
-          {hasActiveFilters && (
-            <button
-              onClick={handleClearFilters}
-              className="flex items-center gap-1.5 text-sm text-[#1E4DB7] hover:text-[#143A8F] font-medium transition-colors"
-            >
-              <X className="h-4 w-4" />
-              Clear filters
-            </button>
+      {/* Active Filter Chips */}
+      <AnimatePresence>
+        {hasActiveFilters && (
+          <ActiveFilterChips
+            searchQuery={searchQuery}
+            selectedCategory={selectedCategory}
+            selectedType={selectedType}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            selectedRating={selectedRating}
+            categories={categories}
+            onClearSearch={() => handleSearchChange("")}
+            onClearCategory={() => handleCategoryChange("")}
+            onClearType={() => handleTypeChange("")}
+            onClearPrice={() => {
+              setMinPrice("");
+              setMaxPrice("");
+              setAccumulatedProducts([]);
+              setNextCursor(undefined);
+              setVisibleCount(PRODUCTS_PER_PAGE);
+            }}
+            onClearRating={() => handleRatingChange(0)}
+            onClearAll={handleClearFilters}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Results count with aria-live for accessibility */}
+      <div aria-live="polite" className="flex items-center gap-3 mb-6 flex-wrap">
+        <span className="text-sm text-neutral-500 dark:text-neutral-400">
+          {isLoadingResults ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Searching...
+            </span>
+          ) : (
+            `${totalResults} ${totalResults === 1 ? "product" : "products"} found`
           )}
-        </motion.div>
-      )}
+        </span>
+      </div>
 
       {/* Main Layout: Sidebar + Grid */}
       <div className="flex gap-8">
@@ -885,27 +1046,23 @@ export function StoreListingClient({
           </div>
         </aside>
 
-        {/* Mobile Filter Panel */}
-        <MobileFilterPanel
+        {/* Mobile Filter Bottom Sheet */}
+        <MobileFilterSheet
           isOpen={mobileFiltersOpen}
           onClose={() => setMobileFiltersOpen(false)}
         >
           {filterContent}
-        </MobileFilterPanel>
+        </MobileFilterSheet>
 
         {/* Products Area */}
         <div className="flex-1 min-w-0">
           {isLoadingResults ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center py-20"
-            >
-              <Loader2 className="h-10 w-10 text-[#1E4DB7] animate-spin mb-4" />
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                Loading products...
-              </p>
-            </motion.div>
+            /* Skeleton Loading Grid */
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
           ) : displayProducts.length > 0 ? (
             <>
               {/* Product Grid */}
@@ -915,7 +1072,7 @@ export function StoreListingClient({
                 animate="visible"
                 className={
                   viewMode === "grid"
-                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6"
                     : "flex flex-col gap-4"
                 }
               >
@@ -930,39 +1087,20 @@ export function StoreListingClient({
                 </AnimatePresence>
               </motion.div>
 
-              {/* Load More */}
+              {/* Infinite Scroll Sentinel */}
               {hasMore && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex justify-center mt-12"
-                >
-                  <motion.button
-                    onClick={handleLoadMore}
-                    disabled={loadMoreLoading}
-                    className="group flex items-center gap-3 px-8 py-4 bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 font-semibold text-sm hover:border-[#1E4DB7] hover:text-[#1E4DB7] hover:shadow-lg hover:shadow-[#1E4DB7]/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {loadMoreLoading ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        <span>Loading...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Load More Products</span>
-                        <span className="px-2 py-1 bg-neutral-100 dark:bg-neutral-700 group-hover:bg-[#1E4DB7]/10 rounded-lg text-xs font-semibold transition-colors">
-                          {Math.max(
-                            0,
-                            totalResults - displayProducts.length,
-                          )}{" "}
-                          remaining
-                        </span>
-                      </>
-                    )}
-                  </motion.button>
-                </motion.div>
+                <div ref={sentinelRef} className="flex justify-center mt-12 py-8">
+                  {loadMoreLoading && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-3 text-neutral-500 dark:text-neutral-400"
+                    >
+                      <Loader2 className="h-5 w-5 animate-spin text-[#1E4DB7]" />
+                      <span className="text-sm font-medium">Loading more products...</span>
+                    </motion.div>
+                  )}
+                </div>
               )}
 
               {/* Showing Count */}

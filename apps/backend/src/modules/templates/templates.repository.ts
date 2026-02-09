@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { WebTemplate, TemplateStatus } from '../../entities/web-template.entity';
+import { WebTemplate, WebTemplateStatus } from '../../entities/web-template.entity';
 import { TemplateLicense } from '../../entities/template-license.entity';
 import { TemplateDemo } from '../../entities/template-demo.entity';
 import { WebTemplateQueryDto } from './dto/web-template-query.dto';
@@ -61,7 +61,7 @@ export class TemplatesRepository {
     if (status) {
       qb.andWhere('template.status = :status', { status });
     } else {
-      qb.andWhere('template.status = :defaultStatus', { defaultStatus: TemplateStatus.PUBLISHED });
+      qb.andWhere('template.status = :defaultStatus', { defaultStatus: WebTemplateStatus.PUBLISHED });
     }
 
     if (templateType) {

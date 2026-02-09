@@ -8,3 +8,6 @@ export { DeployButton } from './deploy-button';
 export { TemplateCard } from './template-card';
 export { TemplateListingClient } from './template-listing-client';
 export { RelatedTemplates } from './related-templates';
+export { TemplateManagementClient } from './template-management-client';
+export { TemplateCreationWizard } from './template-creation-wizard';
+export { TemplateEditForm } from './template-edit-form';

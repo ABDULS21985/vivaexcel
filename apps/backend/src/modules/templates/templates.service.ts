@@ -17,8 +17,8 @@ import { CreateTemplateLicenseDto } from './dto/create-template-license.dto';
 import { CompatibilityCheckDto } from './dto/compatibility-check.dto';
 import {
   WebTemplate,
-  TemplateFramework,
-  TemplateStatus,
+  Framework,
+  WebTemplateStatus,
 } from '../../entities/web-template.entity';
 import { TemplateLicense } from '../../entities/template-license.entity';
 import { TemplateDemo } from '../../entities/template-demo.entity';
@@ -223,7 +223,7 @@ export class TemplatesService {
   }
 
   async findByFramework(
-    framework: TemplateFramework,
+    framework: Framework,
     limit?: number,
   ): Promise<ApiResponse<WebTemplate[]>> {
     const cacheKey = this.cacheService.generateKey('templates', 'framework', framework, limit ?? 'all');

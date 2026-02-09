@@ -1,12 +1,33 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { ShoppingBag, Mail, Send } from "lucide-react";
+import {
+  ShoppingBag,
+  Zap,
+  Shield,
+  Download,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 import { StoreListingClient } from "@/components/store/store-listing-client";
-import { fetchProducts, fetchProductCategories } from "@/lib/store-api";
-import type { DigitalProduct, DigitalProductCategory } from "@/types/digital-product";
+import { StoreHeroClient } from "@/components/store/store-hero-client";
+import { SocialProofStrip } from "@/components/store/social-proof-strip";
+import { StoreNewsletter } from "@/components/store/store-newsletter";
+import { ProductCard } from "@/components/store/product-card";
+import {
+  fetchProducts,
+  fetchProductCategories,
+  fetchFeaturedProducts,
+  fetchBestsellerProducts,
+} from "@/lib/store-api";
+import type {
+  DigitalProduct,
+  DigitalProductCategory,
+} from "@/types/digital-product";
+import { DIGITAL_PRODUCT_TYPE_COLORS } from "@/types/digital-product";
 import { routing } from "@/i18n/routing";
 import { JsonLd } from "@/components/shared/json-ld";
 import { generateBreadcrumbSchema } from "@/lib/schema";
+import { Link } from "@/i18n/routing";
 
 // =============================================================================
 // Static Params
@@ -75,25 +96,41 @@ export default async function StorePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // -------------------------------------------------------------------------
-  // Fetch data from the backend API (server-side)
-  // -------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // Fetch all data in parallel (server-side)
+  // ---------------------------------------------------------------------------
   let products: DigitalProduct[] = [];
   let categories: DigitalProductCategory[] = [];
+  let featuredProducts: DigitalProduct[] = [];
+  let bestsellerProducts: DigitalProduct[] = [];
   let totalCount = 0;
 
   try {
-    const [productsResponse, categoriesData] = await Promise.all([
-      fetchProducts({ status: "published" as any, limit: 50 }),
-      fetchProductCategories(),
-    ]);
+    const [productsResponse, categoriesData, featured, bestsellers] =
+      await Promise.all([
+        fetchProducts({ status: "published" as any, limit: 50 }),
+        fetchProductCategories(),
+        fetchFeaturedProducts(8),
+        fetchBestsellerProducts(8),
+      ]);
 
     products = productsResponse.items;
     categories = categoriesData.filter((c) => c.isActive !== false);
+    featuredProducts = featured;
+    bestsellerProducts = bestsellers;
     totalCount = productsResponse.meta.total ?? products.length;
   } catch (error) {
     console.error("[StorePage] Failed to fetch store data:", error);
   }
+
+  // Derive "New This Week" products (most recent by publishedAt)
+  const newProducts = [...products]
+    .sort((a, b) => {
+      const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return dateB - dateA;
+    })
+    .slice(0, 8);
 
   return (
     <>
@@ -105,9 +142,24 @@ export default async function StorePage({ params }: Props) {
       />
 
       <div className="min-h-screen bg-white dark:bg-neutral-950">
-        {/* Hero Section */}
-        <section className="relative py-20 md:py-28 bg-gradient-to-br from-[#1E4DB7] via-[#143A8F] to-[#0F2B6B] overflow-hidden">
-          {/* Background decorations */}
+        {/* =================================================================
+            HERO SECTION — Animated Gradient Mesh + Display Typography
+        ================================================================= */}
+        <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
+          {/* Gradient mesh background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1E4DB7] via-[#143A8F] to-[#0F2B6B]" />
+
+          {/* Animated gradient overlay */}
+          <div
+            className="absolute inset-0 opacity-30 animate-gradient-shift"
+            style={{
+              background:
+                "radial-gradient(ellipse at 20% 50%, #6366F1 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, #F59A23 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, #1E4DB7 0%, transparent 50%)",
+              backgroundSize: "200% 200%",
+            }}
+          />
+
+          {/* Dot grid pattern */}
           <div className="absolute inset-0 overflow-hidden">
             <div
               className="absolute inset-0 opacity-10"
@@ -117,14 +169,21 @@ export default async function StorePage({ params }: Props) {
                 backgroundSize: "40px 40px",
               }}
             />
-            <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#F59A23]/20 rounded-full blur-3xl" />
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
           </div>
 
+          {/* Floating decorative orbs */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-20 -right-20 w-80 h-80 bg-[#F59A23]/15 rounded-full blur-3xl animate-float1" />
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float2" />
+            <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-[#6366F1]/15 rounded-full blur-3xl animate-float3" />
+            <div className="absolute bottom-1/4 left-1/3 w-48 h-48 bg-[#F59A23]/10 rounded-full blur-3xl animate-float-delay-1" />
+          </div>
+
+          {/* Content */}
           <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
+            <div className="max-w-5xl mx-auto text-center">
               {/* Badge */}
-              <div className="flex items-center justify-center gap-2 mb-6 animate-fade-in-up">
+              <div className="flex items-center justify-center gap-2 mb-8 animate-fade-in-up">
                 <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full">
                   <ShoppingBag className="h-4 w-4 text-[#F59A23]" />
                   <span className="text-xs font-bold tracking-wider text-white/90 uppercase">
@@ -133,50 +192,266 @@ export default async function StorePage({ params }: Props) {
                 </div>
               </div>
 
-              {/* Title */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in-up">
+              {/* Display Title */}
+              <h1 className="text-display text-white mb-6 animate-fade-in-up stagger-1">
                 Premium{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59A23] to-[#E86A1D]">
+                <span className="hero-gradient-text">
                   Digital Products
                 </span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in-up">
+              <p className="text-lead text-white/75 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2">
                 Discover professionally crafted templates, design systems,
                 starter kits, and tools to accelerate your projects and boost
                 your productivity.
               </p>
 
-              {/* Stats */}
-              <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 animate-fade-in-up">
-                <div className="text-center">
-                  <p className="text-3xl md:text-4xl font-bold text-white">
-                    {totalCount}
-                  </p>
-                  <p className="text-sm text-white/60">Products</p>
+              {/* Interactive Hero Client (Search + Counters + Category Pills) */}
+              <StoreHeroClient
+                totalProducts={totalCount}
+                totalCategories={categories.length}
+                categories={categories.map((c) => ({
+                  name: c.name,
+                  slug: c.slug,
+                }))}
+              />
+
+              {/* Trust Badges */}
+              <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 mt-10 animate-fade-in-up stagger-5">
+                <div className="flex items-center gap-2 text-white/60 text-sm">
+                  <Shield className="h-4 w-4 text-emerald-400" />
+                  <span>Secure Checkout</span>
                 </div>
-                <div className="w-px h-10 bg-white/20" />
-                <div className="text-center">
-                  <p className="text-3xl md:text-4xl font-bold text-white">
-                    {categories.length}
-                  </p>
-                  <p className="text-sm text-white/60">Categories</p>
+                <div className="flex items-center gap-2 text-white/60 text-sm">
+                  <Download className="h-4 w-4 text-blue-400" />
+                  <span>Instant Download</span>
                 </div>
-                <div className="w-px h-10 bg-white/20" />
-                <div className="text-center">
-                  <p className="text-3xl md:text-4xl font-bold text-white">
-                    Instant
-                  </p>
-                  <p className="text-sm text-white/60">Download</p>
+                <div className="flex items-center gap-2 text-white/60 text-sm">
+                  <Zap className="h-4 w-4 text-amber-400" />
+                  <span>Premium Quality</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Main Store Content */}
-        <section className="py-16 md:py-24 bg-gradient-to-b from-white via-neutral-50/30 to-white dark:from-neutral-950 dark:via-neutral-900/30 dark:to-neutral-950">
+        {/* =================================================================
+            SOCIAL PROOF STRIP — Recent Purchases Marquee
+        ================================================================= */}
+        <SocialProofStrip />
+
+        {/* =================================================================
+            CATEGORY SHOWCASE — Horizontal Scroll Cards
+        ================================================================= */}
+        {categories.length > 0 && (
+          <section className="py-16 md:py-20 bg-white dark:bg-neutral-950">
+            <div className="container mx-auto px-4 md:px-6 lg:px-8">
+              {/* Section Header */}
+              <div className="flex items-center justify-between mb-10">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-px bg-[#1E4DB7]" />
+                    <span className="overline text-[#1E4DB7]">
+                      Categories
+                    </span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+                    Browse by Category
+                  </h2>
+                </div>
+                <Link
+                  href="/store"
+                  className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#1E4DB7] hover:text-[#143A8F] transition-colors"
+                >
+                  View All
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+
+              {/* Horizontal Scroll */}
+              <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4">
+                {categories.map((category, idx) => {
+                  const colors = Object.values(DIGITAL_PRODUCT_TYPE_COLORS);
+                  const color = colors[idx % colors.length];
+                  return (
+                    <Link
+                      key={category.id}
+                      href={`/store?category=${category.slug}`}
+                      className="group flex-shrink-0 w-48 md:w-56"
+                    >
+                      <div
+                        className="card-interactive relative h-32 md:h-36 rounded-2xl overflow-hidden"
+                        style={{
+                          background: `linear-gradient(135deg, ${color}20 0%, ${color}10 100%)`,
+                        }}
+                      >
+                        {/* Gradient accent bar */}
+                        <div
+                          className="absolute top-0 left-0 right-0 h-1"
+                          style={{ backgroundColor: color }}
+                        />
+
+                        {/* Category image */}
+                        {category.image && (
+                          <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300">
+                            <img
+                              src={category.image}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+
+                        {/* Content */}
+                        <div className="relative h-full flex flex-col justify-end p-4">
+                          <h3 className="text-sm font-bold text-neutral-900 dark:text-white mb-1 group-hover:text-[#1E4DB7] dark:group-hover:text-blue-400 transition-colors">
+                            {category.name}
+                          </h3>
+                          {category.description && (
+                            <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1">
+                              {category.description}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Hover arrow */}
+                        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 dark:bg-neutral-800/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                          <ArrowRight
+                            className="h-4 w-4 text-neutral-700 dark:text-neutral-300"
+                          />
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* =================================================================
+            CURATED COLLECTIONS — Featured & Bestseller Products
+        ================================================================= */}
+        {featuredProducts.length > 0 && (
+          <section className="py-16 md:py-20 bg-gradient-to-b from-neutral-50/50 to-white dark:from-neutral-900/50 dark:to-neutral-950">
+            <div className="container mx-auto px-4 md:px-6 lg:px-8">
+              {/* Section Header */}
+              <div className="flex items-center justify-between mb-10">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-px bg-[#F59A23]" />
+                    <span className="overline text-[#F59A23]">
+                      Staff Picks
+                    </span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+                    Featured Products
+                  </h2>
+                </div>
+                <Link
+                  href="/store"
+                  className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#1E4DB7] hover:text-[#143A8F] transition-colors"
+                >
+                  View All
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+
+              {/* Horizontal scroll of featured product cards */}
+              <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4">
+                {featuredProducts.slice(0, 6).map((product, idx) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 w-[300px] md:w-[340px]"
+                  >
+                    <ProductCard product={product} index={idx} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Bestsellers Row */}
+        {bestsellerProducts.length > 0 && (
+          <section className="py-16 md:py-20 bg-white dark:bg-neutral-950">
+            <div className="container mx-auto px-4 md:px-6 lg:px-8">
+              <div className="flex items-center justify-between mb-10">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-px bg-emerald-500" />
+                    <span className="overline text-emerald-600 dark:text-emerald-400">
+                      Most Popular
+                    </span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+                    Bestselling Products
+                  </h2>
+                </div>
+                <Link
+                  href="/store"
+                  className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#1E4DB7] hover:text-[#143A8F] transition-colors"
+                >
+                  View All
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+
+              <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4">
+                {bestsellerProducts.slice(0, 6).map((product, idx) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 w-[300px] md:w-[340px]"
+                  >
+                    <ProductCard product={product} index={idx} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* New This Week Row */}
+        {newProducts.length > 0 && (
+          <section className="py-16 md:py-20 bg-gradient-to-b from-neutral-50/50 to-white dark:from-neutral-900/50 dark:to-neutral-950">
+            <div className="container mx-auto px-4 md:px-6 lg:px-8">
+              <div className="flex items-center justify-between mb-10">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-px bg-[#1E4DB7]" />
+                    <span className="overline text-[#1E4DB7]">
+                      <Sparkles className="inline h-3 w-3 mr-1" />
+                      Fresh Arrivals
+                    </span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+                    New This Week
+                  </h2>
+                </div>
+              </div>
+
+              <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4">
+                {newProducts.slice(0, 6).map((product, idx) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 w-[300px] md:w-[340px]"
+                  >
+                    <ProductCard product={product} index={idx} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* =================================================================
+            MAIN STORE CONTENT — Full Product Grid with Filters
+        ================================================================= */}
+        <section
+          id="store-products"
+          className="py-16 md:py-24 bg-gradient-to-b from-white via-neutral-50/30 to-white dark:from-neutral-950 dark:via-neutral-900/30 dark:to-neutral-950"
+        >
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             {/* Section Header */}
             <div className="max-w-4xl mx-auto text-center mb-12">
@@ -213,68 +488,10 @@ export default async function StorePage({ params }: Props) {
           </div>
         </section>
 
-        {/* Newsletter Section */}
-        <section className="py-20 md:py-28 bg-gradient-to-br from-[#1E4DB7] via-[#143A8F] to-[#1E4DB7] relative overflow-hidden">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle at 1px 1px, white 1px, transparent 1px)",
-                backgroundSize: "40px 40px",
-              }}
-            />
-            <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#F59A23]/20 rounded-full blur-3xl" />
-            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-          </div>
-
-          <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="flex justify-center mb-8 animate-fade-in-up">
-                <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-                  <Mail className="h-10 w-10 text-white" />
-                </div>
-              </div>
-
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 animate-fade-in-up">
-                Get Notified About{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F59A23] to-[#E86A1D]">
-                  New Products
-                </span>
-              </h2>
-
-              <p className="text-lg md:text-xl text-white/80 mb-10 animate-fade-in-up">
-                Subscribe to our newsletter and be the first to know when we
-                release new digital products, templates, and exclusive
-                discounts.
-              </p>
-
-              <form className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto animate-fade-in-up">
-                <div className="flex-1 relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#F59A23]/20 to-[#E86A1D]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <input
-                    type="email"
-                    placeholder="Enter your email address"
-                    className="relative w-full px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white placeholder-white/50 focus:outline-none focus:border-[#F59A23]/50 focus:bg-white/15 transition-all duration-300"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="px-8 py-4 bg-gradient-to-r from-[#F59A23] to-[#E86A1D] hover:from-[#E86A1D] hover:to-[#F59A23] text-white font-semibold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#F59A23]/25 flex items-center justify-center gap-2"
-                >
-                  Subscribe
-                  <Send className="h-5 w-5" />
-                </button>
-              </form>
-
-              <p className="text-sm text-white/60 mt-6 animate-fade-in-up">
-                Join 5,000+ professionals. No spam, unsubscribe anytime.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* =================================================================
+            NEWSLETTER CTA — Glassmorphism
+        ================================================================= */}
+        <StoreNewsletter />
       </div>
     </>
   );

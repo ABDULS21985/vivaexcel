@@ -1,8 +1,9 @@
 "use client";
 
+import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Star, Download, TrendingUp, Award } from "lucide-react";
+import { Star, Download, TrendingUp, Award, Eye } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import type { DigitalProduct } from "@/types/digital-product";
 import {
@@ -87,33 +88,48 @@ function renderStars(rating: number): React.ReactNode[] {
 // =============================================================================
 
 const cardVariants = {
-  hidden: {
-    opacity: 0,
-    y: 30,
-    scale: 0.95,
-  },
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15,
-    },
+    transition: { type: "spring" as const, stiffness: 100, damping: 15 },
   },
   exit: {
     opacity: 0,
     y: -20,
     scale: 0.95,
-    transition: {
-      duration: 0.2,
-    },
+    transition: { duration: 0.2 },
   },
 };
 
 // =============================================================================
-// Component
+// Skeleton Card (exported for loading states)
+// =============================================================================
+
+export function ProductCardSkeleton() {
+  return (
+    <div className="relative h-full bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+      {/* Image skeleton */}
+      <div className="relative h-48 md:h-56 bg-neutral-100 dark:bg-neutral-800 skeleton-shimmer" />
+      {/* Content skeleton */}
+      <div className="p-5 md:p-6 space-y-3">
+        <div className="h-3 w-20 bg-neutral-200 dark:bg-neutral-700 rounded skeleton-shimmer" />
+        <div className="h-5 w-full bg-neutral-200 dark:bg-neutral-700 rounded skeleton-shimmer" />
+        <div className="h-5 w-3/4 bg-neutral-200 dark:bg-neutral-700 rounded skeleton-shimmer" />
+        <div className="h-4 w-full bg-neutral-100 dark:bg-neutral-800 rounded skeleton-shimmer" />
+        <div className="h-4 w-2/3 bg-neutral-100 dark:bg-neutral-800 rounded skeleton-shimmer" />
+        <div className="pt-3 border-t border-neutral-100 dark:border-neutral-800 flex justify-between">
+          <div className="h-6 w-16 bg-neutral-200 dark:bg-neutral-700 rounded skeleton-shimmer" />
+          <div className="h-4 w-12 bg-neutral-100 dark:bg-neutral-800 rounded skeleton-shimmer" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =============================================================================
+// Product Card Component
 // =============================================================================
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
@@ -122,6 +138,45 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const discount = product.compareAtPrice
     ? getDiscountPercentage(product.price, product.compareAtPrice)
     : 0;
+
+  // -------------------------------------------------------------------------
+  // Gallery Image Cycling on Hover
+  // -------------------------------------------------------------------------
+  const allImages = [
+    product.featuredImage,
+    ...(product.galleryImages || []),
+  ].filter(Boolean) as string[];
+  const hasMultipleImages = allImages.length > 1;
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startCycling = useCallback(() => {
+    if (!hasMultipleImages) {
+      setIsHovered(true);
+      return;
+    }
+    setIsHovered(true);
+    intervalRef.current = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+    }, 1500);
+  }, [hasMultipleImages, allImages.length]);
+
+  const stopCycling = useCallback(() => {
+    setIsHovered(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setCurrentImageIndex(0);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   return (
     <motion.div
@@ -133,29 +188,57 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       className="group"
     >
       <Link href={`/store/${product.slug}`} className="block h-full">
-        <div className="relative h-full bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-neutral-200/50 dark:hover:shadow-neutral-900/50 transition-all duration-500">
+        <div
+          className="card-interactive relative h-full bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 overflow-hidden"
+          style={{ borderTopColor: typeColor, borderTopWidth: "3px" }}
+          onMouseEnter={startCycling}
+          onMouseLeave={stopCycling}
+        >
           {/* Glow effect on hover */}
           <div
             className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"
             style={{ backgroundColor: `${typeColor}20` }}
           />
 
-          {/* Image Section */}
-          <div className="relative h-48 md:h-52 overflow-hidden bg-neutral-100 dark:bg-neutral-800">
-            {product.featuredImage ? (
-              <motion.div
-                className="w-full h-full"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.4 }}
-              >
-                <Image
-                  src={product.featuredImage}
-                  alt={product.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </motion.div>
+          {/* ---------------------------------------------------------------
+              Image Section with Gallery Cycling
+          --------------------------------------------------------------- */}
+          <div className="relative h-48 md:h-56 overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+            {allImages.length > 0 ? (
+              <>
+                {allImages.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className={`absolute inset-0 transition-opacity duration-500 ${
+                      idx === currentImageIndex ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.title}${idx > 0 ? ` - ${idx + 1}` : ""}`}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  </div>
+                ))}
+
+                {/* Image dots indicator */}
+                {hasMultipleImages && isHovered && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5">
+                    {allImages.map((_, idx) => (
+                      <div
+                        key={idx}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          idx === currentImageIndex
+                            ? "bg-white w-4"
+                            : "bg-white/50 w-1.5"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700">
                 <span className="text-neutral-300 dark:text-neutral-600 text-6xl font-bold">
@@ -164,8 +247,15 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               </div>
             )}
 
-            {/* Overlay gradient on hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {/* Hover overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            {/* Quick view icon on hover */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+              <div className="w-12 h-12 rounded-full glass flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                <Eye className="h-5 w-5 text-white" />
+              </div>
+            </div>
 
             {/* Type Badge (top-left) */}
             <div className="absolute top-3 left-3 z-10">
@@ -180,7 +270,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               </span>
             </div>
 
-            {/* Feature / Bestseller Badges (top-right) */}
+            {/* Featured / Bestseller Badges (top-right) */}
             <div className="absolute top-3 right-3 z-10 flex flex-col gap-1.5">
               {product.isFeatured && (
                 <span className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-[#F59A23] to-[#E86A1D] text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg">
@@ -204,9 +294,20 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 </span>
               </div>
             )}
+
+            {/* Glassmorphism Price Tag (bottom-right, hover reveal) */}
+            <div className="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+              <div className="glass rounded-lg px-3 py-1.5">
+                <span className="text-sm font-bold text-white">
+                  {formatPrice(product.price, product.currency)}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Content Section */}
+          {/* ---------------------------------------------------------------
+              Content Section
+          --------------------------------------------------------------- */}
           <div className="relative p-5 md:p-6">
             {/* Category */}
             {product.category && (
@@ -246,11 +347,16 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
             {/* Footer: Price + Downloads */}
             <div className="flex items-end justify-between pt-3 border-t border-neutral-100 dark:border-neutral-800">
-              {/* Price */}
               <div className="flex items-baseline gap-2">
-                <span className="text-lg font-bold text-neutral-900 dark:text-white">
-                  {formatPrice(product.price, product.currency)}
-                </span>
+                {product.price === 0 ? (
+                  <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#1E4DB7] to-[#6366F1]">
+                    Free
+                  </span>
+                ) : (
+                  <span className="text-lg font-bold text-neutral-900 dark:text-white">
+                    {formatPrice(product.price, product.currency)}
+                  </span>
+                )}
                 {product.compareAtPrice &&
                   product.compareAtPrice > product.price && (
                     <span className="text-sm text-neutral-400 line-through">
@@ -259,7 +365,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   )}
               </div>
 
-              {/* Downloads */}
               {product.downloadCount > 0 && (
                 <div className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
                   <Download className="h-3.5 w-3.5" />
@@ -269,9 +374,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             </div>
           </div>
 
-          {/* Bottom accent line */}
+          {/* Bottom accent line on hover */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
+            className="absolute bottom-0 left-0 right-0 h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
             style={{
               background: `linear-gradient(90deg, ${typeColor} 0%, #F59A23 100%)`,
             }}
