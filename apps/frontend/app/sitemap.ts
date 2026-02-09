@@ -6,7 +6,7 @@ import {
   blogAuthors,
 } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vivaexcel.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://katangablog.com";
 
 // Supported locales for internationalization
 const locales = ["en", "ar"] as const;

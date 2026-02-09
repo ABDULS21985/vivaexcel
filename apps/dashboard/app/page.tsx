@@ -74,7 +74,7 @@ export default function DashboardHome() {
         <div className="min-h-screen">
             <PageHeader
                 title="Dashboard"
-                description="Welcome back! Here's an overview of your VivaExcel Blog."
+                description="Welcome back! Here's an overview of your KatangaBlog."
             />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -131,7 +131,7 @@ export default function DashboardHome() {
                             New Post
                         </Button>
                     </Link>
-                    <a href="https://vivaexcel.com" target="_blank" rel="noopener noreferrer">
+                    <a href="https://katangablog.com" target="_blank" rel="noopener noreferrer">
                         <Button variant="outline">
                             <Globe className="h-4 w-4 mr-2" />
                             View Site

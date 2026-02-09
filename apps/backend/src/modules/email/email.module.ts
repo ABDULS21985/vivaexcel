@@ -20,7 +20,7 @@ import { EmailService } from './email.service';
           },
         },
         defaults: {
-          from: `"${config.get<string>('BRAND_NAME', 'VivaExcel Blog')}" <${config.get<string>('SMTP_FROM')}>`,
+          from: `"${config.get<string>('BRAND_NAME', 'KatangaBlog')}" <${config.get<string>('SMTP_FROM')}>`,
         },
         template: {
           dir: join(__dirname, 'templates'),

@@ -72,7 +72,7 @@ const infoCards = [
   {
     icon: Mail,
     title: "Email Us",
-    detail: "hello@vivaexcel.com",
+    detail: "hello@katangablog.com",
     description: "Drop us a line anytime",
     color: "text-primary",
     bgColor: "bg-primary/10",

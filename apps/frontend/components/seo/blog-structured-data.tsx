@@ -1,9 +1,9 @@
 import Script from "next/script";
 import type { BlogPostWithRelations, BlogCategory, BlogAuthor } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vivaexcel.com";
-const SITE_NAME = "VivaExcel Blog";
-const LOGO_URL = `${SITE_URL}/logo/vivaexcel.png`;
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://katangablog.com";
+const SITE_NAME = "KatangaBlog";
+const LOGO_URL = `${SITE_URL}/logo/katangablog.png`;
 
 // ============================================================================
 // ArticleStructuredData — JSON-LD for individual blog posts
@@ -161,11 +161,11 @@ export function OrganizationStructuredData() {
       height: 512,
     },
     description:
-      "VivaExcel Blog is a best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
+      "KatangaBlog is a best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
     sameAs: [
-      "https://www.linkedin.com/company/vivaexcel",
-      "https://twitter.com/vivaexcel",
-      "https://www.facebook.com/vivaexcel",
+      "https://www.linkedin.com/company/katangablog",
+      "https://twitter.com/katangablog",
+      "https://www.facebook.com/katangablog",
     ],
     contactPoint: {
       "@type": "ContactPoint",

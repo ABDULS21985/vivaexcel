@@ -508,7 +508,7 @@ function AboutSection() {
             custom={2}
             className="text-base sm:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed mb-12 max-w-2xl mx-auto"
           >
-            VivaExcel Blog is dedicated to helping developers, designers, and tech professionals level up their skills through expert-crafted content. We believe that accessible, high-quality knowledge is the foundation of innovation.
+            KatangaBlog is dedicated to helping developers, designers, and tech professionals level up their skills through expert-crafted content. We believe that accessible, high-quality knowledge is the foundation of innovation.
           </motion.p>
 
           {/* Stats */}

@@ -82,7 +82,7 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="text-[var(--muted-foreground)] text-sm">
-              Sign in to your VivaExcel account
+              Sign in to your KatangaBlog account
             </p>
           </div>
 

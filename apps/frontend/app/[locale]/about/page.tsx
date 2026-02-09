@@ -28,12 +28,12 @@ export function generateStaticParams() {
 export const metadata: Metadata = {
   title: `About | ${SITE_NAME}`,
   description:
-    "Learn about VivaExcel Blog — our mission to deliver world-class content, expert insights, and in-depth tutorials to empower your growth.",
+    "Learn about KatangaBlog — our mission to deliver world-class content, expert insights, and in-depth tutorials to empower your growth.",
   openGraph: {
     title: `About | ${SITE_NAME}`,
     description:
       "Our mission to deliver world-class content, expert insights, and in-depth tutorials.",
-    url: "https://vivaexcel.com/about",
+    url: "https://katangablog.com/about",
   },
 };
 
@@ -146,7 +146,7 @@ export default async function AboutPage({ params }: Props) {
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
               About{" "}
-              <span className="text-gradient-primary">VivaExcel Blog</span>
+              <span className="text-gradient-primary">KatangaBlog</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               We are on a mission to deliver world-class content that empowers
@@ -174,7 +174,7 @@ export default async function AboutPage({ params }: Props) {
               </h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  At VivaExcel Blog, we believe knowledge should be accessible,
+                  At KatangaBlog, we believe knowledge should be accessible,
                   actionable, and inspiring. Our content philosophy centers on
                   three pillars: depth, clarity, and relevance.
                 </p>
@@ -186,8 +186,7 @@ export default async function AboutPage({ params }: Props) {
                 </p>
                 <p>
                   Whether you are a seasoned professional looking for advanced
-                  insights or a beginner exploring new territories, VivaExcel
-                  Blog has something for you.
+                  insights or a beginner exploring new territories, KatangaBlog has something for you.
                 </p>
               </div>
             </div>

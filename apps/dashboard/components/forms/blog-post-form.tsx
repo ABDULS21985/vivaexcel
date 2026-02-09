@@ -284,7 +284,7 @@ export function BlogPostForm({
                         </p>
                         <div className="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-5 border border-zinc-200 dark:border-zinc-700 space-y-1">
                             <p className="text-sm text-emerald-700 dark:text-emerald-400 truncate">
-                                vivaexcel.com/blog/{seoSlug}
+                                katangablog.com/blog/{seoSlug}
                             </p>
                             <h4 className="text-lg text-blue-700 dark:text-blue-400 font-medium hover:underline cursor-pointer truncate">
                                 {seoTitle}

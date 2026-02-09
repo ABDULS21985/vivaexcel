@@ -5,9 +5,9 @@ import type {
   BlogAuthor,
 } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vivaexcel.com";
-const SITE_NAME = "VivaExcel Blog";
-const TWITTER_HANDLE = "@vivaexcel";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://katangablog.com";
+const SITE_NAME = "KatangaBlog";
+const TWITTER_HANDLE = "@katangablog";
 const DEFAULT_LOCALE = "en_US";
 
 // Supported locales
@@ -88,7 +88,7 @@ const defaultKeywords = [
   "digital transformation",
   "tutorials",
   "insights",
-  "VivaExcel",
+  "KatangaBlog",
 ];
 
 // ============================================================================
@@ -302,24 +302,24 @@ export function generateTagMetadata(tagName: string, tagSlug: string): Metadata 
 
 export const staticPageMetadata = {
   home: generatePageMetadata({
-    title: "VivaExcel Blog — Insights, Tutorials & Expert Knowledge",
+    title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.",
     path: "/",
   }),
 
   about: generatePageMetadata({
-    title: "About Us - VivaExcel Blog",
+    title: "About Us - KatangaBlog",
     description:
-      "Learn about VivaExcel Blog, our mission to deliver expert insights and thought leadership on technology, AI, cybersecurity, and digital transformation.",
+      "Learn about KatangaBlog, our mission to deliver expert insights and thought leadership on technology, AI, cybersecurity, and digital transformation.",
     path: "/about",
     keywords: ["about us", "mission", "team"],
   }),
 
   contact: generatePageMetadata({
-    title: "Contact Us - VivaExcel Blog",
+    title: "Contact Us - KatangaBlog",
     description:
-      "Get in touch with VivaExcel Blog. We would love to hear from you about collaboration, guest posts, or partnership opportunities.",
+      "Get in touch with KatangaBlog. We would love to hear from you about collaboration, guest posts, or partnership opportunities.",
     path: "/contact",
     keywords: ["contact", "get in touch", "support"],
   }),
@@ -327,7 +327,7 @@ export const staticPageMetadata = {
   blog: generatePageMetadata({
     title: "Blog - All Articles & Insights",
     description:
-      "Browse all articles, tutorials, and expert insights on VivaExcel Blog. Covering technology, AI, cybersecurity, and digital transformation.",
+      "Browse all articles, tutorials, and expert insights on KatangaBlog. Covering technology, AI, cybersecurity, and digital transformation.",
     path: "/blogs",
     keywords: [
       "blog",
@@ -339,9 +339,9 @@ export const staticPageMetadata = {
   }),
 
   membership: generatePageMetadata({
-    title: "Membership - VivaExcel Blog",
+    title: "Membership - KatangaBlog",
     description:
-      "Join VivaExcel Blog membership for exclusive content, early access to articles, and premium features.",
+      "Join KatangaBlog membership for exclusive content, early access to articles, and premium features.",
     path: "/membership",
     keywords: ["membership", "premium", "exclusive content"],
   }),

@@ -29,9 +29,9 @@ export function generateStaticParams() {
 // =============================================================================
 
 export const metadata: Metadata = {
-    title: "Blog & Insights | VivaExcel",
+    title: "Blog & Insights | KatangaBlog",
     description:
-        "Explore thought leadership, industry insights, and expert analysis on digital transformation, cybersecurity, AI, blockchain, and enterprise technology from VivaExcel.",
+        "Explore thought leadership, industry insights, and expert analysis on digital transformation, cybersecurity, AI, blockchain, and enterprise technology from KatangaBlog.",
     keywords: [
         "technology blog",
         "digital transformation insights",
@@ -44,24 +44,24 @@ export const metadata: Metadata = {
         "data analytics",
     ],
     openGraph: {
-        title: "Blog & Insights | VivaExcel",
+        title: "Blog & Insights | KatangaBlog",
         description:
             "Explore thought leadership, industry insights, and expert analysis on digital transformation, cybersecurity, AI, blockchain, and enterprise technology.",
-        url: "https://vivaexcel.com/blogs",
-        siteName: "VivaExcel",
+        url: "https://katangablog.com/blogs",
+        siteName: "KatangaBlog",
         type: "website",
         images: [
             {
-                url: "https://vivaexcel.com/og-blog.jpg",
+                url: "https://katangablog.com/og-blog.jpg",
                 width: 1200,
                 height: 630,
-                alt: "VivaExcel Blog & Insights",
+                alt: "KatangaBlog Blog & Insights",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Blog & Insights | VivaExcel",
+        title: "Blog & Insights | KatangaBlog",
         description:
             "Explore thought leadership and expert analysis on digital transformation, cybersecurity, AI, and blockchain.",
     },

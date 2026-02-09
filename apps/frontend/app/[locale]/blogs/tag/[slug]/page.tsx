@@ -48,16 +48,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const tag = getBlogTagBySlug(slug);
 
     if (!tag) {
-        return { title: "Tag Not Found | VivaExcel Blog" };
+        return { title: "Tag Not Found | KatangaBlog" };
     }
 
     return {
-        title: `#${tag.name} Articles | VivaExcel Blog`,
-        description: `Browse all articles tagged with "${tag.name}" on the VivaExcel Blog. Explore expert insights and analysis.`,
+        title: `#${tag.name} Articles | KatangaBlog`,
+        description: `Browse all articles tagged with "${tag.name}" on the KatangaBlog. Explore expert insights and analysis.`,
         openGraph: {
-            title: `#${tag.name} Articles | VivaExcel Blog`,
-            description: `Browse all articles tagged with "${tag.name}" on the VivaExcel Blog.`,
-            url: `https://vivaexcel.com/blogs/tag/${slug}`,
+            title: `#${tag.name} Articles | KatangaBlog`,
+            description: `Browse all articles tagged with "${tag.name}" on the KatangaBlog.`,
+            url: `https://katangablog.com/blogs/tag/${slug}`,
             type: "website",
         },
     };

@@ -1,7 +1,7 @@
 import { getAllPublishedPosts } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vivaexcel.com";
-const SITE_TITLE = "VivaExcel Blog";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://katangablog.com";
+const SITE_TITLE = "KatangaBlog";
 const SITE_DESCRIPTION =
   "Expert insights, in-depth tutorials, and thought leadership on technology, AI, cybersecurity, and digital transformation.";
 
@@ -41,10 +41,10 @@ export async function GET() {
     <language>en</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
-    <managingEditor>hello@vivaexcel.com (${escapeXml(SITE_TITLE)})</managingEditor>
-    <webMaster>hello@vivaexcel.com (${escapeXml(SITE_TITLE)})</webMaster>
+    <managingEditor>hello@katangablog.com (${escapeXml(SITE_TITLE)})</managingEditor>
+    <webMaster>hello@katangablog.com (${escapeXml(SITE_TITLE)})</webMaster>
     <image>
-      <url>${SITE_URL}/logo/vivaexcel.png</url>
+      <url>${SITE_URL}/logo/katangablog.png</url>
       <title>${escapeXml(SITE_TITLE)}</title>
       <link>${SITE_URL}</link>
     </image>

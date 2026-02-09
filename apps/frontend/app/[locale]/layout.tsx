@@ -56,19 +56,19 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "VivaExcel Blog — Insights, Tutorials & Expert Knowledge",
+  title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
   description:
     "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
   openGraph: {
-    title: "VivaExcel Blog — Insights, Tutorials & Expert Knowledge",
+    title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
     type: "website",
-    siteName: "VivaExcel Blog",
+    siteName: "KatangaBlog",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VivaExcel Blog — Insights, Tutorials & Expert Knowledge",
+    title: "KatangaBlog — Insights, Tutorials & Expert Knowledge",
     description:
       "Best-of-class blog platform delivering expert insights, in-depth tutorials, and thought leadership.",
   },
@@ -105,13 +105,13 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link
           rel="alternate"
           type="application/rss+xml"
-          title="VivaExcel Blog RSS Feed"
+          title="KatangaBlog RSS Feed"
           href="/rss.xml"
         />
         <link
           rel="alternate"
           type="application/atom+xml"
-          title="VivaExcel Blog Atom Feed"
+          title="KatangaBlog Atom Feed"
           href="/atom.xml"
         />
 

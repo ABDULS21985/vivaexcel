@@ -37,9 +37,9 @@ export class EmailService {
     this.frontendUrl =
       this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
     this.supportEmail =
-      this.configService.get<string>('SUPPORT_EMAIL') || 'support@vivaexcel.com';
+      this.configService.get<string>('SUPPORT_EMAIL') || 'support@katangablog.com';
     this.brandName =
-      this.configService.get<string>('BRAND_NAME') || 'VivaExcel Blog';
+      this.configService.get<string>('BRAND_NAME') || 'KatangaBlog';
   }
 
   /**

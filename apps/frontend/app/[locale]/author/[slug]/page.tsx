@@ -53,16 +53,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const author = getBlogAuthorBySlug(slug);
 
     if (!author) {
-        return { title: "Author Not Found | VivaExcel Blog" };
+        return { title: "Author Not Found | KatangaBlog" };
     }
 
     return {
-        title: `${author.name} - Author | VivaExcel Blog`,
+        title: `${author.name} - Author | KatangaBlog`,
         description: author.bio,
         openGraph: {
-            title: `${author.name} - Author | VivaExcel Blog`,
+            title: `${author.name} - Author | KatangaBlog`,
             description: author.bio,
-            url: `https://vivaexcel.com/author/${slug}`,
+            url: `https://katangablog.com/author/${slug}`,
             type: "profile",
         },
     };
@@ -128,7 +128,7 @@ export default async function AuthorPage({ params }: Props) {
                 name: author.name,
                 jobTitle: author.role,
                 description: author.bio,
-                url: `https://vivaexcel.com/author/${slug}`,
+                url: `https://katangablog.com/author/${slug}`,
                 sameAs: [
                     author.socialLinks?.linkedin,
                     author.socialLinks?.twitter,

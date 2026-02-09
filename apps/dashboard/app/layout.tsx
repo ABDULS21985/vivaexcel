@@ -56,10 +56,10 @@ const aptos = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "VivaExcel Blog \u2014 Dashboard",
-    template: "%s | VivaExcel Blog Dashboard"
+    default: "KatangaBlog \u2014 Dashboard",
+    template: "%s | KatangaBlog Dashboard"
   },
-  description: "Admin dashboard for VivaExcel Blog. Manage posts, subscribers, memberships, and analytics.",
+  description: "Admin dashboard for KatangaBlog. Manage posts, subscribers, memberships, and analytics.",
   robots: {
     index: false,
     follow: false,
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
       follow: false,
     },
   },
-  metadataBase: new URL('https://dashboard.vivaexcel.com'),
+  metadataBase: new URL('https://dashboard.katangablog.com'),
 };
 
 export default function RootLayout({

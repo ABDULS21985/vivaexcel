@@ -26,10 +26,10 @@ const categoryLinks = [
 ];
 
 const socialLinks = [
-  { icon: Twitter, href: "https://twitter.com/vivaexcel", label: "Twitter" },
-  { icon: Linkedin, href: "https://linkedin.com/company/vivaexcel", label: "LinkedIn" },
-  { icon: Facebook, href: "https://facebook.com/vivaexcel", label: "Facebook" },
-  { icon: Github, href: "https://github.com/vivaexcel", label: "GitHub" },
+  { icon: Twitter, href: "https://twitter.com/katangablog", label: "Twitter" },
+  { icon: Linkedin, href: "https://linkedin.com/company/katangablog", label: "LinkedIn" },
+  { icon: Facebook, href: "https://facebook.com/katangablog", label: "Facebook" },
+  { icon: Github, href: "https://github.com/katangablog", label: "GitHub" },
   { icon: Rss, href: "/rss.xml", label: "RSS Feed" },
 ];
 
@@ -70,8 +70,8 @@ export function BlogFooter() {
           <div className="sm:col-span-2 lg:col-span-1">
             {/* Logo */}
             <Link href="/" className="inline-flex items-center mb-4">
-              <span className="text-xl font-bold text-primary">Viva</span>
-              <span className="text-xl font-bold text-white">Excel</span>
+              <span className="text-xl font-bold text-primary">Katanga</span>
+              <span className="text-xl font-bold text-white">Blog</span>
             </Link>
 
             <p className="text-sm text-neutral-400 leading-relaxed mb-6 max-w-xs">
@@ -147,7 +147,7 @@ export function BlogFooter() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Copyright */}
           <p className="text-xs text-neutral-500 order-2 md:order-1">
-            &copy; {new Date().getFullYear()} VivaExcel Blog. All rights reserved.
+            &copy; {new Date().getFullYear()} KatangaBlog. All rights reserved.
           </p>
 
           {/* Legal Links */}

@@ -48,16 +48,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const category = getBlogCategoryBySlug(slug);
 
     if (!category) {
-        return { title: "Category Not Found | VivaExcel Blog" };
+        return { title: "Category Not Found | KatangaBlog" };
     }
 
     return {
-        title: `${category.name} Articles | VivaExcel Blog`,
+        title: `${category.name} Articles | KatangaBlog`,
         description: category.description,
         openGraph: {
-            title: `${category.name} Articles | VivaExcel Blog`,
+            title: `${category.name} Articles | KatangaBlog`,
             description: category.description,
-            url: `https://vivaexcel.com/blogs/category/${slug}`,
+            url: `https://katangablog.com/blogs/category/${slug}`,
             type: "website",
         },
     };

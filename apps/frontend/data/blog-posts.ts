@@ -1,7 +1,7 @@
 // =============================================================================
 // Sample Blog Posts Data
 // =============================================================================
-// Static sample data for the VivaExcel Blog platform
+// Static sample data for the KatangaBlog platform
 
 import type { BlogPost, BlogCategory, BlogPostStatus } from "@/types/blog";
 

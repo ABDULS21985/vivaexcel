@@ -46,7 +46,7 @@ export class StripeService {
       const customer = await this.stripe.customers.create({
         email,
         name,
-        metadata: { source: 'vivaexcel-blog' },
+        metadata: { source: 'katanga-blog' },
       });
 
       this.logger.log(`Stripe customer created: ${customer.id} for ${email}`);
@@ -83,7 +83,7 @@ export class StripeService {
         success_url: successUrl,
         cancel_url: cancelUrl,
         subscription_data: {
-          metadata: { source: 'vivaexcel-blog' },
+          metadata: { source: 'katanga-blog' },
         },
       });
 
