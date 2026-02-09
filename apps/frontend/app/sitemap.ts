@@ -5,6 +5,7 @@ import {
   blogTags,
   blogAuthors,
 } from "@/data/blog";
+import { fetchProducts, fetchProductCategories } from "@/lib/store-api";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://drkatangablog.com";
 
@@ -58,9 +59,10 @@ const staticPages: Array<{
   { path: "/careers", changeFrequency: "weekly", priority: 0.4 },
   { path: "/industries", changeFrequency: "monthly", priority: 0.5 },
   { path: "/case-studies", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/store", changeFrequency: "daily", priority: 0.9 },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const currentDate = new Date();
   const sitemapEntries: SitemapEntry[] = [];
 
@@ -124,6 +126,41 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: generateAlternates(path),
     });
   });
+
+  // ---- Store product pages (/store/[slug]) ----
+  try {
+    const [productsResult, categories] = await Promise.all([
+      fetchProducts({ limit: 500, status: "published" as any }),
+      fetchProductCategories(),
+    ]);
+
+    productsResult.items.forEach((product) => {
+      const path = `/store/${product.slug}`;
+      sitemapEntries.push({
+        url: `${SITE_URL}${path}`,
+        lastModified: product.updatedAt
+          ? new Date(product.updatedAt)
+          : currentDate,
+        changeFrequency: "weekly",
+        priority: 0.8,
+        alternates: generateAlternates(path),
+      });
+    });
+
+    // ---- Store category pages (/store/category/[slug]) ----
+    categories.forEach((category) => {
+      const path = `/store/category/${category.slug}`;
+      sitemapEntries.push({
+        url: `${SITE_URL}${path}`,
+        lastModified: currentDate,
+        changeFrequency: "weekly",
+        priority: 0.7,
+        alternates: generateAlternates(path),
+      });
+    });
+  } catch (error) {
+    console.error("[sitemap] Failed to fetch store data:", error);
+  }
 
   return sitemapEntries;
 }

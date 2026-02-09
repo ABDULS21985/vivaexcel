@@ -14,7 +14,9 @@ export const revalidate = 31536000; // 1 year
  *   author   - Author display name
  *   category - Category label
  *   date     - Formatted publication date
- *   type     - "post" | "page" | "default"
+ *   type     - "post" | "page" | "product" | "default"
+ *   price    - Product price string (product type only)
+ *   rating   - Product average rating (product type only)
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -24,6 +26,8 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get("category") || "";
   const date = searchParams.get("date") || "";
   const type = searchParams.get("type") || "post";
+  const price = searchParams.get("price") || "";
+  const rating = searchParams.get("rating") || "";
 
   // Fetch Inter font from Google Fonts for consistent rendering
   const interBold = await fetch(
@@ -189,6 +193,337 @@ export async function GET(request: NextRequest) {
             }
           : {}),
       }
+    );
+  }
+
+  // Product type: product-specific OG image with price, rating, and category
+  if (type === "product") {
+    const displayTitle = truncateTitle(title, 90);
+    const titleFontSize = getTitleFontSize(displayTitle);
+    const ratingNum = parseFloat(rating) || 0;
+    const fullStars = Math.floor(ratingNum);
+
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            padding: "56px 60px",
+            background:
+              "linear-gradient(135deg, #0c1929 0%, #1a2d50 25%, #1E4DB7 50%, #0d7377 100%)",
+            fontFamily: '"Inter", system-ui, -apple-system, sans-serif',
+            position: "relative",
+          }}
+        >
+          {/* Dot pattern overlay */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              backgroundImage:
+                "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+
+          {/* Decorative gradient orbs */}
+          <div
+            style={{
+              position: "absolute",
+              top: "-60px",
+              right: "-60px",
+              width: "280px",
+              height: "280px",
+              borderRadius: "9999px",
+              background: "rgba(245,154,35,0.18)",
+              filter: "blur(60px)",
+              display: "flex",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: "-60px",
+              left: "-60px",
+              width: "280px",
+              height: "280px",
+              borderRadius: "9999px",
+              background: "rgba(13,115,119,0.15)",
+              filter: "blur(60px)",
+              display: "flex",
+            }}
+          />
+
+          {/* Top row: brand + category badge */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            {/* Logo mark + brand name */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "14px",
+              }}
+            >
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  background: "linear-gradient(135deg, #3b82f6, #8b5cf6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "24px",
+                  fontWeight: 700,
+                  color: "white",
+                  boxShadow: "0 8px 20px rgba(59,130,246,0.3)",
+                }}
+              >
+                K
+              </div>
+              <span
+                style={{
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  color: "#e2e8f0",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                KTBlog Store
+              </span>
+            </div>
+
+            {/* Category badge */}
+            {category && (
+              <div
+                style={{
+                  display: "flex",
+                  padding: "8px 22px",
+                  borderRadius: "9999px",
+                  background: "rgba(245,154,35,0.15)",
+                  border: "1px solid rgba(245,154,35,0.35)",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  color: "#fbbf24",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                {category}
+              </div>
+            )}
+          </div>
+
+          {/* Title area */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+              flex: 1,
+              justifyContent: "center",
+              paddingTop: "16px",
+              paddingBottom: "16px",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                fontSize: `${titleFontSize}px`,
+                fontWeight: 700,
+                color: "white",
+                lineHeight: 1.2,
+                letterSpacing: "-0.03em",
+                maxWidth: "92%",
+                display: "flex",
+              }}
+            >
+              {displayTitle}
+            </div>
+
+            {/* Price + Rating row */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+              }}
+            >
+              {/* Price badge */}
+              {price && (
+                <div
+                  style={{
+                    display: "flex",
+                    padding: "10px 24px",
+                    borderRadius: "12px",
+                    background: "rgba(245,154,35,0.2)",
+                    border: "1px solid rgba(245,154,35,0.4)",
+                    fontSize: "28px",
+                    fontWeight: 700,
+                    color: "#F59A23",
+                  }}
+                >
+                  {price}
+                </div>
+              )}
+
+              {/* Star rating */}
+              {ratingNum > 0 && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        width: "24px",
+                        height: "24px",
+                        display: "flex",
+                        fontSize: "24px",
+                        color: i < fullStars ? "#fbbf24" : "rgba(255,255,255,0.25)",
+                      }}
+                    >
+                      ★
+                    </div>
+                  ))}
+                  <span
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: 600,
+                      color: "#fbbf24",
+                      marginLeft: "8px",
+                      display: "flex",
+                    }}
+                  >
+                    {rating}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom row: author + domain */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderTop: "1px solid rgba(148, 163, 184, 0.15)",
+              paddingTop: "22px",
+              position: "relative",
+            }}
+          >
+            {author && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "14px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "42px",
+                    height: "42px",
+                    borderRadius: "9999px",
+                    background: "linear-gradient(135deg, #F59A23, #f97316)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "18px",
+                    fontWeight: 700,
+                    color: "white",
+                    boxShadow: "0 4px 12px rgba(245,154,35,0.3)",
+                  }}
+                >
+                  {author.charAt(0).toUpperCase()}
+                </div>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: "2px" }}
+                >
+                  <span
+                    style={{
+                      fontSize: "17px",
+                      fontWeight: 600,
+                      color: "#e2e8f0",
+                    }}
+                  >
+                    {author}
+                  </span>
+                  {date && (
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        color: "#94a3b8",
+                      }}
+                    >
+                      {date}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: 500,
+                color: "rgba(148,163,184,0.7)",
+                display: "flex",
+              }}
+            >
+              drkatangablog.com/store
+            </div>
+          </div>
+        </div>
+      ),
+      {
+        width: 1200,
+        height: 630,
+        headers: {
+          "Cache-Control":
+            "public, max-age=31536000, stale-while-revalidate=86400",
+        },
+        ...(interBold
+          ? {
+              fonts: [
+                {
+                  name: "Inter",
+                  data: interBold,
+                  weight: 700 as const,
+                  style: "normal" as const,
+                },
+                ...(interMedium
+                  ? [
+                      {
+                        name: "Inter",
+                        data: interMedium,
+                        weight: 500 as const,
+                        style: "normal" as const,
+                      },
+                    ]
+                  : []),
+              ],
+            }
+          : {}),
+      },
     );
   }
 

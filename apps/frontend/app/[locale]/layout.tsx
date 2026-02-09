@@ -13,6 +13,7 @@ import { CursorProvider, CustomCursorWrapper } from "../../components/ui/custom-
 import { QueryProvider } from "../../providers/query-provider";
 import { AuthProvider } from "../../providers/auth-provider";
 import { CartProvider } from "../../providers/cart-provider";
+import { CurrencyProvider } from "../../providers/currency-provider";
 import { CartDrawer } from "../../components/cart/cart-drawer";
 import { GSAPProvider } from "../../providers/gsap-provider";
 import { SoundProvider } from "../../providers/sound-provider";
@@ -149,6 +150,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <QueryProvider>
             <AuthProvider>
             <CartProvider>
+            <CurrencyProvider>
             <GSAPProvider>
               <SoundProvider>
                 <NextIntlClientProvider messages={messages}>
@@ -191,6 +193,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                 </NextIntlClientProvider>
               </SoundProvider>
             </GSAPProvider>
+          </CurrencyProvider>
           </CartProvider>
           </AuthProvider>
           </QueryProvider>
