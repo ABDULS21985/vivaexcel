@@ -27,7 +27,7 @@ import { CreateFlashSaleDto } from '../dto';
 @Controller('flash-sales')
 @UseGuards(RolesGuard, PermissionsGuard)
 export class FlashSalesController {
-  constructor(private readonly promotionsService: PromotionsService) {}
+  constructor(private readonly promotionsService: PromotionsService) { }
 
   // ──────────────────────────────────────────────
   //  Admin endpoints
@@ -58,6 +58,6 @@ export class FlashSalesController {
   @ApiOperation({ summary: 'Get a flash sale by ID' })
   @ApiParam({ name: 'id', description: 'Flash Sale ID' })
   async getFlashSale(@Param('id', ParseUUIDPipe) id: string) {
-    return this.promotionsService.getFlashSale(id);
+    return this.promotionsService.getFlashSaleById(id);
   }
 }

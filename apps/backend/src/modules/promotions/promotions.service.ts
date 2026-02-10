@@ -44,7 +44,7 @@ const CACHE_TAG_BUNDLES = 'bundles';
 const CACHE_TAG_LOYALTY = 'loyalty';
 
 // Coupon validation result
-interface CouponValidationResult {
+export interface CouponValidationResult {
   valid: boolean;
   discount: number;
   couponId?: string;
@@ -52,7 +52,7 @@ interface CouponValidationResult {
 }
 
 // Best discount result returned by the promotion engine
-interface BestDiscountResult {
+export interface BestDiscountResult {
   type: 'coupon' | 'flash_sale' | 'bundle' | 'loyalty' | 'none';
   discount: number;
   description: string;
@@ -67,7 +67,7 @@ export class PromotionsService {
   constructor(
     private readonly repository: PromotionsRepository,
     private readonly cacheService: CacheService,
-  ) {}
+  ) { }
 
   // ──────────────────────────────────────────────
   //  Coupon methods
@@ -149,6 +149,19 @@ export class PromotionsService {
     };
   }
 
+  async getCouponById(id: string): Promise<ApiResponse<Coupon>> {
+    const coupon = await this.repository.findCouponById(id);
+    if (!coupon) {
+      throw new NotFoundException(`Coupon with ID "${id}" not found`);
+    }
+
+    return {
+      status: 'success',
+      message: 'Coupon retrieved successfully',
+      data: coupon,
+    };
+  }
+
   async updateCoupon(
     id: string,
     dto: UpdateCouponDto,
@@ -168,15 +181,17 @@ export class PromotionsService {
       }
     }
 
-    const updateData: Partial<Coupon> = { ...dto };
-    if (dto.code) {
-      updateData.code = dto.code.toUpperCase();
+    const { startsAt, expiresAt, code, ...rest } = dto;
+    const updateData: Partial<Coupon> = { ...rest };
+
+    if (code) {
+      updateData.code = code.toUpperCase();
     }
-    if (dto.startsAt) {
-      updateData.startsAt = new Date(dto.startsAt);
+    if (startsAt) {
+      updateData.startsAt = new Date(startsAt);
     }
-    if (dto.expiresAt) {
-      updateData.expiresAt = new Date(dto.expiresAt);
+    if (expiresAt) {
+      updateData.expiresAt = new Date(expiresAt);
     }
 
     const updated = await this.repository.updateCoupon(id, updateData);

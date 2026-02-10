@@ -38,7 +38,7 @@ import {
 @Controller('coupons')
 @UseGuards(RolesGuard, PermissionsGuard)
 export class CouponsController {
-  constructor(private readonly promotionsService: PromotionsService) {}
+  constructor(private readonly promotionsService: PromotionsService) { }
 
   // ──────────────────────────────────────────────
   //  Admin endpoints
@@ -53,7 +53,7 @@ export class CouponsController {
     @CurrentUser('sub') userId: string,
     @Body() dto: CreateCouponDto,
   ) {
-    return this.promotionsService.createCoupon(userId, dto);
+    return this.promotionsService.createCoupon(dto, userId);
   }
 
   @Get()
@@ -61,7 +61,7 @@ export class CouponsController {
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'List all coupons' })
   async listCoupons(@Query() query: CouponQueryDto) {
-    return this.promotionsService.listCoupons(query);
+    return this.promotionsService.getCoupons(query);
   }
 
   @Get(':id')
@@ -70,7 +70,7 @@ export class CouponsController {
   @ApiOperation({ summary: 'Get a single coupon by ID' })
   @ApiParam({ name: 'id', description: 'Coupon ID' })
   async getCoupon(@Param('id', ParseUUIDPipe) id: string) {
-    return this.promotionsService.getCoupon(id);
+    return this.promotionsService.getCouponById(id);
   }
 
   @Patch(':id')
@@ -103,7 +103,7 @@ export class CouponsController {
     @CurrentUser('sub') userId: string,
     @Body() dto: BulkCreateCouponsDto,
   ) {
-    return this.promotionsService.bulkCreateCoupons(userId, dto);
+    return this.promotionsService.bulkCreateCoupons(dto, userId);
   }
 
   // ──────────────────────────────────────────────
@@ -118,7 +118,7 @@ export class CouponsController {
     @CurrentUser('sub') userId: string,
     @Body() dto: ValidateCouponDto,
   ) {
-    return this.promotionsService.validateCoupon(userId, dto);
+    return this.promotionsService.validateCoupon(dto.code, userId, dto.cartItems);
   }
 
   @Post('apply')
@@ -129,6 +129,11 @@ export class CouponsController {
     @CurrentUser('sub') userId: string,
     @Body() dto: ApplyCouponDto,
   ) {
-    return this.promotionsService.applyCoupon(userId, dto);
+    return this.promotionsService.applyCoupon(
+      dto.code,
+      userId,
+      dto.orderId,
+      dto.discountAmount,
+    );
   }
 }
