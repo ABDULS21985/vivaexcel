@@ -1,6 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  IsString,
   IsUrl,
   IsArray,
   IsEnum,
@@ -38,7 +37,9 @@ export class UpdateEndpointDto {
     enum: [WebhookEndpointStatus.ACTIVE, WebhookEndpointStatus.DISABLED],
   })
   @IsOptional()
-  @IsEnum([WebhookEndpointStatus.ACTIVE, WebhookEndpointStatus.DISABLED])
+  @IsEnum(WebhookEndpointStatus, {
+    message: 'status must be either active or disabled',
+  })
   status?: WebhookEndpointStatus.ACTIVE | WebhookEndpointStatus.DISABLED;
 
   @ApiPropertyOptional({

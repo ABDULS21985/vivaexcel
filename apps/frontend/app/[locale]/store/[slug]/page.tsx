@@ -21,6 +21,7 @@ const FloatingElements = dynamic(() => import("@/components/store/floating-eleme
 const BundleWidget = dynamic(() => import("@/components/store/bundles/bundle-widget").then(m => ({ default: m.BundleWidget })));
 const FrequentlyBoughtTogether = dynamic(() => import("@/components/store/recommendations/frequently-bought-together").then(m => ({ default: m.FrequentlyBoughtTogether })));
 const SimilarProducts = dynamic(() => import("@/components/store/recommendations/similar-products").then(m => ({ default: m.SimilarProducts })));
+const QuestionsSection = dynamic(() => import("@/components/store/product-qa/questions-section").then(m => ({ default: m.QuestionsSection })));
 
 // =============================================================================
 // Types
@@ -357,6 +358,15 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <ProductDescriptionTabs product={product} />
+            </div>
+          </div>
+        </section>
+
+        {/* Product Q&A */}
+        <section className="py-12 md:py-16 border-t border-neutral-100 dark:border-neutral-800">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+              <QuestionsSection productId={product.id} />
             </div>
           </div>
         </section>

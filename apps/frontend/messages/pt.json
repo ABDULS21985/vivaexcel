@@ -2251,5 +2251,227 @@
       "addAll": "Adicionar tudo ao pacote",
       "customize": "Personalizar pacote"
     }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "preferences": "Preferências de notificações",
+    "markAllRead": "Marcar tudo como lido",
+    "viewAll": "Ver todas as notificações",
+    "noNotifications": "Nenhuma notificação ainda",
+    "noUnread": "Você está em dia!",
+    "unreadCount": "{count} não lida(s)",
+    "tabs": {
+      "all": "Tudo",
+      "orders": "Pedidos",
+      "reviews": "Avaliações",
+      "updates": "Atualizações",
+      "promotions": "Promoções",
+      "unread": "Não lidas",
+      "read": "Lidas",
+      "archived": "Arquivadas"
+    },
+    "actions": {
+      "markRead": "Marcar como lido",
+      "archive": "Arquivar",
+      "dismiss": "Dispensar",
+      "viewAction": "Ver"
+    },
+    "types": {
+      "ORDER": "Pedido",
+      "REVIEW": "Avaliação",
+      "PRODUCT_UPDATE": "Atualização de produto",
+      "PROMOTION": "Promoção",
+      "SYSTEM": "Sistema",
+      "COMMUNITY": "Comunidade",
+      "ACHIEVEMENT": "Conquista",
+      "PAYOUT": "Pagamento",
+      "SUBSCRIPTION": "Assinatura",
+      "SECURITY": "Segurança"
+    },
+    "preferences": {
+      "title": "Preferências de notificações",
+      "subtitle": "Escolha como deseja ser notificado",
+      "channels": {
+        "email": "E-mail",
+        "push": "Push",
+        "inApp": "No aplicativo"
+      },
+      "categories": {
+        "orders": "Pedidos",
+        "reviews": "Avaliações",
+        "product_updates": "Atualizações de produtos",
+        "promotions": "Promoções",
+        "community": "Comunidade",
+        "achievements": "Conquistas",
+        "price_drops": "Quedas de preço",
+        "back_in_stock": "De volta ao estoque",
+        "newsletter": "Newsletter",
+        "security": "Segurança (sempre ativada)"
+      },
+      "quietHours": {
+        "title": "Horário silencioso",
+        "description": "Pausar notificações durante horários específicos",
+        "enabled": "Ativar horário silencioso",
+        "start": "Hora de início",
+        "end": "Hora de término",
+        "timezone": "Fuso horário"
+      },
+      "emailDigest": {
+        "title": "Resumo por e-mail",
+        "description": "Frequência de recebimento de resumos por e-mail",
+        "instant": "Instantâneo",
+        "daily": "Resumo diário",
+        "weekly": "Resumo semanal",
+        "none": "Sem e-mails"
+      },
+      "push": {
+        "test": "Enviar notificação de teste",
+        "testSent": "Notificação de teste enviada!",
+        "enable": "Ativar notificações push",
+        "enabled": "Notificações push ativadas",
+        "denied": "Notificações push bloqueadas pelo navegador"
+      },
+      "saved": "Preferências salvas"
+    },
+    "timeAgo": {
+      "justNow": "Agora mesmo",
+      "minutesAgo": "há {count} min",
+      "hoursAgo": "há {count} h",
+      "daysAgo": "há {count} d"
+    }
+  },
+  "developers": {
+    "title": "Portal do desenvolvedor",
+    "subtitle": "Construa com o KTBlog",
+    "hero": {
+      "title": "Construa com o KTBlog",
+      "subtitle": "Integre nosso marketplace em seus aplicativos com nossas APIs poderosas, webhooks e widgets incorporáveis.",
+      "getStarted": "Começar"
+    },
+    "features": {
+      "storefrontApi": {
+        "title": "API da vitrine",
+        "description": "Acesse nosso catálogo completo de produtos, gerencie carrinhos e crie checkouts de forma programática."
+      },
+      "webhooks": {
+        "title": "Webhooks",
+        "description": "Receba notificações em tempo real quando eventos acontecem — pedidos, avaliações, atualizações de produtos e mais."
+      },
+      "embedWidgets": {
+        "title": "Widgets incorporáveis",
+        "description": "Adicione cartões de produtos, grades e botões de compra bonitos em qualquer site com uma única tag script."
+      }
+    },
+    "useCases": {
+      "title": "Casos de uso",
+      "blog": "Incorporar produtos no seu blog",
+      "storefront": "Criar uma vitrine personalizada",
+      "automate": "Automatizar fluxos de trabalho com webhooks"
+    },
+    "apiKeys": {
+      "title": "Chaves de API",
+      "subtitle": "Gerencie suas chaves de API para acessar a plataforma KTBlog",
+      "create": "Criar nova chave",
+      "name": "Nome da chave",
+      "namePlaceholder": "Minha integração",
+      "environment": "Ambiente",
+      "live": "Produção",
+      "test": "Teste",
+      "scopes": "Permissões",
+      "prefix": "Prefixo da chave",
+      "lastUsed": "Último uso",
+      "requests": "Requisições",
+      "status": "Status",
+      "active": "Ativa",
+      "revoked": "Revogada",
+      "revoke": "Revogar chave",
+      "rotate": "Rotacionar chave",
+      "revokeConfirm": "Tem certeza de que deseja revogar esta chave de API? Esta ação não pode ser desfeita.",
+      "rotateConfirm": "A rotação gerará uma nova chave e revogará a anterior. Continuar?",
+      "keyCreated": "Chave de API criada",
+      "keyCreatedDesc": "Copie sua chave de API agora. Você não poderá vê-la novamente.",
+      "copyKey": "Copiar chave",
+      "keyCopied": "Chave copiada para a área de transferência!",
+      "noKeys": "Nenhuma chave de API ainda",
+      "noKeysDesc": "Crie sua primeira chave de API para começar a construir com nossa API.",
+      "monthlyUsage": "Uso mensal",
+      "rateLimit": "Limite de requisições"
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "subtitle": "Receba notificações de eventos em tempo real",
+      "createEndpoint": "Criar endpoint",
+      "url": "URL do endpoint",
+      "urlPlaceholder": "https://seu-app.com/webhooks",
+      "events": "Eventos",
+      "selectEvents": "Selecione os eventos para se inscrever",
+      "secret": "Chave de assinatura secreta",
+      "revealSecret": "Clique para revelar",
+      "status": "Status",
+      "healthy": "Saudável",
+      "failing": "Falhando",
+      "disabled": "Desativado",
+      "testEvent": "Enviar evento de teste",
+      "testSent": "Evento de teste enviado!",
+      "deliveries": "Entregas recentes",
+      "deliveryStatus": {
+        "PENDING": "Pendente",
+        "DELIVERED": "Entregue",
+        "FAILED": "Falhou",
+        "RETRIED": "Retentado"
+      },
+      "retry": "Tentar novamente",
+      "noEndpoints": "Nenhum endpoint de webhook",
+      "noEndpointsDesc": "Crie seu primeiro endpoint de webhook para receber notificações de eventos.",
+      "noDeliveries": "Nenhuma entrega ainda",
+      "responseStatus": "Status da resposta",
+      "duration": "Duração",
+      "attempts": "Tentativas",
+      "payload": "Payload",
+      "response": "Resposta"
+    },
+    "embeds": {
+      "title": "Widgets incorporáveis",
+      "subtitle": "Adicione produtos em qualquer site",
+      "widgetType": "Tipo de widget",
+      "productCard": "Cartão de produto",
+      "productGrid": "Grade de produtos",
+      "buyButton": "Botão de compra",
+      "selectProduct": "Selecionar produto",
+      "theme": "Tema",
+      "light": "Claro",
+      "dark": "Escuro",
+      "auto": "Automático",
+      "accentColor": "Cor de destaque",
+      "borderRadius": "Raio da borda",
+      "preview": "Pré-visualização ao vivo",
+      "code": "Código de incorporação",
+      "copyCode": "Copiar código",
+      "codeCopied": "Código copiado!",
+      "frameworks": {
+        "html": "HTML",
+        "react": "React",
+        "vue": "Vue",
+        "wordpress": "WordPress"
+      }
+    },
+    "docs": {
+      "title": "Documentação da API",
+      "subtitle": "Tudo o que você precisa para integrar com o KTBlog",
+      "authentication": "Autenticação",
+      "rateLimit": "Limitação de taxa",
+      "errorCodes": "Códigos de erro",
+      "products": "Produtos",
+      "cart": "Carrinho",
+      "checkout": "Checkout",
+      "sellers": "Vendedores",
+      "search": "Pesquisa",
+      "tryIt": "Experimentar",
+      "parameters": "Parâmetros",
+      "requestBody": "Corpo da requisição",
+      "responseExample": "Exemplo de resposta",
+      "required": "Obrigatório",
+      "optional": "Opcional"
+    }
   }
 }

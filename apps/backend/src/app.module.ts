@@ -63,6 +63,9 @@ import { RecommendationsModule } from './modules/recommendations/recommendations
 import { AIAssistantModule } from './modules/ai-assistant/ai-assistant.module';
 import { ComparisonModule } from './modules/comparison/comparison.module';
 import { BundlesModule } from './modules/bundles/bundles.module';
+import { ShowcasesModule } from './modules/showcases/showcases.module';
+import { DiscussionsModule } from './modules/discussions/discussions.module';
+import { ProductQAModule } from './modules/product-qa/product-qa.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -160,6 +163,9 @@ import { AppService } from './app.service';
     AIAssistantModule,
     ComparisonModule,
     BundlesModule,
+    ShowcasesModule,
+    DiscussionsModule,
+    ProductQAModule,
   ],
   controllers: [AppController],
   providers: [

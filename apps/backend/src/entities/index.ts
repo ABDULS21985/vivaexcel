@@ -59,3 +59,16 @@ export * from './credit-transaction.entity';
 export * from './subscription-download.entity';
 export * from '../modules/comparison/entities/comparison-set.entity';
 export * from '../modules/bundles/entities/custom-bundle.entity';
+
+// Community modules
+export * from '../modules/showcases/entities/showcase.entity';
+export * from '../modules/showcases/entities/showcase-like.entity';
+export * from '../modules/showcases/entities/showcase-comment.entity';
+export * from '../modules/discussions/entities/discussion-category.entity';
+export * from '../modules/discussions/entities/discussion-thread.entity';
+export * from '../modules/discussions/entities/discussion-reply.entity';
+export * from '../modules/discussions/entities/discussion-reply-like.entity';
+export * from '../modules/product-qa/entities/product-question.entity';
+export * from '../modules/product-qa/entities/product-answer.entity';
+export * from '../modules/product-qa/entities/question-upvote.entity';
+export * from '../modules/product-qa/entities/answer-upvote.entity';

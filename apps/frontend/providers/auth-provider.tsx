@@ -41,6 +41,10 @@ export interface User {
     linkedin?: string;
     github?: string;
   };
+  username?: string;
+  coverImageUrl?: string;
+  isCreator?: boolean;
+  specialties?: string[];
   plan: "free" | "basic" | "pro" | "premium";
   stripeCustomerId?: string;
   subscriptionStatus?: string;

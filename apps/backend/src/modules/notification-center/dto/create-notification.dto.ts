@@ -6,7 +6,6 @@ import {
   IsObject,
   IsDateString,
   MaxLength,
-  IsUrl,
 } from 'class-validator';
 import {
   NotificationType,
