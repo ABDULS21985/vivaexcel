@@ -27,6 +27,8 @@ import {
 } from "@/types/digital-product";
 import { useDigitalProducts } from "@/hooks/use-digital-products";
 import { ProductCard, ProductCardSkeleton } from "@/components/store/product-card";
+import { useSubscription } from "@/providers/subscription-provider";
+import { Crown } from "lucide-react";
 
 // =============================================================================
 // Types
@@ -693,6 +695,8 @@ export function StoreListingClient({
   const [maxPrice, setMaxPrice] = useState("");
   const [selectedRating, setSelectedRating] = useState(0);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const { isSubscribed, isIncludedInPlan } = useSubscription();
+  const [showInMyPlan, setShowInMyPlan] = useState(false);
 
   // Accumulated products for cursor-based "load more"
   const [accumulatedProducts, setAccumulatedProducts] = useState<
@@ -836,9 +840,19 @@ export function StoreListingClient({
     });
   }, [initialProducts]);
 
-  const displayProducts = isFiltered
-    ? accumulatedProducts
-    : serverProducts.slice(0, visibleCount);
+  const planFilteredProducts = useMemo(() => {
+    if (showInMyPlan && isSubscribed) {
+      const source = isFiltered ? accumulatedProducts : serverProducts;
+      return source.filter((p) => isIncludedInPlan({ price: p.price }));
+    }
+    return null;
+  }, [showInMyPlan, isSubscribed, isFiltered, accumulatedProducts, serverProducts, isIncludedInPlan]);
+
+  const displayProducts = planFilteredProducts
+    ? planFilteredProducts.slice(0, visibleCount)
+    : isFiltered
+      ? accumulatedProducts
+      : serverProducts.slice(0, visibleCount);
 
   const hasMore = isFiltered
     ? !!nextCursor
@@ -1086,6 +1100,22 @@ export function StoreListingClient({
               <span className="w-2 h-2 bg-[#1E4DB7] rounded-full" />
             )}
           </button>
+
+          {/* In My Plan Toggle (for subscribers) */}
+          {isSubscribed && (
+            <button
+              onClick={() => setShowInMyPlan(!showInMyPlan)}
+              className={`flex items-center gap-2 px-4 py-2.5 border rounded-xl text-sm font-medium transition-colors ${
+                showInMyPlan
+                  ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300"
+                  : "bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-600"
+              }`}
+              aria-pressed={showInMyPlan}
+            >
+              <Crown className="h-4 w-4" />
+              In My Plan
+            </button>
+          )}
 
           {/* Sort Dropdown */}
           <SortDropdown value={sortOption} onChange={handleSortChange} />

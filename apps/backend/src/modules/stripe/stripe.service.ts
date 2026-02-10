@@ -15,6 +15,8 @@ import { User } from '../../entities/user.entity';
 import { EmailService } from '../email/email.service';
 import { CheckoutService } from '../checkout/checkout.service';
 import { StripeConnectService } from '../sellers/services/stripe-connect.service';
+import { AffiliateStripeService } from '../affiliates/services/affiliate-stripe.service';
+import { SubscriptionWebhookService } from '../marketplace-subscriptions/services/subscription-webhook.service';
 
 @Injectable()
 export class StripeService {
@@ -33,6 +35,10 @@ export class StripeService {
     private readonly checkoutService: CheckoutService,
     @Inject(forwardRef(() => StripeConnectService))
     private readonly stripeConnectService: StripeConnectService,
+    @Inject(forwardRef(() => AffiliateStripeService))
+    private readonly affiliateStripeService: AffiliateStripeService,
+    @Inject(forwardRef(() => SubscriptionWebhookService))
+    private readonly subscriptionWebhookService: SubscriptionWebhookService,
   ) {
     const secretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
     if (!secretKey) {
@@ -222,6 +228,11 @@ export class StripeService {
           await this.checkoutService.handleCheckoutComplete(session);
           break;
         }
+        // Delegate marketplace subscription checkouts
+        if (session.metadata?.type === 'marketplace_subscription') {
+          await this.subscriptionWebhookService.handleCheckoutCompleted(session);
+          break;
+        }
         // Otherwise, handle as subscription checkout
         await this.handleCheckoutCompleted(session);
         break;
@@ -243,31 +254,63 @@ export class StripeService {
         break;
       }
 
-      case 'customer.subscription.updated':
-        await this.handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
+      case 'customer.subscription.updated': {
+        const updatedSub = event.data.object as Stripe.Subscription;
+        if (updatedSub.metadata?.type === 'marketplace_subscription') {
+          await this.subscriptionWebhookService.handleSubscriptionUpdated(updatedSub);
+        } else {
+          await this.handleSubscriptionUpdated(updatedSub);
+        }
         break;
+      }
 
-      case 'customer.subscription.deleted':
-        await this.handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+      case 'customer.subscription.deleted': {
+        const deletedSub = event.data.object as Stripe.Subscription;
+        if (deletedSub.metadata?.type === 'marketplace_subscription') {
+          await this.subscriptionWebhookService.handleSubscriptionDeleted(deletedSub);
+        } else {
+          await this.handleSubscriptionDeleted(deletedSub);
+        }
         break;
+      }
 
-      case 'invoice.payment_succeeded':
-        await this.handlePaymentSucceeded(event.data.object as Stripe.Invoice);
+      case 'invoice.payment_succeeded': {
+        const succeededInvoice = event.data.object as Stripe.Invoice;
+        // Delegate to marketplace subscription webhook service if applicable
+        if (succeededInvoice.subscription) {
+          await this.subscriptionWebhookService.handlePaymentSucceeded(succeededInvoice);
+        }
+        await this.handlePaymentSucceeded(succeededInvoice);
         break;
+      }
 
-      case 'invoice.payment_failed':
-        await this.handlePaymentFailed(event.data.object as Stripe.Invoice);
+      case 'invoice.payment_failed': {
+        const failedInvoice = event.data.object as Stripe.Invoice;
+        // Delegate to marketplace subscription webhook service if applicable
+        if (failedInvoice.subscription) {
+          await this.subscriptionWebhookService.handlePaymentFailed(failedInvoice);
+        }
+        await this.handlePaymentFailed(failedInvoice);
         break;
+      }
 
       case 'account.updated': {
         const account = event.data.object as Stripe.Account;
-        await this.stripeConnectService.handleAccountUpdated(account);
+        if (account.metadata?.affiliateId) {
+          await this.affiliateStripeService.handleAccountUpdated(account);
+        } else {
+          await this.stripeConnectService.handleAccountUpdated(account);
+        }
         break;
       }
 
       case 'transfer.failed': {
         const transfer = event.data.object as Stripe.Transfer;
-        await this.stripeConnectService.handleTransferFailed(transfer);
+        if (transfer.metadata?.type === 'affiliate_payout') {
+          await this.affiliateStripeService.handleTransferFailed(transfer);
+        } else {
+          await this.stripeConnectService.handleTransferFailed(transfer);
+        }
         break;
       }
 

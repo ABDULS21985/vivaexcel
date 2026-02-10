@@ -13,6 +13,7 @@ import { CursorProvider, CustomCursorWrapper } from "../../components/ui/custom-
 import { QueryProvider } from "../../providers/query-provider";
 import { AuthProvider } from "../../providers/auth-provider";
 import { CartProvider } from "../../providers/cart-provider";
+import { SubscriptionProvider } from "../../providers/subscription-provider";
 import { CurrencyProvider } from "../../providers/currency-provider";
 import { CartDrawer } from "../../components/cart/cart-drawer";
 import { GSAPProvider } from "../../providers/gsap-provider";
@@ -24,6 +25,7 @@ import { generateOrganizationSchema, generateWebSiteSchema } from "../../lib/sch
 import { PageContentWrapper } from "../../components/layout/page-content-wrapper";
 import { ServiceWorkerRegister, InstallPrompt } from "../../components/pwa";
 import { MobileBottomNav, MobileTopBar } from "../../components/mobile";
+import { GamificationListener } from "../../components/gamification/gamification-listener";
 import "../globals.css";
 
 // Noto Sans Arabic for RTL support
@@ -149,6 +151,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <ThemeProvider>
           <QueryProvider>
             <AuthProvider>
+            <SubscriptionProvider>
             <CartProvider>
             <CurrencyProvider>
             <GSAPProvider>
@@ -187,6 +190,9 @@ export default async function LocaleLayout({ children, params }: Props) {
                   {/* Mobile Bottom Navigation — visible only on mobile (<lg) */}
                   <MobileBottomNav />
 
+                  {/* Gamification: Achievement & Level-Up notifications */}
+                  <GamificationListener />
+
                   {/* PWA: Service Worker Registration & Install Prompt */}
                   <ServiceWorkerRegister />
                   <InstallPrompt />
@@ -195,6 +201,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             </GSAPProvider>
           </CurrencyProvider>
           </CartProvider>
+          </SubscriptionProvider>
           </AuthProvider>
           </QueryProvider>
         </ThemeProvider>

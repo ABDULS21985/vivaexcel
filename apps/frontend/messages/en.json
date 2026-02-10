@@ -1472,6 +1472,199 @@
     }
   },
   "language": "Language",
+  "pricing": {
+    "hero": {
+      "badge": "Flexible Plans",
+      "title": "Choose Your Perfect Plan",
+      "subtitle": "Subscribe and save with credits-based access to our premium digital products. Download more, spend less.",
+      "trustBadges": {
+        "cancelAnytime": "Cancel Anytime",
+        "noCreditCard": "No Credit Card for Free Plan",
+        "moneyBack": "30-Day Money-Back Guarantee"
+      }
+    },
+    "billing": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "savePercent": "Save 25%",
+      "perMonth": "/month",
+      "free": "Free",
+      "billedAnnually": "Billed annually"
+    },
+    "plans": {
+      "free": {
+        "name": "Free",
+        "description": "Perfect for exploring our marketplace and downloading free resources.",
+        "cta": "Get Started Free",
+        "features": [
+          "5 credits per month",
+          "Access to free products",
+          "Community support",
+          "Basic analytics"
+        ]
+      },
+      "starter": {
+        "name": "Starter",
+        "description": "Great for individuals who need regular access to standard digital products.",
+        "cta": "Start Free Trial",
+        "features": [
+          "25 credits per month",
+          "Standard product access",
+          "Email support",
+          "Download history",
+          "Credit rollover (up to 50)"
+        ]
+      },
+      "professional": {
+        "name": "Professional",
+        "description": "Ideal for professionals and small teams who need premium templates and tools.",
+        "cta": "Start Free Trial",
+        "features": [
+          "100 credits per month",
+          "Premium product access",
+          "Priority support",
+          "Early access to new products",
+          "Credit rollover (up to 200)",
+          "5 simultaneous downloads"
+        ]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "For organizations that need unlimited access and dedicated support.",
+        "cta": "Contact Sales",
+        "features": [
+          "Unlimited credits",
+          "Access to all products",
+          "Dedicated account manager",
+          "API access",
+          "Team seats",
+          "Custom integrations",
+          "Unlimited rollover",
+          "Priority early access"
+        ]
+      }
+    },
+    "features": {
+      "creditsPerMonth": "Credits per month",
+      "unlimitedCredits": "Unlimited credits",
+      "prioritySupport": "Priority support",
+      "earlyAccess": "Early access to new products",
+      "apiAccess": "API access",
+      "teamSeats": "Team seats",
+      "rolloverCredits": "Credit rollover",
+      "allProductTypes": "All product types",
+      "standardProducts": "Standard products",
+      "freeProducts": "Free products only",
+      "simultaneousDownloads": "Simultaneous downloads",
+      "dedicatedManager": "Dedicated account manager",
+      "customIntegrations": "Custom integrations",
+      "downloadHistory": "Download history",
+      "communitySupport": "Community support",
+      "emailSupport": "Email support",
+      "basicAnalytics": "Basic analytics",
+      "advancedAnalytics": "Advanced analytics"
+    },
+    "comparison": {
+      "title": "Compare Plans",
+      "subtitle": "See which plan is right for you",
+      "showComparison": "Show full comparison",
+      "hideComparison": "Hide comparison"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about our subscription plans",
+      "items": [
+        {
+          "question": "What are credits and how do they work?",
+          "answer": "Credits are our virtual currency for downloading digital products. Each product costs a certain number of credits based on its value. Credits refresh at the start of each billing cycle."
+        },
+        {
+          "question": "Can I change my plan later?",
+          "answer": "Yes, you can upgrade or downgrade your plan at any time. When upgrading, you will have immediate access to the new plan features. When downgrading, changes take effect at the next billing cycle."
+        },
+        {
+          "question": "What happens to unused credits?",
+          "answer": "Depending on your plan, unused credits can roll over to the next month up to your plan's rollover limit. Free plan credits do not roll over."
+        },
+        {
+          "question": "Is there a free trial?",
+          "answer": "Yes! Both Starter and Professional plans come with a 7-day free trial. You can cancel anytime during the trial without being charged."
+        },
+        {
+          "question": "How does the money-back guarantee work?",
+          "answer": "If you are not satisfied with your subscription within the first 30 days, contact us for a full refund. No questions asked."
+        },
+        {
+          "question": "Can I use credits for any product?",
+          "answer": "Credits can be used for products within your plan's access level. Free plan users can access free products, Starter users get standard products, Professional users get premium products, and Enterprise users get access to everything."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Join thousands of professionals who save time and money with our subscription plans.",
+      "button": "View Plans"
+    },
+    "subscription": {
+      "title": "My Subscription",
+      "currentPlan": "Current Plan",
+      "status": "Status",
+      "active": "Active",
+      "trialing": "Trial",
+      "pastDue": "Past Due",
+      "canceled": "Canceled",
+      "paused": "Paused",
+      "expired": "Expired",
+      "credits": "Credits",
+      "creditsRemaining": "Credits Remaining",
+      "creditsUsed": "Credits Used",
+      "totalCredits": "Total Credits",
+      "rolloverCredits": "Rollover Credits",
+      "creditBalance": "Credit Balance",
+      "creditsResetIn": "Credits reset in {days} days",
+      "history": "Credit History",
+      "downloads": "My Downloads",
+      "savings": "Estimated Savings",
+      "utilizationRate": "Utilization Rate",
+      "downloadsThisPeriod": "Downloads This Period",
+      "nextBillingDate": "Next billing date",
+      "actions": "Actions",
+      "cancel": "Cancel Subscription",
+      "cancelConfirm": "Are you sure you want to cancel?",
+      "cancelDescription": "Your subscription will remain active until the end of the current billing period. You will not be charged again.",
+      "cancelImmediate": "Cancel Immediately",
+      "cancelAtPeriodEnd": "Cancel at Period End",
+      "pause": "Pause Subscription",
+      "pauseConfirm": "Pause your subscription?",
+      "pauseDescription": "Your credits will be frozen and you will not be charged while paused. You can resume anytime.",
+      "resume": "Resume Subscription",
+      "changePlan": "Change Plan",
+      "upgradePlan": "Upgrade Plan",
+      "downgradePlan": "Downgrade Plan",
+      "manageBilling": "Manage Billing",
+      "viewPricing": "View Pricing",
+      "noSubscription": "No Active Subscription",
+      "noSubscriptionDescription": "Subscribe to a plan to start downloading premium digital products with credits.",
+      "transactionTypes": {
+        "credit_grant": "Credits Granted",
+        "credit_used": "Credits Used",
+        "credit_rollover": "Credits Rolled Over",
+        "credit_expired": "Credits Expired",
+        "credit_bonus": "Bonus Credits",
+        "credit_refund": "Credits Refunded"
+      }
+    },
+    "product": {
+      "includedInPlan": "Included in your plan",
+      "creditCost": "{count} credit | {count} credits",
+      "orSubscribe": "Or subscribe to download",
+      "downloadWithCredits": "Download with Credits",
+      "upgradeToAccess": "Upgrade to access",
+      "creditsRequired": "{count} credits required",
+      "noCredits": "Not enough credits",
+      "freeWithSubscription": "Free with subscription"
+    }
+  },
   "careers": {
     "hero": {
       "kicker": "Join Our Team",
@@ -1606,6 +1799,201 @@
         "linkedinInvalid": "Please enter a valid LinkedIn URL",
         "portfolioInvalid": "Please enter a valid URL"
       }
+    }
+  },
+  "gamification": {
+    "home": "Home",
+    "achievements": "Achievements",
+    "achievementsDescription": "Earn badges and rewards for your marketplace activity",
+    "leaderboard": "Leaderboard",
+    "leaderboardDescription": "See how you rank against other members",
+    "xpTitle": "Total XP",
+    "level": "Level",
+    "levelUp": "Level Up!",
+    "streak": "Day Streak",
+    "streakDays": "{days} day streak",
+    "streakFreeze": "Streak Freeze",
+    "streakFreezeDescription": "Protect your streak for one missed day",
+    "streakFreezeAvailable": "{count} freeze(s) available",
+    "streakFreezeUsed": "Streak freeze activated",
+    "noStreak": "Log in daily to build your streak",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "progress": "Progress",
+    "xpReward": "+{xp} XP",
+    "achievementUnlocked": "Achievement Unlocked!",
+    "allCategories": "All",
+    "categoryBuyer": "Buyer",
+    "categorySeller": "Seller",
+    "categoryReviewer": "Reviewer",
+    "categoryCommunity": "Community",
+    "categoryExplorer": "Explorer",
+    "categoryCollector": "Collector",
+    "tierBronze": "Bronze",
+    "tierSilver": "Silver",
+    "tierGold": "Gold",
+    "tierPlatinum": "Platinum",
+    "tierDiamond": "Diamond",
+    "periodWeekly": "This Week",
+    "periodMonthly": "This Month",
+    "periodAllTime": "All Time",
+    "categoryBuyerXP": "Buyer XP",
+    "categorySellerRevenue": "Seller Revenue",
+    "categoryReviewerRank": "Top Reviewers",
+    "yourRank": "Your Rank",
+    "rank": "#{rank}",
+    "noAchievements": "No achievements yet. Start shopping to earn your first!",
+    "secretAchievement": "Hidden Achievement",
+    "secretAchievementDescription": "Keep exploring to discover this achievement",
+    "titleNewcomer": "Newcomer",
+    "titleExplorer": "Explorer",
+    "titleEnthusiast": "Enthusiast",
+    "titleExpert": "Expert",
+    "titleMaster": "Master",
+    "titleLegend": "Legend",
+    "activity": "Activity",
+    "recentActivity": "Recent Activity",
+    "viewAllAchievements": "View All Achievements"
+  },
+  "team": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "members": "Members",
+      "library": "Library",
+      "purchases": "Purchases",
+      "billing": "Billing",
+      "settings": "Settings"
+    },
+    "dashboard": {
+      "noTeam": "No Team Found",
+      "createTeamPrompt": "Create a team workspace to collaborate with your colleagues.",
+      "createTeam": "Create Team",
+      "overview": "Team Overview",
+      "inviteMembers": "Invite Members",
+      "totalMembers": "Total Members",
+      "of": "of",
+      "max": "max",
+      "libraryProducts": "Library Products",
+      "monthlySpend": "Monthly Spend",
+      "budget": "Budget",
+      "noBudgetSet": "No budget set",
+      "remainingBudget": "Remaining Budget",
+      "unlimited": "Unlimited",
+      "recentActivity": "Recent Activity",
+      "noRecentActivity": "No recent activity to display.",
+      "unknownProduct": "Unknown Product"
+    },
+    "members": {
+      "title": "Team Members",
+      "subtitle": "Manage your team members, invite new ones, and control access.",
+      "inviteTitle": "Invite Members",
+      "emailPlaceholder": "Enter email addresses (comma separated)",
+      "sendInvites": "Send Invites",
+      "roleMember": "Member",
+      "roleViewer": "Viewer",
+      "roleManager": "Manager",
+      "roleAdmin": "Admin",
+      "pendingInvitations": "Pending Invitations",
+      "expires": "Expires",
+      "membersList": "Members",
+      "unknownUser": "Unknown User",
+      "neverActive": "Never active"
+    },
+    "library": {
+      "title": "Shared Library",
+      "subtitle": "Products available to all team members.",
+      "requestProduct": "Request Product",
+      "searchPlaceholder": "Search library...",
+      "emptyTitle": "Library is empty",
+      "emptySubtitle": "Products purchased by the team will appear here.",
+      "untitled": "Untitled Product",
+      "accesses": "accesses",
+      "seats": "seats",
+      "download": "Download"
+    },
+    "purchases": {
+      "title": "Purchases",
+      "subtitle": "View purchase history and manage approval requests.",
+      "pendingApprovals": "Pending Approvals",
+      "purchaseHistory": "Purchase History",
+      "noPending": "No pending approval requests.",
+      "noHistory": "No purchase history yet.",
+      "unknownProduct": "Unknown Product",
+      "seats": "seats",
+      "approvalNotePlaceholder": "Add a note (optional)...",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectReasonPrompt": "Please provide a reason for rejection:"
+    },
+    "billing": {
+      "title": "Billing & Plans",
+      "subtitle": "Manage your team plan, budget, and payment settings.",
+      "plan": "Plan",
+      "membersUsed": "members used",
+      "changePlan": "Change Plan",
+      "monthlySpend": "Monthly Spend",
+      "budget": "Budget",
+      "remainingBudget": "Remaining Budget",
+      "unlimited": "Unlimited",
+      "volumeDiscounts": "Volume Discounts",
+      "licenses": "licenses",
+      "off": "off"
+    },
+    "settings": {
+      "title": "Team Settings",
+      "subtitle": "Configure your team workspace preferences.",
+      "teamProfile": "Team Profile",
+      "teamName": "Team Name",
+      "description": "Description",
+      "logoUrl": "Logo URL",
+      "saveProfile": "Save Profile",
+      "purchaseSettings": "Purchase Settings",
+      "requireApproval": "Require purchase approval",
+      "requireApprovalDesc": "Admin must approve all team purchases before they are processed.",
+      "enableLibrary": "Enable shared library",
+      "enableLibraryDesc": "Allow team members to access a shared product library.",
+      "saveSettings": "Save Settings",
+      "domainVerification": "Domain Verification",
+      "domainDesc": "Verify your company domain to enable auto-join for new team members.",
+      "domainPlaceholder": "company.com",
+      "addDomain": "Add Domain",
+      "ssoConfig": "SSO Configuration",
+      "enterpriseOnly": "Enterprise",
+      "ssoProvider": "SSO Provider",
+      "selectProvider": "Select a provider...",
+      "idpUrl": "Identity Provider URL",
+      "certificate": "X.509 Certificate",
+      "enforceSso": "Enforce SSO for all members",
+      "enforceSsoDesc": "Require all team members to sign in through SSO.",
+      "ssoUpgradeMessage": "SSO/SAML integration is available on the Enterprise plan. Upgrade to enable single sign-on for your team."
+    },
+    "store": {
+      "buyForTeam": "Buy for Team",
+      "perSeat": "per seat",
+      "selectTeam": "Select Team",
+      "howManySeats": "How many seats?",
+      "volumeDiscount": "Volume Discount",
+      "off": "off",
+      "youSave": "You save",
+      "requestNote": "Request Note",
+      "requestNotePlaceholder": "Why does the team need this product?",
+      "unitPrice": "Unit Price",
+      "quantity": "Quantity",
+      "discount": "Discount",
+      "total": "Total",
+      "submitRequest": "Submit Purchase Request",
+      "purchaseForTeam": "Purchase for Team",
+      "inTeamLibrary": "In your team library",
+      "volumeDiscountsTitle": "Volume Discounts",
+      "volumeDiscountsDesc": "Save more when you buy for your team.",
+      "licenses": "licenses"
+    },
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "manager": "Manager",
+      "member": "Member",
+      "viewer": "Viewer"
     }
   }
 }

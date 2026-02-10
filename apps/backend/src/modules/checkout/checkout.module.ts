@@ -17,6 +17,8 @@ import { User } from '../../entities/user.entity';
 import { StripeModule } from '../stripe/stripe.module';
 import { CartModule } from '../cart/cart.module';
 import { MediaModule } from '../media/media.module';
+import { AffiliatesModule } from '../affiliates/affiliates.module';
+import { ReferralsModule } from '../referrals/referrals.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { MediaModule } from '../media/media.module';
     forwardRef(() => StripeModule),
     forwardRef(() => CartModule),
     MediaModule,
+    forwardRef(() => AffiliatesModule),
+    forwardRef(() => ReferralsModule),
   ],
   controllers: [CheckoutController],
   providers: [CheckoutService],

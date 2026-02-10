@@ -23,3 +23,5 @@ export * from "./use-swipe-action";
 export * from "./use-long-press";
 export * from "./use-touch-feedback";
 export * from "./use-media-query";
+export * from "./use-auto-cycle";
+export * from "./use-fullscreen";

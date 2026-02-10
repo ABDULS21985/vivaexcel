@@ -37,6 +37,9 @@ import {
   DigitalProductType,
 } from "@/types/digital-product";
 import { SrOnly } from "@/components/ui/accessibility";
+import { useSubscription } from "@/providers/subscription-provider";
+import { useDownloadWithCredits } from "@/hooks/use-marketplace-subscription";
+import { Crown } from "lucide-react";
 
 // =============================================================================
 // Types
@@ -333,6 +336,9 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const [showAddedFeedback, setShowAddedFeedback] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [showFeatureComparison, setShowFeatureComparison] = useState(false);
+  const { isSubscribed, canAccessProduct, getCreditCost, hasEnoughCredits, getProductAccessInfo } = useSubscription();
+  const downloadWithCredits = useDownloadWithCredits();
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // ---------------------------------------------------------------------------
   // Handlers
@@ -364,6 +370,20 @@ export function ProductInfo({ product }: ProductInfoProps) {
     }
   }, [addToCart, product.id, selectedVariant?.id, router]);
 
+  const handleDownloadWithCredits = useCallback(async () => {
+    setIsDownloading(true);
+    try {
+      const result = await downloadWithCredits.mutateAsync(product.id);
+      if (result.downloadUrl) {
+        window.open(result.downloadUrl, '_blank');
+      }
+    } catch {
+      // Error handled by mutation
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [downloadWithCredits, product.id]);
+
   // ---------------------------------------------------------------------------
   // Derived values
   // ---------------------------------------------------------------------------
@@ -381,6 +401,9 @@ export function ProductInfo({ product }: ProductInfoProps) {
   const metadataItems = getMetadataItems(product);
   const animatedPrice = useAnimatedPrice(activePrice);
   const liveDemoUrl = getLiveDemoUrl(product);
+
+  const accessInfo = getProductAccessInfo({ price: activePrice });
+  const creditCost = getCreditCost({ price: activePrice });
 
   // Determine which variant gets the "Most Popular" badge
   const sortedVariants = product.variants
@@ -595,6 +618,33 @@ export function ProductInfo({ product }: ProductInfoProps) {
           )}
         </div>
 
+        {/* Subscription Access Info */}
+        {isSubscribed && accessInfo.isIncluded && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.1 }}
+            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl"
+          >
+            <Crown className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+              Included in your plan
+              {creditCost > 0 && (
+                <span className="text-emerald-500 dark:text-emerald-400"> · {creditCost} {creditCost === 1 ? 'credit' : 'credits'}</span>
+              )}
+            </span>
+          </motion.div>
+        )}
+        {!isSubscribed && activePrice > 0 && (
+          <Link
+            href="/pricing"
+            className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+          >
+            <Crown className="h-4 w-4" />
+            <span>Or subscribe from <strong>$19/mo</strong> and use credits</span>
+          </Link>
+        )}
+
         {/* ================================================================= */}
         {/* Variant Selector - Visual Cards                                   */}
         {/* ================================================================= */}
@@ -802,6 +852,23 @@ export function ProductInfo({ product }: ProductInfoProps) {
         {/* CTA Buttons                                                       */}
         {/* ================================================================= */}
         <div className="space-y-3">
+          {/* Download with Credits (for subscribers) */}
+          {isSubscribed && accessInfo.isIncluded && hasEnoughCredits({ price: activePrice }) && (
+            <motion.button
+              onClick={handleDownloadWithCredits}
+              disabled={isDownloading}
+              whileHover={{ scale: isDownloading ? 1 : 1.015 }}
+              whileTap={{ scale: isDownloading ? 1 : 0.98 }}
+              className="relative w-full flex items-center justify-center gap-2.5 px-6 py-4 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 text-white font-semibold text-base rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-600/30 disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
+            >
+              <span className="animate-shimmer-slide absolute inset-0 pointer-events-none bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <Crown className="h-5 w-5 relative z-10" />
+              <span className="relative z-10">
+                {isDownloading ? 'Downloading...' : `Download with ${creditCost} ${creditCost === 1 ? 'Credit' : 'Credits'}`}
+              </span>
+            </motion.button>
+          )}
+
           {/* Add to Cart - Full width with shimmer */}
           <motion.button
             onClick={handleAddToCart}

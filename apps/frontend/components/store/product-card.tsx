@@ -15,6 +15,8 @@ import {
   DIGITAL_PRODUCT_TYPE_LABELS,
   DIGITAL_PRODUCT_TYPE_COLORS,
 } from "@/types/digital-product";
+import { useSubscription } from "@/providers/subscription-provider";
+import { Crown } from "lucide-react";
 
 // =============================================================================
 // Types
@@ -138,6 +140,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const discount = product.compareAtPrice
     ? getDiscountPercentage(product.price, product.compareAtPrice)
     : 0;
+  const { isSubscribed, getCreditCost, isIncludedInPlan } = useSubscription();
+  const creditCost = getCreditCost({ price: product.price });
+  const isIncluded = isIncludedInPlan({ price: product.price });
 
   // -------------------------------------------------------------------------
   // Gallery Image Cycling on Hover
@@ -288,6 +293,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   {t("product.bestseller")}
                 </span>
               )}
+              {/* Credit/Subscription Badge */}
+              {isSubscribed && isIncluded && (
+                <span className="flex items-center gap-1 px-2 py-1 bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg">
+                  <Crown className="h-3 w-3" />
+                  {creditCost === 0 ? 'Included' : `${creditCost} Cr`}
+                </span>
+              )}
             </div>
 
             {/* Discount Badge */}
@@ -370,6 +382,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   )}
               </div>
 
+              {isSubscribed && isIncluded && (
+                <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">
+                  <Crown className="h-3 w-3" />
+                  In Plan
+                </span>
+              )}
               {product.downloadCount > 0 && (
                 <div className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
                   <Download className="h-3.5 w-3.5" />

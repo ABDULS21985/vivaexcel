@@ -12,6 +12,7 @@ import {
 import { StoreListingClient } from "@/components/store/store-listing-client";
 import { StoreHeroClient } from "@/components/store/store-hero-client";
 import { ProductCard } from "@/components/store/product-card";
+import { SubscriberPopularSection } from "@/components/store/subscriber-popular-section";
 
 const SocialProofStrip = dynamic(() => import("@/components/store/social-proof-strip").then(m => ({ default: m.SocialProofStrip })));
 const StoreNewsletter = dynamic(() => import("@/components/store/store-newsletter").then(m => ({ default: m.StoreNewsletter })));
@@ -474,6 +475,9 @@ export default async function StorePage({ params }: Props) {
             </div>
           </section>
         )}
+
+        {/* Subscriber Popular / Subscribe CTA */}
+        <SubscriberPopularSection products={products} />
 
         {/* =================================================================
             MAIN STORE CONTENT — Full Product Grid with Filters

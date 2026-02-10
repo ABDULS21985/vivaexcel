@@ -44,6 +44,7 @@ import { RefreshToken } from './entities';
 
 // Feature modules
 import { UsersModule } from '../users/users.module';
+import { ReferralsModule } from '../referrals/referrals.module';
 
 @Module({
   imports: [
@@ -73,6 +74,9 @@ import { UsersModule } from '../users/users.module';
 
     // Users module
     forwardRef(() => UsersModule),
+
+    // Referrals module
+    forwardRef(() => ReferralsModule),
   ],
   controllers: [AuthController],
   providers: [

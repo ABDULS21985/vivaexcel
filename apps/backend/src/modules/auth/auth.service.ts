@@ -26,6 +26,7 @@ import { GoogleProfile } from './strategies/google.strategy';
 import { GitHubProfile } from './strategies/github.strategy';
 import { UsersService } from '../users/users.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ReferralsService } from '../referrals/referrals.service';
 
 import { User } from '../../entities/user.entity';
 
@@ -42,6 +43,8 @@ export class AuthService {
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(forwardRef(() => ReferralsService))
+    private readonly referralsService: ReferralsService,
   ) { }
 
 
@@ -52,6 +55,7 @@ export class AuthService {
     registerDto: RegisterDto,
     ipAddress?: string,
     userAgent?: string,
+    referralCode?: string,
   ): Promise<AuthResponseDto> {
     const { email, password, name } = registerDto;
 
@@ -70,6 +74,15 @@ export class AuthService {
       password: hashedPassword,
       name,
     });
+
+    // Process referral code if provided
+    if (referralCode) {
+      try {
+        await this.referralsService.recordReferralSignup(referralCode, user.id);
+      } catch (error) {
+        // Non-critical: don't fail registration if referral fails
+      }
+    }
 
     // Generate email verification token
     const verificationToken = await this.emailVerificationService.generateToken(

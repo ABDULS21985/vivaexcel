@@ -79,7 +79,7 @@ interface AuthResponse {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 // Protected route paths that require authentication
-const PROTECTED_PATHS = ["/dashboard", "/dashboard/profile", "/dashboard/billing"];
+const PROTECTED_PATHS = ["/dashboard", "/dashboard/profile", "/dashboard/billing", "/account/subscription"];
 
 interface AuthProviderProps {
   children: ReactNode;

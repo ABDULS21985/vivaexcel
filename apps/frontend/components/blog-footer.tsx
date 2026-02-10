@@ -12,6 +12,7 @@ const quickLinks = [
   { name: "Home", href: "/" },
   { name: "Blog", href: "/blog" },
   { name: "Store", href: "/store" },
+  { name: "Pricing", href: "/pricing" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
   { name: "Write for Us", href: "/write-for-us" },

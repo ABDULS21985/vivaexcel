@@ -33,6 +33,8 @@ import {
 } from '../media/strategies/storage.interface';
 import { CacheService } from '../../common/cache/cache.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AffiliateService } from '../affiliates/services/affiliate.service';
+import { ReferralsService } from '../referrals/referrals.service';
 
 import { OrderQueryDto } from './dto/order-query.dto';
 import { PaginatedResponse } from '../../common/interfaces/response.interface';
@@ -70,6 +72,10 @@ export class CheckoutService {
     private readonly cacheService: CacheService,
     private readonly dataSource: DataSource,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(forwardRef(() => AffiliateService))
+    private readonly affiliateService: AffiliateService,
+    @Inject(forwardRef(() => ReferralsService))
+    private readonly referralsService: ReferralsService,
   ) {}
 
   // ─── Order Number Generation ────────────────────────────────────────
@@ -96,6 +102,7 @@ export class CheckoutService {
     successUrl: string,
     cancelUrl: string,
     couponCode?: string,
+    affiliateSessionId?: string,
   ): Promise<{ sessionId: string; url: string }> {
     // Fetch the user
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -150,6 +157,10 @@ export class CheckoutService {
 
     if (couponCode) {
       metadata.couponCode = couponCode;
+    }
+
+    if (affiliateSessionId) {
+      metadata.affiliateSessionId = affiliateSessionId;
     }
 
     try {
@@ -418,6 +429,37 @@ export class CheckoutService {
           });
         }
       }
+
+      // Post-transaction: Create affiliate commissions if applicable
+      try {
+        const affiliateSessionId = session.metadata?.affiliateSessionId;
+        if (affiliateSessionId) {
+          const orderItemsForAffiliate = cartItemsWithProducts.map((ci) => ({
+            id: ci.id,
+            digitalProductId: ci.digitalProductId,
+            price: Number(ci.unitPrice),
+            currency: ci.currency || 'USD',
+          }));
+          await this.affiliateService.createCommissionsForOrder(
+            savedOrder,
+            orderItemsForAffiliate,
+            affiliateSessionId,
+          );
+        }
+      } catch (error) {
+        this.logger.warn(
+          `Failed to create affiliate commissions for order ${savedOrder.orderNumber}: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+
+      // Post-transaction: Qualify referral if applicable
+      try {
+        await this.referralsService.qualifyReferral(userId, savedOrder.id);
+      } catch (error) {
+        this.logger.warn(
+          `Failed to qualify referral for user ${userId}: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
     } catch (error) {
       await queryRunner.rollbackTransaction();
       this.logger.error(
@@ -497,6 +539,15 @@ export class CheckoutService {
     this.logger.log(
       `Order ${order.orderNumber} refunded, download tokens deactivated`,
     );
+
+    // Reverse affiliate commissions
+    try {
+      await this.affiliateService.reverseCommissionsForOrder(order.id);
+    } catch (error) {
+      this.logger.warn(
+        `Failed to reverse affiliate commissions for order ${order.orderNumber}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
 
     // Invalidate caches
     try {
@@ -858,6 +909,15 @@ export class CheckoutService {
     }
 
     this.logger.log(`Order ${order.orderNumber} refunded successfully`);
+
+    // Reverse affiliate commissions
+    try {
+      await this.affiliateService.reverseCommissionsForOrder(order.id);
+    } catch (error) {
+      this.logger.warn(
+        `Failed to reverse affiliate commissions for refund ${order.orderNumber}: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
 
     // Invalidate caches
     try {

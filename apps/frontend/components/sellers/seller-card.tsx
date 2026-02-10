@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import type { SellerProfile } from '../../types/seller';
 import { VERIFICATION_LABELS, VERIFICATION_COLORS, VerificationStatus } from '../../types/seller';
+import { SellerBadge } from '../gamification/seller-badge';
 
 interface SellerCardProps {
   seller: SellerProfile;
@@ -56,11 +57,20 @@ export function SellerCard({ seller, index = 0 }: SellerCardProps) {
             {seller.displayName}
           </h3>
 
-          {seller.verificationStatus !== VerificationStatus.UNVERIFIED && (
-            <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${VERIFICATION_COLORS[seller.verificationStatus]}`}>
-              {VERIFICATION_LABELS[seller.verificationStatus]}
-            </span>
-          )}
+          <div className="flex flex-wrap items-center gap-1.5 mt-1">
+            {seller.verificationStatus !== VerificationStatus.UNVERIFIED && (
+              <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${VERIFICATION_COLORS[seller.verificationStatus]}`}>
+                {VERIFICATION_LABELS[seller.verificationStatus]}
+              </span>
+            )}
+            {(seller as any).gamificationLevel > 0 && (
+              <SellerBadge
+                level={(seller as any).gamificationLevel}
+                title={(seller as any).gamificationTitle || 'Newcomer'}
+                compact
+              />
+            )}
+          </div>
 
           {seller.bio && (
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">

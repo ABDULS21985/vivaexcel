@@ -1455,6 +1455,199 @@
     }
   },
   "language": "Idioma",
+  "pricing": {
+    "hero": {
+      "badge": "Planes flexibles",
+      "title": "Elige tu plan perfecto",
+      "subtitle": "Suscribete y ahorra con acceso basado en creditos a nuestros productos digitales premium. Descarga mas, gasta menos.",
+      "trustBadges": {
+        "cancelAnytime": "Cancela en cualquier momento",
+        "noCreditCard": "Sin tarjeta de credito para el plan gratuito",
+        "moneyBack": "Garantia de devolucion de 30 dias"
+      }
+    },
+    "billing": {
+      "monthly": "Mensual",
+      "annual": "Anual",
+      "savePercent": "Ahorra 25%",
+      "perMonth": "/mes",
+      "free": "Gratis",
+      "billedAnnually": "Facturado anualmente"
+    },
+    "plans": {
+      "free": {
+        "name": "Gratuito",
+        "description": "Perfecto para explorar nuestro marketplace y descargar recursos gratuitos.",
+        "cta": "Comenzar gratis",
+        "features": [
+          "5 creditos por mes",
+          "Acceso a productos gratuitos",
+          "Soporte comunitario",
+          "Analisis basicos"
+        ]
+      },
+      "starter": {
+        "name": "Inicial",
+        "description": "Ideal para personas que necesitan acceso regular a productos digitales estandar.",
+        "cta": "Prueba gratuita",
+        "features": [
+          "25 creditos por mes",
+          "Acceso a productos estandar",
+          "Soporte por email",
+          "Historial de descargas",
+          "Acumulacion de creditos (hasta 50)"
+        ]
+      },
+      "professional": {
+        "name": "Profesional",
+        "description": "Ideal para profesionales y equipos pequenos que necesitan plantillas y herramientas premium.",
+        "cta": "Prueba gratuita",
+        "features": [
+          "100 creditos por mes",
+          "Acceso a productos premium",
+          "Soporte prioritario",
+          "Acceso anticipado a nuevos productos",
+          "Acumulacion de creditos (hasta 200)",
+          "5 descargas simultaneas"
+        ]
+      },
+      "enterprise": {
+        "name": "Empresarial",
+        "description": "Para organizaciones que necesitan acceso ilimitado y soporte dedicado.",
+        "cta": "Contactar ventas",
+        "features": [
+          "Creditos ilimitados",
+          "Acceso a todos los productos",
+          "Gestor de cuenta dedicado",
+          "Acceso API",
+          "Puestos de equipo",
+          "Integraciones personalizadas",
+          "Acumulacion ilimitada",
+          "Acceso anticipado prioritario"
+        ]
+      }
+    },
+    "features": {
+      "creditsPerMonth": "Creditos por mes",
+      "unlimitedCredits": "Creditos ilimitados",
+      "prioritySupport": "Soporte prioritario",
+      "earlyAccess": "Acceso anticipado a nuevos productos",
+      "apiAccess": "Acceso API",
+      "teamSeats": "Puestos de equipo",
+      "rolloverCredits": "Acumulacion de creditos",
+      "allProductTypes": "Todos los tipos de productos",
+      "standardProducts": "Productos estandar",
+      "freeProducts": "Solo productos gratuitos",
+      "simultaneousDownloads": "Descargas simultaneas",
+      "dedicatedManager": "Gestor de cuenta dedicado",
+      "customIntegrations": "Integraciones personalizadas",
+      "downloadHistory": "Historial de descargas",
+      "communitySupport": "Soporte comunitario",
+      "emailSupport": "Soporte por email",
+      "basicAnalytics": "Analisis basicos",
+      "advancedAnalytics": "Analisis avanzados"
+    },
+    "comparison": {
+      "title": "Comparar planes",
+      "subtitle": "Descubre cual plan es adecuado para ti",
+      "showComparison": "Mostrar comparacion completa",
+      "hideComparison": "Ocultar comparacion"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "subtitle": "Todo lo que necesitas saber sobre nuestros planes de suscripcion",
+      "items": [
+        {
+          "question": "Que son los creditos y como funcionan?",
+          "answer": "Los creditos son nuestra moneda virtual para descargar productos digitales. Cada producto cuesta un cierto numero de creditos segun su valor. Los creditos se renuevan al inicio de cada ciclo de facturacion."
+        },
+        {
+          "question": "Puedo cambiar mi plan despues?",
+          "answer": "Si, puedes mejorar o reducir tu plan en cualquier momento. Al mejorar, tendras acceso inmediato a las funciones del nuevo plan. Al reducir, los cambios se aplican en el siguiente ciclo de facturacion."
+        },
+        {
+          "question": "Que pasa con los creditos no utilizados?",
+          "answer": "Segun tu plan, los creditos no utilizados pueden acumularse para el mes siguiente hasta el limite de acumulacion de tu plan. Los creditos del plan gratuito no se acumulan."
+        },
+        {
+          "question": "Hay una prueba gratuita?",
+          "answer": "Si! Los planes Inicial y Profesional incluyen una prueba gratuita de 7 dias. Puedes cancelar en cualquier momento durante la prueba sin cargos."
+        },
+        {
+          "question": "Como funciona la garantia de devolucion?",
+          "answer": "Si no estas satisfecho con tu suscripcion dentro de los primeros 30 dias, contactanos para un reembolso completo. Sin preguntas."
+        },
+        {
+          "question": "Puedo usar creditos para cualquier producto?",
+          "answer": "Los creditos se pueden usar para productos dentro del nivel de acceso de tu plan. Los usuarios del plan gratuito acceden a productos gratuitos, Inicial a productos estandar, Profesional a productos premium y Empresarial a todo."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Listo para empezar?",
+      "subtitle": "Unete a miles de profesionales que ahorran tiempo y dinero con nuestros planes de suscripcion.",
+      "button": "Ver planes"
+    },
+    "subscription": {
+      "title": "Mi suscripcion",
+      "currentPlan": "Plan actual",
+      "status": "Estado",
+      "active": "Activo",
+      "trialing": "Prueba",
+      "pastDue": "Vencido",
+      "canceled": "Cancelado",
+      "paused": "Pausado",
+      "expired": "Expirado",
+      "credits": "Creditos",
+      "creditsRemaining": "Creditos restantes",
+      "creditsUsed": "Creditos utilizados",
+      "totalCredits": "Total de creditos",
+      "rolloverCredits": "Creditos acumulados",
+      "creditBalance": "Saldo de creditos",
+      "creditsResetIn": "Los creditos se renuevan en {days} dias",
+      "history": "Historial de creditos",
+      "downloads": "Mis descargas",
+      "savings": "Ahorro estimado",
+      "utilizationRate": "Tasa de utilizacion",
+      "downloadsThisPeriod": "Descargas en este periodo",
+      "nextBillingDate": "Proxima fecha de facturacion",
+      "actions": "Acciones",
+      "cancel": "Cancelar suscripcion",
+      "cancelConfirm": "Estas seguro de que quieres cancelar?",
+      "cancelDescription": "Tu suscripcion permanecera activa hasta el final del periodo de facturacion actual. No se te cobrara de nuevo.",
+      "cancelImmediate": "Cancelar inmediatamente",
+      "cancelAtPeriodEnd": "Cancelar al final del periodo",
+      "pause": "Pausar suscripcion",
+      "pauseConfirm": "Pausar tu suscripcion?",
+      "pauseDescription": "Tus creditos se congelaran y no se te cobrara mientras este pausada. Puedes reanudar en cualquier momento.",
+      "resume": "Reanudar suscripcion",
+      "changePlan": "Cambiar plan",
+      "upgradePlan": "Mejorar plan",
+      "downgradePlan": "Reducir plan",
+      "manageBilling": "Gestionar facturacion",
+      "viewPricing": "Ver precios",
+      "noSubscription": "Sin suscripcion activa",
+      "noSubscriptionDescription": "Suscribete a un plan para comenzar a descargar productos digitales premium con creditos.",
+      "transactionTypes": {
+        "credit_grant": "Creditos otorgados",
+        "credit_used": "Creditos utilizados",
+        "credit_rollover": "Creditos acumulados",
+        "credit_expired": "Creditos expirados",
+        "credit_bonus": "Creditos de bonificacion",
+        "credit_refund": "Creditos reembolsados"
+      }
+    },
+    "product": {
+      "includedInPlan": "Incluido en tu plan",
+      "creditCost": "{count} credito | {count} creditos",
+      "orSubscribe": "O suscribete para descargar",
+      "downloadWithCredits": "Descargar con creditos",
+      "upgradeToAccess": "Mejora para acceder",
+      "creditsRequired": "{count} creditos requeridos",
+      "noCredits": "Creditos insuficientes",
+      "freeWithSubscription": "Gratis con la suscripcion"
+    }
+  },
   "careers": {
     "applyButton": "Aplicar",
     "hero": {
@@ -1591,5 +1784,59 @@
         "portfolioInvalid": "Por favor ingresa una URL valida"
       }
     }
+  },
+  "gamification": {
+    "home": "Inicio",
+    "achievements": "Logros",
+    "achievementsDescription": "Gana insignias y recompensas por tu actividad en el mercado",
+    "leaderboard": "Clasificación",
+    "leaderboardDescription": "Mira cómo te clasificas frente a otros miembros",
+    "xpTitle": "XP Total",
+    "level": "Nivel",
+    "levelUp": "¡Subida de nivel!",
+    "streak": "Racha de días",
+    "streakDays": "Racha de {days} días",
+    "streakFreeze": "Congelar racha",
+    "streakFreezeDescription": "Protege tu racha por un día perdido",
+    "streakFreezeAvailable": "{count} congelación(es) disponible(s)",
+    "streakFreezeUsed": "Congelación de racha activada",
+    "noStreak": "Inicia sesión diariamente para construir tu racha",
+    "unlocked": "Desbloqueado",
+    "locked": "Bloqueado",
+    "progress": "Progreso",
+    "xpReward": "+{xp} XP",
+    "achievementUnlocked": "¡Logro desbloqueado!",
+    "allCategories": "Todos",
+    "categoryBuyer": "Comprador",
+    "categorySeller": "Vendedor",
+    "categoryReviewer": "Reseñador",
+    "categoryCommunity": "Comunidad",
+    "categoryExplorer": "Explorador",
+    "categoryCollector": "Coleccionista",
+    "tierBronze": "Bronce",
+    "tierSilver": "Plata",
+    "tierGold": "Oro",
+    "tierPlatinum": "Platino",
+    "tierDiamond": "Diamante",
+    "periodWeekly": "Esta semana",
+    "periodMonthly": "Este mes",
+    "periodAllTime": "Todo el tiempo",
+    "categoryBuyerXP": "XP Compradores",
+    "categorySellerRevenue": "Ingresos Vendedores",
+    "categoryReviewerRank": "Mejores Reseñadores",
+    "yourRank": "Tu rango",
+    "rank": "#{rank}",
+    "noAchievements": "Aún no hay logros. ¡Empieza a comprar para ganar el primero!",
+    "secretAchievement": "Logro oculto",
+    "secretAchievementDescription": "Sigue explorando para descubrir este logro",
+    "titleNewcomer": "Novato",
+    "titleExplorer": "Explorador",
+    "titleEnthusiast": "Entusiasta",
+    "titleExpert": "Experto",
+    "titleMaster": "Maestro",
+    "titleLegend": "Leyenda",
+    "activity": "Actividad",
+    "recentActivity": "Actividad reciente",
+    "viewAllAchievements": "Ver todos los logros"
   }
 }

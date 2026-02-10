@@ -7,6 +7,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@ktblog/ui/components";
 import { CartIcon } from "@/components/cart/cart-icon";
 import { CurrencySelector } from "@/components/store/currency-selector";
+import { StreakCounter } from "@/components/gamification/streak-counter";
 
 // ============================================
 // TYPES
@@ -25,6 +26,7 @@ const navItems: NavItem[] = [
   { name: "Home", href: "/" },
   { name: "Blog", href: "/blog" },
   { name: "Store", href: "/store" },
+  { name: "Pricing", href: "/pricing" },
   { name: "Categories", href: "/categories" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
@@ -184,6 +186,9 @@ export function BlogNavbar() {
                 <Search className="w-[18px] h-[18px]" />
               </button>
 
+              {/* Streak Counter */}
+              <StreakCounter />
+
               {/* Cart Icon */}
               <CartIcon />
 
@@ -239,6 +244,9 @@ export function BlogNavbar() {
               >
                 <Search className="w-5 h-5" />
               </button>
+
+              {/* Streak Counter (Mobile) */}
+              <StreakCounter />
 
               {/* Mobile Cart Icon */}
               <CartIcon />

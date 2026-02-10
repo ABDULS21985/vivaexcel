@@ -53,7 +53,12 @@ import { PromotionsModule } from './modules/promotions/promotions.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { SellersModule } from './modules/sellers/sellers.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
+import { PreviewsModule } from './modules/previews/previews.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
+import { AffiliatesModule } from './modules/affiliates/affiliates.module';
+import { ReferralsModule } from './modules/referrals/referrals.module';
+import { TeamsModule } from './modules/teams/teams.module';
+import { MarketplaceSubscriptionsModule } from './modules/marketplace-subscriptions/marketplace-subscriptions.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -141,7 +146,12 @@ import { AppService } from './app.service';
     ReviewsModule,
     SellersModule,
     DeliveryModule,
+    MarketplaceSubscriptionsModule,
+    PreviewsModule,
     GamificationModule,
+    AffiliatesModule,
+    ReferralsModule,
+    TeamsModule,
   ],
   controllers: [AppController],
   providers: [

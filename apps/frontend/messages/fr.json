@@ -1455,6 +1455,199 @@
     }
   },
   "language": "Langue",
+  "pricing": {
+    "hero": {
+      "badge": "Forfaits flexibles",
+      "title": "Choisissez votre forfait ideal",
+      "subtitle": "Abonnez-vous et economisez avec un acces base sur des credits a nos produits numeriques premium. Telechargez plus, depensez moins.",
+      "trustBadges": {
+        "cancelAnytime": "Annulation a tout moment",
+        "noCreditCard": "Pas de carte de credit pour le forfait gratuit",
+        "moneyBack": "Garantie satisfait ou rembourse de 30 jours"
+      }
+    },
+    "billing": {
+      "monthly": "Mensuel",
+      "annual": "Annuel",
+      "savePercent": "Economisez 25%",
+      "perMonth": "/mois",
+      "free": "Gratuit",
+      "billedAnnually": "Facture annuellement"
+    },
+    "plans": {
+      "free": {
+        "name": "Gratuit",
+        "description": "Parfait pour explorer notre marketplace et telecharger des ressources gratuites.",
+        "cta": "Commencer gratuitement",
+        "features": [
+          "5 credits par mois",
+          "Acces aux produits gratuits",
+          "Support communautaire",
+          "Analyses de base"
+        ]
+      },
+      "starter": {
+        "name": "Debutant",
+        "description": "Ideal pour les particuliers qui ont besoin d'un acces regulier aux produits numeriques standard.",
+        "cta": "Essai gratuit",
+        "features": [
+          "25 credits par mois",
+          "Acces aux produits standard",
+          "Support par email",
+          "Historique des telechargements",
+          "Report de credits (jusqu'a 50)"
+        ]
+      },
+      "professional": {
+        "name": "Professionnel",
+        "description": "Ideal pour les professionnels et les petites equipes qui ont besoin de modeles et d'outils premium.",
+        "cta": "Essai gratuit",
+        "features": [
+          "100 credits par mois",
+          "Acces aux produits premium",
+          "Support prioritaire",
+          "Acces anticipe aux nouveaux produits",
+          "Report de credits (jusqu'a 200)",
+          "5 telechargements simultanes"
+        ]
+      },
+      "enterprise": {
+        "name": "Entreprise",
+        "description": "Pour les organisations qui ont besoin d'un acces illimite et d'un support dedie.",
+        "cta": "Contacter les ventes",
+        "features": [
+          "Credits illimites",
+          "Acces a tous les produits",
+          "Gestionnaire de compte dedie",
+          "Acces API",
+          "Places d'equipe",
+          "Integrations personnalisees",
+          "Report illimite",
+          "Acces anticipe prioritaire"
+        ]
+      }
+    },
+    "features": {
+      "creditsPerMonth": "Credits par mois",
+      "unlimitedCredits": "Credits illimites",
+      "prioritySupport": "Support prioritaire",
+      "earlyAccess": "Acces anticipe aux nouveaux produits",
+      "apiAccess": "Acces API",
+      "teamSeats": "Places d'equipe",
+      "rolloverCredits": "Report de credits",
+      "allProductTypes": "Tous les types de produits",
+      "standardProducts": "Produits standard",
+      "freeProducts": "Produits gratuits uniquement",
+      "simultaneousDownloads": "Telechargements simultanes",
+      "dedicatedManager": "Gestionnaire de compte dedie",
+      "customIntegrations": "Integrations personnalisees",
+      "downloadHistory": "Historique des telechargements",
+      "communitySupport": "Support communautaire",
+      "emailSupport": "Support par email",
+      "basicAnalytics": "Analyses de base",
+      "advancedAnalytics": "Analyses avancees"
+    },
+    "comparison": {
+      "title": "Comparer les forfaits",
+      "subtitle": "Decouvrez quel forfait vous convient",
+      "showComparison": "Afficher la comparaison complete",
+      "hideComparison": "Masquer la comparaison"
+    },
+    "faq": {
+      "title": "Questions frequemment posees",
+      "subtitle": "Tout ce que vous devez savoir sur nos forfaits d'abonnement",
+      "items": [
+        {
+          "question": "Que sont les credits et comment fonctionnent-ils ?",
+          "answer": "Les credits sont notre monnaie virtuelle pour telecharger des produits numeriques. Chaque produit coute un certain nombre de credits en fonction de sa valeur. Les credits sont renouveles au debut de chaque cycle de facturation."
+        },
+        {
+          "question": "Puis-je changer de forfait plus tard ?",
+          "answer": "Oui, vous pouvez mettre a niveau ou retrograder votre forfait a tout moment. Lors d'une mise a niveau, vous aurez un acces immediat aux fonctionnalites du nouveau forfait. Lors d'une retrogradation, les changements prennent effet au prochain cycle de facturation."
+        },
+        {
+          "question": "Que se passe-t-il avec les credits non utilises ?",
+          "answer": "Selon votre forfait, les credits non utilises peuvent etre reportes au mois suivant jusqu'a la limite de report de votre forfait. Les credits du forfait gratuit ne sont pas reportes."
+        },
+        {
+          "question": "Y a-t-il un essai gratuit ?",
+          "answer": "Oui ! Les forfaits Debutant et Professionnel incluent un essai gratuit de 7 jours. Vous pouvez annuler a tout moment pendant l'essai sans etre facture."
+        },
+        {
+          "question": "Comment fonctionne la garantie satisfait ou rembourse ?",
+          "answer": "Si vous n'etes pas satisfait de votre abonnement dans les 30 premiers jours, contactez-nous pour un remboursement complet. Sans poser de questions."
+        },
+        {
+          "question": "Puis-je utiliser des credits pour n'importe quel produit ?",
+          "answer": "Les credits peuvent etre utilises pour les produits dans le niveau d'acces de votre forfait. Les utilisateurs du forfait gratuit accedent aux produits gratuits, le Debutant aux produits standard, le Professionnel aux produits premium et l'Entreprise a tout."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Pret a commencer ?",
+      "subtitle": "Rejoignez des milliers de professionnels qui economisent du temps et de l'argent avec nos forfaits d'abonnement.",
+      "button": "Voir les forfaits"
+    },
+    "subscription": {
+      "title": "Mon abonnement",
+      "currentPlan": "Forfait actuel",
+      "status": "Statut",
+      "active": "Actif",
+      "trialing": "Essai",
+      "pastDue": "En retard",
+      "canceled": "Annule",
+      "paused": "En pause",
+      "expired": "Expire",
+      "credits": "Credits",
+      "creditsRemaining": "Credits restants",
+      "creditsUsed": "Credits utilises",
+      "totalCredits": "Total des credits",
+      "rolloverCredits": "Credits reportes",
+      "creditBalance": "Solde de credits",
+      "creditsResetIn": "Les credits se renouvellent dans {days} jours",
+      "history": "Historique des credits",
+      "downloads": "Mes telechargements",
+      "savings": "Economies estimees",
+      "utilizationRate": "Taux d'utilisation",
+      "downloadsThisPeriod": "Telechargements cette periode",
+      "nextBillingDate": "Prochaine date de facturation",
+      "actions": "Actions",
+      "cancel": "Annuler l'abonnement",
+      "cancelConfirm": "Etes-vous sur de vouloir annuler ?",
+      "cancelDescription": "Votre abonnement restera actif jusqu'a la fin de la periode de facturation en cours. Vous ne serez plus facture.",
+      "cancelImmediate": "Annuler immediatement",
+      "cancelAtPeriodEnd": "Annuler a la fin de la periode",
+      "pause": "Mettre en pause l'abonnement",
+      "pauseConfirm": "Mettre en pause votre abonnement ?",
+      "pauseDescription": "Vos credits seront geles et vous ne serez pas facture pendant la pause. Vous pouvez reprendre a tout moment.",
+      "resume": "Reprendre l'abonnement",
+      "changePlan": "Changer de forfait",
+      "upgradePlan": "Mettre a niveau",
+      "downgradePlan": "Retrograder",
+      "manageBilling": "Gerer la facturation",
+      "viewPricing": "Voir les tarifs",
+      "noSubscription": "Aucun abonnement actif",
+      "noSubscriptionDescription": "Abonnez-vous a un forfait pour commencer a telecharger des produits numeriques premium avec des credits.",
+      "transactionTypes": {
+        "credit_grant": "Credits accordes",
+        "credit_used": "Credits utilises",
+        "credit_rollover": "Credits reportes",
+        "credit_expired": "Credits expires",
+        "credit_bonus": "Credits bonus",
+        "credit_refund": "Credits rembourses"
+      }
+    },
+    "product": {
+      "includedInPlan": "Inclus dans votre forfait",
+      "creditCost": "{count} credit | {count} credits",
+      "orSubscribe": "Ou abonnez-vous pour telecharger",
+      "downloadWithCredits": "Telecharger avec des credits",
+      "upgradeToAccess": "Mettre a niveau pour acceder",
+      "creditsRequired": "{count} credits requis",
+      "noCredits": "Pas assez de credits",
+      "freeWithSubscription": "Gratuit avec l'abonnement"
+    }
+  },
   "careers": {
     "applyButton": "Postuler",
     "hero": {
@@ -1591,5 +1784,59 @@
         "portfolioInvalid": "Veuillez entrer une URL valide"
       }
     }
+  },
+  "gamification": {
+    "home": "Accueil",
+    "achievements": "Succès",
+    "achievementsDescription": "Gagnez des badges et des récompenses pour votre activité",
+    "leaderboard": "Classement",
+    "leaderboardDescription": "Découvrez votre rang parmi les autres membres",
+    "xpTitle": "XP Total",
+    "level": "Niveau",
+    "levelUp": "Niveau supérieur !",
+    "streak": "Jours consécutifs",
+    "streakDays": "Série de {days} jours",
+    "streakFreeze": "Gel de série",
+    "streakFreezeDescription": "Protégez votre série pour un jour manqué",
+    "streakFreezeAvailable": "{count} gel(s) disponible(s)",
+    "streakFreezeUsed": "Gel de série activé",
+    "noStreak": "Connectez-vous chaque jour pour construire votre série",
+    "unlocked": "Débloqué",
+    "locked": "Verrouillé",
+    "progress": "Progression",
+    "xpReward": "+{xp} XP",
+    "achievementUnlocked": "Succès débloqué !",
+    "allCategories": "Tous",
+    "categoryBuyer": "Acheteur",
+    "categorySeller": "Vendeur",
+    "categoryReviewer": "Évaluateur",
+    "categoryCommunity": "Communauté",
+    "categoryExplorer": "Explorateur",
+    "categoryCollector": "Collectionneur",
+    "tierBronze": "Bronze",
+    "tierSilver": "Argent",
+    "tierGold": "Or",
+    "tierPlatinum": "Platine",
+    "tierDiamond": "Diamant",
+    "periodWeekly": "Cette semaine",
+    "periodMonthly": "Ce mois",
+    "periodAllTime": "Tout le temps",
+    "categoryBuyerXP": "XP Acheteurs",
+    "categorySellerRevenue": "Revenus Vendeurs",
+    "categoryReviewerRank": "Meilleurs Évaluateurs",
+    "yourRank": "Votre rang",
+    "rank": "#{rank}",
+    "noAchievements": "Pas encore de succès. Commencez à acheter pour gagner le premier !",
+    "secretAchievement": "Succès caché",
+    "secretAchievementDescription": "Continuez à explorer pour découvrir ce succès",
+    "titleNewcomer": "Débutant",
+    "titleExplorer": "Explorateur",
+    "titleEnthusiast": "Enthousiaste",
+    "titleExpert": "Expert",
+    "titleMaster": "Maître",
+    "titleLegend": "Légende",
+    "activity": "Activité",
+    "recentActivity": "Activité récente",
+    "viewAllAchievements": "Voir tous les succès"
   }
 }
