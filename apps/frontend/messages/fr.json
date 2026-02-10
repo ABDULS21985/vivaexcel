@@ -1979,5 +1979,155 @@
       "member": "Membre",
       "viewer": "Observateur"
     }
+  },
+  "affiliate": {
+    "join": {
+      "title": "Transformez votre audience en revenus",
+      "subtitle": "Rejoignez notre programme d'affiliation et gagnez des commissions en partageant les produits que vous aimez.",
+      "applyNow": "Postuler maintenant",
+      "howItWorks": "Comment ça marche",
+      "step1Title": "Partagez votre lien",
+      "step1Desc": "Obtenez des liens de suivi uniques pour n'importe quel produit ou l'ensemble du magasin.",
+      "step2Title": "Ils achètent",
+      "step2Desc": "Fenêtre de cookie de 30 jours. Vous gagnez une commission sur chaque achat qu'ils effectuent.",
+      "step3Title": "Vous gagnez",
+      "step3Desc": "Les commissions sont approuvées automatiquement après 30 jours. Recevez vos paiements via Stripe.",
+      "tiers": "Niveaux de commission",
+      "faq": "Questions fréquentes",
+      "submitApplication": "Soumettre la candidature",
+      "applicationStatus": "Statut de la candidature d'affiliation",
+      "underReview": "Votre candidature d'affiliation est en cours d'examen.",
+      "approved": "Votre compte d'affilié est actif !",
+      "goToDashboard": "Aller au tableau de bord"
+    },
+    "dashboard": {
+      "title": "Tableau de bord affilié",
+      "totalEarned": "Total gagné",
+      "pending": "En attente",
+      "available": "Disponible",
+      "paidOut": "Versé",
+      "commissionOverview": "Aperçu des commissions",
+      "topLinks": "Meilleurs liens",
+      "tierProgress": "Progression de niveau",
+      "currentTier": "Niveau actuel",
+      "createLink": "Créer un lien",
+      "viewPayouts": "Voir les paiements"
+    },
+    "links": {
+      "title": "Liens d'affiliation",
+      "subtitle": "Créez et gérez vos liens de suivi",
+      "create": "Créer un lien",
+      "searchLinks": "Rechercher des liens...",
+      "totalClicks": "Total des clics",
+      "totalConversions": "Total des conversions",
+      "totalCommission": "Commission totale",
+      "noLinks": "Aucun lien pour le moment",
+      "createFirst": "Créez votre premier lien de suivi pour commencer à gagner des commissions.",
+      "targetUrl": "URL cible",
+      "campaignName": "Nom de la campagne",
+      "copied": "Copié dans le presse-papiers"
+    },
+    "commissions": {
+      "title": "Commissions",
+      "subtitle": "Suivez vos gains de commissions et leur statut",
+      "noCommissions": "Aucune commission pour le moment",
+      "order": "Commande",
+      "sale": "Vente",
+      "rate": "Taux",
+      "commission": "Commission",
+      "status": "Statut",
+      "date": "Date"
+    },
+    "payouts": {
+      "title": "Paiements",
+      "subtitle": "Suivez vos gains et l'historique des paiements",
+      "stripeNotSetup": "Stripe Connect non configuré",
+      "stripeSetupDesc": "Vous devez connecter votre compte Stripe pour recevoir des paiements.",
+      "noPayouts": "Aucun paiement pour le moment",
+      "payoutsAutomatic": "Les paiements sont traités automatiquement lorsque vos commissions approuvées atteignent le seuil minimum.",
+      "period": "Période",
+      "amount": "Montant",
+      "net": "Net",
+      "items": "Éléments",
+      "processed": "Traité"
+    },
+    "settings": {
+      "title": "Paramètres",
+      "subtitle": "Gérez votre profil d'affilié et vos paramètres de paiement",
+      "profile": "Profil",
+      "payments": "Paiements",
+      "affiliateCode": "Code d'affilié",
+      "bio": "Biographie",
+      "website": "Site web",
+      "socialLinks": "Liens sociaux",
+      "saveChanges": "Enregistrer les modifications",
+      "stripeConnect": "Stripe Connect",
+      "connectedActive": "Connecté et actif",
+      "connectWithStripe": "Se connecter avec Stripe",
+      "payoutSchedule": "Calendrier des paiements",
+      "weekly": "Hebdomadaire",
+      "biweekly": "Bimensuel",
+      "monthly": "Mensuel",
+      "minimumPayout": "Montant minimum de paiement",
+      "commissionRate": "Taux de commission"
+    },
+    "resources": {
+      "title": "Ressources",
+      "subtitle": "Matériel marketing et modèles pour vous aider à promouvoir",
+      "yourLink": "Votre lien d'affiliation",
+      "banners": "Bannières publicitaires",
+      "socialTemplates": "Modèles pour réseaux sociaux",
+      "emailTemplate": "Modèle d'e-mail",
+      "tips": "Conseils pour réussir"
+    },
+    "tiers": {
+      "standard": "Standard",
+      "silver": "Argent",
+      "gold": "Or",
+      "platinum": "Platine"
+    },
+    "status": {
+      "pending": "En attente",
+      "approved": "Approuvé",
+      "paid": "Payé",
+      "reversed": "Annulé",
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "rejected": "Rejeté",
+      "pendingApproval": "En attente d'approbation"
+    }
+  },
+  "referral": {
+    "title": "Parrainages",
+    "subtitle": "Invitez des amis et gagnez des récompenses lors de leur premier achat",
+    "inviteFriends": "Invitez des amis, gagnez des récompenses",
+    "earnCredit": "Obtenez 5 $ de crédit pour chaque ami qui effectue un achat",
+    "yourCode": "Votre code de parrainage",
+    "shareLink": "Partager le lien",
+    "shareVia": "Partager via",
+    "totalReferrals": "Total des parrainages",
+    "successful": "Réussis",
+    "rewardsEarned": "Récompenses gagnées",
+    "history": "Historique des parrainages",
+    "noReferrals": "Aucun parrainage pour le moment",
+    "shareToStart": "Partagez votre lien de parrainage et commencez à gagner des récompenses !",
+    "howItWorks": "Comment ça marche",
+    "step1": "Partagez votre lien",
+    "step1Desc": "Envoyez votre lien ou code de parrainage unique à vos amis.",
+    "step2": "Ils s'inscrivent et achètent",
+    "step2Desc": "Votre ami crée un compte et effectue son premier achat.",
+    "step3": "Vous gagnez tous les deux",
+    "step3Desc": "Vous obtenez 5 $ de crédit, et ils bénéficient d'une réduction sur leur première commande.",
+    "banner": {
+      "title": "Invitez des amis, gagnez 5 $ pour chaque achat",
+      "description": "Partagez votre lien de parrainage et gagnez des récompenses lorsque vos amis effectuent leur premier achat.",
+      "referNow": "Parrainer maintenant"
+    },
+    "status": {
+      "pending": "En attente",
+      "signupComplete": "Inscrit",
+      "firstPurchase": "Premier achat",
+      "rewarded": "Récompensé"
+    }
   }
 }

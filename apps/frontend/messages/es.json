@@ -1979,5 +1979,155 @@
       "member": "Miembro",
       "viewer": "Observador"
     }
+  },
+  "affiliate": {
+    "join": {
+      "title": "Convierte tu audiencia en ingresos",
+      "subtitle": "Únete a nuestro programa de afiliados y gana comisiones compartiendo productos que te encantan.",
+      "applyNow": "Solicitar ahora",
+      "howItWorks": "Cómo funciona",
+      "step1Title": "Comparte tu enlace",
+      "step1Desc": "Obtén enlaces de seguimiento únicos para cualquier producto o toda la tienda.",
+      "step2Title": "Ellos compran",
+      "step2Desc": "Ventana de cookie de 30 días. Ganas comisión por cada compra que realicen.",
+      "step3Title": "Tú ganas",
+      "step3Desc": "Las comisiones se aprueban automáticamente después de 30 días. Recibe tu pago a través de Stripe.",
+      "tiers": "Niveles de comisión",
+      "faq": "Preguntas frecuentes",
+      "submitApplication": "Enviar solicitud",
+      "applicationStatus": "Estado de la solicitud de afiliado",
+      "underReview": "Tu solicitud de afiliado está siendo revisada.",
+      "approved": "¡Tu cuenta de afiliado está activa!",
+      "goToDashboard": "Ir al panel de control"
+    },
+    "dashboard": {
+      "title": "Panel de afiliado",
+      "totalEarned": "Total ganado",
+      "pending": "Pendiente",
+      "available": "Disponible",
+      "paidOut": "Pagado",
+      "commissionOverview": "Resumen de comisiones",
+      "topLinks": "Mejores enlaces",
+      "tierProgress": "Progreso de nivel",
+      "currentTier": "Nivel actual",
+      "createLink": "Crear enlace",
+      "viewPayouts": "Ver pagos"
+    },
+    "links": {
+      "title": "Enlaces de afiliado",
+      "subtitle": "Crea y gestiona tus enlaces de seguimiento",
+      "create": "Crear enlace",
+      "searchLinks": "Buscar enlaces...",
+      "totalClicks": "Total de clics",
+      "totalConversions": "Total de conversiones",
+      "totalCommission": "Comisión total",
+      "noLinks": "Sin enlaces aún",
+      "createFirst": "Crea tu primer enlace de seguimiento para empezar a ganar comisiones.",
+      "targetUrl": "URL de destino",
+      "campaignName": "Nombre de la campaña",
+      "copied": "Copiado al portapapeles"
+    },
+    "commissions": {
+      "title": "Comisiones",
+      "subtitle": "Rastrea tus ganancias por comisiones y su estado",
+      "noCommissions": "Sin comisiones aún",
+      "order": "Pedido",
+      "sale": "Venta",
+      "rate": "Tasa",
+      "commission": "Comisión",
+      "status": "Estado",
+      "date": "Fecha"
+    },
+    "payouts": {
+      "title": "Pagos",
+      "subtitle": "Rastrea tus ganancias e historial de pagos",
+      "stripeNotSetup": "Stripe Connect no configurado",
+      "stripeSetupDesc": "Necesitas conectar tu cuenta de Stripe para recibir pagos.",
+      "noPayouts": "Sin pagos aún",
+      "payoutsAutomatic": "Los pagos se procesan automáticamente cuando tus comisiones aprobadas alcanzan el umbral mínimo.",
+      "period": "Período",
+      "amount": "Monto",
+      "net": "Neto",
+      "items": "Elementos",
+      "processed": "Procesado"
+    },
+    "settings": {
+      "title": "Configuración",
+      "subtitle": "Gestiona tu perfil de afiliado y configuración de pagos",
+      "profile": "Perfil",
+      "payments": "Pagos",
+      "affiliateCode": "Código de afiliado",
+      "bio": "Biografía",
+      "website": "Sitio web",
+      "socialLinks": "Enlaces sociales",
+      "saveChanges": "Guardar cambios",
+      "stripeConnect": "Stripe Connect",
+      "connectedActive": "Conectado y activo",
+      "connectWithStripe": "Conectar con Stripe",
+      "payoutSchedule": "Calendario de pagos",
+      "weekly": "Semanal",
+      "biweekly": "Quincenal",
+      "monthly": "Mensual",
+      "minimumPayout": "Monto mínimo de pago",
+      "commissionRate": "Tasa de comisión"
+    },
+    "resources": {
+      "title": "Recursos",
+      "subtitle": "Materiales de marketing y plantillas para ayudarte a promocionar",
+      "yourLink": "Tu enlace de afiliado",
+      "banners": "Banners publicitarios",
+      "socialTemplates": "Plantillas para redes sociales",
+      "emailTemplate": "Plantilla de correo electrónico",
+      "tips": "Consejos para el éxito"
+    },
+    "tiers": {
+      "standard": "Estándar",
+      "silver": "Plata",
+      "gold": "Oro",
+      "platinum": "Platino"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "paid": "Pagado",
+      "reversed": "Revertido",
+      "active": "Activo",
+      "suspended": "Suspendido",
+      "rejected": "Rechazado",
+      "pendingApproval": "Pendiente de aprobación"
+    }
+  },
+  "referral": {
+    "title": "Referencias",
+    "subtitle": "Invita a amigos y gana recompensas cuando realicen su primera compra",
+    "inviteFriends": "Invita amigos, gana recompensas",
+    "earnCredit": "Obtén $5 de crédito por cada amigo que realice una compra",
+    "yourCode": "Tu código de referencia",
+    "shareLink": "Compartir enlace",
+    "shareVia": "Compartir vía",
+    "totalReferrals": "Total de referencias",
+    "successful": "Exitosas",
+    "rewardsEarned": "Recompensas ganadas",
+    "history": "Historial de referencias",
+    "noReferrals": "Sin referencias aún",
+    "shareToStart": "¡Comparte tu enlace de referencia y empieza a ganar recompensas!",
+    "howItWorks": "Cómo funciona",
+    "step1": "Comparte tu enlace",
+    "step1Desc": "Envía tu enlace o código de referencia único a tus amigos.",
+    "step2": "Se registran y compran",
+    "step2Desc": "Tu amigo crea una cuenta y realiza su primera compra.",
+    "step3": "Ambos ganan",
+    "step3Desc": "Tú obtienes $5 de crédito y ellos obtienen un descuento en su primer pedido.",
+    "banner": {
+      "title": "Invita amigos, gana $5 por cada compra",
+      "description": "Comparte tu enlace de referencia y gana recompensas cuando tus amigos realicen su primera compra.",
+      "referNow": "Referir ahora"
+    },
+    "status": {
+      "pending": "Pendiente",
+      "signupComplete": "Registrado",
+      "firstPurchase": "Primera compra",
+      "rewarded": "Recompensado"
+    }
   }
 }

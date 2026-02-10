@@ -1995,5 +1995,155 @@
       "member": "Member",
       "viewer": "Viewer"
     }
+  },
+  "affiliate": {
+    "join": {
+      "title": "Turn Your Audience Into Revenue",
+      "subtitle": "Join our affiliate program and earn commissions by sharing products you love.",
+      "applyNow": "Apply Now",
+      "howItWorks": "How It Works",
+      "step1Title": "Share Your Link",
+      "step1Desc": "Get unique tracking links for any product or the entire store.",
+      "step2Title": "They Buy",
+      "step2Desc": "30-day cookie window. You earn commission on any purchase they make.",
+      "step3Title": "You Earn",
+      "step3Desc": "Commissions are approved automatically after 30 days. Get paid via Stripe.",
+      "tiers": "Commission Tiers",
+      "faq": "Frequently Asked Questions",
+      "submitApplication": "Submit Application",
+      "applicationStatus": "Affiliate Application Status",
+      "underReview": "Your affiliate application is being reviewed.",
+      "approved": "Your affiliate account is active!",
+      "goToDashboard": "Go to Dashboard"
+    },
+    "dashboard": {
+      "title": "Affiliate Dashboard",
+      "totalEarned": "Total Earned",
+      "pending": "Pending",
+      "available": "Available",
+      "paidOut": "Paid Out",
+      "commissionOverview": "Commission Overview",
+      "topLinks": "Top Links",
+      "tierProgress": "Tier Progress",
+      "currentTier": "Current Tier",
+      "createLink": "Create Link",
+      "viewPayouts": "View Payouts"
+    },
+    "links": {
+      "title": "Affiliate Links",
+      "subtitle": "Create and manage your tracking links",
+      "create": "Create Link",
+      "searchLinks": "Search links...",
+      "totalClicks": "Total Clicks",
+      "totalConversions": "Total Conversions",
+      "totalCommission": "Total Commission",
+      "noLinks": "No links yet",
+      "createFirst": "Create your first tracking link to start earning commissions.",
+      "targetUrl": "Target URL",
+      "campaignName": "Campaign Name",
+      "copied": "Copied to clipboard"
+    },
+    "commissions": {
+      "title": "Commissions",
+      "subtitle": "Track your commission earnings and status",
+      "noCommissions": "No commissions yet",
+      "order": "Order",
+      "sale": "Sale",
+      "rate": "Rate",
+      "commission": "Commission",
+      "status": "Status",
+      "date": "Date"
+    },
+    "payouts": {
+      "title": "Payouts",
+      "subtitle": "Track your earnings and payout history",
+      "stripeNotSetup": "Stripe Connect not set up",
+      "stripeSetupDesc": "You need to connect your Stripe account to receive payouts.",
+      "noPayouts": "No payouts yet",
+      "payoutsAutomatic": "Payouts are processed automatically when your approved commissions reach the minimum threshold.",
+      "period": "Period",
+      "amount": "Amount",
+      "net": "Net",
+      "items": "Items",
+      "processed": "Processed"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your affiliate profile and payment settings",
+      "profile": "Profile",
+      "payments": "Payments",
+      "affiliateCode": "Affiliate Code",
+      "bio": "Bio",
+      "website": "Website",
+      "socialLinks": "Social Links",
+      "saveChanges": "Save Changes",
+      "stripeConnect": "Stripe Connect",
+      "connectedActive": "Connected & Active",
+      "connectWithStripe": "Connect with Stripe",
+      "payoutSchedule": "Payout Schedule",
+      "weekly": "Weekly",
+      "biweekly": "Biweekly",
+      "monthly": "Monthly",
+      "minimumPayout": "Minimum Payout Amount",
+      "commissionRate": "Commission Rate"
+    },
+    "resources": {
+      "title": "Resources",
+      "subtitle": "Marketing materials and templates to help you promote",
+      "yourLink": "Your Affiliate Link",
+      "banners": "Banner Assets",
+      "socialTemplates": "Social Media Templates",
+      "emailTemplate": "Email Template",
+      "tips": "Tips for Success"
+    },
+    "tiers": {
+      "standard": "Standard",
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "paid": "Paid",
+      "reversed": "Reversed",
+      "active": "Active",
+      "suspended": "Suspended",
+      "rejected": "Rejected",
+      "pendingApproval": "Pending Approval"
+    }
+  },
+  "referral": {
+    "title": "Referrals",
+    "subtitle": "Invite friends and earn rewards when they make their first purchase",
+    "inviteFriends": "Invite Friends, Earn Rewards",
+    "earnCredit": "Get $5 credit for each friend who makes a purchase",
+    "yourCode": "Your Referral Code",
+    "shareLink": "Share Link",
+    "shareVia": "Share via",
+    "totalReferrals": "Total Referrals",
+    "successful": "Successful",
+    "rewardsEarned": "Rewards Earned",
+    "history": "Referral History",
+    "noReferrals": "No referrals yet",
+    "shareToStart": "Share your referral link and start earning rewards!",
+    "howItWorks": "How It Works",
+    "step1": "Share Your Link",
+    "step1Desc": "Send your unique referral link or code to friends.",
+    "step2": "They Sign Up & Buy",
+    "step2Desc": "Your friend creates an account and makes their first purchase.",
+    "step3": "You Both Earn",
+    "step3Desc": "You get $5 credit, and they get a discount on their first order.",
+    "banner": {
+      "title": "Invite friends, earn $5 for each purchase",
+      "description": "Share your referral link and earn rewards when friends make their first purchase.",
+      "referNow": "Refer Now"
+    },
+    "status": {
+      "pending": "Pending",
+      "signupComplete": "Signed Up",
+      "firstPurchase": "First Purchase",
+      "rewarded": "Rewarded"
+    }
   }
 }

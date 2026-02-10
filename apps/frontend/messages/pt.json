@@ -1979,5 +1979,155 @@
       "member": "Membro",
       "viewer": "Visualizador"
     }
+  },
+  "affiliate": {
+    "join": {
+      "title": "Transforme seu público em receita",
+      "subtitle": "Junte-se ao nosso programa de afiliados e ganhe comissões compartilhando produtos que você adora.",
+      "applyNow": "Candidatar-se agora",
+      "howItWorks": "Como funciona",
+      "step1Title": "Compartilhe seu link",
+      "step1Desc": "Obtenha links de rastreamento exclusivos para qualquer produto ou toda a loja.",
+      "step2Title": "Eles compram",
+      "step2Desc": "Janela de cookie de 30 dias. Você ganha comissão em qualquer compra que eles fizerem.",
+      "step3Title": "Você ganha",
+      "step3Desc": "As comissões são aprovadas automaticamente após 30 dias. Receba via Stripe.",
+      "tiers": "Níveis de comissão",
+      "faq": "Perguntas frequentes",
+      "submitApplication": "Enviar candidatura",
+      "applicationStatus": "Status da candidatura de afiliado",
+      "underReview": "Sua candidatura de afiliado está sendo analisada.",
+      "approved": "Sua conta de afiliado está ativa!",
+      "goToDashboard": "Ir para o painel"
+    },
+    "dashboard": {
+      "title": "Painel do afiliado",
+      "totalEarned": "Total ganho",
+      "pending": "Pendente",
+      "available": "Disponível",
+      "paidOut": "Pago",
+      "commissionOverview": "Visão geral das comissões",
+      "topLinks": "Melhores links",
+      "tierProgress": "Progresso de nível",
+      "currentTier": "Nível atual",
+      "createLink": "Criar link",
+      "viewPayouts": "Ver pagamentos"
+    },
+    "links": {
+      "title": "Links de afiliado",
+      "subtitle": "Crie e gerencie seus links de rastreamento",
+      "create": "Criar link",
+      "searchLinks": "Pesquisar links...",
+      "totalClicks": "Total de cliques",
+      "totalConversions": "Total de conversões",
+      "totalCommission": "Comissão total",
+      "noLinks": "Nenhum link ainda",
+      "createFirst": "Crie seu primeiro link de rastreamento para começar a ganhar comissões.",
+      "targetUrl": "URL de destino",
+      "campaignName": "Nome da campanha",
+      "copied": "Copiado para a área de transferência"
+    },
+    "commissions": {
+      "title": "Comissões",
+      "subtitle": "Acompanhe seus ganhos de comissões e status",
+      "noCommissions": "Nenhuma comissão ainda",
+      "order": "Pedido",
+      "sale": "Venda",
+      "rate": "Taxa",
+      "commission": "Comissão",
+      "status": "Status",
+      "date": "Data"
+    },
+    "payouts": {
+      "title": "Pagamentos",
+      "subtitle": "Acompanhe seus ganhos e histórico de pagamentos",
+      "stripeNotSetup": "Stripe Connect não configurado",
+      "stripeSetupDesc": "Você precisa conectar sua conta Stripe para receber pagamentos.",
+      "noPayouts": "Nenhum pagamento ainda",
+      "payoutsAutomatic": "Os pagamentos são processados automaticamente quando suas comissões aprovadas atingem o limite mínimo.",
+      "period": "Período",
+      "amount": "Valor",
+      "net": "Líquido",
+      "items": "Itens",
+      "processed": "Processado"
+    },
+    "settings": {
+      "title": "Configurações",
+      "subtitle": "Gerencie seu perfil de afiliado e configurações de pagamento",
+      "profile": "Perfil",
+      "payments": "Pagamentos",
+      "affiliateCode": "Código de afiliado",
+      "bio": "Biografia",
+      "website": "Site",
+      "socialLinks": "Links sociais",
+      "saveChanges": "Salvar alterações",
+      "stripeConnect": "Stripe Connect",
+      "connectedActive": "Conectado e ativo",
+      "connectWithStripe": "Conectar com Stripe",
+      "payoutSchedule": "Cronograma de pagamentos",
+      "weekly": "Semanal",
+      "biweekly": "Quinzenal",
+      "monthly": "Mensal",
+      "minimumPayout": "Valor mínimo de pagamento",
+      "commissionRate": "Taxa de comissão"
+    },
+    "resources": {
+      "title": "Recursos",
+      "subtitle": "Materiais de marketing e modelos para ajudá-lo a promover",
+      "yourLink": "Seu link de afiliado",
+      "banners": "Banners publicitários",
+      "socialTemplates": "Modelos para redes sociais",
+      "emailTemplate": "Modelo de e-mail",
+      "tips": "Dicas para o sucesso"
+    },
+    "tiers": {
+      "standard": "Padrão",
+      "silver": "Prata",
+      "gold": "Ouro",
+      "platinum": "Platina"
+    },
+    "status": {
+      "pending": "Pendente",
+      "approved": "Aprovado",
+      "paid": "Pago",
+      "reversed": "Revertido",
+      "active": "Ativo",
+      "suspended": "Suspenso",
+      "rejected": "Rejeitado",
+      "pendingApproval": "Aguardando aprovação"
+    }
+  },
+  "referral": {
+    "title": "Indicações",
+    "subtitle": "Convide amigos e ganhe recompensas quando eles fizerem a primeira compra",
+    "inviteFriends": "Convide amigos, ganhe recompensas",
+    "earnCredit": "Ganhe $5 de crédito para cada amigo que fizer uma compra",
+    "yourCode": "Seu código de indicação",
+    "shareLink": "Compartilhar link",
+    "shareVia": "Compartilhar via",
+    "totalReferrals": "Total de indicações",
+    "successful": "Bem-sucedidas",
+    "rewardsEarned": "Recompensas ganhas",
+    "history": "Histórico de indicações",
+    "noReferrals": "Nenhuma indicação ainda",
+    "shareToStart": "Compartilhe seu link de indicação e comece a ganhar recompensas!",
+    "howItWorks": "Como funciona",
+    "step1": "Compartilhe seu link",
+    "step1Desc": "Envie seu link ou código de indicação exclusivo para amigos.",
+    "step2": "Eles se cadastram e compram",
+    "step2Desc": "Seu amigo cria uma conta e faz sua primeira compra.",
+    "step3": "Ambos ganham",
+    "step3Desc": "Você ganha $5 de crédito e eles ganham um desconto no primeiro pedido.",
+    "banner": {
+      "title": "Convide amigos, ganhe $5 por cada compra",
+      "description": "Compartilhe seu link de indicação e ganhe recompensas quando amigos fizerem sua primeira compra.",
+      "referNow": "Indicar agora"
+    },
+    "status": {
+      "pending": "Pendente",
+      "signupComplete": "Cadastrado",
+      "firstPurchase": "Primeira compra",
+      "rewarded": "Recompensado"
+    }
   }
 }
