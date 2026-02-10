@@ -79,3 +79,12 @@ export * from './incident-log.entity';
 export * from './alert-rule.entity';
 export * from './performance-budget.entity';
 export * from './web-vital-report.entity';
+
+// Video blog entities
+export * from '../modules/videos/entities/video-channel.entity';
+export * from '../modules/videos/entities/video-category.entity';
+export * from '../modules/videos/entities/video.entity';
+export * from '../modules/videos/entities/video-bookmark.entity';
+export * from '../modules/videos/entities/video-like.entity';
+export * from '../modules/videos/entities/video-comment.entity';
+export * from '../modules/videos/entities/video-view.entity';

@@ -75,6 +75,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { ReadingHistoryModule } from './modules/reading-history/reading-history.module';
 import { SellerGrowthModule } from './modules/seller-growth/seller-growth.module';
 import { MonitoringModule } from './modules/monitoring/monitoring.module';
+import { VideosModule } from './modules/videos/videos.module';
 
 // Interceptors & Filters
 import { PerformanceInterceptor } from './common/interceptors/performance.interceptor';
@@ -189,6 +190,7 @@ import { AppService } from './app.service';
     SettingsModule,
     ReadingHistoryModule,
     SellerGrowthModule,
+    VideosModule,
   ],
   controllers: [AppController],
   providers: [
