@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "@/i18n/routing";
 import { cn } from "@ktblog/ui/lib/utils";
+import { toast } from "sonner";
 import {
   Search,
   X,
@@ -41,6 +42,15 @@ function formatCount(count: number): string {
 function SidebarSearch() {
   const [query, setQuery] = useState("");
 
+  const handleSearch = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && query.trim()) {
+        toast.info(`Search for "${query.trim()}" coming soon`);
+      }
+    },
+    [query],
+  );
+
   return (
     <div className="sticky top-0 z-10 bg-[var(--background)] pb-3 pt-1">
       <div className="relative">
@@ -50,6 +60,7 @@ function SidebarSearch() {
           placeholder="Search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleSearch}
           className={cn(
             "w-full rounded-full bg-[var(--surface-1)] py-2.5 pl-11 pr-4",
             "text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)]",
@@ -121,7 +132,7 @@ function LiveEventsSection({ events }: { events: LiveEvent[] }) {
         {events.map((event) => (
           <Link
             key={event.id}
-            href="#"
+            href="/collab"
             className="group flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-[var(--surface-1)]"
           >
             <img
@@ -177,7 +188,7 @@ function NewsSection({ news }: { news: NewsItem[] }) {
         {news.map((item) => (
           <Link
             key={item.id}
-            href="#"
+            href="/collab"
             className="group block rounded-lg p-2 transition-colors hover:bg-[var(--surface-1)]"
           >
             <h4 className="text-sm font-semibold leading-snug text-[var(--foreground)] group-hover:text-[var(--primary)]">
@@ -229,7 +240,7 @@ function TrendingSection({ topics }: { topics: TrendingTopic[] }) {
         {topics.map((topic) => (
           <Link
             key={topic.id}
-            href="#"
+            href="/collab"
             className="group block rounded-lg px-2 py-2.5 transition-colors hover:bg-[var(--surface-1)]"
           >
             <span className="text-xs text-[var(--muted-foreground)]">
@@ -246,7 +257,7 @@ function TrendingSection({ topics }: { topics: TrendingTopic[] }) {
       </div>
 
       <Link
-        href="#"
+        href="/collab"
         className="mt-2 flex items-center gap-1 rounded-lg px-2 py-2 text-sm text-[var(--primary)] transition-colors hover:bg-[var(--surface-1)]"
       >
         Show more

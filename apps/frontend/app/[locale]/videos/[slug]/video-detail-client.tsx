@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import {
   Play,
+  Pause,
   ThumbsUp,
   Share2,
   BadgeCheck,
@@ -16,6 +17,9 @@ import {
   Calendar,
   Crown,
   Send,
+  Volume2,
+  VolumeX,
+  Maximize,
 } from "lucide-react";
 import {
   useVideoDetail,
@@ -86,6 +90,36 @@ export function VideoDetailClient({ slug }: { slug: string }) {
 
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handlePlayToggle = useCallback(() => {
+    if (!videoRef.current) {
+      setIsPlaying(true);
+      return;
+    }
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  }, []);
+
+  const handleMuteToggle = useCallback(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+    }
+    setIsMuted((prev) => !prev);
+  }, []);
+
+  const handleFullscreen = useCallback(() => {
+    if (videoRef.current?.requestFullscreen) {
+      videoRef.current.requestFullscreen();
+    }
+  }, []);
 
   const relatedVideos = (relatedData?.videos ?? []).filter(
     (v) => v.slug !== slug,
@@ -182,23 +216,62 @@ export function VideoDetailClient({ slug }: { slug: string }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="relative aspect-video bg-black rounded-xl overflow-hidden group"
+              onClick={handlePlayToggle}
             >
-              <Image
-                src={video.thumbnailUrl}
-                alt={video.title}
-                fill
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 cursor-pointer hover:bg-white/30 transition-colors">
-                  <Play className="h-10 w-10 text-white ms-1" />
-                </div>
-              </div>
-              {video.duration > 0 && (
-                <div className="absolute bottom-3 end-3 px-2 py-1 bg-black/80 rounded text-xs font-medium text-white">
-                  {formatDuration(video.duration)}
-                </div>
+              {isPlaying && video.videoUrl ? (
+                <>
+                  <video
+                    ref={videoRef}
+                    src={video.videoUrl}
+                    className="absolute inset-0 w-full h-full object-contain"
+                    autoPlay
+                    muted={isMuted}
+                    onEnded={() => setIsPlaying(false)}
+                    onPause={() => setIsPlaying(false)}
+                    onPlay={() => setIsPlaying(true)}
+                  />
+                  {/* Controls overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
+                    <div className="w-16 h-16 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                      <Pause className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                  {/* Bottom controls */}
+                  <div className="absolute bottom-0 inset-x-0 flex items-center gap-2 px-3 py-2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button onClick={handlePlayToggle} className="text-white hover:opacity-80">
+                      <Pause className="h-5 w-5" />
+                    </button>
+                    <button onClick={handleMuteToggle} className="text-white hover:opacity-80">
+                      {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                    </button>
+                    <div className="flex-1" />
+                    <button onClick={handleFullscreen} className="text-white hover:opacity-80">
+                      <Maximize className="h-5 w-5" />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Image
+                    src={video.thumbnailUrl}
+                    alt={video.title}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer">
+                    <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 hover:bg-white/30 transition-colors">
+                      <Play className="h-10 w-10 text-white ms-1" />
+                    </div>
+                  </div>
+                  {video.duration > 0 && (
+                    <div className="absolute bottom-3 end-3 px-2 py-1 bg-black/80 rounded text-xs font-medium text-white">
+                      {formatDuration(video.duration)}
+                    </div>
+                  )}
+                </>
               )}
               {video.isLive && (
                 <div className="absolute top-3 start-3 flex items-center gap-1 px-2.5 py-1 bg-red-600 rounded text-xs font-bold text-white uppercase">

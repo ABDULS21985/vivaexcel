@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { motion, type Variants } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   BadgeCheck,
   MessageCircle,
@@ -12,6 +12,8 @@ import {
   Bookmark,
   Share,
   Pin,
+  Send,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@ktblog/ui/lib/utils";
 import { toast } from "sonner";
@@ -167,41 +169,75 @@ function MediaGrid({ media }: { media: CollabPost["media"] }) {
   );
 }
 
-function PollDisplay({ poll }: { poll: CollabPost["poll"] }) {
+function PollDisplay({
+  poll,
+  votedIndex,
+  onVote,
+}: {
+  poll: CollabPost["poll"];
+  votedIndex: number | null;
+  onVote: (index: number) => void;
+}) {
   if (!poll) return null;
+
+  const hasVoted = votedIndex !== null;
+  const totalVotes = poll.totalVotes + (hasVoted ? 1 : 0);
 
   return (
     <div className="mt-3 space-y-2">
       {poll.options.map((option, index) => {
+        const adjustedVotes =
+          option.votes + (votedIndex === index ? 1 : 0);
         const percentage =
-          poll.totalVotes > 0
-            ? Math.round((option.votes / poll.totalVotes) * 100)
+          totalVotes > 0
+            ? Math.round((adjustedVotes / totalVotes) * 100)
             : 0;
+        const isSelected = votedIndex === index;
 
         return (
           <button
             key={index}
             type="button"
-            className="relative w-full overflow-hidden rounded-lg border border-[var(--border)] p-3 text-left transition-colors hover:border-[var(--primary)]"
+            onClick={() => !hasVoted && onVote(index)}
+            disabled={hasVoted}
+            className={cn(
+              "relative w-full overflow-hidden rounded-lg border p-3 text-left transition-colors",
+              hasVoted
+                ? "cursor-default"
+                : "hover:border-[var(--primary)] cursor-pointer",
+              isSelected
+                ? "border-[var(--primary)]"
+                : "border-[var(--border)]"
+            )}
           >
             {/* Progress bar background */}
             <div
-              className="absolute inset-y-0 left-0 bg-[var(--primary)]/10 transition-all duration-500"
-              style={{ width: `${percentage}%` }}
+              className={cn(
+                "absolute inset-y-0 left-0 transition-all duration-500",
+                isSelected
+                  ? "bg-[var(--primary)]/20"
+                  : "bg-[var(--primary)]/10"
+              )}
+              style={{ width: hasVoted ? `${percentage}%` : "0%" }}
             />
             <div className="relative flex items-center justify-between">
-              <span className="text-sm font-medium text-[var(--foreground)]">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-[var(--foreground)]">
+                {isSelected && (
+                  <CheckCircle2 className="h-4 w-4 text-[var(--primary)]" />
+                )}
                 {option.label}
               </span>
-              <span className="text-sm font-semibold text-[var(--muted-foreground)]">
-                {percentage}%
-              </span>
+              {hasVoted && (
+                <span className="text-sm font-semibold text-[var(--muted-foreground)]">
+                  {percentage}%
+                </span>
+              )}
             </div>
           </button>
         );
       })}
       <p className="text-xs text-[var(--muted-foreground)]">
-        {poll.totalVotes.toLocaleString()} votes
+        {totalVotes.toLocaleString()} votes
       </p>
     </div>
   );
@@ -249,21 +285,39 @@ function ActionButton({
 // PostCard Component
 // =============================================================================
 
+interface LocalComment {
+  id: string;
+  author: string;
+  content: string;
+  time: string;
+}
+
 export function PostCard({ post, className }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(post.isLiked ?? false);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isReposted, setIsReposted] = useState(post.isReposted ?? false);
   const [repostCount, setRepostCount] = useState(post.repostCount);
   const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked ?? false);
+  const [showComments, setShowComments] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [localComments, setLocalComments] = useState<LocalComment[]>([]);
+  const [commentCount, setCommentCount] = useState(post.commentCount);
+  const [votedPollIndex, setVotedPollIndex] = useState<number | null>(null);
 
   const handleLike = useCallback(() => {
     setIsLiked((prev) => !prev);
     setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    if (!isLiked) {
+      toast.success("Liked!");
+    }
   }, [isLiked]);
 
   const handleRepost = useCallback(() => {
     setIsReposted((prev) => !prev);
     setRepostCount((prev) => (isReposted ? prev - 1 : prev + 1));
+    if (!isReposted) {
+      toast.success("Reposted!");
+    }
   }, [isReposted]);
 
   const handleBookmark = useCallback(() => {
@@ -284,6 +338,29 @@ export function PostCard({ post, className }: PostCardProps) {
       toast.success("Link copied to clipboard");
     }
   }, [post.content, post.id]);
+
+  const handleToggleComments = useCallback(() => {
+    setShowComments((prev) => !prev);
+  }, []);
+
+  const handleSubmitComment = useCallback(() => {
+    if (!commentText.trim()) return;
+    const newComment: LocalComment = {
+      id: `local-${Date.now()}`,
+      author: "You",
+      content: commentText.trim(),
+      time: "Just now",
+    };
+    setLocalComments((prev) => [newComment, ...prev]);
+    setCommentCount((prev) => prev + 1);
+    setCommentText("");
+    toast.success("Comment added!");
+  }, [commentText]);
+
+  const handlePollVote = useCallback((index: number) => {
+    setVotedPollIndex(index);
+    toast.success("Vote recorded!");
+  }, []);
 
   const renderedContent = useMemo(
     () => renderContentWithHashtags(post.content),
@@ -363,17 +440,27 @@ export function PostCard({ post, className }: PostCardProps) {
           <MediaGrid media={post.media} />
 
           {/* Poll */}
-          <PollDisplay poll={post.poll} />
+          <PollDisplay
+            poll={post.poll}
+            votedIndex={votedPollIndex}
+            onVote={handlePollVote}
+          />
 
           {/* Engagement bar */}
           <div className="-ml-2 mt-2 flex max-w-md items-center justify-between">
             <ActionButton
               icon={
-                <MessageCircle className="h-[18px] w-[18px] transition-colors group-hover/action:text-[var(--primary)]" />
+                <MessageCircle className={cn(
+                  "h-[18px] w-[18px] transition-colors group-hover/action:text-[var(--primary)]",
+                  showComments && "text-[var(--primary)]"
+                )} />
               }
-              count={post.commentCount}
+              count={commentCount}
               label="Reply"
               hoverColor="hover:bg-[var(--primary)]/10 hover:text-[var(--primary)]"
+              isActive={showComments}
+              activeColor="text-[var(--primary)]"
+              onClick={handleToggleComments}
             />
 
             <ActionButton
@@ -446,6 +533,89 @@ export function PostCard({ post, className }: PostCardProps) {
               />
             </div>
           </div>
+
+          {/* Comment Thread */}
+          <AnimatePresence>
+            {showComments && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-3 border-t border-[var(--border)] pt-3">
+                  {/* Comment input */}
+                  <div className="flex gap-2 mb-3">
+                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[10px] font-bold text-white">
+                      Y
+                    </div>
+                    <div className="flex flex-1 gap-2">
+                      <input
+                        type="text"
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleSubmitComment();
+                          }
+                        }}
+                        placeholder="Post your reply"
+                        className="flex-1 rounded-full bg-[var(--surface-1)] px-3 py-1.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none border border-transparent focus:border-[var(--primary)]"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleSubmitComment}
+                        disabled={!commentText.trim()}
+                        className={cn(
+                          "flex items-center justify-center rounded-full bg-[var(--primary)] p-1.5 text-white transition-opacity",
+                          commentText.trim()
+                            ? "opacity-100 hover:opacity-90"
+                            : "opacity-50 cursor-not-allowed"
+                        )}
+                      >
+                        <Send className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Local comments */}
+                  {localComments.length > 0 && (
+                    <div className="space-y-2.5">
+                      {localComments.map((c) => (
+                        <div key={c.id} className="flex gap-2">
+                          <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[var(--primary)]/20 text-[10px] font-bold text-[var(--primary)]">
+                            {c.author[0]}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5 text-xs">
+                              <span className="font-semibold text-[var(--foreground)]">
+                                {c.author}
+                              </span>
+                              <span className="text-[var(--muted-foreground)]">
+                                {c.time}
+                              </span>
+                            </div>
+                            <p className="mt-0.5 text-sm text-[var(--foreground)]">
+                              {c.content}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Placeholder for existing comments */}
+                  {localComments.length === 0 && (
+                    <p className="text-xs text-center text-[var(--muted-foreground)] py-2">
+                      Be the first to reply
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.article>

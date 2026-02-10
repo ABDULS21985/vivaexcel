@@ -20,6 +20,7 @@ import {
 
 interface CollabNavSidebarProps {
   activeTab: string;
+  onPostClick?: () => void;
 }
 
 interface NavItem {
@@ -64,7 +65,7 @@ const navItems: NavItem[] = [
   { id: "more", label: "More", icon: MoreHorizontal, href: "#" },
 ];
 
-export function CollabNavSidebar({ activeTab }: CollabNavSidebarProps) {
+export function CollabNavSidebar({ activeTab, onPostClick }: CollabNavSidebarProps) {
   return (
     <aside
       className={cn(
@@ -151,6 +152,7 @@ export function CollabNavSidebar({ activeTab }: CollabNavSidebarProps) {
 
         {/* Post Button */}
         <button
+          onClick={onPostClick}
           className={cn(
             "mt-4 flex items-center justify-center",
             "rounded-full bg-[var(--primary)]",
