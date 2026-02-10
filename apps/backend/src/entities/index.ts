@@ -72,3 +72,10 @@ export * from '../modules/product-qa/entities/product-question.entity';
 export * from '../modules/product-qa/entities/product-answer.entity';
 export * from '../modules/product-qa/entities/question-upvote.entity';
 export * from '../modules/product-qa/entities/answer-upvote.entity';
+
+// Monitoring entities
+export * from './service-status.entity';
+export * from './incident-log.entity';
+export * from './alert-rule.entity';
+export * from './performance-budget.entity';
+export * from './web-vital-report.entity';

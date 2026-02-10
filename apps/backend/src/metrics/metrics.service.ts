@@ -25,6 +25,34 @@ export class MetricsService implements OnModuleInit {
   public readonly cacheHits: promClient.Counter<string>;
   public readonly cacheMisses: promClient.Counter<string>;
 
+  // WebSocket metrics
+  public readonly activeWebSocketConnections: promClient.Gauge<string>;
+
+  // Stripe metrics
+  public readonly stripeWebhookProcessing: promClient.Histogram<string>;
+
+  // Order metrics
+  public readonly orderTotalAmount: promClient.Histogram<string>;
+
+  // Cart metrics
+  public readonly activeCartCount: promClient.Gauge<string>;
+
+  // Product metrics
+  public readonly productViewTotal: promClient.Counter<string>;
+
+  // Redis operation metrics
+  public readonly redisOperationsTotal: promClient.Counter<string>;
+
+  // Email metrics
+  public readonly emailSentTotal: promClient.Counter<string>;
+
+  // AI metrics
+  public readonly aiRequestDuration: promClient.Histogram<string>;
+
+  // Health check metrics
+  public readonly healthCheckStatus: promClient.Gauge<string>;
+  public readonly healthCheckLatency: promClient.Gauge<string>;
+
   constructor(private readonly configService: ConfigService) {
     this.registry = new promClient.Registry();
 
@@ -114,6 +142,87 @@ export class MetricsService implements OnModuleInit {
       labelNames: ['cache_type'],
       registers: [this.registry],
     });
+
+    // WebSocket Connections Gauge
+    this.activeWebSocketConnections = new promClient.Gauge({
+      name: 'active_websocket_connections',
+      help: 'Number of active WebSocket connections',
+      registers: [this.registry],
+    });
+
+    // Stripe Webhook Processing Histogram
+    this.stripeWebhookProcessing = new promClient.Histogram({
+      name: 'stripe_webhook_processing_seconds',
+      help: 'Duration of Stripe webhook processing in seconds',
+      labelNames: ['event_type'],
+      buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+      registers: [this.registry],
+    });
+
+    // Order Total Amount Histogram
+    this.orderTotalAmount = new promClient.Histogram({
+      name: 'order_total_amount',
+      help: 'Distribution of order total amounts',
+      labelNames: ['currency'],
+      buckets: [5, 10, 25, 50, 100, 250, 500, 1000],
+      registers: [this.registry],
+    });
+
+    // Active Cart Count Gauge
+    this.activeCartCount = new promClient.Gauge({
+      name: 'active_cart_count',
+      help: 'Number of active shopping carts',
+      registers: [this.registry],
+    });
+
+    // Product View Counter
+    this.productViewTotal = new promClient.Counter({
+      name: 'product_view_total',
+      help: 'Total number of product views',
+      labelNames: ['product_type', 'source'],
+      registers: [this.registry],
+    });
+
+    // Redis Operations Counter
+    this.redisOperationsTotal = new promClient.Counter({
+      name: 'redis_operations_total',
+      help: 'Total number of Redis operations',
+      labelNames: ['operation', 'status'],
+      registers: [this.registry],
+    });
+
+    // Email Sent Counter
+    this.emailSentTotal = new promClient.Counter({
+      name: 'email_sent_total',
+      help: 'Total number of emails sent',
+      labelNames: ['template', 'status'],
+      registers: [this.registry],
+    });
+
+    // AI Request Duration Histogram
+    this.aiRequestDuration = new promClient.Histogram({
+      name: 'ai_request_duration_seconds',
+      help: 'Duration of AI service requests in seconds',
+      labelNames: ['operation'],
+      buckets: [0.1, 0.5, 1, 2.5, 5, 10, 30, 60],
+      registers: [this.registry],
+    });
+
+    // Health Check Status Gauge (1 = UP, 0 = DOWN)
+    this.healthCheckStatus = new promClient.Gauge({
+      name: 'health_check_status',
+      help: 'Health check status per service (1=UP, 0=DOWN)',
+      labelNames: ['service'],
+      registers: [this.registry],
+    });
+
+    // Health Check Latency Gauge
+    this.healthCheckLatency = new promClient.Gauge({
+      name: 'health_check_latency_ms',
+      help: 'Health check latency per service in milliseconds',
+      labelNames: ['service'],
+      registers: [this.registry],
+    });
   }
 
   onModuleInit(): void {
@@ -189,6 +298,50 @@ export class MetricsService implements OnModuleInit {
 
   recordCacheMiss(cacheType: string = 'redis'): void {
     this.cacheMisses.inc({ cache_type: cacheType });
+  }
+
+  recordWebSocketConnection(): void {
+    this.activeWebSocketConnections.inc();
+  }
+
+  recordWebSocketDisconnection(): void {
+    this.activeWebSocketConnections.dec();
+  }
+
+  recordStripeWebhook(eventType: string, durationSeconds: number): void {
+    this.stripeWebhookProcessing.observe({ event_type: eventType }, durationSeconds);
+  }
+
+  recordOrder(amount: number, currency: string): void {
+    this.orderTotalAmount.observe({ currency }, amount);
+  }
+
+  setActiveCartCount(count: number): void {
+    this.activeCartCount.set(count);
+  }
+
+  recordProductView(productType: string, source: string): void {
+    this.productViewTotal.inc({ product_type: productType, source });
+  }
+
+  recordRedisOperation(operation: string, status: 'success' | 'error'): void {
+    this.redisOperationsTotal.inc({ operation, status });
+  }
+
+  recordEmailSent(template: string, status: 'success' | 'error'): void {
+    this.emailSentTotal.inc({ template, status });
+  }
+
+  recordAiRequest(operation: string, durationSeconds: number): void {
+    this.aiRequestDuration.observe({ operation }, durationSeconds);
+  }
+
+  setHealthCheckStatus(service: string, isUp: boolean): void {
+    this.healthCheckStatus.set({ service }, isUp ? 1 : 0);
+  }
+
+  setHealthCheckLatency(service: string, latencyMs: number): void {
+    this.healthCheckLatency.set({ service }, latencyMs);
   }
 
   private normalizeRoute(route: string): string {

@@ -2683,5 +2683,28 @@
         "answers": "Answers"
       }
     }
+  },
+  "videos": {
+    "pageTitle": "Video Blog",
+    "pageDescription": "Watch tutorials, tips, and insights on Excel, data analytics, AI, and more.",
+    "searchPlaceholder": "Search videos...",
+    "noResults": "No videos found",
+    "noResultsDescription": "Try adjusting your search or filter criteria.",
+    "allCategories": "All",
+    "sortLatest": "Latest",
+    "sortPopular": "Most Viewed",
+    "sortTrending": "Trending",
+    "shorts": "Shorts",
+    "viewAll": "View all",
+    "trendingNow": "Trending Now",
+    "categories": "Categories",
+    "save": "Save",
+    "saved": "Saved",
+    "premium": "Premium",
+    "live": "LIVE",
+    "signInToSave": "Sign in to save videos",
+    "signInToSaveDescription": "Create a free account to save your favorite videos.",
+    "videoSaved": "Video saved",
+    "videoRemoved": "Video removed from saved"
   }
 }

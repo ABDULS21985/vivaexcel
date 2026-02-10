@@ -24,6 +24,7 @@ import {
 import { AIRecommendationService } from './services/ai-recommendation.service';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import {
@@ -33,7 +34,7 @@ import {
 
 @ApiTags('AI Recommendations')
 @Controller('recommendations')
-@UseGuards(RolesGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 export class RecommendationsController {
   constructor(
     private readonly aiRecommendationService: AIRecommendationService,

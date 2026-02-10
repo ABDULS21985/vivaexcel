@@ -94,52 +94,21 @@ export class SellerCoachingService {
       this.logger.warn('Failed to generate actionable tip for weekly digest');
     }
 
-    // Send email
+    // Send email using Handlebars template
     try {
       const userName = seller.user.firstName || seller.displayName || 'Seller';
       const dashboardUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/seller-dashboard`;
 
-      const htmlContent = `
-        <h2 style="color: #1E4DB7; margin-bottom: 16px;">Hello ${userName},</h2>
-        <p>Here's your weekly seller performance summary:</p>
-
-        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
-          <tr style="background-color: #f0f4ff;">
-            <td style="padding: 12px; border: 1px solid #e0e7ff; font-weight: 600;">Revenue (7 days)</td>
-            <td style="padding: 12px; border: 1px solid #e0e7ff;">$${weekRevenue.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td style="padding: 12px; border: 1px solid #e0e7ff; font-weight: 600;">Sales Count</td>
-            <td style="padding: 12px; border: 1px solid #e0e7ff;">${weekSales}</td>
-          </tr>
-          <tr style="background-color: #f0f4ff;">
-            <td style="padding: 12px; border: 1px solid #e0e7ff; font-weight: 600;">Average Rating</td>
-            <td style="padding: 12px; border: 1px solid #e0e7ff;">${Number(seller.averageRating).toFixed(1)} / 5.0</td>
-          </tr>
-        </table>
-
-        ${topInsight ? `
-        <div style="background: linear-gradient(135deg, #1E4DB7 0%, #3B6FD4 100%); color: white; padding: 16px; border-radius: 8px; margin: 16px 0;">
-          <h3 style="margin: 0 0 8px; color: white;">Top Insight: ${topInsight.title}</h3>
-          <p style="margin: 0; opacity: 0.9;">${topInsight.description}</p>
-        </div>
-        ` : ''}
-
-        <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; margin: 16px 0; border-radius: 0 8px 8px 0;">
-          <strong>Tip of the Week:</strong><br/>
-          ${actionableTip}
-        </div>
-
-        <div style="text-align: center; margin: 24px 0;">
-          <a href="${dashboardUrl}" style="display: inline-block; background-color: #1E4DB7; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 600; font-size: 16px;">Go to Dashboard</a>
-        </div>
-      `;
-
-      await this.emailService.sendNotification(
-        seller.user.email,
-        'Your Weekly Seller Digest - KTBlog',
-        htmlContent,
-      );
+      await this.emailService.sendSellerWeeklyDigest(seller.user.email, {
+        sellerName: userName,
+        weekRevenue: weekRevenue.toFixed(2),
+        weekSales,
+        averageRating: Number(seller.averageRating).toFixed(1),
+        insightTitle: topInsight?.title,
+        insightDescription: topInsight?.description,
+        actionableTip,
+        dashboardUrl,
+      });
       this.logger.log(`Weekly digest sent to seller ${sellerId}`);
     } catch (error) {
       this.logger.error(`Failed to send weekly digest to seller ${sellerId}: ${(error as Error).message}`);

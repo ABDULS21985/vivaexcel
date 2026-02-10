@@ -418,6 +418,44 @@ export class EmailService {
   }
 
   /**
+   * Send weekly seller digest email using Handlebars template
+   */
+  async sendSellerWeeklyDigest(
+    to: string,
+    context: {
+      sellerName: string;
+      weekRevenue: string;
+      weekSales: number;
+      averageRating: string;
+      insightTitle?: string;
+      insightDescription?: string;
+      actionableTip: string;
+      dashboardUrl: string;
+    },
+  ): Promise<boolean> {
+    try {
+      await this.mailerService.sendMail({
+        to,
+        subject: `Your Weekly Seller Digest - ${this.brandName}`,
+        template: 'seller-weekly-digest',
+        context: {
+          ...context,
+          year: new Date().getFullYear(),
+        },
+      });
+
+      this.logger.log(`Weekly seller digest sent to ${to}`);
+      return true;
+    } catch (error) {
+      this.logger.error(
+        `Failed to send weekly seller digest to ${to}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+      return false;
+    }
+  }
+
+  /**
    * Send email to admin about new contact submission
    */
   async sendContactNotificationToAdmin(
