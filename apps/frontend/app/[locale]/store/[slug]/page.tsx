@@ -18,6 +18,7 @@ import { ProductInfo } from "@/components/store/product-info";
 const ProductDescriptionTabs = dynamic(() => import("./product-description-tabs").then(m => ({ default: m.ProductDescriptionTabs })));
 const RelatedProducts = dynamic(() => import("@/components/store/related-products").then(m => ({ default: m.RelatedProducts })));
 const FloatingElements = dynamic(() => import("@/components/store/floating-elements").then(m => ({ default: m.FloatingElements })));
+const BundleWidget = dynamic(() => import("@/components/store/bundles/bundle-widget").then(m => ({ default: m.BundleWidget })));
 
 // =============================================================================
 // Types
@@ -354,6 +355,15 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <ProductDescriptionTabs product={product} />
+            </div>
+          </div>
+        </section>
+
+        {/* Bundle Widget */}
+        <section className="py-8 md:py-12 border-t border-neutral-100 dark:border-neutral-800">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+              <BundleWidget productId={product.id} currentProduct={product} />
             </div>
           </div>
         </section>

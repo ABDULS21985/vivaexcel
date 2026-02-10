@@ -40,6 +40,7 @@ import { SrOnly } from "@/components/ui/accessibility";
 import { useSubscription } from "@/providers/subscription-provider";
 import { useDownloadWithCredits } from "@/hooks/use-marketplace-subscription";
 import { Crown } from "lucide-react";
+import { CompareButton } from "@/components/store/comparison/compare-button";
 
 // =============================================================================
 // Types
@@ -1007,6 +1008,21 @@ export function ProductInfo({ product }: ProductInfoProps) {
                 />
               </motion.div>
             </motion.button>
+          </div>
+
+          {/* Compare + Bundle links */}
+          <div className="flex gap-3">
+            <CompareButton
+              product={product}
+              className="p-2.5 rounded-xl border-2 border-neutral-200 dark:border-neutral-700"
+            />
+            <Link
+              href={`/store/build-bundle?ids=${product.id}`}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/50 text-neutral-600 dark:text-neutral-400 text-sm font-medium hover:border-indigo-300 dark:hover:border-indigo-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-200"
+            >
+              <Package className="h-4 w-4" />
+              Build Bundle
+            </Link>
           </div>
 
           {/* Live Preview button (only for web_template, design_system, code_template) */}

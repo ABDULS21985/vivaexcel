@@ -57,3 +57,5 @@ export * from './marketplace-plan.entity';
 export * from './marketplace-subscription.entity';
 export * from './credit-transaction.entity';
 export * from './subscription-download.entity';
+export * from '../modules/comparison/entities/comparison-set.entity';
+export * from '../modules/bundles/entities/custom-bundle.entity';

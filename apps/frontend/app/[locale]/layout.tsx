@@ -16,6 +16,8 @@ import { CartProvider } from "../../providers/cart-provider";
 import { SubscriptionProvider } from "../../providers/subscription-provider";
 import { CurrencyProvider } from "../../providers/currency-provider";
 import { CartDrawer } from "../../components/cart/cart-drawer";
+import { ComparisonProvider } from "../../providers/comparison-provider";
+import { ComparisonBar } from "../../components/store/comparison/comparison-bar";
 import { GSAPProvider } from "../../providers/gsap-provider";
 import { SoundProvider } from "../../providers/sound-provider";
 import { ThemeProvider } from "../../providers/theme-provider";
@@ -154,10 +156,11 @@ export default async function LocaleLayout({ children, params }: Props) {
             <AuthProvider>
             <SubscriptionProvider>
             <CartProvider>
-            <CurrencyProvider>
+            <ComparisonProvider>
             <GSAPProvider>
               <SoundProvider>
                 <NextIntlClientProvider messages={messages}>
+                <CurrencyProvider>
                   {/* Custom Cursor - Desktop Only */}
                   <CursorProvider>
                     <CustomCursorWrapper />
@@ -170,6 +173,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                   <ScrollProgress />
 
                   <CartDrawer />
+                  <ComparisonBar />
                   <MobileTopBar />
                   <BlogNavbar />
                   <main
@@ -200,10 +204,11 @@ export default async function LocaleLayout({ children, params }: Props) {
                   {/* PWA: Service Worker Registration & Install Prompt */}
                   <ServiceWorkerRegister />
                   <InstallPrompt />
+                </CurrencyProvider>
                 </NextIntlClientProvider>
               </SoundProvider>
             </GSAPProvider>
-          </CurrencyProvider>
+          </ComparisonProvider>
           </CartProvider>
           </SubscriptionProvider>
           </AuthProvider>

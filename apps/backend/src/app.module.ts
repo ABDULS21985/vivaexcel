@@ -61,6 +61,8 @@ import { TeamsModule } from './modules/teams/teams.module';
 import { MarketplaceSubscriptionsModule } from './modules/marketplace-subscriptions/marketplace-subscriptions.module';
 import { RecommendationsModule } from './modules/recommendations/recommendations.module';
 import { AIAssistantModule } from './modules/ai-assistant/ai-assistant.module';
+import { ComparisonModule } from './modules/comparison/comparison.module';
+import { BundlesModule } from './modules/bundles/bundles.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -156,6 +158,8 @@ import { AppService } from './app.service';
     TeamsModule,
     RecommendationsModule,
     AIAssistantModule,
+    ComparisonModule,
+    BundlesModule,
   ],
   controllers: [AppController],
   providers: [

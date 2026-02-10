@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Star, Download, TrendingUp, Award, Eye } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { CompareButton } from "@/components/store/comparison/compare-button";
 import { SrOnly } from "@/components/ui/accessibility";
 import { formatPrice as formatPriceLib } from "@/lib/format";
 import { useCurrency } from "@/providers/currency-provider";
@@ -310,6 +311,11 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 </span>
               </div>
             )}
+
+            {/* Compare Button */}
+            <div className={`absolute ${discount > 0 ? 'bottom-3 start-[5.5rem]' : 'bottom-3 start-3'} z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
+              <CompareButton product={product} />
+            </div>
 
             {/* Glassmorphism Price Tag (bottom-right, hover reveal) */}
             <div className="absolute bottom-3 end-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0" aria-hidden="true">
