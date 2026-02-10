@@ -14,7 +14,7 @@ import { CursorPaginationDto } from '../../../common/dto/pagination.dto';
 import {
   TemplateType,
   Framework,
-  LicenseType,
+  WebTemplateLicenseType,
   WebTemplateStatus,
 } from '../../../entities/web-template.enums';
 
@@ -34,10 +34,10 @@ export class WebTemplateQueryDto extends CursorPaginationDto {
   @IsEnum(Framework)
   framework?: Framework;
 
-  @ApiPropertyOptional({ enum: LicenseType, description: 'Filter by license type' })
+  @ApiPropertyOptional({ enum: WebTemplateLicenseType, description: 'Filter by license type' })
   @IsOptional()
-  @IsEnum(LicenseType)
-  licenseType?: LicenseType;
+  @IsEnum(WebTemplateLicenseType)
+  licenseType?: WebTemplateLicenseType;
 
   @ApiPropertyOptional({ enum: WebTemplateStatus, description: 'Filter by status' })
   @IsOptional()

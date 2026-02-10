@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SellerProfile, SellerStatus } from '../../entities/seller-profile.entity';
 import { SellerPayout, PayoutStatus } from '../../entities/seller-payout.entity';
-import { SellerApplication, ApplicationStatus } from '../../entities/seller-application.entity';
+import { SellerApplication, SellerApplicationStatus } from '../../entities/seller-application.entity';
 import { SellerQueryDto } from './dto/seller-query.dto';
 import { PayoutQueryDto } from './dto/payout-query.dto';
 import { ApplicationQueryDto } from './dto/application-query.dto';
@@ -19,7 +19,7 @@ export class SellersRepository {
     private readonly sellerPayoutRepo: Repository<SellerPayout>,
     @InjectRepository(SellerApplication)
     private readonly sellerApplicationRepo: Repository<SellerApplication>,
-  ) {}
+  ) { }
 
   // ─── Seller Profiles ─────────────────────────────────────────────
 

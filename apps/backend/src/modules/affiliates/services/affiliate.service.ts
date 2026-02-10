@@ -31,7 +31,7 @@ export class AffiliateService {
 
   constructor(
     private readonly repository: AffiliatesRepository,
-  ) {}
+  ) { }
 
   // ─── Application / Profile ────────────────────────────────────────
 
@@ -46,7 +46,7 @@ export class AffiliateService {
     const profile = await this.repository.createAffiliateProfile({
       userId,
       affiliateCode,
-      customSlug: dto.customSlug || null,
+      customSlug: dto.customSlug || undefined,
       status: AffiliateStatus.PENDING_APPROVAL,
       tier: AffiliateTier.STANDARD,
       commissionRate: TIER_THRESHOLDS[AffiliateTier.STANDARD].commissionRate,

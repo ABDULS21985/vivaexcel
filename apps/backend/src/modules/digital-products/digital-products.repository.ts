@@ -25,7 +25,7 @@ export class DigitalProductsRepository {
     private readonly fileRepository: Repository<DigitalProductFile>,
     @InjectRepository(DigitalProductPreview)
     private readonly previewRepository: Repository<DigitalProductPreview>,
-  ) {}
+  ) { }
 
   // ──────────────────────────────────────────────
   //  Product methods
@@ -301,7 +301,7 @@ export class DigitalProductsRepository {
   async findVariantsByProductId(productId: string): Promise<DigitalProductVariant[]> {
     return this.variantRepository.find({
       where: { productId },
-      order: { order: 'ASC', createdAt: 'ASC' },
+      order: { sortOrder: 'ASC', createdAt: 'ASC' },
     });
   }
 
@@ -330,7 +330,7 @@ export class DigitalProductsRepository {
   async findPreviewsByProductId(productId: string): Promise<DigitalProductPreview[]> {
     return this.previewRepository.find({
       where: { productId },
-      order: { order: 'ASC', createdAt: 'ASC' },
+      order: { sortOrder: 'ASC', createdAt: 'ASC' },
     });
   }
 

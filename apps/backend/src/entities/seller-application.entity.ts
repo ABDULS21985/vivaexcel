@@ -8,7 +8,7 @@ import {
 import { BaseEntity } from './base.entity';
 import { User } from './user.entity';
 
-export enum ApplicationStatus {
+export enum SellerApplicationStatus {
   PENDING = 'pending',
   APPROVED = 'approved',
   REJECTED = 'rejected',
@@ -34,11 +34,11 @@ export class SellerApplication extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: ApplicationStatus,
-    default: ApplicationStatus.PENDING,
+    enum: SellerApplicationStatus,
+    default: SellerApplicationStatus.PENDING,
   })
   @Index()
-  status: ApplicationStatus;
+  status: SellerApplicationStatus;
 
   @Column({ name: 'reviewed_by', nullable: true })
   reviewedBy?: string;

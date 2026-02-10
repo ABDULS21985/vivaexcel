@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { WebTemplate } from './web-template.entity';
-import { LicenseType } from './web-template.enums';
+import { WebTemplateLicenseType } from './web-template.enums';
 import { User } from './user.entity';
 
 @Entity('template_licenses')
@@ -27,8 +27,8 @@ export class TemplateLicense extends BaseEntity {
   @Column({ name: 'license_key', type: 'varchar', unique: true })
   licenseKey: string;
 
-  @Column({ name: 'license_type', type: 'enum', enum: LicenseType })
-  licenseType: LicenseType;
+  @Column({ name: 'license_type', type: 'enum', enum: WebTemplateLicenseType })
+  licenseType: WebTemplateLicenseType;
 
   @Column({ name: 'activation_count', type: 'int', default: 0 })
   activationCount: number;

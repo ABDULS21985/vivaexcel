@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { SellersRepository } from '../sellers.repository';
 import { CacheService } from '../../../common/cache/cache.service';
-import { ApplicationStatus } from '../../../entities/seller-application.entity';
+import { SellerApplicationStatus } from '../../../entities/seller-application.entity';
 import { SellerStatus } from '../../../entities/seller-profile.entity';
 import { CreateSellerApplicationDto } from '../dto/create-seller-application.dto';
 import { ReviewSellerApplicationDto, ReviewDecision } from '../dto/review-seller-application.dto';
@@ -20,7 +20,7 @@ export class SellerApplicationsService {
   constructor(
     private readonly repository: SellersRepository,
     private readonly cacheService: CacheService,
-  ) {}
+  ) { }
 
   async findAll(query: ApplicationQueryDto) {
     return this.repository.findAllApplications(query);
@@ -39,7 +39,7 @@ export class SellerApplicationsService {
   async submitApplication(userId: string, dto: CreateSellerApplicationDto) {
     // Check for existing pending application
     const existing = await this.repository.findApplicationByUserId(userId);
-    if (existing && existing.status === ApplicationStatus.PENDING) {
+    if (existing && existing.status === SellerApplicationStatus.PENDING) {
       throw new ConflictException('You already have a pending application');
     }
 
@@ -55,7 +55,7 @@ export class SellerApplicationsService {
     });
 
     this.logger.log(`Seller application submitted by user ${userId}`);
-    await this.cacheService.invalidateByTag('seller_applications').catch(() => {});
+    await this.cacheService.invalidateByTag('seller_applications').catch(() => { });
     return application;
   }
 
@@ -66,14 +66,14 @@ export class SellerApplicationsService {
   ) {
     const application = await this.findById(applicationId);
 
-    if (application.status !== ApplicationStatus.PENDING) {
+    if (application.status !== SellerApplicationStatus.PENDING) {
       throw new BadRequestException('This application has already been reviewed');
     }
 
     const newStatus =
       dto.decision === ReviewDecision.APPROVE
-        ? ApplicationStatus.APPROVED
-        : ApplicationStatus.REJECTED;
+        ? SellerApplicationStatus.APPROVED
+        : SellerApplicationStatus.REJECTED;
 
     const updatedApp = await this.repository.updateApplication(applicationId, {
       status: newStatus,
@@ -99,8 +99,8 @@ export class SellerApplicationsService {
       this.logger.log(`Seller profile created for user ${application.userId} after approval`);
     }
 
-    await this.cacheService.invalidateByTag('seller_applications').catch(() => {});
-    await this.cacheService.invalidateByTag('sellers').catch(() => {});
+    await this.cacheService.invalidateByTag('seller_applications').catch(() => { });
+    await this.cacheService.invalidateByTag('sellers').catch(() => { });
 
     return updatedApp;
   }

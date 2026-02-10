@@ -124,7 +124,7 @@ export class NotificationCenterService {
           actionUrl: dto.actionUrl || null,
           actionLabel: dto.actionLabel || null,
           imageUrl: dto.imageUrl || null,
-          priority: dto.priority || 'normal',
+          priority: dto.priority || NotificationPriority.NORMAL,
           status: NotificationStatus.UNREAD,
           metadata: dto.metadata || {},
           expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : null,
@@ -147,13 +147,13 @@ export class NotificationCenterService {
       actionUrl: dto.actionUrl || null,
       actionLabel: dto.actionLabel || null,
       imageUrl: dto.imageUrl || null,
-      priority: dto.priority || 'normal',
+      priority: dto.priority || NotificationPriority.NORMAL,
       status: NotificationStatus.UNREAD,
       metadata: dto.metadata || {},
       expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : null,
     });
 
-    const saved = await this.notificationRepo.save(notification);
+    const saved = (await this.notificationRepo.save(notification)) as unknown as Notification;
     await this.invalidateUnreadCountCache(userId);
 
     // Dispatch to appropriate channel

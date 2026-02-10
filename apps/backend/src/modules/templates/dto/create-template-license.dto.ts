@@ -8,7 +8,7 @@ import {
   IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { LicenseType } from '../../../entities/web-template.enums';
+import { WebTemplateLicenseType } from '../../../entities/web-template.enums';
 
 export class CreateTemplateLicenseDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', description: 'ID of the template' })
@@ -24,9 +24,9 @@ export class CreateTemplateLicenseDto {
   @IsUUID()
   orderId?: string;
 
-  @ApiProperty({ enum: LicenseType, example: LicenseType.SINGLE_USE })
-  @IsEnum(LicenseType)
-  licenseType: LicenseType;
+  @ApiProperty({ enum: WebTemplateLicenseType, example: WebTemplateLicenseType.SINGLE_USE })
+  @IsEnum(WebTemplateLicenseType)
+  licenseType: WebTemplateLicenseType;
 
   @ApiPropertyOptional({ example: 1, description: 'Maximum number of activations allowed', default: 1 })
   @IsOptional()

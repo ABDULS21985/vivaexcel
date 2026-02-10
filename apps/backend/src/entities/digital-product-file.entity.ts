@@ -38,4 +38,6 @@ export class DigitalProductFile extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'uploaded_by' })
   uploader: User;
+  @Column({ default: 0 })
+  order: number;
 }

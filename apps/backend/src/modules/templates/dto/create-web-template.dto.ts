@@ -17,7 +17,7 @@ import { Type } from 'class-transformer';
 import {
   TemplateType,
   Framework,
-  LicenseType,
+  WebTemplateLicenseType,
   PackageManager,
   WebTemplateStatus,
 } from '../../../entities/web-template.enums';
@@ -136,10 +136,10 @@ export class CreateWebTemplateDto {
   @IsEnum(PackageManager)
   packageManager?: PackageManager;
 
-  @ApiPropertyOptional({ enum: LicenseType, example: LicenseType.SINGLE_USE })
+  @ApiPropertyOptional({ enum: WebTemplateLicenseType, example: WebTemplateLicenseType.SINGLE_USE })
   @IsOptional()
-  @IsEnum(LicenseType)
-  license?: LicenseType;
+  @IsEnum(WebTemplateLicenseType)
+  licenseType: WebTemplateLicenseType;
 
   @ApiPropertyOptional({ example: 180, description: 'Support duration in days' })
   @IsOptional()

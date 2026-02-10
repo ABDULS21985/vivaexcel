@@ -18,7 +18,7 @@ import {
   TemplateType,
   Framework,
   PackageManager,
-  LicenseType,
+  WebTemplateLicenseType,
   WebTemplateStatus,
 } from './web-template.enums';
 
@@ -26,7 +26,7 @@ export {
   TemplateType,
   Framework,
   PackageManager,
-  LicenseType,
+  WebTemplateLicenseType,
   WebTemplateStatus,
 };
 
@@ -108,10 +108,10 @@ export class WebTemplate extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: LicenseType,
-    default: LicenseType.SINGLE_USE,
+    enum: WebTemplateLicenseType,
+    default: WebTemplateLicenseType.SINGLE_USE,
   })
-  license: LicenseType;
+  license: WebTemplateLicenseType;
 
   @Column({ name: 'support_duration', type: 'int', default: 6 })
   supportDuration: number;

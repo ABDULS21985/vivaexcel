@@ -8,6 +8,7 @@ import { apiPost, ApiError } from "@/lib/api-client";
 interface SubscribeRequest {
   email: string;
   name?: string;
+  tags?: string[];
 }
 
 interface SubscribeResponse {

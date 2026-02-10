@@ -33,7 +33,7 @@ export enum PackageManager {
     BUN = 'BUN',
 }
 
-export enum LicenseType {
+export enum WebTemplateLicenseType {
     SINGLE_USE = 'SINGLE_USE',
     MULTI_USE = 'MULTI_USE',
     EXTENDED = 'EXTENDED',

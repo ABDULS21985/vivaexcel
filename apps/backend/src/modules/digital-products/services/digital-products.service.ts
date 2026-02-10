@@ -31,7 +31,7 @@ export class DigitalProductsService {
   constructor(
     private readonly repository: DigitalProductsRepository,
     private readonly cacheService: CacheService,
-  ) {}
+  ) { }
 
   // ──────────────────────────────────────────────
   //  Product CRUD
@@ -122,7 +122,7 @@ export class DigitalProductsService {
     const product = await this.repository.createProduct(
       {
         ...productData,
-        creatorId,
+        createdBy: creatorId,
         publishedAt,
       },
       tagIds,

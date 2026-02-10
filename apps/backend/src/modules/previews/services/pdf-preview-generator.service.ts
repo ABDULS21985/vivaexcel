@@ -5,7 +5,7 @@ import { WatermarkService } from './watermark.service';
 export class PdfPreviewGeneratorService {
   private readonly logger = new Logger(PdfPreviewGeneratorService.name);
 
-  constructor(private readonly watermarkService: WatermarkService) {}
+  constructor(private readonly watermarkService: WatermarkService) { }
 
   /**
    * Extract pages from a PDF buffer and convert them to PNG images.
@@ -33,7 +33,7 @@ export class PdfPreviewGeneratorService {
 
       for (let page = 1; page <= maxPages; page++) {
         try {
-          const result = await converter(page, { responseType: 'buffer' });
+          const result = (await converter(page, { responseType: 'buffer' })) as any;
           if (result.buffer) {
             let imageBuffer = result.buffer as Buffer;
             if (watermark) {
