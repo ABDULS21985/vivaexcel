@@ -11,6 +11,7 @@ import { PasswordService } from './password.service';
 export interface JwtPayload {
   sub: string; // User ID
   email: string;
+  role?: string; // Highest user role
   correlationId: string;
   type: 'access' | 'refresh';
   tokenFamily?: string;
@@ -104,6 +105,7 @@ export class TokenService {
   async generateTokenPair(
     userId: string,
     email: string,
+    role?: string,
     ipAddress?: string,
     userAgent?: string,
     existingTokenFamily?: string,
@@ -115,6 +117,7 @@ export class TokenService {
     const accessPayload = {
       sub: userId,
       email,
+      role,
       correlationId,
       type: 'access' as const,
     };
@@ -130,6 +133,7 @@ export class TokenService {
     const refreshPayload = {
       sub: userId,
       email,
+      role,
       correlationId,
       type: 'refresh' as const,
       tokenFamily,
@@ -261,6 +265,7 @@ export class TokenService {
     return this.generateTokenPair(
       payload.sub,
       payload.email,
+      payload.role,
       ipAddress,
       userAgent,
       payload.tokenFamily,

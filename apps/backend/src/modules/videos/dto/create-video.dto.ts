@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsArray,
   IsBoolean,
+  Matches,
 } from 'class-validator';
 
 export class CreateVideoDto {
@@ -20,9 +21,11 @@ export class CreateVideoDto {
   description: string;
 
   @IsUrl()
+  @Matches(/^https?:\/\//, { message: 'thumbnailUrl must use http or https protocol' })
   thumbnailUrl: string;
 
   @IsUrl()
+  @Matches(/^https?:\/\//, { message: 'videoUrl must use http or https protocol' })
   videoUrl: string;
 
   @IsInt()

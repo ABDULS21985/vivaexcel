@@ -29,6 +29,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ReferralsService } from '../referrals/referrals.service';
 
 import { User } from '../../entities/user.entity';
+import { getHighestRole } from '../../common/constants/roles.constant';
 
 @Injectable()
 export class AuthService {
@@ -98,6 +99,7 @@ export class AuthService {
     const tokens = await this.tokenService.generateTokenPair(
       user.id,
       user.email,
+      getHighestRole(user.roles),
       ipAddress,
       userAgent,
     );
@@ -179,6 +181,7 @@ export class AuthService {
     const tokens = await this.tokenService.generateTokenPair(
       fullUser.id,
       fullUser.email,
+      getHighestRole(fullUser.roles),
       ipAddress,
       userAgent,
     );
@@ -235,6 +238,7 @@ export class AuthService {
     const tokens = await this.tokenService.generateTokenPair(
       user.id,
       user.email,
+      getHighestRole(user.roles),
       ipAddress,
       userAgent,
     );
@@ -529,6 +533,7 @@ export class AuthService {
     const tokens = await this.tokenService.generateTokenPair(
       user.id,
       user.email,
+      getHighestRole(user.roles),
       ipAddress,
       userAgent,
     );
@@ -588,6 +593,7 @@ export class AuthService {
     const tokens = await this.tokenService.generateTokenPair(
       user.id,
       user.email,
+      getHighestRole(user.roles),
       ipAddress,
       userAgent,
     );

@@ -54,6 +54,19 @@ export class VideosService implements OnModuleInit {
       .replace(/^-|-$/g, '');
   }
 
+  private async generateUniqueSlug(text: string): Promise<string> {
+    const base = this.slugify(text);
+    let slug = `${base}-${Date.now().toString(36)}`;
+    let attempt = 0;
+    while (attempt < 5) {
+      const exists = await this.videoRepo.findOne({ where: { slug }, withDeleted: true });
+      if (!exists) return slug;
+      slug = `${base}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+      attempt++;
+    }
+    return slug;
+  }
+
   // ---------------------------------------------------------------------------
   // Videos — CRUD & Queries
   // ---------------------------------------------------------------------------
@@ -129,7 +142,7 @@ export class VideosService implements OnModuleInit {
   }
 
   async create(dto: CreateVideoDto): Promise<Video> {
-    const slug = this.slugify(dto.title) + '-' + Date.now().toString(36);
+    const slug = await this.generateUniqueSlug(dto.title);
     const video = this.videoRepo.create({
       ...dto,
       slug,
@@ -143,7 +156,7 @@ export class VideosService implements OnModuleInit {
     const video = await this.videoRepo.findOne({ where: { id } });
     if (!video) throw new NotFoundException(`Video with ID "${id}" not found`);
     if (dto.title && dto.title !== video.title) {
-      (dto as any).slug = this.slugify(dto.title) + '-' + Date.now().toString(36);
+      (video as any).slug = await this.generateUniqueSlug(dto.title);
     }
     Object.assign(video, dto);
     return this.videoRepo.save(video);
@@ -304,10 +317,10 @@ export class VideosService implements OnModuleInit {
     return saved;
   }
 
-  async deleteComment(userId: string, commentId: string): Promise<void> {
+  async deleteComment(userId: string, commentId: string, isAdmin = false): Promise<void> {
     const comment = await this.commentRepo.findOne({ where: { id: commentId } });
     if (!comment) throw new NotFoundException('Comment not found');
-    if (comment.userId !== userId) throw new ForbiddenException('You can only delete your own comments');
+    if (!isAdmin && comment.userId !== userId) throw new ForbiddenException('You can only delete your own comments');
     await this.commentRepo.softDelete(commentId);
     await this.videoRepo
       .createQueryBuilder()

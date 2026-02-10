@@ -13,6 +13,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { createHash } from 'crypto';
 import { VideosService } from '../services/videos.service';
@@ -24,10 +25,10 @@ import { CreateCategoryDto } from '../dto/create-category.dto';
 import { CreateVideoCommentDto } from '../dto/create-comment.dto';
 import { Public } from '../../../common/decorators/public.decorator';
 import { Roles } from '../../../common/decorators/roles.decorator';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
+import { CurrentUser, JwtUserPayload } from '../../../common/decorators/current-user.decorator';
 import { RolesGuard } from '../../../common/guards/roles.guard';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
-import { Role } from '../../../common/constants/roles.constant';
+import { Role, isAdminRole } from '../../../common/constants/roles.constant';
 
 @Controller('videos')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -71,7 +72,7 @@ export class VideosController {
   // ──────────────────────────────────────────────
 
   @Get('me/bookmarks')
-  async getMyBookmarks(@CurrentUser('sub') userId: string) {
+  async getMyBookmarks(@CurrentUser('userId') userId: string) {
     const data = await this.videosService.getUserBookmarks(userId);
     return { status: 'success', message: 'Bookmarks retrieved', data };
   }
@@ -122,10 +123,11 @@ export class VideosController {
   @Delete('comments/:id')
   @HttpCode(HttpStatus.OK)
   async deleteComment(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser() user: JwtUserPayload,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    await this.videosService.deleteComment(userId, id);
+    const isAdmin = isAdminRole(user.role as Role);
+    await this.videosService.deleteComment(user.userId, id, isAdmin);
     return { status: 'success', message: 'Comment deleted', data: null };
   }
 
@@ -150,6 +152,7 @@ export class VideosController {
 
   @Post(':id/views')
   @Public()
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   async recordView(@Param('id') id: string, @Req() req: Request) {
     const ip = req.ip || req.headers['x-forwarded-for']?.toString() || 'unknown';

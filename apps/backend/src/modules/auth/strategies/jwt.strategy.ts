@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(
     request: Request,
     payload: JwtPayload,
-  ): Promise<{ userId: string; email: string; correlationId: string }> {
+  ): Promise<{ userId: string; email: string; role?: string; correlationId: string }> {
     // Verify this is an access token
     if (payload.type !== 'access') {
       throw new UnauthorizedException('Invalid token type');
@@ -47,7 +47,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     return {
       userId: payload.sub,
       email: payload.email,
-      role: (payload as any).role,
+      role: payload.role,
       correlationId: payload.correlationId,
     };
   }
