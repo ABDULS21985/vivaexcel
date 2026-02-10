@@ -196,9 +196,9 @@ const features = [
     description:
       "Get real-time event notifications for orders, products, reviews, and subscriptions. Built-in retry logic and delivery logs.",
     href: "/developers/webhooks",
-    color: "#10B981",
-    bgColor: "from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30",
-    borderColor: "border-emerald-200/50 dark:border-emerald-800/30",
+    color: "#143A8F",
+    bgColor: "from-blue-50 to-sky-50 dark:from-blue-950/30 dark:to-sky-950/30",
+    borderColor: "border-blue-200/50 dark:border-blue-800/30",
   },
   {
     icon: Layout,
@@ -274,7 +274,7 @@ export default function DeveloperPortalPage() {
           className="absolute inset-0 opacity-30 animate-gradient-shift"
           style={{
             background:
-              "radial-gradient(ellipse at 30% 40%, #6366F1 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, #10B981 0%, transparent 50%), radial-gradient(ellipse at 50% 20%, #F59A23 0%, transparent 40%)",
+              "radial-gradient(ellipse at 30% 40%, #6366F1 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, #F59A23 0%, transparent 50%), radial-gradient(ellipse at 50% 20%, #F59A23 0%, transparent 40%)",
             backgroundSize: "200% 200%",
           }}
         />
@@ -294,7 +294,7 @@ export default function DeveloperPortalPage() {
         {/* Floating decorative elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-80 h-80 bg-[#F59A23]/10 rounded-full blur-3xl animate-float1" />
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-float2" />
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-[#1E4DB7]/10 rounded-full blur-3xl animate-float2" />
           <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-[#6366F1]/10 rounded-full blur-3xl animate-float3" />
         </div>
 
@@ -372,7 +372,7 @@ export default function DeveloperPortalPage() {
               className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mt-12"
             >
               <div className="flex items-center gap-2 text-white/50 text-sm">
-                <Shield className="h-4 w-4 text-emerald-400/70" />
+                <Shield className="h-4 w-4 text-[#F59A23]/70" />
                 <span>OAuth 2.0 & API Keys</span>
               </div>
               <div className="flex items-center gap-2 text-white/50 text-sm">
@@ -560,11 +560,11 @@ export default function DeveloperPortalPage() {
             {/* Section header */}
             <motion.div variants={fadeInUp} custom={0} className="text-center mb-16">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <div className="w-8 h-px bg-emerald-500" />
-                <span className="text-xs font-bold tracking-wider text-emerald-600 dark:text-emerald-400 uppercase">
+                <div className="w-8 h-px bg-[#1E4DB7]" />
+                <span className="text-xs font-bold tracking-wider text-[#1E4DB7] dark:text-blue-400 uppercase">
                   Use Cases
                 </span>
-                <div className="w-8 h-px bg-emerald-500" />
+                <div className="w-8 h-px bg-[#1E4DB7]" />
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-white mb-4">
                 What You Can Build

@@ -103,14 +103,14 @@ const INDUSTRY_CATEGORIES = [
     name: "Finance",
     emoji: "\u{1F4C8}",
     slug: "finance",
-    color: "#059669",
+    color: "#143A8F",
     description: "Financial reports & investor decks",
   },
   {
     name: "Healthcare",
     emoji: "\u{1FA7A}",
     slug: "healthcare",
-    color: "#EC4899",
+    color: "#E86A1D",
     description: "Medical & wellness presentations",
   },
   {
@@ -131,7 +131,7 @@ const INDUSTRY_CATEGORIES = [
     name: "Marketing",
     emoji: "\u{1F4E3}",
     slug: "marketing",
-    color: "#06B6D4",
+    color: "#3B6DE0",
     description: "Campaigns & brand strategy",
   },
 ];
@@ -232,7 +232,7 @@ export default async function PresentationsPage({ params }: Props) {
             <div className="absolute -top-20 -right-20 w-80 h-80 bg-[#F59A23]/15 rounded-full blur-3xl animate-float" />
             <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float-delay-2" />
             <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-[#D24726]/15 rounded-full blur-3xl animate-float-slow" />
-            <div className="absolute bottom-1/4 left-1/3 w-48 h-48 bg-[#6366F1]/10 rounded-full blur-3xl animate-float" />
+            <div className="absolute bottom-1/4 left-1/3 w-48 h-48 bg-[#3B6DE0]/10 rounded-full blur-3xl animate-float" />
           </div>
 
           {/* Content */}
@@ -323,7 +323,7 @@ export default async function PresentationsPage({ params }: Props) {
 
                     {/* Slide 2 (middle) */}
                     <div
-                      className="absolute inset-x-2 top-4 aspect-[16/10] rounded-2xl bg-gradient-to-br from-[#1E4DB7] to-[#6366F1] shadow-2xl border border-white/15 overflow-hidden"
+                      className="absolute inset-x-2 top-4 aspect-[16/10] rounded-2xl bg-gradient-to-br from-[#1E4DB7] to-[#3B6DE0] shadow-2xl border border-white/15 overflow-hidden"
                       style={{
                         transform:
                           "rotateY(-5deg) rotateX(2deg) translateZ(-30px)",
@@ -377,7 +377,7 @@ export default async function PresentationsPage({ params }: Props) {
 
                         {/* Slide content */}
                         <div className="space-y-3">
-                          <div className="h-5 w-3/4 rounded-full bg-gradient-to-r from-[#1E4DB7] to-[#6366F1] opacity-80" />
+                          <div className="h-5 w-3/4 rounded-full bg-gradient-to-r from-[#1E4DB7] to-[#3B6DE0] opacity-80" />
                           <div className="h-3 w-full rounded-full bg-neutral-200" />
                           <div className="h-3 w-5/6 rounded-full bg-neutral-200" />
                           <div className="h-3 w-2/3 rounded-full bg-neutral-100" />
@@ -387,7 +387,7 @@ export default async function PresentationsPage({ params }: Props) {
                         <div className="flex items-end gap-2 h-16">
                           <div className="flex-1 h-8 rounded-t-lg bg-[#1E4DB7]/20" />
                           <div className="flex-1 h-12 rounded-t-lg bg-[#1E4DB7]/40" />
-                          <div className="flex-1 h-16 rounded-t-lg bg-gradient-to-t from-[#1E4DB7] to-[#6366F1] opacity-60" />
+                          <div className="flex-1 h-16 rounded-t-lg bg-gradient-to-t from-[#1E4DB7] to-[#3B6DE0] opacity-60" />
                           <div className="flex-1 h-10 rounded-t-lg bg-[#F59A23]/40" />
                           <div className="flex-1 h-14 rounded-t-lg bg-[#D24726]/30" />
                         </div>

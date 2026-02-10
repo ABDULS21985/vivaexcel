@@ -48,16 +48,12 @@ function getDownloadUrl(token: string): string {
 const confettiColors = [
   "bg-blue-500",
   "bg-blue-400",
-  "bg-orange-500",
-  "bg-orange-400",
-  "bg-green-500",
-  "bg-green-400",
-  "bg-rose-500",
-  "bg-rose-400",
-  "bg-amber-500",
+  "bg-[#1E4DB7]",
+  "bg-[#F59A23]",
   "bg-amber-400",
-  "bg-violet-500",
-  "bg-violet-400",
+  "bg-amber-500",
+  "bg-sky-400",
+  "bg-blue-600",
 ];
 
 function Confetti() {
@@ -127,7 +123,7 @@ function SuccessCheckmark() {
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-lg shadow-green-500/30"
+        className="absolute inset-0 rounded-full bg-gradient-to-br from-[#1E4DB7] to-[#143A8F] shadow-lg shadow-[#1E4DB7]/30"
       />
       {/* Inner check icon */}
       <motion.div
@@ -143,21 +139,21 @@ function SuccessCheckmark() {
         initial={{ opacity: 0.6, scale: 1 }}
         animate={{ opacity: 0, scale: 1.6 }}
         transition={{ delay: 0.6, duration: 1, ease: "easeOut" }}
-        className="absolute inset-0 rounded-full border-2 border-green-400"
+        className="absolute inset-0 rounded-full border-2 border-blue-400"
       />
       {/* Pulse ring 2 */}
       <motion.div
         initial={{ opacity: 0.6, scale: 1 }}
         animate={{ opacity: 0, scale: 1.8 }}
         transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
-        className="absolute inset-0 rounded-full border-2 border-green-300"
+        className="absolute inset-0 rounded-full border-2 border-blue-300"
       />
       {/* Pulse ring 3 */}
       <motion.div
         initial={{ opacity: 0.6, scale: 1 }}
         animate={{ opacity: 0, scale: 2 }}
         transition={{ delay: 1, duration: 1.4, ease: "easeOut" }}
-        className="absolute inset-0 rounded-full border-2 border-green-200"
+        className="absolute inset-0 rounded-full border-2 border-blue-200"
       />
     </motion.div>
   );
@@ -189,7 +185,7 @@ function OrderTimeline({ t }: { t: ReturnType<typeof useTranslations> }) {
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.8 + index * 0.5, duration: 0.4 }}
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mb-2"
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1E4DB7] to-[#143A8F] flex items-center justify-center mb-2"
               >
                 <CheckCircle className="w-5 h-5 text-white" />
               </motion.div>
@@ -213,7 +209,7 @@ function OrderTimeline({ t }: { t: ReturnType<typeof useTranslations> }) {
                   duration: 0.5,
                   ease: "easeOut",
                 }}
-                className="flex-1 h-0.5 bg-gradient-to-r from-green-400 to-emerald-500 mx-2 origin-left"
+                className="flex-1 h-0.5 bg-gradient-to-r from-[#1E4DB7] to-[#143A8F] mx-2 origin-left"
                 style={{ maxWidth: "100px" }}
               />
             )}
@@ -401,7 +397,7 @@ export default function CheckoutSuccessPage() {
                   title={t("success.copyOrderNumber")}
                 >
                   {copiedOrderNumber ? (
-                    <span className="text-xs text-green-400 font-medium">
+                    <span className="text-xs text-blue-400 font-medium">
                       {t("success.copied")}
                     </span>
                   ) : (

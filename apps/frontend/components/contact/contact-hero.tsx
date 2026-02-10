@@ -259,7 +259,7 @@ export function ContactHero() {
                                     x="30" y="220"
                                     width="10" height="10"
                                     rx="2"
-                                    fill="#10B981"
+                                    fill="#F59A23"
                                     fillOpacity="0.5"
                                     animate={{ rotate: [0, -180, -360], opacity: [0.3, 0.7, 0.3] }}
                                     transition={{ duration: 5, repeat: Infinity, ease: "linear" }}

@@ -34,7 +34,7 @@ export default function NotFound() {
             <div
               className="absolute w-64 h-64 rounded-full blur-3xl opacity-10"
               style={{
-                background: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
+                background: "linear-gradient(135deg, #143A8F 0%, #0F2B6B 100%)",
                 top: "50%",
                 right: "30%",
                 animation: "float3 10s ease-in-out infinite",

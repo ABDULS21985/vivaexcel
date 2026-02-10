@@ -29,6 +29,7 @@ import { ServiceWorkerRegister, InstallPrompt } from "../../components/pwa";
 import { MobileBottomNav, MobileTopBar } from "../../components/mobile";
 import { GamificationListener } from "../../components/gamification/gamification-listener";
 import { AIAssistantWidget } from "../../components/ai-assistant";
+import { Toaster } from "sonner";
 import "../globals.css";
 
 // Noto Sans Arabic for RTL support
@@ -204,6 +205,16 @@ export default async function LocaleLayout({ children, params }: Props) {
                   {/* PWA: Service Worker Registration & Install Prompt */}
                   <ServiceWorkerRegister />
                   <InstallPrompt />
+
+                  {/* Toast Notifications */}
+                  <Toaster
+                    position="top-right"
+                    richColors
+                    closeButton
+                    toastOptions={{
+                      duration: 4000,
+                    }}
+                  />
                 </CurrencyProvider>
                 </NextIntlClientProvider>
               </SoundProvider>
