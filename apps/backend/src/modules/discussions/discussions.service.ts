@@ -149,7 +149,7 @@ export class DiscussionsService {
         qb.addOrderBy('thread.lastReplyAt', 'DESC', 'NULLS LAST');
         break;
       case ThreadSortBy.POPULAR:
-        qb.addOrderBy('thread.viewCount', 'DESC');
+        qb.addOrderBy('thread.replyCount', 'DESC');
         break;
       case ThreadSortBy.NEWEST:
       default:
@@ -518,10 +518,8 @@ export class DiscussionsService {
   private generateSlug(title: string): string {
     const baseSlug = title
       .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_]+/g, '-')
-      .replace(/^-+|-+$/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
       .substring(0, 300);
 
     const suffix = nanoid(8);

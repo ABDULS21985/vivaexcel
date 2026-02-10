@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useCallback } from "react";
-import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import {
@@ -109,11 +108,13 @@ const DEFAULT_CATEGORY_COLOR = {
 // Component
 // =============================================================================
 
-export default function ThreadDetailClient() {
+interface ThreadDetailClientProps {
+  slug: string;
+}
+
+export default function ThreadDetailClient({ slug }: ThreadDetailClientProps) {
   const t = useTranslations("discussion");
   const { user } = useAuth();
-  const params = useParams();
-  const slug = params.slug as string;
 
   const { data, isLoading, isError, error } = useDiscussionThread(slug);
 

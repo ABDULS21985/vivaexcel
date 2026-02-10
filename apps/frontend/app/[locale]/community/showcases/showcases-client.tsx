@@ -60,7 +60,7 @@ const itemVariants = {
   },
 };
 
-export default function ShowcasesClient() {
+export function ShowcasesClient() {
   const t = useTranslations("showcase");
   const { isAuthenticated } = useAuth();
 

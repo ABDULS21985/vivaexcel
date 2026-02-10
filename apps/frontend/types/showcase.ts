@@ -3,6 +3,7 @@
 // =============================================================================
 // Frontend types for the User Showcases feature.
 
+import type { User } from "@/providers/auth-provider";
 import type { DigitalProduct } from "./digital-product";
 
 // -----------------------------------------------------------------------------
@@ -30,20 +31,19 @@ export type ShowcaseSortBy =
 // Core Interfaces
 // -----------------------------------------------------------------------------
 
-export interface ShowcaseUser {
+export interface ShowcaseProduct {
   id: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  username?: string;
+  title: string;
+  slug: string;
+  thumbnailUrl?: string;
 }
 
 export interface Showcase {
   id: string;
   userId: string;
-  user?: ShowcaseUser;
+  user: User;
   productId: string;
-  product?: DigitalProduct;
+  product: ShowcaseProduct;
   title: string;
   description: string;
   images: string[];
@@ -61,11 +61,11 @@ export interface ShowcaseComment {
   id: string;
   showcaseId: string;
   userId: string;
-  user?: ShowcaseUser;
+  user: User;
   content: string;
   parentId?: string;
+  children?: ShowcaseComment[];
   createdAt: string;
-  replies?: ShowcaseComment[];
 }
 
 // -----------------------------------------------------------------------------

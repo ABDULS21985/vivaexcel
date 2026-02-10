@@ -55,7 +55,7 @@ export class DiscussionThread extends BaseEntity {
   @Column({ type: 'int', default: 0, name: 'reply_count' })
   replyCount: number;
 
-  @Column({ type: 'timestamp', nullable: true, name: 'last_reply_at' })
+  @Column({ type: 'timestamptz', nullable: true, name: 'last_reply_at' })
   lastReplyAt: Date | null;
 
   @Column({ type: 'jsonb', default: [] })

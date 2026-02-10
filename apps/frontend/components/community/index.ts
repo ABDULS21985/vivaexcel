@@ -1,2 +1,9 @@
 export { ShowcaseCard } from "./showcase-card";
 export { ShowcaseComments } from "./showcase-comments";
+export { CategoryCard } from "./category-card";
+export { ThreadCard } from "./thread-card";
+export { ReplyForm } from "./reply-form";
+export { ReplyItem } from "./reply-item";
+export { UserStats } from "./user-stats";
+export { ProfileHeader } from "./profile-header";
+export { ProfileTabs } from "./profile-tabs";

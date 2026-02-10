@@ -2,36 +2,41 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsString,
   IsOptional,
-  IsUUID,
-  MaxLength,
-  IsEnum,
   IsInt,
+  IsUUID,
+  IsEnum,
   Min,
   Max,
+  MaxLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { QASortBy } from '../enums/qa.enums';
+
+export enum QASortBy {
+  NEWEST = 'newest',
+  POPULAR = 'popular',
+  UNANSWERED = 'unanswered',
+}
 
 export class CreateQuestionDto {
-  @ApiProperty({ description: 'The ID of the product to ask a question about' })
+  @ApiProperty({ description: 'Product ID to ask a question about' })
   @IsUUID()
   productId: string;
 
-  @ApiProperty({ description: 'The question content', maxLength: 1000 })
+  @ApiProperty({ description: 'Question content', example: 'Does this template support dark mode?' })
   @IsString()
   @MaxLength(1000)
   content: string;
 }
 
 export class CreateAnswerDto {
-  @ApiProperty({ description: 'The answer content', maxLength: 5000 })
+  @ApiProperty({ description: 'Answer content', example: 'Yes, it includes both light and dark mode variants.' })
   @IsString()
   @MaxLength(5000)
   content: string;
 }
 
 export class QAQueryDto {
-  @ApiProperty({ description: 'The product ID to get questions for' })
+  @ApiProperty({ description: 'Product ID to get questions for' })
   @IsUUID()
   productId: string;
 
@@ -40,7 +45,7 @@ export class QAQueryDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  page: number = 1;
+  page?: number = 1;
 
   @ApiPropertyOptional({ description: 'Number of items per page', default: 20 })
   @IsOptional()
@@ -48,14 +53,14 @@ export class QAQueryDto {
   @IsInt()
   @Min(1)
   @Max(50)
-  limit: number = 20;
+  limit?: number = 20;
 
   @ApiPropertyOptional({
-    description: 'Sort order for questions',
     enum: QASortBy,
+    description: 'Sort order for results',
     default: QASortBy.NEWEST,
   })
   @IsOptional()
   @IsEnum(QASortBy)
-  sortBy: QASortBy = QASortBy.NEWEST;
+  sortBy?: QASortBy = QASortBy.NEWEST;
 }

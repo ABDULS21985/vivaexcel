@@ -31,8 +31,10 @@ interface ApiResponseWrapper<T> {
 
 export const qaKeys = {
   all: ["product-qa"] as const,
-  questions: (productId: string, sortBy?: QASortBy) =>
-    [...qaKeys.all, "questions", productId, sortBy] as const,
+  questions: (productId: string) =>
+    [...qaKeys.all, "questions", productId] as const,
+  questionList: (query: QAQueryParams) =>
+    [...qaKeys.all, "list", query] as const,
   question: (id: string) => [...qaKeys.all, "question", id] as const,
 };
 
@@ -40,20 +42,20 @@ export const qaKeys = {
 // Hooks
 // =============================================================================
 
-export function useProductQuestions(
-  productId: string,
-  sortBy?: QASortBy,
-) {
+/**
+ * Fetch paginated questions for a product with infinite scrolling support.
+ */
+export function useProductQuestions(query: QAQueryParams) {
   return useInfiniteQuery({
-    queryKey: qaKeys.questions(productId, sortBy),
+    queryKey: qaKeys.questionList(query),
     queryFn: ({ pageParam }: { pageParam: number | undefined }) =>
       apiGet<ApiResponseWrapper<QuestionsResponse>>(
         "/product-qa/questions",
         {
-          productId,
-          sortBy,
-          page: pageParam ?? 1,
-          limit: 10,
+          productId: query.productId,
+          sortBy: query.sortBy,
+          page: pageParam ?? query.page ?? 1,
+          limit: query.limit ?? 10,
         },
       ).then((res) => res.data),
     initialPageParam: 1 as number | undefined,
@@ -62,12 +64,15 @@ export function useProductQuestions(
       if (meta.page < meta.totalPages) return meta.page + 1;
       return undefined;
     },
-    enabled: !!productId,
+    enabled: !!query.productId,
     staleTime: 2 * 60 * 1000,
   });
 }
 
-export function useQuestionDetail(id: string) {
+/**
+ * Fetch a single question with its answers.
+ */
+export function useProductQuestion(id: string) {
   return useQuery({
     queryKey: qaKeys.question(id),
     queryFn: () =>
@@ -79,6 +84,9 @@ export function useQuestionDetail(id: string) {
   });
 }
 
+/**
+ * Create a new question for a product.
+ */
 export function useCreateQuestion() {
   const queryClient = useQueryClient();
 
@@ -92,10 +100,16 @@ export function useCreateQuestion() {
       queryClient.invalidateQueries({
         queryKey: qaKeys.questions(variables.productId),
       });
+      queryClient.invalidateQueries({
+        queryKey: qaKeys.all,
+      });
     },
   });
 }
 
+/**
+ * Create an answer to a question.
+ */
 export function useCreateAnswer() {
   const queryClient = useQueryClient();
 
@@ -105,12 +119,18 @@ export function useCreateAnswer() {
         `/product-qa/questions/${questionId}/answers`,
         payload,
       ).then((res) => res.data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: qaKeys.question(variables.questionId),
+      });
       queryClient.invalidateQueries({ queryKey: qaKeys.all });
     },
   });
 }
 
+/**
+ * Accept an answer as the best answer for a question.
+ */
 export function useAcceptAnswer() {
   const queryClient = useQueryClient();
 
@@ -125,6 +145,9 @@ export function useAcceptAnswer() {
   });
 }
 
+/**
+ * Upvote a question.
+ */
 export function useUpvoteQuestion() {
   const queryClient = useQueryClient();
 
@@ -139,6 +162,9 @@ export function useUpvoteQuestion() {
   });
 }
 
+/**
+ * Upvote an answer.
+ */
 export function useUpvoteAnswer() {
   const queryClient = useQueryClient();
 

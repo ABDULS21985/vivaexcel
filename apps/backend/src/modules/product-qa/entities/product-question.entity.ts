@@ -1,16 +1,16 @@
 import {
   Entity,
   Column,
-  Index,
   ManyToOne,
   OneToMany,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { BaseEntity } from '../../../entities/base.entity';
 import { User } from '../../../entities/user.entity';
 import { DigitalProduct } from '../../../entities/digital-product.entity';
-import { ProductAnswer } from './product-answer.entity';
 import { QAStatus } from '../enums/qa.enums';
+import { ProductAnswer } from './product-answer.entity';
 
 @Entity('product_questions')
 export class ProductQuestion extends BaseEntity {
@@ -49,6 +49,8 @@ export class ProductQuestion extends BaseEntity {
 
   @Column({ type: 'jsonb', nullable: true })
   metadata?: Record<string, any>;
+
+  // Relations
 
   @OneToMany(() => ProductAnswer, (answer) => answer.question)
   answers: ProductAnswer[];

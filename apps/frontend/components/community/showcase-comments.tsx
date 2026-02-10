@@ -164,9 +164,9 @@ function CommentItem({ comment, showcaseId, depth = 0 }: CommentItemProps) {
       </div>
 
       {/* Nested replies */}
-      {comment.replies && comment.replies.length > 0 && (
+      {comment.children && comment.children.length > 0 && (
         <div>
-          {comment.replies.map((reply) => (
+          {comment.children.map((reply) => (
             <CommentItem
               key={reply.id}
               comment={reply}
@@ -188,18 +188,20 @@ export function ShowcaseComments({ showcaseId }: ShowcaseCommentsProps) {
   const t = useTranslations("showcase");
   const { isAuthenticated } = useAuth();
   const addComment = useAddShowcaseComment();
-  const {
-    data,
-    isLoading,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useShowcaseComments(showcaseId);
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useShowcaseComments(showcaseId, page);
   const [newComment, setNewComment] = useState("");
+  const [allComments, setAllComments] = useState<ShowcaseComment[]>([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  // Flatten pages into a single list
-  const comments: ShowcaseComment[] =
-    data?.pages?.flatMap((page) => page.items) ?? [];
+  // Accumulate comments when data changes
+  const comments: ShowcaseComment[] = page === 1
+    ? (data?.items ?? [])
+    : [...allComments, ...(data?.items ?? [])];
+
+  const hasNextPage = data?.meta
+    ? data.meta.page < data.meta.totalPages
+    : false;
 
   const handleSubmitComment = useCallback(async () => {
     if (!newComment.trim()) return;
@@ -304,10 +306,15 @@ export function ShowcaseComments({ showcaseId }: ShowcaseCommentsProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
+            onClick={() => {
+              setIsLoadingMore(true);
+              setAllComments(comments);
+              setPage((prev) => prev + 1);
+              setIsLoadingMore(false);
+            }}
+            disabled={isLoadingMore}
           >
-            {isFetchingNextPage ? (
+            {isLoadingMore ? (
               <Loader2 className="me-2 h-4 w-4 animate-spin" />
             ) : null}
             {t("loadMoreComments")}

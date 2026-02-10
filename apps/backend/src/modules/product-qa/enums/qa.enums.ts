@@ -3,9 +3,3 @@ export enum QAStatus {
   APPROVED = 'approved',
   REJECTED = 'rejected',
 }
-
-export enum QASortBy {
-  NEWEST = 'newest',
-  POPULAR = 'popular',
-  UNANSWERED = 'unanswered',
-}

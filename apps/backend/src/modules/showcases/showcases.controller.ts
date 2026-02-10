@@ -26,7 +26,6 @@ import { ShowcasesService } from './showcases.service';
 import {
   CreateShowcaseDto,
   UpdateShowcaseDto,
-  ShowcaseQueryDto,
   ShowcaseCommentDto,
   ModerateShowcaseDto,
   ShowcaseSortBy,
@@ -53,8 +52,7 @@ export class ShowcasesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new showcase' })
   @SwaggerResponse({ status: 201, description: 'Showcase created successfully' })
-  @SwaggerResponse({ status: 400, description: 'Invalid input' })
-  @SwaggerResponse({ status: 403, description: 'User has not purchased the product' })
+  @SwaggerResponse({ status: 400, description: 'Invalid input or user has not purchased the product' })
   async create(
     @CurrentUser('sub') userId: string,
     @Body() dto: CreateShowcaseDto,
@@ -68,7 +66,7 @@ export class ShowcasesController {
 
   @Get()
   @Public()
-  @ApiOperation({ summary: 'List showcases' })
+  @ApiOperation({ summary: 'List showcases (public)' })
   @SwaggerResponse({ status: 200, description: 'Showcases retrieved successfully' })
   @ApiQuery({ name: 'page', required: false, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
@@ -76,8 +74,22 @@ export class ShowcasesController {
   @ApiQuery({ name: 'status', required: false, enum: ShowcaseStatus, description: 'Filter by status' })
   @ApiQuery({ name: 'userId', required: false, description: 'Filter by user ID' })
   @ApiQuery({ name: 'productId', required: false, description: 'Filter by product ID' })
-  async findAll(@Query() query: ShowcaseQueryDto) {
-    return this.showcasesService.findAll(query);
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
+    @Query('sortBy') sortBy?: ShowcaseSortBy,
+    @Query('status') status?: ShowcaseStatus,
+    @Query('userId') userId?: string,
+    @Query('productId') productId?: string,
+  ) {
+    return this.showcasesService.findAll({
+      page,
+      limit,
+      sortBy,
+      status,
+      userId,
+      productId,
+    });
   }
 
   // ──────────────────────────────────────────────
@@ -86,7 +98,7 @@ export class ShowcasesController {
 
   @Get(':id')
   @Public()
-  @ApiOperation({ summary: 'Get a showcase by ID' })
+  @ApiOperation({ summary: 'Get showcase detail' })
   @ApiParam({ name: 'id', description: 'Showcase ID' })
   @SwaggerResponse({ status: 200, description: 'Showcase retrieved successfully' })
   @SwaggerResponse({ status: 404, description: 'Showcase not found' })
@@ -106,8 +118,8 @@ export class ShowcasesController {
   @SwaggerResponse({ status: 403, description: 'Only the owner can update this showcase' })
   @SwaggerResponse({ status: 404, description: 'Showcase not found' })
   async update(
-    @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
     @Body() dto: UpdateShowcaseDto,
   ) {
     return this.showcasesService.update(id, userId, dto);
@@ -120,14 +132,14 @@ export class ShowcasesController {
   @Delete(':id')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Delete a showcase (owner only)' })
+  @ApiOperation({ summary: 'Delete a showcase (owner only, soft delete)' })
   @ApiParam({ name: 'id', description: 'Showcase ID' })
-  @SwaggerResponse({ status: 200, description: 'Showcase deleted successfully' })
+  @SwaggerResponse({ status: 200, description: 'Showcase removed successfully' })
   @SwaggerResponse({ status: 403, description: 'Only the owner can delete this showcase' })
   @SwaggerResponse({ status: 404, description: 'Showcase not found' })
   async remove(
-    @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
   ) {
     return this.showcasesService.remove(id, userId);
   }
@@ -144,8 +156,8 @@ export class ShowcasesController {
   @SwaggerResponse({ status: 200, description: 'Like toggled successfully' })
   @SwaggerResponse({ status: 404, description: 'Showcase not found' })
   async toggleLike(
-    @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
   ) {
     return this.showcasesService.toggleLike(id, userId);
   }
@@ -162,8 +174,8 @@ export class ShowcasesController {
   @SwaggerResponse({ status: 201, description: 'Comment added successfully' })
   @SwaggerResponse({ status: 404, description: 'Showcase not found' })
   async addComment(
-    @CurrentUser('sub') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser('sub') userId: string,
     @Body() dto: ShowcaseCommentDto,
   ) {
     return this.showcasesService.addComment(id, userId, dto);
@@ -175,7 +187,7 @@ export class ShowcasesController {
 
   @Get(':id/comments')
   @Public()
-  @ApiOperation({ summary: 'Get comments for a showcase' })
+  @ApiOperation({ summary: 'List comments for a showcase' })
   @ApiParam({ name: 'id', description: 'Showcase ID' })
   @SwaggerResponse({ status: 200, description: 'Comments retrieved successfully' })
   @SwaggerResponse({ status: 404, description: 'Showcase not found' })
@@ -196,7 +208,7 @@ export class ShowcasesController {
   @Patch(':id/moderate')
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: 'Moderate a showcase (admin only)' })
+  @ApiOperation({ summary: 'Moderate a showcase (approve/reject/feature)' })
   @ApiParam({ name: 'id', description: 'Showcase ID' })
   @SwaggerResponse({ status: 200, description: 'Showcase moderated successfully' })
   @SwaggerResponse({ status: 404, description: 'Showcase not found' })

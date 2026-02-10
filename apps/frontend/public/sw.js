@@ -296,6 +296,78 @@ self.addEventListener("fetch", function (event) {
   event.respondWith(networkFirst(event.request, DYNAMIC_CACHE, API_TIMEOUT));
 });
 
+// ─── Push notification handler ────────────────────────────────────────────
+
+self.addEventListener("push", function (event) {
+  if (!event.data) return;
+
+  var data;
+  try {
+    data = event.data.json();
+  } catch (e) {
+    data = {
+      title: "New Notification",
+      body: event.data.text(),
+    };
+  }
+
+  var options = {
+    body: data.body || "",
+    icon: data.icon || "/icons/icon-192x192.png",
+    badge: "/icons/icon-72x72.png",
+    vibrate: [100, 50, 100],
+    data: data.data || {},
+    actions: [],
+    tag: data.data && data.data.notificationId
+      ? "notification-" + data.data.notificationId
+      : "notification-" + Date.now(),
+    renotify: true,
+  };
+
+  // Add action button if URL provided
+  if (data.data && data.data.url) {
+    options.actions.push({
+      action: "open",
+      title: "View",
+    });
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || "Notification", options)
+  );
+});
+
+// ─── Notification click handler ──────────────────────────────────────────
+
+self.addEventListener("notificationclick", function (event) {
+  event.notification.close();
+
+  var url = "/";
+  if (event.notification.data && event.notification.data.url) {
+    url = event.notification.data.url;
+  }
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (clientList) {
+      // If a window is already open, focus it and navigate
+      for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i];
+        if (client.url.includes(self.location.origin) && "focus" in client) {
+          client.focus();
+          if (url !== "/") {
+            client.navigate(url);
+          }
+          return;
+        }
+      }
+      // Otherwise open a new window
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(url);
+      }
+    })
+  );
+});
+
 // ─── Background sync placeholder ───────────────────────────────────────────
 
 self.addEventListener("message", function (event) {

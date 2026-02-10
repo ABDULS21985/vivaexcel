@@ -33,24 +33,26 @@ interface ApiResponseWrapper<T> {
 export const showcaseKeys = {
   all: ["showcases"] as const,
   lists: () => [...showcaseKeys.all, "list"] as const,
-  list: (params?: ShowcaseQueryParams) =>
-    [...showcaseKeys.lists(), params] as const,
-  detail: (id: string) => [...showcaseKeys.all, "detail", id] as const,
-  comments: (showcaseId: string) =>
-    [...showcaseKeys.all, "comments", showcaseId] as const,
+  list: (query: ShowcaseQueryParams) => [...showcaseKeys.lists(), query] as const,
+  details: () => [...showcaseKeys.all, "detail"] as const,
+  detail: (id: string) => [...showcaseKeys.details(), id] as const,
+  comments: (id: string) => [...showcaseKeys.all, "comments", id] as const,
 };
 
 // =============================================================================
 // Hooks
 // =============================================================================
 
-export function useShowcases(params?: ShowcaseQueryParams) {
+/**
+ * Fetch paginated showcases with infinite scrolling support.
+ */
+export function useShowcases(query?: ShowcaseQueryParams) {
   return useInfiniteQuery({
-    queryKey: showcaseKeys.list(params),
+    queryKey: showcaseKeys.list(query ?? {}),
     queryFn: ({ pageParam }: { pageParam: number | undefined }) =>
       apiGet<ApiResponseWrapper<ShowcasesResponse>>("/showcases", {
-        ...params,
-        page: pageParam ?? params?.page ?? 1,
+        ...query,
+        page: pageParam ?? query?.page ?? 1,
       }).then((res) => res.data),
     initialPageParam: 1 as number | undefined,
     getNextPageParam: (lastPage) => {
@@ -62,6 +64,9 @@ export function useShowcases(params?: ShowcaseQueryParams) {
   });
 }
 
+/**
+ * Fetch a single showcase by ID.
+ */
 export function useShowcase(id: string) {
   return useQuery({
     queryKey: showcaseKeys.detail(id),
@@ -74,24 +79,9 @@ export function useShowcase(id: string) {
   });
 }
 
-export function useShowcaseComments(showcaseId: string) {
-  return useInfiniteQuery({
-    queryKey: showcaseKeys.comments(showcaseId),
-    queryFn: ({ pageParam }: { pageParam: number | undefined }) =>
-      apiGet<ApiResponseWrapper<ShowcaseCommentsResponse>>(
-        `/showcases/${showcaseId}/comments`,
-        { page: pageParam ?? 1, limit: 20 },
-      ).then((res) => res.data),
-    initialPageParam: 1 as number | undefined,
-    getNextPageParam: (lastPage) => {
-      const meta = lastPage.meta;
-      if (meta.page < meta.totalPages) return meta.page + 1;
-      return undefined;
-    },
-    enabled: !!showcaseId,
-  });
-}
-
+/**
+ * Create a new showcase.
+ */
 export function useCreateShowcase() {
   const queryClient = useQueryClient();
 
@@ -106,6 +96,9 @@ export function useCreateShowcase() {
   });
 }
 
+/**
+ * Update an existing showcase.
+ */
 export function useUpdateShowcase() {
   const queryClient = useQueryClient();
 
@@ -123,6 +116,9 @@ export function useUpdateShowcase() {
   });
 }
 
+/**
+ * Delete a showcase.
+ */
 export function useDeleteShowcase() {
   const queryClient = useQueryClient();
 
@@ -135,6 +131,9 @@ export function useDeleteShowcase() {
   });
 }
 
+/**
+ * Toggle like on a showcase with optimistic update.
+ */
 export function useToggleShowcaseLike() {
   const queryClient = useQueryClient();
 
@@ -143,7 +142,40 @@ export function useToggleShowcaseLike() {
       apiPost<ApiResponse<{ liked: boolean }>>(
         `/showcases/${showcaseId}/like`,
       ).then((res) => res.data),
-    onSuccess: (_data, showcaseId) => {
+    onMutate: async (showcaseId) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({
+        queryKey: showcaseKeys.detail(showcaseId),
+      });
+
+      // Snapshot the previous value
+      const previousShowcase = queryClient.getQueryData<Showcase>(
+        showcaseKeys.detail(showcaseId),
+      );
+
+      // Optimistically update the likes count
+      if (previousShowcase) {
+        queryClient.setQueryData<Showcase>(
+          showcaseKeys.detail(showcaseId),
+          {
+            ...previousShowcase,
+            likesCount: previousShowcase.likesCount + 1,
+          },
+        );
+      }
+
+      return { previousShowcase };
+    },
+    onError: (_err, showcaseId, context) => {
+      // Roll back to the previous value on error
+      if (context?.previousShowcase) {
+        queryClient.setQueryData(
+          showcaseKeys.detail(showcaseId),
+          context.previousShowcase,
+        );
+      }
+    },
+    onSettled: (_data, _error, showcaseId) => {
       queryClient.invalidateQueries({
         queryKey: showcaseKeys.detail(showcaseId),
       });
@@ -152,6 +184,24 @@ export function useToggleShowcaseLike() {
   });
 }
 
+/**
+ * Fetch comments for a showcase.
+ */
+export function useShowcaseComments(showcaseId: string, page?: number) {
+  return useQuery({
+    queryKey: [...showcaseKeys.comments(showcaseId), page] as const,
+    queryFn: () =>
+      apiGet<ApiResponseWrapper<ShowcaseCommentsResponse>>(
+        `/showcases/${showcaseId}/comments`,
+        { page: page ?? 1, limit: 20 },
+      ).then((res) => res.data),
+    enabled: !!showcaseId,
+  });
+}
+
+/**
+ * Add a comment to a showcase.
+ */
 export function useAddShowcaseComment() {
   const queryClient = useQueryClient();
 

@@ -9,15 +9,13 @@ import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductQuestion } from './entities/product-question.entity';
 import { ProductAnswer } from './entities/product-answer.entity';
-import { QuestionUpvote } from './entities/question-upvote.entity';
-import { AnswerUpvote } from './entities/answer-upvote.entity';
 import { DigitalProduct } from '../../entities/digital-product.entity';
-import { SellerProfile } from '../../entities/seller-profile.entity';
-import { CreateQuestionDto, CreateAnswerDto, QAQueryDto } from './dto/qa.dto';
-import { QAStatus, QASortBy } from './enums/qa.enums';
+import { CreateQuestionDto, CreateAnswerDto, QAQueryDto, QASortBy } from './dto/qa.dto';
+import { QAStatus } from './enums/qa.enums';
 import {
   ApiResponse,
   PaginatedResponse,
+  ResponseMeta,
 } from '../../common/interfaces/response.interface';
 
 @Injectable()
@@ -27,22 +25,10 @@ export class ProductQAService {
   constructor(
     @InjectRepository(ProductQuestion)
     private readonly questionRepository: Repository<ProductQuestion>,
-
     @InjectRepository(ProductAnswer)
     private readonly answerRepository: Repository<ProductAnswer>,
-
-    @InjectRepository(QuestionUpvote)
-    private readonly questionUpvoteRepository: Repository<QuestionUpvote>,
-
-    @InjectRepository(AnswerUpvote)
-    private readonly answerUpvoteRepository: Repository<AnswerUpvote>,
-
     @InjectRepository(DigitalProduct)
     private readonly digitalProductRepository: Repository<DigitalProduct>,
-
-    @InjectRepository(SellerProfile)
-    private readonly sellerProfileRepository: Repository<SellerProfile>,
-
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -54,6 +40,7 @@ export class ProductQAService {
     userId: string,
     dto: CreateQuestionDto,
   ): Promise<ApiResponse<ProductQuestion>> {
+    // Verify the product exists
     const product = await this.digitalProductRepository.findOne({
       where: { id: dto.productId },
     });
@@ -64,18 +51,20 @@ export class ProductQAService {
     }
 
     const question = this.questionRepository.create({
-      productId: dto.productId,
       userId,
+      productId: dto.productId,
       content: dto.content,
       status: QAStatus.APPROVED,
+      answerCount: 0,
+      upvoteCount: 0,
     });
 
     const saved = await this.questionRepository.save(question);
 
+    // Emit event
     this.eventEmitter.emit('question.created', {
       userId,
       questionId: saved.id,
-      productId: dto.productId,
     });
 
     this.logger.debug(
@@ -96,8 +85,7 @@ export class ProductQAService {
   async getQuestions(
     query: QAQueryDto,
   ): Promise<ApiResponse<PaginatedResponse<ProductQuestion>>> {
-    const { productId, page, limit, sortBy } = query;
-    const skip = (page - 1) * limit;
+    const { productId, page = 1, limit = 20, sortBy = QASortBy.NEWEST } = query;
 
     const qb = this.questionRepository
       .createQueryBuilder('question')
@@ -108,7 +96,8 @@ export class ProductQAService {
     // Apply sorting
     switch (sortBy) {
       case QASortBy.POPULAR:
-        qb.orderBy('question.upvoteCount', 'DESC');
+        qb.orderBy('question.upvoteCount', 'DESC')
+          .addOrderBy('question.createdAt', 'DESC');
         break;
       case QASortBy.UNANSWERED:
         qb.orderBy('question.answerCount', 'ASC')
@@ -120,60 +109,30 @@ export class ProductQAService {
         break;
     }
 
-    const [questions, total] = await qb
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
+    // Apply pagination
+    const skip = (page - 1) * limit;
+    qb.skip(skip).take(limit);
 
-    // For each question, load the top answer
-    const questionsWithTopAnswer = await Promise.all(
-      questions.map(async (question) => {
-        const topAnswer = await this.answerRepository
-          .createQueryBuilder('answer')
-          .leftJoinAndSelect('answer.user', 'user')
-          .where('answer.questionId = :questionId', {
-            questionId: question.id,
-          })
-          .orderBy('answer.isAccepted', 'DESC')
-          .addOrderBy('answer.isSellerAnswer', 'DESC')
-          .addOrderBy('answer.upvoteCount', 'DESC')
-          .limit(1)
-          .getOne();
+    const [items, total] = await qb.getManyAndCount();
 
-        return {
-          ...question,
-          topAnswer: topAnswer || null,
-        };
-      }),
-    );
-
-    const totalPages = Math.ceil(total / limit);
+    const meta: ResponseMeta = {
+      total,
+      page,
+      limit,
+      hasNextPage: page * limit < total,
+      hasPreviousPage: page > 1,
+    };
 
     return {
       status: 'success',
       message: 'Questions retrieved successfully',
-      data: {
-        items: questionsWithTopAnswer as any,
-        meta: {
-          total,
-          page,
-          limit,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1,
-        },
-      },
-      meta: {
-        total,
-        page,
-        limit,
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1,
-      },
+      data: { items, meta },
+      meta,
     };
   }
 
   // ──────────────────────────────────────────────
-  //  Get single question with all answers
+  //  Get single question with answers
   // ──────────────────────────────────────────────
 
   async getQuestion(
@@ -181,25 +140,12 @@ export class ProductQAService {
   ): Promise<ApiResponse<ProductQuestion>> {
     const question = await this.questionRepository.findOne({
       where: { id },
-      relations: ['user', 'product'],
+      relations: ['user', 'answers', 'answers.user'],
     });
 
     if (!question) {
       throw new NotFoundException(`Question with ID "${id}" not found`);
     }
-
-    // Load answers sorted: accepted first, then seller answers, then by upvotes, then chronologically
-    const answers = await this.answerRepository
-      .createQueryBuilder('answer')
-      .leftJoinAndSelect('answer.user', 'user')
-      .where('answer.questionId = :questionId', { questionId: id })
-      .orderBy('answer.isAccepted', 'DESC')
-      .addOrderBy('answer.isSellerAnswer', 'DESC')
-      .addOrderBy('answer.upvoteCount', 'DESC')
-      .addOrderBy('answer.createdAt', 'ASC')
-      .getMany();
-
-    question.answers = answers;
 
     return {
       status: 'success',
@@ -217,8 +163,10 @@ export class ProductQAService {
     userId: string,
     dto: CreateAnswerDto,
   ): Promise<ApiResponse<ProductAnswer>> {
+    // Load question with product relation to check seller
     const question = await this.questionRepository.findOne({
       where: { id: questionId },
+      relations: ['product'],
     });
 
     if (!question) {
@@ -227,43 +175,16 @@ export class ProductQAService {
       );
     }
 
-    // Determine if the answering user is the product seller
-    let isSellerAnswer = false;
-
-    const product = await this.digitalProductRepository.findOne({
-      where: { id: question.productId },
-    });
-
-    if (product) {
-      // Check if user is the product creator
-      if (product.createdBy === userId) {
-        isSellerAnswer = true;
-      } else {
-        // Also check via SellerProfile
-        const sellerProfile = await this.sellerProfileRepository.findOne({
-          where: { userId },
-        });
-        if (sellerProfile) {
-          // Check if this seller created the product
-          const productCreatorProfile =
-            await this.sellerProfileRepository.findOne({
-              where: { userId: product.createdBy },
-            });
-          if (
-            productCreatorProfile &&
-            productCreatorProfile.userId === userId
-          ) {
-            isSellerAnswer = true;
-          }
-        }
-      }
-    }
+    // Determine if this user is the product seller
+    const isSellerAnswer = question.product?.createdBy === userId;
 
     const answer = this.answerRepository.create({
       questionId,
       userId,
       content: dto.content,
       isSellerAnswer,
+      isAccepted: false,
+      upvoteCount: 0,
     });
 
     const saved = await this.answerRepository.save(answer);
@@ -275,15 +196,15 @@ export class ProductQAService {
       1,
     );
 
+    // Emit event
     this.eventEmitter.emit('answer.created', {
       userId,
       questionId,
       answerId: saved.id,
-      productId: question.productId,
     });
 
     this.logger.debug(
-      `Answer ${saved.id} created for question ${questionId} by user ${userId} (seller: ${isSellerAnswer})`,
+      `Answer ${saved.id} created for question ${questionId} by user ${userId}${isSellerAnswer ? ' (seller)' : ''}`,
     );
 
     return {
@@ -310,31 +231,24 @@ export class ProductQAService {
       throw new NotFoundException(`Answer with ID "${answerId}" not found`);
     }
 
-    // Only the question author (OP) can accept an answer
+    // Only the question author can accept an answer
     if (answer.question.userId !== userId) {
       throw new ForbiddenException(
         'Only the question author can accept an answer',
       );
     }
 
-    // Unset any previously accepted answer on the same question
-    await this.answerRepository.update(
-      { questionId: answer.questionId, isAccepted: true },
-      { isAccepted: false },
-    );
-
-    // Set this answer as accepted
     answer.isAccepted = true;
     const saved = await this.answerRepository.save(answer);
 
+    // Emit event
     this.eventEmitter.emit('answer.accepted', {
-      userId: answer.userId,
-      questionId: answer.questionId,
-      answerId,
+      userId,
+      answerId: saved.id,
     });
 
     this.logger.debug(
-      `Answer ${answerId} accepted for question ${answer.questionId}`,
+      `Answer ${answerId} accepted by user ${userId}`,
     );
 
     return {
@@ -345,13 +259,13 @@ export class ProductQAService {
   }
 
   // ──────────────────────────────────────────────
-  //  Upvote question (toggle)
+  //  Upvote question
   // ──────────────────────────────────────────────
 
   async upvoteQuestion(
     questionId: string,
     userId: string,
-  ): Promise<ApiResponse<{ upvoted: boolean; upvoteCount: number }>> {
+  ): Promise<ApiResponse<{ upvoteCount: number }>> {
     const question = await this.questionRepository.findOne({
       where: { id: questionId },
     });
@@ -362,61 +276,33 @@ export class ProductQAService {
       );
     }
 
-    const existingUpvote = await this.questionUpvoteRepository.findOne({
-      where: { questionId, userId },
-    });
+    await this.questionRepository.increment(
+      { id: questionId },
+      'upvoteCount',
+      1,
+    );
 
-    let upvoted: boolean;
+    const updatedCount = question.upvoteCount + 1;
 
-    if (existingUpvote) {
-      // Remove upvote
-      await this.questionUpvoteRepository.remove(existingUpvote);
-      await this.questionRepository.decrement(
-        { id: questionId },
-        'upvoteCount',
-        1,
-      );
-      upvoted = false;
-    } else {
-      // Add upvote
-      const upvote = this.questionUpvoteRepository.create({
-        questionId,
-        userId,
-      });
-      await this.questionUpvoteRepository.save(upvote);
-      await this.questionRepository.increment(
-        { id: questionId },
-        'upvoteCount',
-        1,
-      );
-      upvoted = true;
-    }
-
-    // Fetch updated count
-    const updated = await this.questionRepository.findOne({
-      where: { id: questionId },
-    });
+    this.logger.debug(
+      `Question ${questionId} upvoted by user ${userId}, new count: ${updatedCount}`,
+    );
 
     return {
       status: 'success',
-      message: upvoted
-        ? 'Question upvoted successfully'
-        : 'Question upvote removed successfully',
-      data: {
-        upvoted,
-        upvoteCount: updated?.upvoteCount ?? 0,
-      },
+      message: 'Question upvoted successfully',
+      data: { upvoteCount: updatedCount },
     };
   }
 
   // ──────────────────────────────────────────────
-  //  Upvote answer (toggle)
+  //  Upvote answer
   // ──────────────────────────────────────────────
 
   async upvoteAnswer(
     answerId: string,
     userId: string,
-  ): Promise<ApiResponse<{ upvoted: boolean; upvoteCount: number }>> {
+  ): Promise<ApiResponse<{ upvoteCount: number }>> {
     const answer = await this.answerRepository.findOne({
       where: { id: answerId },
     });
@@ -425,50 +311,22 @@ export class ProductQAService {
       throw new NotFoundException(`Answer with ID "${answerId}" not found`);
     }
 
-    const existingUpvote = await this.answerUpvoteRepository.findOne({
-      where: { answerId, userId },
-    });
+    await this.answerRepository.increment(
+      { id: answerId },
+      'upvoteCount',
+      1,
+    );
 
-    let upvoted: boolean;
+    const updatedCount = answer.upvoteCount + 1;
 
-    if (existingUpvote) {
-      // Remove upvote
-      await this.answerUpvoteRepository.remove(existingUpvote);
-      await this.answerRepository.decrement(
-        { id: answerId },
-        'upvoteCount',
-        1,
-      );
-      upvoted = false;
-    } else {
-      // Add upvote
-      const upvote = this.answerUpvoteRepository.create({
-        answerId,
-        userId,
-      });
-      await this.answerUpvoteRepository.save(upvote);
-      await this.answerRepository.increment(
-        { id: answerId },
-        'upvoteCount',
-        1,
-      );
-      upvoted = true;
-    }
-
-    // Fetch updated count
-    const updated = await this.answerRepository.findOne({
-      where: { id: answerId },
-    });
+    this.logger.debug(
+      `Answer ${answerId} upvoted by user ${userId}, new count: ${updatedCount}`,
+    );
 
     return {
       status: 'success',
-      message: upvoted
-        ? 'Answer upvoted successfully'
-        : 'Answer upvote removed successfully',
-      data: {
-        upvoted,
-        upvoteCount: updated?.upvoteCount ?? 0,
-      },
+      message: 'Answer upvoted successfully',
+      data: { upvoteCount: updatedCount },
     };
   }
 }

@@ -6,13 +6,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Showcase } from './entities/showcase.entity';
 import { ShowcaseLike } from './entities/showcase-like.entity';
 import { ShowcaseComment } from './entities/showcase-comment.entity';
-import { Order } from '../../entities/order.entity';
-import { OrderStatus } from '../../entities/order.entity';
+import { Order, OrderStatus } from '../../entities/order.entity';
+import { OrderItem } from '../../entities/order-item.entity';
 import { DigitalProduct } from '../../entities/digital-product.entity';
 import { ShowcaseStatus } from './enums/showcase.enums';
 import {
@@ -22,10 +22,7 @@ import {
   ShowcaseCommentDto,
   ShowcaseSortBy,
 } from './dto/showcase.dto';
-import {
-  ApiResponse,
-  PaginatedResponse,
-} from '../../common/interfaces/response.interface';
+import { ApiResponse, PaginatedResponse } from '../../common/interfaces/response.interface';
 
 @Injectable()
 export class ShowcasesService {
@@ -40,6 +37,8 @@ export class ShowcasesService {
     private readonly showcaseCommentRepository: Repository<ShowcaseComment>,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
     @InjectRepository(DigitalProduct)
     private readonly digitalProductRepository: Repository<DigitalProduct>,
     private readonly eventEmitter: EventEmitter2,
@@ -63,24 +62,14 @@ export class ShowcasesService {
       );
     }
 
-    // Verify user owns the product (has a completed order containing this product)
-    const userOrder = await this.orderRepository
-      .createQueryBuilder('order')
-      .innerJoin('order.items', 'item')
-      .where('order.userId = :userId', { userId })
-      .andWhere('order.status = :status', { status: OrderStatus.COMPLETED })
-      .andWhere('item.digitalProductId = :productId', {
-        productId: dto.productId,
-      })
-      .getOne();
-
-    if (!userOrder) {
-      throw new ForbiddenException(
-        'You must have purchased this product to create a showcase',
+    // Verify user has purchased the product
+    const hasPurchased = await this.verifyPurchase(userId, dto.productId);
+    if (!hasPurchased) {
+      throw new BadRequestException(
+        'You must purchase this product before creating a showcase',
       );
     }
 
-    // Create showcase with PENDING status
     const showcase = this.showcaseRepository.create({
       userId,
       productId: dto.productId,
@@ -97,7 +86,6 @@ export class ShowcasesService {
 
     const saved = await this.showcaseRepository.save(showcase);
 
-    // Emit event
     this.eventEmitter.emit('showcase.created', {
       userId,
       showcaseId: saved.id,
@@ -109,31 +97,29 @@ export class ShowcasesService {
 
     return {
       status: 'success',
-      message: 'Showcase submitted successfully and is pending review',
+      message: 'Showcase submitted successfully and is pending approval',
       data: saved,
     };
   }
 
   // ──────────────────────────────────────────────
-  //  Find all showcases
+  //  Find all showcases (paginated)
   // ──────────────────────────────────────────────
 
   async findAll(
     query: ShowcaseQueryDto,
   ): Promise<ApiResponse<PaginatedResponse<Showcase>>> {
     const { page = 1, limit = 20, sortBy, status, userId, productId } = query;
-    const skip = (page - 1) * limit;
 
     const qb = this.showcaseRepository
       .createQueryBuilder('showcase')
       .leftJoinAndSelect('showcase.user', 'user')
       .leftJoinAndSelect('showcase.product', 'product');
 
-    // Apply filters
+    // For public queries, only show approved or featured
     if (status) {
       qb.andWhere('showcase.status = :status', { status });
     } else {
-      // For public queries, default to APPROVED and FEATURED statuses only
       qb.andWhere('showcase.status IN (:...statuses)', {
         statuses: [ShowcaseStatus.APPROVED, ShowcaseStatus.FEATURED],
       });
@@ -147,16 +133,18 @@ export class ShowcasesService {
       qb.andWhere('showcase.productId = :productId', { productId });
     }
 
-    // Apply sorting
+    // Sorting
     switch (sortBy) {
       case ShowcaseSortBy.POPULAR:
         qb.orderBy('showcase.likesCount', 'DESC');
+        qb.addOrderBy('showcase.viewCount', 'DESC');
         break;
       case ShowcaseSortBy.FEATURED:
         qb.orderBy(
           `CASE WHEN showcase.status = '${ShowcaseStatus.FEATURED}' THEN 0 ELSE 1 END`,
           'ASC',
-        ).addOrderBy('showcase.createdAt', 'DESC');
+        );
+        qb.addOrderBy('showcase.createdAt', 'DESC');
         break;
       case ShowcaseSortBy.NEWEST:
       default:
@@ -164,7 +152,11 @@ export class ShowcasesService {
         break;
     }
 
-    const [items, total] = await qb.skip(skip).take(limit).getManyAndCount();
+    const total = await qb.getCount();
+    const items = await qb
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
 
     const totalPages = Math.ceil(total / limit);
 
@@ -233,21 +225,18 @@ export class ShowcasesService {
       throw new NotFoundException(`Showcase with ID "${id}" not found`);
     }
 
-    // Verify ownership
     if (showcase.userId !== userId) {
       throw new ForbiddenException('You can only update your own showcases');
     }
 
-    // Update fields
-    const updateData: Partial<Showcase> = {};
-    if (dto.title !== undefined) updateData.title = dto.title;
-    if (dto.description !== undefined) updateData.description = dto.description;
-    if (dto.images !== undefined) updateData.images = dto.images;
-    if (dto.projectUrl !== undefined) updateData.projectUrl = dto.projectUrl;
-    if (dto.tags !== undefined) updateData.tags = dto.tags;
-    if (dto.productId !== undefined) updateData.productId = dto.productId;
+    const updatedData: Partial<Showcase> = {};
+    if (dto.title !== undefined) updatedData.title = dto.title;
+    if (dto.description !== undefined) updatedData.description = dto.description;
+    if (dto.images !== undefined) updatedData.images = dto.images;
+    if (dto.projectUrl !== undefined) updatedData.projectUrl = dto.projectUrl;
+    if (dto.tags !== undefined) updatedData.tags = dto.tags;
 
-    await this.showcaseRepository.update(id, updateData);
+    await this.showcaseRepository.update(id, updatedData);
 
     const updated = await this.showcaseRepository.findOne({
       where: { id },
@@ -267,7 +256,10 @@ export class ShowcasesService {
   //  Remove showcase (soft delete)
   // ──────────────────────────────────────────────
 
-  async remove(id: string, userId: string): Promise<ApiResponse<null>> {
+  async remove(
+    id: string,
+    userId: string,
+  ): Promise<ApiResponse<null>> {
     const showcase = await this.showcaseRepository.findOne({
       where: { id },
     });
@@ -276,7 +268,6 @@ export class ShowcasesService {
       throw new NotFoundException(`Showcase with ID "${id}" not found`);
     }
 
-    // Verify ownership
     if (showcase.userId !== userId) {
       throw new ForbiddenException('You can only delete your own showcases');
     }
@@ -287,7 +278,7 @@ export class ShowcasesService {
 
     return {
       status: 'success',
-      message: 'Showcase deleted successfully',
+      message: 'Showcase removed successfully',
       data: null,
     };
   }
@@ -299,18 +290,15 @@ export class ShowcasesService {
   async toggleLike(
     showcaseId: string,
     userId: string,
-  ): Promise<ApiResponse<{ liked: boolean }>> {
+  ): Promise<ApiResponse<{ liked: boolean; likesCount: number }>> {
     const showcase = await this.showcaseRepository.findOne({
       where: { id: showcaseId },
     });
 
     if (!showcase) {
-      throw new NotFoundException(
-        `Showcase with ID "${showcaseId}" not found`,
-      );
+      throw new NotFoundException(`Showcase with ID "${showcaseId}" not found`);
     }
 
-    // Check if like exists
     const existingLike = await this.showcaseLikeRepository.findOne({
       where: { showcaseId, userId },
     });
@@ -320,11 +308,7 @@ export class ShowcasesService {
     if (existingLike) {
       // Remove like
       await this.showcaseLikeRepository.remove(existingLike);
-      await this.showcaseRepository.decrement(
-        { id: showcaseId },
-        'likesCount',
-        1,
-      );
+      await this.showcaseRepository.decrement({ id: showcaseId }, 'likesCount', 1);
       liked = false;
     } else {
       // Add like
@@ -333,31 +317,31 @@ export class ShowcasesService {
         userId,
       });
       await this.showcaseLikeRepository.save(like);
-      await this.showcaseRepository.increment(
-        { id: showcaseId },
-        'likesCount',
-        1,
-      );
+      await this.showcaseRepository.increment({ id: showcaseId }, 'likesCount', 1);
       liked = true;
+
+      this.eventEmitter.emit('showcase.liked', {
+        showcaseId,
+        userId,
+        showcaseOwnerId: showcase.userId,
+      });
     }
 
-    // Emit event
-    this.eventEmitter.emit('showcase.liked', {
-      showcaseId,
-      userId,
-      liked,
+    const updatedShowcase = await this.showcaseRepository.findOne({
+      where: { id: showcaseId },
     });
 
     this.logger.debug(
-      `User ${userId} ${liked ? 'liked' : 'unliked'} showcase ${showcaseId}`,
+      `Showcase ${showcaseId} ${liked ? 'liked' : 'unliked'} by user ${userId}`,
     );
 
     return {
       status: 'success',
-      message: liked
-        ? 'Showcase liked successfully'
-        : 'Showcase unliked successfully',
-      data: { liked },
+      message: liked ? 'Showcase liked' : 'Showcase unliked',
+      data: {
+        liked,
+        likesCount: updatedShowcase!.likesCount,
+      },
     };
   }
 
@@ -375,19 +359,17 @@ export class ShowcasesService {
     });
 
     if (!showcase) {
-      throw new NotFoundException(
-        `Showcase with ID "${showcaseId}" not found`,
-      );
+      throw new NotFoundException(`Showcase with ID "${showcaseId}" not found`);
     }
 
-    // If parentId is provided, verify the parent comment exists and belongs to the same showcase
+    // Validate parent comment exists if parentId is provided
     if (dto.parentId) {
       const parentComment = await this.showcaseCommentRepository.findOne({
         where: { id: dto.parentId, showcaseId },
       });
       if (!parentComment) {
-        throw new BadRequestException(
-          `Parent comment with ID "${dto.parentId}" not found in this showcase`,
+        throw new NotFoundException(
+          `Parent comment with ID "${dto.parentId}" not found`,
         );
       }
     }
@@ -396,38 +378,40 @@ export class ShowcasesService {
       showcaseId,
       userId,
       content: dto.content,
-      parentId: dto.parentId || undefined,
+      parentId: dto.parentId,
     });
 
     const saved = await this.showcaseCommentRepository.save(comment);
 
-    // Increment comments count on showcase
-    await this.showcaseRepository.increment(
-      { id: showcaseId },
-      'commentsCount',
-      1,
-    );
+    // Increment comments count
+    await this.showcaseRepository.increment({ id: showcaseId }, 'commentsCount', 1);
 
-    // Emit event
     this.eventEmitter.emit('showcase.commented', {
       showcaseId,
       userId,
       commentId: saved.id,
+      showcaseOwnerId: showcase.userId,
+    });
+
+    // Reload with user relation
+    const commentWithUser = await this.showcaseCommentRepository.findOne({
+      where: { id: saved.id },
+      relations: ['user'],
     });
 
     this.logger.debug(
-      `User ${userId} commented on showcase ${showcaseId}`,
+      `Comment ${saved.id} added to showcase ${showcaseId} by user ${userId}`,
     );
 
     return {
       status: 'success',
       message: 'Comment added successfully',
-      data: saved,
+      data: commentWithUser!,
     };
   }
 
   // ──────────────────────────────────────────────
-  //  Get comments
+  //  Get comments (paginated, nested)
   // ──────────────────────────────────────────────
 
   async getComments(
@@ -440,15 +424,11 @@ export class ShowcasesService {
     });
 
     if (!showcase) {
-      throw new NotFoundException(
-        `Showcase with ID "${showcaseId}" not found`,
-      );
+      throw new NotFoundException(`Showcase with ID "${showcaseId}" not found`);
     }
 
-    const skip = (page - 1) * limit;
-
-    // Get top-level comments (parentId IS NULL) with nested children
-    const [items, totalCount] = await this.showcaseCommentRepository
+    // Get top-level comments with null parentId
+    const qb = this.showcaseCommentRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.user', 'user')
       .leftJoinAndSelect('comment.children', 'children')
@@ -456,22 +436,21 @@ export class ShowcasesService {
       .where('comment.showcaseId = :showcaseId', { showcaseId })
       .andWhere('comment.parentId IS NULL')
       .orderBy('comment.createdAt', 'DESC')
-      .addOrderBy('children.createdAt', 'ASC')
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
+      .skip((page - 1) * limit)
+      .take(limit);
 
-    const totalPages = Math.ceil(totalCount / limit);
+    const [comments, count] = await qb.getManyAndCount();
+    const totalPages = Math.ceil(count / limit);
 
     return {
       status: 'success',
       message: 'Comments retrieved successfully',
       data: {
-        items,
+        items: comments,
         meta: {
           page,
           limit,
-          total: totalCount,
+          total: count,
           hasNextPage: page < totalPages,
           hasPreviousPage: page > 1,
         },
@@ -479,7 +458,7 @@ export class ShowcasesService {
       meta: {
         page,
         limit,
-        total: totalCount,
+        total: count,
         hasNextPage: page < totalPages,
         hasPreviousPage: page > 1,
       },
@@ -509,21 +488,40 @@ export class ShowcasesService {
       relations: ['user', 'product'],
     });
 
-    // Emit event
     this.eventEmitter.emit('showcase.moderated', {
       showcaseId: id,
-      previousStatus: showcase.status,
-      newStatus: status,
+      status,
+      userId: showcase.userId,
     });
 
-    this.logger.log(
-      `Showcase ${id} moderated: ${showcase.status} -> ${status}`,
-    );
+    this.logger.log(`Showcase ${id} moderated: ${status}`);
 
     return {
       status: 'success',
       message: `Showcase ${status} successfully`,
       data: updated!,
     };
+  }
+
+  // ──────────────────────────────────────────────
+  //  Private helpers
+  // ──────────────────────────────────────────────
+
+  private async verifyPurchase(
+    userId: string,
+    productId: string,
+  ): Promise<boolean> {
+    // Check if the user has a completed order containing this product
+    const orderWithProduct = await this.orderRepository
+      .createQueryBuilder('order')
+      .innerJoin('order.items', 'item')
+      .where('order.userId = :userId', { userId })
+      .andWhere('order.status IN (:...statuses)', {
+        statuses: [OrderStatus.COMPLETED],
+      })
+      .andWhere('item.digitalProductId = :productId', { productId })
+      .getOne();
+
+    return !!orderWithProduct;
   }
 }

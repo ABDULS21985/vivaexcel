@@ -2643,7 +2643,7 @@
       "reviews": "Reviews",
       "discussions": "Discussions",
       "answers": "Answers",
-      "memberSince": "Member since",
+      "memberSince": "Member since {date}",
       "level": "Level {level}",
       "specialties": "Specialties",
       "noShowcases": "No showcases yet",
@@ -2656,7 +2656,32 @@
       "stats": "Stats",
       "activity": "Activity",
       "xpProgress": "{current} / {next} XP",
-      "creator": "Creator"
+      "creator": "Creator",
+      "notFound": "User not found",
+      "notFoundDescription": "The profile you are looking for does not exist or has been removed.",
+      "backHome": "Back to Home",
+      "loading": "Loading profile...",
+      "tabs": {
+        "showcases": "Showcases",
+        "reviews": "Reviews",
+        "discussions": "Discussions",
+        "qa": "Q&A",
+        "navigation": "Profile content tabs",
+        "noShowcases": "No showcases yet",
+        "noReviews": "No reviews yet",
+        "noDiscussions": "No discussions yet",
+        "noQA": "No questions or answers yet",
+        "replies": "replies",
+        "question": "Question",
+        "answerLabel": "Answer",
+        "upvotes": "upvotes"
+      },
+      "stats": {
+        "showcases": "Showcases",
+        "reviews": "Reviews",
+        "threads": "Discussions",
+        "answers": "Answers"
+      }
     }
   }
 }

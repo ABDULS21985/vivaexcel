@@ -70,7 +70,7 @@ export class ThreadQueryDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(100)
+  @Max(50)
   limit: number = 20;
 
   @ApiPropertyOptional({ description: 'Filter by category slug' })

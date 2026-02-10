@@ -71,6 +71,27 @@ export class NotificationCenterController {
   }
 
   // ──────────────────────────────────────────────
+  //  Get grouped notifications
+  // ──────────────────────────────────────────────
+
+  @Get('grouped')
+  @ApiOperation({ summary: 'Get grouped notifications for the authenticated user' })
+  @SwaggerResponse({
+    status: 200,
+    description: 'Grouped notifications retrieved successfully',
+  })
+  @ApiQuery({ name: 'type', required: false, enum: NotificationType })
+  @ApiQuery({ name: 'status', required: false, enum: NotificationStatus })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  async getGroupedNotifications(
+    @CurrentUser('sub') userId: string,
+    @Query() query: NotificationQueryDto,
+  ) {
+    return this.notificationCenterService.getGroupedNotifications(userId, query);
+  }
+
+  // ──────────────────────────────────────────────
   //  Get unread count
   // ──────────────────────────────────────────────
 

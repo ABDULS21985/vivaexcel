@@ -10,6 +10,7 @@ import {
   Loader2,
   Calendar,
   Tag,
+  ThumbsUp,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
@@ -39,6 +40,7 @@ interface ShowcaseItem {
   title: string;
   description?: string;
   thumbnailUrl?: string;
+  likesCount?: number;
   createdAt: string;
 }
 
@@ -66,6 +68,7 @@ interface QAItem {
   content: string;
   productName?: string;
   upvoteCount: number;
+  answerCount?: number;
   createdAt: string;
 }
 
@@ -153,14 +156,20 @@ function StarDisplay({ rating }: { rating: number }) {
 // Tab Content Components
 // =============================================================================
 
-function ShowcasesTab({ userId, t }: { userId: string; t: ReturnType<typeof useTranslations> }) {
+function ShowcasesTab({
+  userId,
+  t,
+}: {
+  userId: string;
+  t: ReturnType<typeof useTranslations>;
+}) {
   const { data, isLoading } = useQuery({
     queryKey: ["profile-showcases", userId],
     queryFn: () =>
-      apiGet<ApiResponseWrapper<{ items: ShowcaseItem[] }>>(
-        "/showcases",
-        { userId, limit: 20 },
-      ).then((res) => res.data.items),
+      apiGet<ApiResponseWrapper<{ items: ShowcaseItem[] }>>("/showcases", {
+        userId,
+        limit: 20,
+      }).then((res) => res.data.items),
     staleTime: 3 * 60 * 1000,
   });
 
@@ -182,7 +191,7 @@ function ShowcasesTab({ userId, t }: { userId: string; t: ReturnType<typeof useT
           animate="visible"
         >
           <Link
-            href={`/showcases/${item.id}`}
+            href={`/community/showcases/${item.id}`}
             className="block group rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:shadow-md transition-shadow"
           >
             {/* Thumbnail */}
@@ -210,9 +219,17 @@ function ShowcasesTab({ userId, t }: { userId: string; t: ReturnType<typeof useT
                   {item.description}
                 </p>
               )}
-              <p className="text-[10px] text-neutral-400 dark:text-neutral-500 mt-2">
-                {formatRelativeTime(item.createdAt)}
-              </p>
+              <div className="flex items-center justify-between mt-2">
+                <p className="text-[10px] text-neutral-400 dark:text-neutral-500">
+                  {formatRelativeTime(item.createdAt)}
+                </p>
+                {item.likesCount !== undefined && item.likesCount > 0 && (
+                  <span className="inline-flex items-center gap-1 text-[10px] text-neutral-400 dark:text-neutral-500">
+                    <ThumbsUp className="h-3 w-3" />
+                    {item.likesCount}
+                  </span>
+                )}
+              </div>
             </div>
           </Link>
         </motion.div>
@@ -221,14 +238,20 @@ function ShowcasesTab({ userId, t }: { userId: string; t: ReturnType<typeof useT
   );
 }
 
-function ReviewsTab({ userId, t }: { userId: string; t: ReturnType<typeof useTranslations> }) {
+function ReviewsTab({
+  userId,
+  t,
+}: {
+  userId: string;
+  t: ReturnType<typeof useTranslations>;
+}) {
   const { data, isLoading } = useQuery({
     queryKey: ["profile-reviews", userId],
     queryFn: () =>
-      apiGet<ApiResponseWrapper<{ items: ReviewItem[] }>>(
-        "/reviews",
-        { userId, limit: 20 },
-      ).then((res) => res.data.items),
+      apiGet<ApiResponseWrapper<{ items: ReviewItem[] }>>("/reviews", {
+        userId,
+        limit: 20,
+      }).then((res) => res.data.items),
     staleTime: 3 * 60 * 1000,
   });
 
@@ -273,7 +296,13 @@ function ReviewsTab({ userId, t }: { userId: string; t: ReturnType<typeof useTra
   );
 }
 
-function DiscussionsTab({ userId, t }: { userId: string; t: ReturnType<typeof useTranslations> }) {
+function DiscussionsTab({
+  userId,
+  t,
+}: {
+  userId: string;
+  t: ReturnType<typeof useTranslations>;
+}) {
   const { data, isLoading } = useQuery({
     queryKey: ["profile-discussions", userId],
     queryFn: () =>
@@ -287,7 +316,10 @@ function DiscussionsTab({ userId, t }: { userId: string; t: ReturnType<typeof us
   if (isLoading) return <LoadingState />;
   if (!data || data.length === 0) {
     return (
-      <EmptyState icon={MessageSquare} message={t("tabs.noDiscussions")} />
+      <EmptyState
+        icon={MessageSquare}
+        message={t("tabs.noDiscussions")}
+      />
     );
   }
 
@@ -333,7 +365,13 @@ function DiscussionsTab({ userId, t }: { userId: string; t: ReturnType<typeof us
   );
 }
 
-function QATab({ userId, t }: { userId: string; t: ReturnType<typeof useTranslations> }) {
+function QATab({
+  userId,
+  t,
+}: {
+  userId: string;
+  t: ReturnType<typeof useTranslations>;
+}) {
   const { data, isLoading } = useQuery({
     queryKey: ["profile-qa", userId],
     queryFn: () =>
@@ -372,7 +410,9 @@ function QATab({ userId, t }: { userId: string; t: ReturnType<typeof useTranslat
                 }
               `}
             >
-              {item.type === "question" ? t("tabs.question") : t("tabs.answerLabel")}
+              {item.type === "question"
+                ? t("tabs.question")
+                : t("tabs.answerLabel")}
             </span>
             <div className="flex-1 min-w-0">
               <p className="text-sm text-neutral-700 dark:text-neutral-300 line-clamp-2 leading-relaxed">
@@ -385,6 +425,12 @@ function QATab({ userId, t }: { userId: string; t: ReturnType<typeof useTranslat
                   </span>
                 )}
                 <span>{formatRelativeTime(item.createdAt)}</span>
+                {item.answerCount !== undefined && item.answerCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <MessageSquare className="h-3 w-3" />
+                    {item.answerCount}
+                  </span>
+                )}
                 {item.upvoteCount > 0 && (
                   <span>
                     {item.upvoteCount} {t("tabs.upvotes")}
@@ -407,15 +453,20 @@ export function ProfileTabs({ userId, username }: ProfileTabsProps) {
   const t = useTranslations("profile");
   const [activeTab, setActiveTab] = useState<TabKey>("showcases");
 
-  const tabs: { key: TabKey; label: string; icon: React.ElementType }[] = useMemo(
-    () => [
-      { key: "showcases", label: t("tabs.showcases"), icon: ImageIcon },
-      { key: "reviews", label: t("tabs.reviews"), icon: Star },
-      { key: "discussions", label: t("tabs.discussions"), icon: MessageSquare },
-      { key: "qa", label: t("tabs.qa"), icon: HelpCircle },
-    ],
-    [t],
-  );
+  const tabs: { key: TabKey; label: string; icon: React.ElementType }[] =
+    useMemo(
+      () => [
+        { key: "showcases", label: t("tabs.showcases"), icon: ImageIcon },
+        { key: "reviews", label: t("tabs.reviews"), icon: Star },
+        {
+          key: "discussions",
+          label: t("tabs.discussions"),
+          icon: MessageSquare,
+        },
+        { key: "qa", label: t("tabs.qa"), icon: HelpCircle },
+      ],
+      [t],
+    );
 
   return (
     <div className="w-full">
@@ -455,7 +506,7 @@ export function ProfileTabs({ userId, username }: ProfileTabsProps) {
                 {isActive && (
                   <motion.div
                     layoutId="profile-tab-indicator"
-                    className="absolute bottom-0 inset-x-0 h-0.5 bg-indigo-500"
+                    className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-[#1E4DB7] to-indigo-500"
                     transition={{
                       type: "spring",
                       stiffness: 300,

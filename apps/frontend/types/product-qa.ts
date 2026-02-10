@@ -3,6 +3,8 @@
 // =============================================================================
 // Frontend types for the Product Questions & Answers feature.
 
+import type { User } from "@/providers/auth-provider";
+
 // -----------------------------------------------------------------------------
 // Enums
 // -----------------------------------------------------------------------------
@@ -18,22 +20,15 @@ export type QASortBy = (typeof QASortBy)[keyof typeof QASortBy];
 // Core Interfaces
 // -----------------------------------------------------------------------------
 
-export interface QAUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  username?: string;
-}
-
 export interface ProductQuestion {
   id: string;
   productId: string;
   userId: string;
-  user?: QAUser;
+  user: User;
   content: string;
   answerCount: number;
   upvoteCount: number;
+  answers?: ProductAnswer[];
   createdAt: string;
   updatedAt: string;
   topAnswer?: ProductAnswer;
@@ -43,7 +38,7 @@ export interface ProductAnswer {
   id: string;
   questionId: string;
   userId: string;
-  user?: QAUser;
+  user: User;
   content: string;
   isSellerAnswer: boolean;
   isAccepted: boolean;

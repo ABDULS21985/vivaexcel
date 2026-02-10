@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -33,10 +32,12 @@ import { useAuth } from "@/providers/auth-provider";
 // lightbox, author info, product link, description, tags, like/share actions,
 // stats, and comments section.
 
-export default function ShowcaseDetailClient() {
+interface ShowcaseDetailClientProps {
+  id: string;
+}
+
+export function ShowcaseDetailClient({ id }: ShowcaseDetailClientProps) {
   const t = useTranslations("showcase");
-  const params = useParams();
-  const id = params.id as string;
   const { isAuthenticated } = useAuth();
 
   const { data: showcase, isLoading, error } = useShowcase(id);
@@ -420,9 +421,9 @@ export default function ShowcaseDetailClient() {
                   href={`/store/${showcase.product.slug}`}
                   className="group flex items-center gap-3"
                 >
-                  {showcase.product.featuredImage ? (
+                  {showcase.product.thumbnailUrl ? (
                     <Image
-                      src={showcase.product.featuredImage}
+                      src={showcase.product.thumbnailUrl}
                       alt={showcase.product.title}
                       width={56}
                       height={56}

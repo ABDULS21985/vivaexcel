@@ -137,7 +137,7 @@ export function QuestionsSection({ productId }: QuestionsSectionProps) {
     isLoading,
     isError,
     refetch,
-  } = useProductQuestions(productId, sortBy);
+  } = useProductQuestions({ productId, sortBy });
 
   // ---------------------------------------------------------------------------
   // Derived

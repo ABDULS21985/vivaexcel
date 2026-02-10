@@ -1,9 +1,9 @@
 import {
   Entity,
   Column,
-  Index,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { BaseEntity } from '../../../entities/base.entity';
 import { User } from '../../../entities/user.entity';

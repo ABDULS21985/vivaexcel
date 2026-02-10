@@ -6,8 +6,8 @@ type Props = {
 };
 
 export default async function ThreadDetailPage({ params }: Props) {
-  const { locale } = await params;
+  const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  return <ThreadDetailClient />;
+  return <ThreadDetailClient slug={slug} />;
 }

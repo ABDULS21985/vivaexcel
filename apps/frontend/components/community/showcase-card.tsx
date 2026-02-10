@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Heart, MessageCircle } from "lucide-react";
+import { Heart, MessageCircle, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Badge } from "@ktblog/ui/components";
@@ -53,6 +53,16 @@ export function ShowcaseCard({ showcase }: ShowcaseCardProps) {
               <span className="text-sm text-neutral-500 dark:text-neutral-400">
                 {t("noImage")}
               </span>
+            </div>
+          )}
+
+          {/* Featured badge */}
+          {showcase.status === "featured" && (
+            <div className="absolute start-3 top-3 z-10">
+              <Badge className="gap-1 bg-amber-500 text-white hover:bg-amber-600">
+                <Star className="h-3 w-3 fill-current" />
+                {t("featured")}
+              </Badge>
             </div>
           )}
 

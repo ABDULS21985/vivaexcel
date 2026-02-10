@@ -34,16 +34,19 @@ export const discussionKeys = {
   all: ["discussions"] as const,
   categories: () => [...discussionKeys.all, "categories"] as const,
   threads: () => [...discussionKeys.all, "threads"] as const,
-  threadList: (params?: ThreadQueryParams) =>
-    [...discussionKeys.threads(), "list", params] as const,
+  threadList: (query: ThreadQueryParams) =>
+    [...discussionKeys.threads(), query] as const,
   thread: (slug: string) =>
-    [...discussionKeys.threads(), "detail", slug] as const,
+    [...discussionKeys.all, "thread", slug] as const,
 };
 
 // =============================================================================
 // Hooks
 // =============================================================================
 
+/**
+ * Fetch all discussion categories.
+ */
 export function useDiscussionCategories() {
   return useQuery({
     queryKey: discussionKeys.categories(),
@@ -55,13 +58,16 @@ export function useDiscussionCategories() {
   });
 }
 
-export function useDiscussionThreads(params?: ThreadQueryParams) {
+/**
+ * Fetch paginated discussion threads with infinite scrolling support.
+ */
+export function useDiscussionThreads(query?: ThreadQueryParams) {
   return useInfiniteQuery({
-    queryKey: discussionKeys.threadList(params),
+    queryKey: discussionKeys.threadList(query ?? {}),
     queryFn: ({ pageParam }: { pageParam: number | undefined }) =>
       apiGet<ApiResponseWrapper<ThreadsResponse>>("/discussions/threads", {
-        ...params,
-        page: pageParam ?? params?.page ?? 1,
+        ...query,
+        page: pageParam ?? query?.page ?? 1,
       }).then((res) => res.data),
     initialPageParam: 1 as number | undefined,
     getNextPageParam: (lastPage) => {
@@ -73,6 +79,9 @@ export function useDiscussionThreads(params?: ThreadQueryParams) {
   });
 }
 
+/**
+ * Fetch a single discussion thread by slug.
+ */
 export function useDiscussionThread(slug: string) {
   return useQuery({
     queryKey: discussionKeys.thread(slug),
@@ -85,6 +94,9 @@ export function useDiscussionThread(slug: string) {
   });
 }
 
+/**
+ * Create a new discussion thread.
+ */
 export function useCreateThread() {
   const queryClient = useQueryClient();
 
@@ -101,6 +113,9 @@ export function useCreateThread() {
   });
 }
 
+/**
+ * Update an existing discussion thread.
+ */
 export function useUpdateThread() {
   const queryClient = useQueryClient();
 
@@ -116,6 +131,9 @@ export function useUpdateThread() {
   });
 }
 
+/**
+ * Delete a discussion thread.
+ */
 export function useDeleteThread() {
   const queryClient = useQueryClient();
 
@@ -129,6 +147,9 @@ export function useDeleteThread() {
   });
 }
 
+/**
+ * Create a reply to a discussion thread.
+ */
 export function useCreateReply() {
   const queryClient = useQueryClient();
 
@@ -138,12 +159,16 @@ export function useCreateReply() {
         `/discussions/threads/${threadId}/replies`,
         payload,
       ).then((res) => res.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
+    onSuccess: (_data, variables) => {
+      // Invalidate all thread detail queries to refresh replies
+      queryClient.invalidateQueries({ queryKey: discussionKeys.all });
     },
   });
 }
 
+/**
+ * Toggle like on a discussion reply.
+ */
 export function useToggleReplyLike() {
   const queryClient = useQueryClient();
 
@@ -153,11 +178,14 @@ export function useToggleReplyLike() {
         `/discussions/replies/${replyId}/like`,
       ).then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
+      queryClient.invalidateQueries({ queryKey: discussionKeys.all });
     },
   });
 }
 
+/**
+ * Mark a reply as the accepted answer for a thread.
+ */
 export function useMarkAsAnswer() {
   const queryClient = useQueryClient();
 
@@ -167,7 +195,7 @@ export function useMarkAsAnswer() {
         `/discussions/replies/${replyId}/mark-answer`,
       ).then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: discussionKeys.threads() });
+      queryClient.invalidateQueries({ queryKey: discussionKeys.all });
     },
   });
 }

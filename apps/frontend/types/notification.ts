@@ -4,44 +4,44 @@
 // Type definitions for the Notification Center feature.
 
 export enum NotificationType {
-  ORDER = "ORDER",
-  REVIEW = "REVIEW",
-  PRODUCT_UPDATE = "PRODUCT_UPDATE",
-  PROMOTION = "PROMOTION",
-  SYSTEM = "SYSTEM",
-  COMMUNITY = "COMMUNITY",
-  ACHIEVEMENT = "ACHIEVEMENT",
-  PAYOUT = "PAYOUT",
-  SUBSCRIPTION = "SUBSCRIPTION",
-  SECURITY = "SECURITY",
+  ORDER = "order",
+  REVIEW = "review",
+  PRODUCT_UPDATE = "product_update",
+  PROMOTION = "promotion",
+  SYSTEM = "system",
+  COMMUNITY = "community",
+  ACHIEVEMENT = "achievement",
+  PAYOUT = "payout",
+  SUBSCRIPTION = "subscription",
+  SECURITY = "security",
 }
 
 export enum NotificationChannel {
-  IN_APP = "IN_APP",
-  EMAIL = "EMAIL",
-  PUSH = "PUSH",
-  SMS = "SMS",
+  IN_APP = "in_app",
+  EMAIL = "email",
+  PUSH = "push",
+  SMS = "sms",
 }
 
 export enum NotificationPriority {
-  LOW = "LOW",
-  NORMAL = "NORMAL",
-  HIGH = "HIGH",
-  URGENT = "URGENT",
+  LOW = "low",
+  NORMAL = "normal",
+  HIGH = "high",
+  URGENT = "urgent",
 }
 
 export enum NotificationStatus {
-  UNREAD = "UNREAD",
-  READ = "READ",
-  ARCHIVED = "ARCHIVED",
-  DISMISSED = "DISMISSED",
+  UNREAD = "unread",
+  READ = "read",
+  ARCHIVED = "archived",
+  DISMISSED = "dismissed",
 }
 
 export enum EmailDigestFrequency {
-  INSTANT = "INSTANT",
-  DAILY = "DAILY",
-  WEEKLY = "WEEKLY",
-  NONE = "NONE",
+  INSTANT = "instant",
+  DAILY = "daily",
+  WEEKLY = "weekly",
+  NONE = "none",
 }
 
 export interface Notification {

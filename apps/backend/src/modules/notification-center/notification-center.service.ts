@@ -3,6 +3,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -21,7 +22,9 @@ import { PushSubscribeDto } from './dto/push-subscribe.dto';
 import {
   NotificationType,
   NotificationChannel,
+  NotificationPriority,
   NotificationStatus,
+  EmailDigestFrequency,
 } from './enums/notification.enums';
 import { NotificationsGateway } from '../notifications/notifications.gateway';
 import { EmailService } from '../email/email.service';
@@ -296,6 +299,87 @@ export class NotificationCenterService {
   }
 
   // ──────────────────────────────────────────────
+  //  Get grouped notifications
+  // ──────────────────────────────────────────────
+
+  async getGroupedNotifications(
+    userId: string,
+    query: NotificationQueryDto,
+  ): Promise<{
+    data: Array<{
+      notification: Notification;
+      groupCount?: number;
+      groupLatest?: Notification[];
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    // First get regular notifications
+    const result = await this.getNotifications(userId, query);
+
+    // Find grouped notifications
+    const groupedMap = new Map<string, Notification[]>();
+    const ungrouped: Notification[] = [];
+
+    for (const notif of result.data) {
+      if (notif.groupId) {
+        if (!groupedMap.has(notif.groupId)) {
+          groupedMap.set(notif.groupId, []);
+        }
+        groupedMap.get(notif.groupId)!.push(notif);
+      } else {
+        ungrouped.push(notif);
+      }
+    }
+
+    const data: Array<{
+      notification: Notification;
+      groupCount?: number;
+      groupLatest?: Notification[];
+    }> = [];
+
+    // Add ungrouped as-is
+    for (const notif of ungrouped) {
+      data.push({ notification: notif });
+    }
+
+    // For grouped, show the latest one with count
+    for (const [groupId, notifications] of groupedMap) {
+      const sorted = notifications.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+
+      // Get total count from DB for this group (may be more than what's on this page)
+      const totalGroupCount = await this.notificationRepo.count({
+        where: { userId, groupId },
+      });
+
+      data.push({
+        notification: sorted[0],
+        groupCount: totalGroupCount,
+        groupLatest: sorted.slice(0, 3),
+      });
+    }
+
+    // Sort by createdAt desc
+    data.sort(
+      (a, b) =>
+        new Date(b.notification.createdAt).getTime() -
+        new Date(a.notification.createdAt).getTime(),
+    );
+
+    return {
+      data,
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages: result.totalPages,
+    };
+  }
+
+  // ──────────────────────────────────────────────
   //  Mark as read
   // ──────────────────────────────────────────────
 
@@ -423,6 +507,217 @@ export class NotificationCenterService {
     });
 
     return updated;
+  }
+
+  // ──────────────────────────────────────────────
+  //  Smart Notification Batching
+  // ──────────────────────────────────────────────
+
+  /**
+   * Hourly digest: batch medium-priority unread notifications
+   * for users who have EMAIL digest set to DAILY or WEEKLY.
+   */
+  @Cron('0 * * * *') // Every hour
+  async processHourlyDigest(): Promise<void> {
+    this.logger.log('Processing hourly notification digest...');
+
+    try {
+      // Find users with unread medium-priority notifications
+      const notifications = await this.notificationRepo
+        .createQueryBuilder('n')
+        .select('n.user_id', 'userId')
+        .addSelect('COUNT(*)', 'count')
+        .where('n.status = :status', { status: NotificationStatus.UNREAD })
+        .andWhere('n.priority = :priority', { priority: NotificationPriority.NORMAL })
+        .andWhere('n.channel = :channel', { channel: NotificationChannel.IN_APP })
+        .andWhere("n.created_at > NOW() - INTERVAL '1 hour'")
+        .groupBy('n.user_id')
+        .having('COUNT(*) >= :minCount', { minCount: 3 })
+        .getRawMany<{ userId: string; count: string }>();
+
+      for (const { userId, count } of notifications) {
+        const preference = await this.getOrCreatePreference(userId);
+        if (
+          preference.emailDigest === EmailDigestFrequency.DAILY ||
+          preference.emailDigest === EmailDigestFrequency.WEEKLY
+        ) {
+          continue; // Skip — they'll get it in the daily/weekly digest
+        }
+
+        if (preference.emailDigest === EmailDigestFrequency.NONE) {
+          continue;
+        }
+
+        // Send hourly digest email
+        const recentNotifications = await this.notificationRepo.find({
+          where: {
+            userId,
+            status: NotificationStatus.UNREAD,
+            priority: NotificationPriority.NORMAL,
+          },
+          order: { createdAt: 'DESC' },
+          take: 10,
+        });
+
+        if (recentNotifications.length > 0) {
+          const digestBody = recentNotifications
+            .map((n) => `• ${n.title}: ${n.body}`)
+            .join('\n');
+
+          this.emailService
+            .sendNotification(
+              userId,
+              `You have ${count} new notifications`,
+              digestBody,
+            )
+            .catch((err) =>
+              this.logger.error(`Failed to send hourly digest to ${userId}`, err),
+            );
+        }
+      }
+
+      this.logger.log(`Hourly digest processed for ${notifications.length} user(s)`);
+    } catch (error) {
+      this.logger.error('Failed to process hourly digest', error instanceof Error ? error.stack : String(error));
+    }
+  }
+
+  /**
+   * Daily digest: batch low-priority notifications into a single digest email.
+   * Runs at 8:00 AM UTC every day.
+   */
+  @Cron('0 8 * * *')
+  async processDailyDigest(): Promise<void> {
+    this.logger.log('Processing daily notification digest...');
+
+    try {
+      // Find users who have daily digest enabled
+      const preferences = await this.preferenceRepo.find({
+        where: { emailDigest: EmailDigestFrequency.DAILY },
+      });
+
+      for (const pref of preferences) {
+        const unreadNotifications = await this.notificationRepo.find({
+          where: {
+            userId: pref.userId,
+            status: NotificationStatus.UNREAD,
+          },
+          order: { priority: 'ASC', createdAt: 'DESC' },
+          take: 25,
+        });
+
+        if (unreadNotifications.length === 0) {
+          continue;
+        }
+
+        // Group by type for organized digest
+        const grouped = new Map<string, typeof unreadNotifications>();
+        for (const notif of unreadNotifications) {
+          const key = notif.type;
+          if (!grouped.has(key)) {
+            grouped.set(key, []);
+          }
+          grouped.get(key)!.push(notif);
+        }
+
+        let digestBody = `You have ${unreadNotifications.length} unread notification(s):\n\n`;
+        for (const [type, items] of grouped) {
+          digestBody += `── ${type.toUpperCase()} ──\n`;
+          for (const item of items) {
+            digestBody += `• ${item.title}\n`;
+          }
+          digestBody += '\n';
+        }
+
+        this.emailService
+          .sendNotification(
+            pref.userId,
+            `Your daily notification digest (${unreadNotifications.length} updates)`,
+            digestBody,
+          )
+          .catch((err) =>
+            this.logger.error(`Failed to send daily digest to ${pref.userId}`, err),
+          );
+      }
+
+      this.logger.log(`Daily digest processed for ${preferences.length} user(s)`);
+    } catch (error) {
+      this.logger.error('Failed to process daily digest', error instanceof Error ? error.stack : String(error));
+    }
+  }
+
+  /**
+   * Weekly digest: comprehensive summary of the week's notifications.
+   * Runs Monday at 9:00 AM UTC.
+   */
+  @Cron('0 9 * * 1')
+  async processWeeklyDigest(): Promise<void> {
+    this.logger.log('Processing weekly notification digest...');
+
+    try {
+      const preferences = await this.preferenceRepo.find({
+        where: { emailDigest: EmailDigestFrequency.WEEKLY },
+      });
+
+      for (const pref of preferences) {
+        const weeklyNotifications = await this.notificationRepo
+          .createQueryBuilder('n')
+          .where('n.user_id = :userId', { userId: pref.userId })
+          .andWhere("n.created_at > NOW() - INTERVAL '7 days'")
+          .orderBy('n.priority', 'ASC')
+          .addOrderBy('n.created_at', 'DESC')
+          .take(50)
+          .getMany();
+
+        if (weeklyNotifications.length === 0) {
+          continue;
+        }
+
+        const unreadCount = weeklyNotifications.filter(
+          (n) => n.status === NotificationStatus.UNREAD,
+        ).length;
+
+        let digestBody = `Weekly Summary: ${weeklyNotifications.length} notification(s) this week`;
+        if (unreadCount > 0) {
+          digestBody += ` (${unreadCount} unread)`;
+        }
+        digestBody += '\n\n';
+
+        const grouped = new Map<string, typeof weeklyNotifications>();
+        for (const notif of weeklyNotifications) {
+          const key = notif.type;
+          if (!grouped.has(key)) {
+            grouped.set(key, []);
+          }
+          grouped.get(key)!.push(notif);
+        }
+
+        for (const [type, items] of grouped) {
+          digestBody += `── ${type.toUpperCase()} (${items.length}) ──\n`;
+          for (const item of items.slice(0, 5)) {
+            digestBody += `• ${item.title}\n`;
+          }
+          if (items.length > 5) {
+            digestBody += `  ... and ${items.length - 5} more\n`;
+          }
+          digestBody += '\n';
+        }
+
+        this.emailService
+          .sendNotification(
+            pref.userId,
+            `Your weekly notification digest (${weeklyNotifications.length} updates)`,
+            digestBody,
+          )
+          .catch((err) =>
+            this.logger.error(`Failed to send weekly digest to ${pref.userId}`, err),
+          );
+      }
+
+      this.logger.log(`Weekly digest processed for ${preferences.length} user(s)`);
+    } catch (error) {
+      this.logger.error('Failed to process weekly digest', error instanceof Error ? error.stack : String(error));
+    }
   }
 
   // ──────────────────────────────────────────────

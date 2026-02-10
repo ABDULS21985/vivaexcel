@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ShowcasesController } from './showcases.controller';
 import { ShowcasesService } from './showcases.service';
-import { Showcase, ShowcaseLike, ShowcaseComment } from './entities';
-import { User } from '../../entities/user.entity';
+import { Showcase } from './entities/showcase.entity';
+import { ShowcaseLike } from './entities/showcase-like.entity';
+import { ShowcaseComment } from './entities/showcase-comment.entity';
 import { Order } from '../../entities/order.entity';
+import { OrderItem } from '../../entities/order-item.entity';
 import { DigitalProduct } from '../../entities/digital-product.entity';
 
 @Module({
@@ -14,11 +15,10 @@ import { DigitalProduct } from '../../entities/digital-product.entity';
       Showcase,
       ShowcaseLike,
       ShowcaseComment,
-      User,
       Order,
+      OrderItem,
       DigitalProduct,
     ]),
-    EventEmitterModule.forRoot(),
   ],
   controllers: [ShowcasesController],
   providers: [ShowcasesService],

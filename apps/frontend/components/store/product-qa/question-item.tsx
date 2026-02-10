@@ -17,9 +17,10 @@ import {
   useUpvoteQuestion,
   useUpvoteAnswer,
   useAcceptAnswer,
-  useQuestionDetail,
+  useProductQuestion,
 } from "@/hooks/use-product-qa";
-import type { ProductQuestion, ProductAnswer, QAUser } from "@/types/product-qa";
+import type { ProductQuestion, ProductAnswer } from "@/types/product-qa";
+import type { User } from "@/providers/auth-provider";
 import { formatRelativeTime } from "@/lib/format";
 import { AnswerForm } from "./answer-form";
 
@@ -36,14 +37,14 @@ interface QuestionItemProps {
 // Helpers
 // =============================================================================
 
-function getUserInitials(user?: QAUser): string {
+function getUserInitials(user?: User): string {
   if (!user) return "?";
   const first = user.firstName?.[0] ?? "";
   const last = user.lastName?.[0] ?? "";
   return (first + last).toUpperCase() || "?";
 }
 
-function getUserDisplayName(user?: QAUser): string {
+function getUserDisplayName(user?: User): string {
   if (!user) return "Anonymous";
   return `${user.firstName} ${user.lastName}`.trim() || "Anonymous";
 }
@@ -101,7 +102,7 @@ function UserAvatar({
   user,
   size = "sm",
 }: {
-  user?: QAUser;
+  user?: User;
   size?: "sm" | "md";
 }) {
   const dim = size === "sm" ? "w-8 h-8" : "w-10 h-10";
@@ -278,7 +279,7 @@ export function QuestionItem({ question, productId }: QuestionItemProps) {
   const {
     data: detailData,
     isLoading: isLoadingDetail,
-  } = useQuestionDetail(isExpanded ? question.id : "");
+  } = useProductQuestion(isExpanded ? question.id : "");
 
   const answers: ProductAnswer[] = useMemo(
     () => detailData?.answers ?? [],

@@ -16,15 +16,18 @@ import {
   ApiResponse as SwaggerResponse,
   ApiBearerAuth,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
+import { ProductQAService } from './product-qa.service';
+import { CreateQuestionDto, CreateAnswerDto, QAQueryDto, QASortBy } from './dto/qa.dto';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { ProductQAService } from './product-qa.service';
-import { CreateQuestionDto, CreateAnswerDto, QAQueryDto } from './dto/qa.dto';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
 
 @ApiTags('Product Q&A')
 @Controller('product-qa')
+@UseGuards(RolesGuard, PermissionsGuard)
 export class ProductQAController {
   constructor(private readonly productQAService: ProductQAService) {}
 
@@ -33,11 +36,11 @@ export class ProductQAController {
   // ──────────────────────────────────────────────
 
   @Post('questions')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Ask a question about a product' })
+  @ApiOperation({ summary: 'Create a new question for a product' })
   @SwaggerResponse({ status: 201, description: 'Question created successfully' })
+  @SwaggerResponse({ status: 400, description: 'Invalid input' })
   @SwaggerResponse({ status: 404, description: 'Product not found' })
   async createQuestion(
     @CurrentUser('sub') userId: string,
@@ -50,13 +53,17 @@ export class ProductQAController {
   @Public()
   @ApiOperation({ summary: 'Get questions for a product' })
   @SwaggerResponse({ status: 200, description: 'Questions retrieved successfully' })
+  @ApiQuery({ name: 'productId', required: true, description: 'Product ID' })
+  @ApiQuery({ name: 'page', required: false, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Items per page' })
+  @ApiQuery({ name: 'sortBy', required: false, enum: QASortBy, description: 'Sort order' })
   async getQuestions(@Query() query: QAQueryDto) {
     return this.productQAService.getQuestions(query);
   }
 
   @Get('questions/:id')
   @Public()
-  @ApiOperation({ summary: 'Get a single question with all answers' })
+  @ApiOperation({ summary: 'Get a question with all its answers' })
   @ApiParam({ name: 'id', description: 'Question ID' })
   @SwaggerResponse({ status: 200, description: 'Question retrieved successfully' })
   @SwaggerResponse({ status: 404, description: 'Question not found' })
@@ -69,7 +76,6 @@ export class ProductQAController {
   // ──────────────────────────────────────────────
 
   @Post('questions/:id/answers')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Answer a question' })
@@ -85,13 +91,12 @@ export class ProductQAController {
   }
 
   @Post('answers/:id/accept')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Accept an answer (question author only)' })
   @ApiParam({ name: 'id', description: 'Answer ID' })
   @SwaggerResponse({ status: 200, description: 'Answer accepted successfully' })
-  @SwaggerResponse({ status: 403, description: 'Only the question author can accept' })
+  @SwaggerResponse({ status: 403, description: 'Only the question author can accept an answer' })
   @SwaggerResponse({ status: 404, description: 'Answer not found' })
   async acceptAnswer(
     @Param('id', ParseUUIDPipe) answerId: string,
@@ -105,12 +110,11 @@ export class ProductQAController {
   // ──────────────────────────────────────────────
 
   @Post('questions/:id/upvote')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Toggle upvote on a question' })
+  @ApiOperation({ summary: 'Upvote a question' })
   @ApiParam({ name: 'id', description: 'Question ID' })
-  @SwaggerResponse({ status: 200, description: 'Upvote toggled successfully' })
+  @SwaggerResponse({ status: 200, description: 'Question upvoted successfully' })
   @SwaggerResponse({ status: 404, description: 'Question not found' })
   async upvoteQuestion(
     @Param('id', ParseUUIDPipe) questionId: string,
@@ -120,12 +124,11 @@ export class ProductQAController {
   }
 
   @Post('answers/:id/upvote')
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Toggle upvote on an answer' })
+  @ApiOperation({ summary: 'Upvote an answer' })
   @ApiParam({ name: 'id', description: 'Answer ID' })
-  @SwaggerResponse({ status: 200, description: 'Upvote toggled successfully' })
+  @SwaggerResponse({ status: 200, description: 'Answer upvoted successfully' })
   @SwaggerResponse({ status: 404, description: 'Answer not found' })
   async upvoteAnswer(
     @Param('id', ParseUUIDPipe) answerId: string,

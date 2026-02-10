@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { DiscussionCategory } from '../entities/discussion-category.entity';
 
 export const DISCUSSION_CATEGORIES = [
@@ -54,21 +54,28 @@ export const DISCUSSION_CATEGORIES = [
 ];
 
 export async function seedDiscussionCategories(
-  repository: Repository<DiscussionCategory>,
+  dataSource: DataSource,
 ): Promise<DiscussionCategory[]> {
+  const repository = dataSource.getRepository(DiscussionCategory);
   const seeded: DiscussionCategory[] = [];
 
   for (const categoryData of DISCUSSION_CATEGORIES) {
-    const existing = await repository.findOne({
+    let category = await repository.findOne({
       where: { slug: categoryData.slug },
     });
 
-    if (!existing) {
-      const category = repository.create(categoryData);
-      const saved = await repository.save(category);
-      seeded.push(saved);
+    if (category) {
+      // Upsert: update existing category
+      await repository.update(category.id, categoryData);
+      category = await repository.findOne({
+        where: { slug: categoryData.slug },
+      });
+      seeded.push(category!);
     } else {
-      seeded.push(existing);
+      // Insert new category
+      const newCategory = repository.create(categoryData);
+      const saved = await repository.save(newCategory);
+      seeded.push(saved);
     }
   }
 

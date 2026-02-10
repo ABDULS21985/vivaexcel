@@ -3,6 +3,8 @@
 // =============================================================================
 // Frontend types for the Discussion Forums feature.
 
+import type { User } from "@/providers/auth-provider";
+
 // -----------------------------------------------------------------------------
 // Enums
 // -----------------------------------------------------------------------------
@@ -18,14 +20,6 @@ export type ThreadSortBy = (typeof ThreadSortBy)[keyof typeof ThreadSortBy];
 // Core Interfaces
 // -----------------------------------------------------------------------------
 
-export interface DiscussionUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  username?: string;
-}
-
 export interface DiscussionCategory {
   id: string;
   name: string;
@@ -40,9 +34,9 @@ export interface DiscussionCategory {
 export interface DiscussionThread {
   id: string;
   categoryId: string;
-  category?: DiscussionCategory;
+  category: DiscussionCategory;
   userId: string;
-  user?: DiscussionUser;
+  user: User;
   title: string;
   content: string;
   slug: string;
@@ -61,14 +55,14 @@ export interface DiscussionReply {
   id: string;
   threadId: string;
   userId: string;
-  user?: DiscussionUser;
+  user: User;
   content: string;
   isAnswer: boolean;
   likesCount: number;
   parentId?: string;
+  children?: DiscussionReply[];
   createdAt: string;
   updatedAt: string;
-  replies?: DiscussionReply[];
 }
 
 // -----------------------------------------------------------------------------

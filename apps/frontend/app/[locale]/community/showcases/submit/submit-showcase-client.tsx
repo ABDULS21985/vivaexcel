@@ -33,7 +33,7 @@ import type { Showcase } from "@/types/showcase";
 const MAX_TITLE_LENGTH = 200;
 const MAX_IMAGES = 10;
 
-export default function SubmitShowcaseClient() {
+export function SubmitShowcaseClient() {
   const t = useTranslations("showcase");
   const router = useRouter();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -91,20 +91,14 @@ export default function SubmitShowcaseClient() {
   // Preview showcase object (mock)
   // ---------------------------------------------------------------------------
 
-  const previewShowcase = useMemo<Showcase>(() => {
+  const previewShowcase = useMemo<Partial<Showcase> & Pick<Showcase, "id" | "title" | "images" | "tags" | "status" | "likesCount" | "commentsCount">>(() => {
     const validImages = images.filter((url) => url.trim().length > 0);
     return {
       id: "preview",
       userId: user?.id ?? "",
-      user: user
-        ? {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            avatar: user.avatar,
-          }
-        : undefined,
+      user: user ?? undefined,
       productId,
+      product: productId ? { id: productId, title: productId, slug: productId } : undefined,
       title: title || t("previewTitle"),
       description,
       images: validImages,
@@ -490,7 +484,7 @@ export default function SubmitShowcaseClient() {
                       {t("previewLabel")}
                     </p>
                     <div className="max-w-sm">
-                      <ShowcaseCard showcase={previewShowcase} />
+                      <ShowcaseCard showcase={previewShowcase as Showcase} />
                     </div>
                   </div>
                 </motion.div>

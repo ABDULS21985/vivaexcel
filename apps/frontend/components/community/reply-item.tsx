@@ -258,9 +258,9 @@ export function ReplyItem({
       </div>
 
       {/* Nested replies */}
-      {reply.replies && reply.replies.length > 0 && depth < MAX_NESTING_DEPTH && (
+      {reply.children && reply.children.length > 0 && depth < MAX_NESTING_DEPTH && (
         <div className="mt-3 space-y-3">
-          {reply.replies.map((childReply) => (
+          {reply.children.map((childReply) => (
             <ReplyItem
               key={childReply.id}
               reply={childReply}
