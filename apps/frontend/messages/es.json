@@ -545,6 +545,13 @@
       "trustmehub": "TrustMeHub",
       "boacrm": "BoaCRM"
     },
+    "store": {
+      "title": "Tienda",
+      "browseStore": "Explorar tienda",
+      "categories": "Categorías",
+      "affiliate": "Programa de afiliados",
+      "referrals": "Recomienda a un amigo"
+    },
     "company": {
       "title": "Empresa",
       "about": "Sobre Nosotros",

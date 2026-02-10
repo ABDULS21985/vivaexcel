@@ -28,7 +28,7 @@ import {
   fetchTemplateBySlug,
   fetchRelatedTemplates,
 } from "@/lib/template-api";
-import { LivePreviewFrame } from "@/components/templates/live-preview-frame";
+import { TemplatePreviewer } from "@/components/store/viewers/template-previewer";
 import { FeatureGrid } from "@/components/templates/feature-grid";
 import { TechStackDiagram } from "@/components/templates/tech-stack-diagram";
 import { LicenseComparisonTable } from "@/components/templates/license-comparison-table";
@@ -320,51 +320,14 @@ export default async function TemplateDetailPage({ params }: Props) {
             {template.demoUrl && (
               <AnimatedSection animation="fade-up" delay={100} duration={600}>
                 <section className="mb-14">
-                  <div className="mb-4 flex items-center justify-between">
-                    <h2 className="flex items-center gap-2 text-xl font-bold text-neutral-900 dark:text-white">
-                      <Monitor className="h-5 w-5 text-[#1E4DB7]" />
-                      Live Preview
-                    </h2>
-                    <a
-                      href={template.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-[#1E4DB7] transition-colors hover:text-[#143A8F] dark:text-blue-400 dark:hover:text-blue-300"
-                    >
-                      Open in New Tab
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  </div>
-
-                  {/* Premium container */}
-                  <div className="overflow-hidden rounded-2xl border border-neutral-200 shadow-xl shadow-neutral-200/50 dark:border-neutral-700 dark:shadow-neutral-900/50">
-                    <LivePreviewFrame
-                      url={template.demoUrl}
-                      title={template.title}
-                    />
-                  </div>
-
-                  {/* Demo variant tabs */}
-                  {template.demos && template.demos.length > 1 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {template.demos.map((demo, idx) => (
-                        <a
-                          key={demo.id}
-                          href={demo.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`inline-flex items-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-all hover-lift ${
-                            idx === 0
-                              ? "border-[#1E4DB7] bg-[#1E4DB7]/5 text-[#1E4DB7] dark:border-blue-500 dark:bg-blue-500/10 dark:text-blue-400"
-                              : "border-neutral-200 text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800"
-                          }`}
-                        >
-                          {demo.name}
-                          <ExternalLink className="h-3 w-3 opacity-50" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
+                  <TemplatePreviewer
+                    demoUrl={template.demoUrl}
+                    title={template.title}
+                    pages={template.demos?.map((demo) => ({
+                      name: demo.name,
+                      path: demo.demoUrl,
+                    }))}
+                  />
                 </section>
               </AnimatedSection>
             )}

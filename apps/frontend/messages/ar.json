@@ -545,6 +545,13 @@
       "trustmehub": "TrustMeHub",
       "boacrm": "BoaCRM"
     },
+    "store": {
+      "title": "المتجر",
+      "browseStore": "تصفح المتجر",
+      "categories": "الفئات",
+      "affiliate": "برنامج الشراكة",
+      "referrals": "أحل صديقاً"
+    },
     "company": {
       "title": "الشركة",
       "about": "من نحن",

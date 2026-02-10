@@ -785,4 +785,109 @@ export class GamificationService {
 
     await this.checkAndUpdateAchievements(payload.userId, 'product_upload');
   }
+
+  // ─── Community Event Handlers ────────────────────────────────────
+
+  @OnEvent('showcase.created')
+  async handleShowcaseCreated(payload: {
+    userId: string;
+    showcaseId: string;
+  }) {
+    this.logger.debug(
+      `Handling showcase.created for user ${payload.userId}`,
+    );
+
+    await this.grantXP(
+      payload.userId,
+      75,
+      XPSource.SHOWCASE_CREATED,
+      payload.showcaseId,
+      'Showcase submitted',
+    );
+
+    await this.checkAndUpdateAchievements(payload.userId, 'showcase');
+  }
+
+  @OnEvent('thread.created')
+  async handleThreadCreated(payload: {
+    userId: string;
+    threadId: string;
+  }) {
+    this.logger.debug(
+      `Handling thread.created for user ${payload.userId}`,
+    );
+
+    await this.grantXP(
+      payload.userId,
+      25,
+      XPSource.THREAD_CREATED,
+      payload.threadId,
+      'Discussion thread created',
+    );
+
+    await this.checkAndUpdateAchievements(payload.userId, 'community');
+  }
+
+  @OnEvent('reply.created')
+  async handleReplyCreated(payload: {
+    userId: string;
+    threadId: string;
+    replyId: string;
+  }) {
+    this.logger.debug(
+      `Handling reply.created for user ${payload.userId}`,
+    );
+
+    await this.grantXP(
+      payload.userId,
+      15,
+      XPSource.REPLY_CREATED,
+      payload.replyId,
+      'Discussion reply posted',
+    );
+
+    await this.checkAndUpdateAchievements(payload.userId, 'community');
+  }
+
+  @OnEvent('answer.accepted')
+  async handleAnswerAccepted(payload: {
+    userId: string;
+    questionId: string;
+    answerId: string;
+  }) {
+    this.logger.debug(
+      `Handling answer.accepted for answerer ${payload.userId}`,
+    );
+
+    await this.grantXP(
+      payload.userId,
+      50,
+      XPSource.ANSWER_ACCEPTED,
+      payload.answerId,
+      'Answer accepted',
+    );
+
+    await this.checkAndUpdateAchievements(payload.userId, 'community');
+  }
+
+  @OnEvent('question.created')
+  async handleQuestionCreated(payload: {
+    userId: string;
+    questionId: string;
+    productId: string;
+  }) {
+    this.logger.debug(
+      `Handling question.created for user ${payload.userId}`,
+    );
+
+    await this.grantXP(
+      payload.userId,
+      10,
+      XPSource.QUESTION_ASKED,
+      payload.questionId,
+      'Question asked',
+    );
+
+    await this.checkAndUpdateAchievements(payload.userId, 'community');
+  }
 }

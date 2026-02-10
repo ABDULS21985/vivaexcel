@@ -63,6 +63,13 @@ const productsLinks = [
     { name: "boacrm", href: "/products/boacrm" },
 ] as const;
 
+const storeLinks = [
+    { name: "browseStore", href: "/store" },
+    { name: "categories", href: "/categories" },
+    { name: "affiliate", href: "/affiliate" },
+    { name: "referrals", href: "/account/referrals" },
+] as const;
+
 const companyLinks = [
     { name: "about", href: "/about" },
     { name: "caseStudies", href: "/case-studies" },
@@ -475,8 +482,8 @@ export function Footer() {
                 variants={containerVariants}
             >
                 <div className="container mx-auto px-4 md:px-6">
-                    {/* 5-Column Grid Layout */}
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
+                    {/* 6-Column Grid Layout */}
+                    <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 lg:gap-12 mb-12">
 
                         {/* Brand Column - Always expanded */}
                         <motion.div className="lg:col-span-1 space-y-6" variants={itemVariants}>
@@ -546,6 +553,21 @@ export function Footer() {
                                         <li key={link.name}>
                                             <AnimatedLink href={link.href}>
                                                 {t(`products.${link.name}`)}
+                                            </AnimatedLink>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </AccordionColumn>
+                        </motion.div>
+
+                        {/* Store Column */}
+                        <motion.div variants={itemVariants} className="lg:col-span-1">
+                            <AccordionColumn title={t("store.title")}>
+                                <ul className="space-y-3">
+                                    {storeLinks.map((link) => (
+                                        <li key={link.name}>
+                                            <AnimatedLink href={link.href}>
+                                                {t(`store.${link.name}`)}
                                             </AnimatedLink>
                                         </li>
                                     ))}

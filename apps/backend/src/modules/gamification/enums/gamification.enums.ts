@@ -24,6 +24,11 @@ export enum XPSource {
   STREAK_BONUS = 'streak_bonus',
   SALE = 'sale',
   PRODUCT_UPLOAD = 'product_upload',
+  SHOWCASE_CREATED = 'showcase_created',
+  THREAD_CREATED = 'thread_created',
+  REPLY_CREATED = 'reply_created',
+  ANSWER_ACCEPTED = 'answer_accepted',
+  QUESTION_ASKED = 'question_asked',
 }
 
 export enum LeaderboardPeriod {

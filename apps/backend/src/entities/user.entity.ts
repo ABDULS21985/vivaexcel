@@ -31,8 +31,15 @@ export class User extends BaseEntity {
   @Column({ name: 'last_name', nullable: true })
   lastName?: string;
 
+  @Column({ nullable: true, unique: true })
+  @Index()
+  username?: string;
+
   @Column({ nullable: true })
   avatar?: string;
+
+  @Column({ name: 'cover_image_url', nullable: true })
+  coverImageUrl?: string;
 
   @Column({ nullable: true })
   phone?: string;
@@ -75,6 +82,12 @@ export class User extends BaseEntity {
 
   @Column({ name: 'social_links', type: 'jsonb', nullable: true })
   socialLinks?: Record<string, string>;
+
+  @Column({ name: 'is_creator', default: false })
+  isCreator: boolean;
+
+  @Column({ type: 'jsonb', nullable: true })
+  specialties?: string[];
 
   get name(): string {
     return `${this.firstName} ${this.lastName}`.trim();

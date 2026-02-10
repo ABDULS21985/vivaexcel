@@ -8,6 +8,8 @@ import {
   Download,
   Sparkles,
   ArrowRight,
+  Package,
+  BarChart3,
 } from "lucide-react";
 import { StoreListingClient } from "@/components/store/store-listing-client";
 import { StoreHeroClient } from "@/components/store/store-hero-client";
@@ -315,7 +317,7 @@ export default async function StorePage({ params }: Props) {
                   </h2>
                 </div>
                 <Link
-                  href="/store"
+                  href="/categories"
                   className="hidden md:flex items-center gap-2 text-sm font-semibold text-[#1E4DB7] hover:text-[#143A8F] transition-colors"
                 >
                   View All
@@ -498,6 +500,121 @@ export default async function StorePage({ params }: Props) {
             </div>
           </section>
         )}
+
+        {/* =================================================================
+            SMART SHOPPING — Bundle Builder & Compare Products
+        ================================================================= */}
+        <section className="py-16 md:py-20 bg-white dark:bg-neutral-950">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+              {/* Section Header */}
+              <div className="text-center mb-10">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <div className="w-8 h-px bg-indigo-500" />
+                  <span className="text-xs font-bold tracking-wider text-indigo-600 dark:text-indigo-400 uppercase">
+                    Smart Shopping
+                  </span>
+                  <div className="w-8 h-px bg-indigo-500" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-neutral-900 dark:text-white">
+                  Save More, Shop Smarter
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Bundle Builder Card */}
+                <Link
+                  href="/store/build-bundle"
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 border border-indigo-200/50 dark:border-indigo-800/30 p-8 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full -translate-y-8 translate-x-8 group-hover:scale-150 transition-transform duration-500" />
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                        <Package className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400">
+                        Save up to 25%
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
+                      Build Your Bundle &amp; Save
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+                      Select multiple products and unlock tiered discounts.
+                      The more you add, the more you save!
+                    </p>
+                    {/* Tier preview */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {[
+                        { count: "2+", pct: "10%" },
+                        { count: "3+", pct: "15%" },
+                        { count: "4+", pct: "20%" },
+                        { count: "5+", pct: "25%" },
+                      ].map((tier) => (
+                        <span
+                          key={tier.count}
+                          className="text-[11px] px-2 py-1 rounded-lg bg-indigo-100/80 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-medium"
+                        >
+                          {tier.count} items: {tier.pct} off
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-3 transition-all">
+                      Start Building
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Compare Products Card */}
+                <Link
+                  href="/store/compare"
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/30 p-8 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full -translate-y-8 translate-x-8 group-hover:scale-150 transition-transform duration-500" />
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                        <BarChart3 className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400">
+                        AI-Powered
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
+                      Compare Products
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+                      Compare up to 4 products side by side with AI-powered
+                      insights to find the perfect fit for your needs.
+                    </p>
+                    {/* Feature highlights */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {[
+                        "Side-by-Side View",
+                        "AI Insights",
+                        "Feature Matrix",
+                        "Best Value Pick",
+                      ].map((feature) => (
+                        <span
+                          key={feature}
+                          className="text-[11px] px-2 py-1 rounded-lg bg-amber-100/80 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-semibold text-amber-600 dark:text-amber-400 group-hover:gap-3 transition-all">
+                      Compare Now
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Subscriber Popular / Subscribe CTA */}
         <SubscriberPopularSection products={products} />

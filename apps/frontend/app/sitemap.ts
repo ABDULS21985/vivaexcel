@@ -60,6 +60,8 @@ const staticPages: Array<{
   { path: "/industries", changeFrequency: "monthly", priority: 0.5 },
   { path: "/case-studies", changeFrequency: "monthly", priority: 0.5 },
   { path: "/store", changeFrequency: "daily", priority: 0.9 },
+  { path: "/categories", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/affiliate", changeFrequency: "monthly", priority: 0.5 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
@@ -14,6 +16,11 @@ import { SolutionInfo } from "@/components/store/solutions/solution-info";
 import { TableOfContentsPreview } from "@/components/store/solutions/table-of-contents-preview";
 import { DocumentCard } from "@/components/store/solutions/document-card";
 import { BundleComparison } from "@/components/store/solutions/bundle-comparison";
+
+const DocumentViewer = dynamic(
+  () => import("@/components/store/viewers/document-viewer"),
+  { ssr: false },
+);
 
 // =============================================================================
 // Types
@@ -34,38 +41,81 @@ export function SolutionDetailClient({
   relatedDocuments,
   bundles,
 }: SolutionDetailClientProps) {
+  // Extract page preview images from metadata (populated by preview generation system)
+  const pageImages = useMemo(() => {
+    const meta = document.metadata as Record<string, unknown> | undefined;
+    if (meta?.previewImages && Array.isArray(meta.previewImages)) {
+      return meta.previewImages as string[];
+    }
+    return [];
+  }, [document.metadata]);
+
+  const hasDocumentViewer = pageImages.length > 0;
+
+  // Map solution TOC to DocumentViewer TOC format (they match)
+  const tocItems = document.tableOfContents;
+
   return (
     <>
+      {/* Interactive Document Viewer (full width, when page images are available) */}
+      {hasDocumentViewer && (
+        <section className="py-8 md:py-12 border-b border-neutral-100 dark:border-neutral-800">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              <DocumentViewer
+                product={{
+                  id: document.id,
+                  title: document.title,
+                  type: "document" as any,
+                  previews: [],
+                } as any}
+                pageImages={pageImages}
+                totalPages={document.pageCount || pageImages.length}
+                freePreviewPages={5}
+                tableOfContents={tocItems}
+                documentInfo={{
+                  pageCount: document.pageCount,
+                  format: document.templateFormat?.[0] || "PDF",
+                  fileSize: (document.metadata as Record<string, unknown>)?.fileSize as string | undefined,
+                }}
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Main Product Section */}
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              {/* Document Mockup / Image */}
-              <div className="flex items-start justify-center">
-                {document.featuredImage ? (
-                  <div className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-xl">
-                    <Image
-                      src={document.featuredImage}
-                      alt={document.title}
-                      width={640}
-                      height={480}
-                      className="w-full h-auto object-cover"
-                      priority
+              {/* Document Mockup / Image (shown when no DocumentViewer) */}
+              {!hasDocumentViewer && (
+                <div className="flex items-start justify-center">
+                  {document.featuredImage ? (
+                    <div className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-xl">
+                      <Image
+                        src={document.featuredImage}
+                        alt={document.title}
+                        width={640}
+                        height={480}
+                        className="w-full h-auto object-cover"
+                        priority
+                      />
+                    </div>
+                  ) : (
+                    <DocumentMockup
+                      title={document.title}
+                      documentType={document.documentType}
+                      domain={document.domain}
+                      className="py-8"
                     />
-                  </div>
-                ) : (
-                  <DocumentMockup
-                    title={document.title}
-                    documentType={document.documentType}
-                    domain={document.domain}
-                    className="py-8"
-                  />
-                )}
-              </div>
+                  )}
+                </div>
+              )}
 
               {/* Product Info Sidebar */}
-              <div>
+              <div className={hasDocumentViewer ? "lg:col-span-2" : ""}>
                 <SolutionInfo document={document} />
               </div>
             </div>

@@ -31,7 +31,7 @@ import { Link } from "@/i18n/routing";
 import { JsonLd } from "@/components/shared/json-ld";
 import { generateBreadcrumbSchema } from "@/lib/schema";
 import { ProductCard } from "@/components/store/product-card";
-import { ProductGallery } from "@/components/store/product-gallery";
+import { ProductPreview } from "@/components/store/viewers/product-preview";
 import { ProductInfo } from "@/components/store/product-info";
 
 // =============================================================================
@@ -302,7 +302,7 @@ export default async function PresentationDetailPage({ params }: Props) {
                     Left Column: Slide Gallery
                 --------------------------------------------------------- */}
                 <div className="lg:col-span-7">
-                  <ProductGallery product={product} />
+                  <ProductPreview product={product} />
 
                   {/* Slide Thumbnail Grid */}
                   {allSlideImages.length > 1 && (
