@@ -290,6 +290,27 @@ Return only the improved text, nothing else. Do not add explanations or notes.`;
     return improved.trim();
   }
 
+  // ─── Public Utility Methods ─────────────────────────────────────────────────
+
+  /**
+   * Generate a JSON response from Claude. Parses the response and returns typed result.
+   */
+  async generateJSON<T>(systemPrompt: string, userMessage: string): Promise<T> {
+    const text = await this.callClaude(systemPrompt, userMessage);
+    const cleaned = text
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim();
+    return JSON.parse(cleaned) as T;
+  }
+
+  /**
+   * Generate a text response from Claude (public wrapper).
+   */
+  async generateText(systemPrompt: string, userMessage: string): Promise<string> {
+    return this.callClaude(systemPrompt, userMessage);
+  }
+
   // ─── Private Methods ──────────────────────────────────────────────────────
 
   /**

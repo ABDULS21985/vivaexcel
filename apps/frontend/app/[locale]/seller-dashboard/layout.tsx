@@ -21,6 +21,10 @@ import {
   X,
   Home,
   TrendingUp,
+  Lightbulb,
+  HeartPulse,
+  Target,
+  GraduationCap,
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { cn, Button, Badge } from '@ktblog/ui/components';
@@ -59,6 +63,17 @@ const navSections: NavSection[] = [
     items: [
       { label: 'Earnings', href: '/seller-dashboard/earnings', icon: DollarSign },
       { label: 'Analytics', href: '/seller-dashboard/analytics', icon: BarChart3 },
+    ],
+  },
+  {
+    title: 'GROWTH',
+    items: [
+      { label: 'Insights', href: '/seller-dashboard/insights', icon: Lightbulb },
+      { label: 'Pricing Tool', href: '/seller-dashboard/pricing-tool', icon: DollarSign },
+      { label: 'Listing Health', href: '/seller-dashboard/listing-health', icon: HeartPulse },
+      { label: 'Goals', href: '/seller-dashboard/goals', icon: Target },
+      { label: 'Learn', href: '/seller-dashboard/learn', icon: GraduationCap },
+      { label: 'Market', href: '/seller-dashboard/market', icon: TrendingUp },
     ],
   },
   {

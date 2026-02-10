@@ -73,6 +73,7 @@ import { EmbedsModule } from './modules/embeds/embeds.module';
 import { ContributorsModule } from './modules/contributors/contributors.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { ReadingHistoryModule } from './modules/reading-history/reading-history.module';
+import { SellerGrowthModule } from './modules/seller-growth/seller-growth.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -180,6 +181,7 @@ import { AppService } from './app.service';
     ContributorsModule,
     SettingsModule,
     ReadingHistoryModule,
+    SellerGrowthModule,
   ],
   controllers: [AppController],
   providers: [

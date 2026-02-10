@@ -356,7 +356,7 @@ export default function DeveloperPortalPage() {
               <Link href="/developers/docs">
                 <Button
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-xl text-base backdrop-blur-sm"
+                  className="border-white/30 bg-transparent text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-xl text-base backdrop-blur-sm"
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Read the Docs
@@ -647,7 +647,7 @@ export default function DeveloperPortalPage() {
                   <Link href="/developers/docs">
                     <Button
                       variant="outline"
-                      className="border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-xl text-base"
+                      className="border-white/30 bg-transparent text-white hover:bg-white/10 font-semibold px-8 py-3 rounded-xl text-base"
                     >
                       <BookOpen className="h-4 w-4 mr-2" />
                       API Reference

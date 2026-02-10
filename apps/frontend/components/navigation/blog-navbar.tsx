@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Menu, X, Search, Sun, Moon } from "lucide-react";
+import { Menu, X, Search, Sun, Moon, LogIn, UserPlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@ktblog/ui/components";
 import { CartIcon } from "@/components/cart/cart-icon";
 import { CurrencySelector } from "@/components/store/currency-selector";
 import { StreakCounter } from "@/components/gamification/streak-counter";
+import { useAuth } from "@/providers/auth-provider";
 
 // ============================================
 // TYPES
@@ -67,6 +68,7 @@ const mobileItemVariants = {
 
 export function BlogNavbar() {
   const pathname = usePathname();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -227,13 +229,50 @@ export function BlogNavbar() {
                 </AnimatePresence>
               </button>
 
-              {/* Subscribe CTA */}
-              <Link
-                href="/subscribe"
-                className="ml-2 inline-flex items-center px-5 h-10 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-lg transition-colors duration-200 btn-press"
-              >
-                Subscribe
-              </Link>
+              {/* Auth Buttons */}
+              {!authLoading && !isAuthenticated && (
+                <>
+                  <Link
+                    href="/login"
+                    className="ml-2 inline-flex items-center gap-1.5 px-4 h-10 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors duration-200"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Log In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center gap-1.5 px-5 h-10 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-lg transition-colors duration-200 btn-press"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Register
+                  </Link>
+                </>
+              )}
+
+              {/* Authenticated User Avatar */}
+              {!authLoading && isAuthenticated && (
+                <Link
+                  href="/dashboard"
+                  className="ml-2 flex items-center gap-2 px-2 h-10 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200"
+                >
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.firstName}
+                      className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center ring-2 ring-primary/20">
+                      <span className="text-sm font-semibold text-primary">
+                        {user?.firstName?.charAt(0) || "U"}
+                      </span>
+                    </div>
+                  )}
+                  <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                    {user?.firstName}
+                  </span>
+                </Link>
+              )}
             </div>
 
             {/* Mobile Right Side */}
@@ -343,21 +382,57 @@ export function BlogNavbar() {
                   ))}
                 </ul>
 
-                {/* Subscribe CTA */}
+                {/* Auth / Subscribe CTAs */}
                 <motion.div
-                  className="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800"
+                  className="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800 space-y-3"
                   custom={navItems.length}
                   variants={mobileItemVariants}
                   initial="closed"
                   animate="open"
                 >
-                  <Link
-                    href="/subscribe"
-                    onClick={() => setIsMobileOpen(false)}
-                    className="flex items-center justify-center w-full min-h-[48px] h-14 bg-primary hover:bg-primary/90 text-white text-lg font-semibold rounded-xl shadow-lg transition-colors btn-press"
-                  >
-                    Subscribe
-                  </Link>
+                  {!authLoading && !isAuthenticated && (
+                    <>
+                      <Link
+                        href="/login"
+                        onClick={() => setIsMobileOpen(false)}
+                        className="flex items-center justify-center gap-2 w-full min-h-[48px] h-14 border-2 border-primary text-primary text-lg font-semibold rounded-xl transition-colors hover:bg-primary/5 dark:hover:bg-primary/10"
+                      >
+                        <LogIn className="w-5 h-5" />
+                        Log In
+                      </Link>
+                      <Link
+                        href="/register"
+                        onClick={() => setIsMobileOpen(false)}
+                        className="flex items-center justify-center gap-2 w-full min-h-[48px] h-14 bg-primary hover:bg-primary/90 text-white text-lg font-semibold rounded-xl shadow-lg transition-colors btn-press"
+                      >
+                        <UserPlus className="w-5 h-5" />
+                        Register
+                      </Link>
+                    </>
+                  )}
+
+                  {!authLoading && isAuthenticated && (
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsMobileOpen(false)}
+                      className="flex items-center gap-3 w-full min-h-[48px] h-14 px-4 bg-primary/5 dark:bg-primary/10 text-primary text-lg font-semibold rounded-xl transition-colors hover:bg-primary/10 dark:hover:bg-primary/20"
+                    >
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt={user.firstName}
+                          className="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                          <span className="text-sm font-bold text-primary">
+                            {user?.firstName?.charAt(0) || "U"}
+                          </span>
+                        </div>
+                      )}
+                      My Dashboard
+                    </Link>
+                  )}
                 </motion.div>
               </nav>
             </div>
