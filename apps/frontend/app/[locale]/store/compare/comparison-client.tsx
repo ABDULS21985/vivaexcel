@@ -207,7 +207,7 @@ export default function ComparisonClient() {
 
   const filteredAttributes = useMemo(() => {
     if (!differencesOnly) return attributes;
-    return attributes.filter((attr) => !allIdentical(attr));
+    return attributes.filter((attr: ComparisonAttribute) => !allIdentical(attr));
   }, [attributes, differencesOnly]);
 
   const gridCols = useMemo(() => {
@@ -442,7 +442,7 @@ export default function ComparisonClient() {
                   gridCols,
                 )}
               >
-                {products.map((product, i) => (
+                {products.map((product: DigitalProduct, i: number) => (
                   <motion.div
                     key={product.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -603,7 +603,7 @@ export default function ComparisonClient() {
             {/* ── Attribute comparison rows ────────────────────────── */}
             <div className="overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
               <div className="min-w-[600px] sm:min-w-0 border border-neutral-200 dark:border-neutral-700 rounded-xl overflow-hidden">
-                {filteredAttributes.map((attr, rowIdx) => {
+                {filteredAttributes.map((attr: ComparisonAttribute, rowIdx: number) => {
                   const bestIdx = getBestIndex(attr);
                   return (
                     <motion.div
@@ -624,7 +624,7 @@ export default function ComparisonClient() {
                       <div className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
                         {attr.name}
                       </div>
-                      {attr.values.map((value, colIdx) => (
+                      {attr.values.map((value: string | number | boolean | null, colIdx: number) => (
                         <div
                           key={colIdx}
                           className="flex items-center justify-center text-sm"

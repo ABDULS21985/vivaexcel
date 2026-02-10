@@ -39,7 +39,7 @@ export class PromotionsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get the best deal for the current user cart' })
   async getBestDeal(@CurrentUser('sub') userId: string) {
-    return this.promotionsService.getBestDeal(userId);
+    return this.promotionsService.calculateBestDiscount([], userId);
   }
 
   // ──────────────────────────────────────────────
@@ -50,7 +50,7 @@ export class PromotionsController {
   @Public()
   @ApiOperation({ summary: 'List active bundle discounts' })
   async listBundles() {
-    return this.promotionsService.listBundles();
+    return this.promotionsService.getBundleDiscounts();
   }
 
   @Get('bundles/:id')
@@ -58,7 +58,7 @@ export class PromotionsController {
   @ApiOperation({ summary: 'Get a bundle discount by ID' })
   @ApiParam({ name: 'id', description: 'Bundle Discount ID' })
   async getBundle(@Param('id', ParseUUIDPipe) id: string) {
-    return this.promotionsService.getBundle(id);
+    return this.promotionsService.getBundleDiscountById(id);
   }
 
   // ──────────────────────────────────────────────
@@ -71,6 +71,6 @@ export class PromotionsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new bundle discount' })
   async createBundle(@Body() dto: CreateBundleDiscountDto) {
-    return this.promotionsService.createBundle(dto);
+    return this.promotionsService.createBundleDiscount(dto);
   }
 }

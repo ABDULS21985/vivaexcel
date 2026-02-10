@@ -279,7 +279,7 @@ export function BundleBuilderClient() {
           {/* Desktop sidebar */}
           <BundleSidebar
             products={bundleProducts}
-            onRemove={handleRemoveFromBundle}
+            onRemoveProduct={handleRemoveFromBundle}
             onCheckout={() => setStep("review")}
             className="hidden lg:flex w-80 sticky top-24 self-start max-h-[calc(100vh-8rem)]"
           />
@@ -290,7 +290,7 @@ export function BundleBuilderClient() {
           <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden">
             <BundleSidebar
               products={bundleProducts}
-              onRemove={handleRemoveFromBundle}
+              onRemoveProduct={handleRemoveFromBundle}
               onCheckout={() => setStep("review")}
               className="rounded-t-2xl shadow-2xl"
             />

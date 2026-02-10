@@ -16,6 +16,9 @@ import { SubscriberPopularSection } from "@/components/store/subscriber-popular-
 
 const SocialProofStrip = dynamic(() => import("@/components/store/social-proof-strip").then(m => ({ default: m.SocialProofStrip })));
 const StoreNewsletter = dynamic(() => import("@/components/store/store-newsletter").then(m => ({ default: m.StoreNewsletter })));
+const PersonalizedRow = dynamic(() => import("@/components/store/recommendations/personalized-row").then(m => ({ default: m.PersonalizedRow })));
+const ForYouSection = dynamic(() => import("@/components/store/recommendations/for-you-section").then(m => ({ default: m.ForYouSection })));
+const SmartSearchBar = dynamic(() => import("@/components/search/smart-search-bar").then(m => ({ default: m.SmartSearchBar })));
 import {
   fetchProducts,
   fetchProductCategories,
@@ -273,6 +276,26 @@ export default async function StorePage({ params }: Props) {
         <SocialProofStrip />
 
         {/* =================================================================
+            AI SMART SEARCH — Enhanced Search with Autocomplete
+        ================================================================= */}
+        <section className="py-8 md:py-12 bg-white dark:bg-neutral-950">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="max-w-2xl mx-auto">
+              <SmartSearchBar placeholder="Search products with AI — try 'affordable Excel templates' or 'best design kits'..." />
+            </div>
+          </div>
+        </section>
+
+        {/* =================================================================
+            PERSONALIZED RECOMMENDATIONS — AI-Powered "For You" Row
+        ================================================================= */}
+        <section className="bg-white dark:bg-neutral-950">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <PersonalizedRow />
+          </div>
+        </section>
+
+        {/* =================================================================
             CATEGORY SHOWCASE — Horizontal Scroll Cards
         ================================================================= */}
         {categories.length > 0 && (
@@ -478,6 +501,15 @@ export default async function StorePage({ params }: Props) {
 
         {/* Subscriber Popular / Subscribe CTA */}
         <SubscriberPopularSection products={products} />
+
+        {/* =================================================================
+            DISCOVER PRODUCTS — AI Recommendations with Tabs
+        ================================================================= */}
+        <section className="py-16 md:py-20 bg-gradient-to-b from-neutral-50/50 to-white dark:from-neutral-900/50 dark:to-neutral-950">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <ForYouSection />
+          </div>
+        </section>
 
         {/* =================================================================
             MAIN STORE CONTENT — Full Product Grid with Filters

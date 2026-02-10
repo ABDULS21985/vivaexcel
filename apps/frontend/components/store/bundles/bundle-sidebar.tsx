@@ -240,7 +240,8 @@ interface SidebarContentProps {
   formatPrice: (price: number, currency?: string) => string;
   convertPrice: (price: number) => number;
   currency: string;
-  t: (key: string, values?: Record<string, unknown>) => string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any;
 }
 
 function SidebarContent({

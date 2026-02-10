@@ -86,7 +86,7 @@ export function BundleWidget({ productId, currentProduct }: BundleWidgetProps) {
 
   // All bundle products: current + selected suggestions
   const bundleProducts = useMemo(() => {
-    const selected = suggestions.filter((p) => selectedIds.has(p.id));
+    const selected = suggestions.filter((p: DigitalProduct) => selectedIds.has(p.id));
     return [currentProduct, ...selected];
   }, [currentProduct, suggestions, selectedIds]);
 
@@ -160,7 +160,7 @@ export function BundleWidget({ productId, currentProduct }: BundleWidgetProps) {
         </div>
 
         {/* Suggestion items with plus icons between */}
-        {suggestions.map((product) => {
+        {suggestions.map((product: DigitalProduct) => {
           const isSelected = selectedIds.has(product.id);
           return (
             <div key={product.id} className="contents">

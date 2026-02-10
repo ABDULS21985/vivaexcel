@@ -90,7 +90,7 @@ export default function BundleBuilderClient() {
   );
 
   const totalRetailPrice = useMemo(
-    () => selectedProducts.reduce((sum, p) => sum + p.price, 0),
+    () => selectedProducts.reduce((sum: number, p: DigitalProduct) => sum + p.price, 0),
     [selectedProducts],
   );
 
@@ -206,7 +206,7 @@ export default function BundleBuilderClient() {
               </h2>
             </div>
             <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
-              {selectedProducts.map((product, index) => (
+              {selectedProducts.map((product: DigitalProduct, index: number) => (
                 <motion.div
                   key={product.id}
                   initial={{ opacity: 0, x: -10 }}
@@ -537,7 +537,7 @@ export default function BundleBuilderClient() {
             <div className="sticky top-24">
               <BundleSidebar
                 products={selectedProducts}
-                onRemove={removeProduct}
+                onRemoveProduct={removeProduct}
                 onCheckout={handleReviewBundle}
               />
             </div>
@@ -550,7 +550,7 @@ export default function BundleBuilderClient() {
         <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden">
           <BundleSidebar
             products={selectedProducts}
-            onRemove={removeProduct}
+            onRemoveProduct={removeProduct}
             onCheckout={handleReviewBundle}
             className="rounded-t-2xl shadow-2xl"
           />

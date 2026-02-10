@@ -19,6 +19,8 @@ const ProductDescriptionTabs = dynamic(() => import("./product-description-tabs"
 const RelatedProducts = dynamic(() => import("@/components/store/related-products").then(m => ({ default: m.RelatedProducts })));
 const FloatingElements = dynamic(() => import("@/components/store/floating-elements").then(m => ({ default: m.FloatingElements })));
 const BundleWidget = dynamic(() => import("@/components/store/bundles/bundle-widget").then(m => ({ default: m.BundleWidget })));
+const FrequentlyBoughtTogether = dynamic(() => import("@/components/store/recommendations/frequently-bought-together").then(m => ({ default: m.FrequentlyBoughtTogether })));
+const SimilarProducts = dynamic(() => import("@/components/store/recommendations/similar-products").then(m => ({ default: m.SimilarProducts })));
 
 // =============================================================================
 // Types
@@ -365,6 +367,31 @@ export default async function ProductDetailPage({ params }: Props) {
             <div className="max-w-6xl mx-auto">
               <BundleWidget productId={product.id} currentProduct={product} />
             </div>
+          </div>
+        </section>
+
+        {/* Frequently Bought Together — AI-powered */}
+        <section className="border-t border-neutral-100 dark:border-neutral-800">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+              <FrequentlyBoughtTogether
+                productId={product.id}
+                currentProduct={{
+                  id: product.id,
+                  title: product.title,
+                  slug: product.slug,
+                  price: product.price,
+                  featuredImage: product.featuredImage,
+                }}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Similar Products — AI content-based filtering */}
+        <section className="border-t border-neutral-100 dark:border-neutral-800">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <SimilarProducts productId={product.id} />
           </div>
         </section>
 
