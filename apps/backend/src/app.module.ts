@@ -66,6 +66,10 @@ import { BundlesModule } from './modules/bundles/bundles.module';
 import { ShowcasesModule } from './modules/showcases/showcases.module';
 import { DiscussionsModule } from './modules/discussions/discussions.module';
 import { ProductQAModule } from './modules/product-qa/product-qa.module';
+import { ApiKeysModule } from './modules/api-keys/api-keys.module';
+import { WebhooksModule } from './modules/webhooks/webhooks.module';
+import { StorefrontApiModule } from './modules/storefront-api/storefront-api.module';
+import { EmbedsModule } from './modules/embeds/embeds.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -166,6 +170,10 @@ import { AppService } from './app.service';
     ShowcasesModule,
     DiscussionsModule,
     ProductQAModule,
+    ApiKeysModule,
+    WebhooksModule,
+    StorefrontApiModule,
+    EmbedsModule,
   ],
   controllers: [AppController],
   providers: [

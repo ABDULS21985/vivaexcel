@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Delete,
   Body,
   Param,
@@ -19,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiKeysService } from './api-keys.service';
 import { CreateApiKeyDto } from './dto/create-api-key.dto';
+import { UpdateApiKeyDto } from './dto/update-api-key.dto';
 import { ApiKeyResponseDto, ApiKeyCreatedResponseDto } from './dto/api-key-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -114,6 +116,33 @@ export class ApiKeysController {
     return {
       status: 'success',
       message: 'API key retrieved successfully',
+      data: this.toResponseDto(apiKey),
+    };
+  }
+
+  @Patch(':id')
+  @ApiOperation({
+    summary: 'Update an API key',
+    description:
+      'Updates settings for an existing API key (name, scopes, rate limit, etc.).',
+  })
+  @ApiParam({ name: 'id', description: 'API key ID' })
+  @SwaggerResponse({
+    status: 200,
+    description: 'API key updated successfully',
+    type: ApiKeyResponseDto,
+  })
+  @SwaggerResponse({ status: 404, description: 'API key not found' })
+  async updateKey(
+    @CurrentUser() user: JwtUserPayload,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDto: UpdateApiKeyDto,
+  ): Promise<ApiResponse<ApiKeyResponseDto>> {
+    const apiKey = await this.apiKeysService.updateApiKey(id, user.sub, updateDto);
+
+    return {
+      status: 'success',
+      message: 'API key updated successfully',
       data: this.toResponseDto(apiKey),
     };
   }

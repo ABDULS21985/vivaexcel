@@ -13,6 +13,7 @@ const quickLinks = [
   { name: "Blog", href: "/blog" },
   { name: "Store", href: "/store" },
   { name: "Pricing", href: "/pricing" },
+  { name: "Developers", href: "/developers" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
   { name: "Write for Us", href: "/write-for-us" },
