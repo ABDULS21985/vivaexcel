@@ -1,7 +1,7 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 
 // Configuration
@@ -74,6 +74,12 @@ import { ContributorsModule } from './modules/contributors/contributors.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { ReadingHistoryModule } from './modules/reading-history/reading-history.module';
 import { SellerGrowthModule } from './modules/seller-growth/seller-growth.module';
+import { MonitoringModule } from './modules/monitoring/monitoring.module';
+
+// Interceptors & Filters
+import { PerformanceInterceptor } from './common/interceptors/performance.interceptor';
+import { ErrorTrackingFilter } from './common/filters/error-tracking.filter';
+import { MetricsService } from './metrics/metrics.service';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -126,6 +132,7 @@ import { AppService } from './app.service';
     // Observability modules
     HealthModule,
     MetricsModule,
+    MonitoringModule,
 
     // Email module (global)
     EmailModule,
@@ -190,6 +197,20 @@ import { AppService } from './app.service';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    // Global performance metrics interceptor
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: (metricsService: MetricsService) =>
+        new PerformanceInterceptor(metricsService),
+      inject: [MetricsService],
+    },
+    // Global error tracking filter
+    {
+      provide: APP_FILTER,
+      useFactory: (configService: ConfigService) =>
+        new ErrorTrackingFilter(configService),
+      inject: [ConfigService],
     },
   ],
 })

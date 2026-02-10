@@ -11,7 +11,6 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformResponseInterceptor } from './common/interceptors/transform-response.interceptor';
-import { MetricsService } from './metrics/metrics.service';
 
 async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
@@ -27,8 +26,6 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(PinoLogger));
 
   const configService = app.get(ConfigService);
-  const metricsService = app.get(MetricsService);
-
   // Environment variables
   const nodeEnv = configService.get<string>('NODE_ENV', 'development');
   const port = configService.get<number>('PORT', 4001);
@@ -126,9 +123,10 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new AllExceptionsFilter());
 
   // Global interceptors
+  // Note: PerformanceInterceptor is registered via APP_INTERCEPTOR in AppModule
   app.useGlobalInterceptors(
     new TimeoutInterceptor(30000), // 30 second timeout
-    new LoggingInterceptor(metricsService),
+    new LoggingInterceptor(),
     new TransformResponseInterceptor(),
   );
 

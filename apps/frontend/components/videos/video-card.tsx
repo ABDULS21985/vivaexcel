@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Play, BadgeCheck, Crown } from "lucide-react";
 import type { Video } from "@/types/video";
 import { VideoBookmarkButton } from "./video-bookmark-button";
@@ -51,7 +51,7 @@ function timeAgo(dateString: string): string {
 // Card Variants
 // =============================================================================
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 24, scale: 0.97 },
   visible: {
     opacity: 1,

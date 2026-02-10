@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { VideoSearch, SearchX } from "lucide-react";
+import { SearchX } from "lucide-react";
 import type { Video } from "@/types/video";
 import { VideoCard } from "./video-card";
 import { VideoCardSkeleton } from "./video-card-skeleton";
