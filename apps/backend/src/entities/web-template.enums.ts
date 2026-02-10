@@ -1,0 +1,48 @@
+export enum TemplateType {
+    LANDING_PAGE = 'LANDING_PAGE',
+    SAAS_BOILERPLATE = 'SAAS_BOILERPLATE',
+    ECOMMERCE_THEME = 'ECOMMERCE_THEME',
+    PORTFOLIO = 'PORTFOLIO',
+    BLOG_THEME = 'BLOG_THEME',
+    ADMIN_DASHBOARD = 'ADMIN_DASHBOARD',
+    MOBILE_APP_TEMPLATE = 'MOBILE_APP_TEMPLATE',
+    EMAIL_TEMPLATE = 'EMAIL_TEMPLATE',
+    STARTUP_KIT = 'STARTUP_KIT',
+    COMPONENT_LIBRARY = 'COMPONENT_LIBRARY',
+}
+
+export enum Framework {
+    NEXTJS = 'NEXTJS',
+    REACT = 'REACT',
+    VUE = 'VUE',
+    NUXT = 'NUXT',
+    SVELTE = 'SVELTE',
+    ASTRO = 'ASTRO',
+    ANGULAR = 'ANGULAR',
+    HTML_CSS = 'HTML_CSS',
+    TAILWIND = 'TAILWIND',
+    BOOTSTRAP = 'BOOTSTRAP',
+    WORDPRESS = 'WORDPRESS',
+    SHOPIFY = 'SHOPIFY',
+}
+
+export enum PackageManager {
+    NPM = 'NPM',
+    YARN = 'YARN',
+    PNPM = 'PNPM',
+    BUN = 'BUN',
+}
+
+export enum LicenseType {
+    SINGLE_USE = 'SINGLE_USE',
+    MULTI_USE = 'MULTI_USE',
+    EXTENDED = 'EXTENDED',
+    UNLIMITED = 'UNLIMITED',
+}
+
+export enum WebTemplateStatus {
+    DRAFT = 'DRAFT',
+    PUBLISHED = 'PUBLISHED',
+    ARCHIVED = 'ARCHIVED',
+    COMING_SOON = 'COMING_SOON',
+}

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { WebTemplate, WebTemplateStatus } from '../../entities/web-template.entity';
+import { WebTemplate } from '../../entities/web-template.entity';
+import { WebTemplateStatus } from '../../entities/web-template.enums';
 import { TemplateLicense } from '../../entities/template-license.entity';
 import { TemplateDemo } from '../../entities/template-demo.entity';
 import { WebTemplateQueryDto } from './dto/web-template-query.dto';
@@ -15,7 +16,7 @@ export class TemplatesRepository {
     private readonly licenseRepo: Repository<TemplateLicense>,
     @InjectRepository(TemplateDemo)
     private readonly demoRepo: Repository<TemplateDemo>,
-  ) {}
+  ) { }
 
   // --- Templates ---
 
@@ -163,8 +164,8 @@ export class TemplatesRepository {
     return this.templateRepo.save(template);
   }
 
-  async update(id: string, data: Partial<WebTemplate>): Promise<WebTemplate> {
-    await this.templateRepo.update(id, data);
+  async update(id: string, data: Partial<WebTemplate>): Promise<WebTemplate | null> {
+    await this.templateRepo.update(id, data as any);
     return this.findById(id);
   }
 
@@ -215,8 +216,8 @@ export class TemplatesRepository {
     return this.licenseRepo.save(license);
   }
 
-  async updateLicense(id: string, data: Partial<TemplateLicense>): Promise<TemplateLicense> {
-    await this.licenseRepo.update(id, data);
+  async updateLicense(id: string, data: Partial<TemplateLicense>): Promise<TemplateLicense | null> {
+    await this.licenseRepo.update(id, data as any);
     return this.licenseRepo.findOne({ where: { id }, relations: ['template', 'user'] });
   }
 
@@ -234,8 +235,8 @@ export class TemplatesRepository {
     return this.demoRepo.save(demo);
   }
 
-  async updateDemo(id: string, data: Partial<TemplateDemo>): Promise<TemplateDemo> {
-    await this.demoRepo.update(id, data);
+  async updateDemo(id: string, data: Partial<TemplateDemo>): Promise<TemplateDemo | null> {
+    await this.demoRepo.update(id, data as any);
     return this.demoRepo.findOne({ where: { id } });
   }
 

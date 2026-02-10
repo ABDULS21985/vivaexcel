@@ -23,7 +23,7 @@ const AI_CACHE_TTL = 3600; // 1 hour
 //  Interfaces
 // ──────────────────────────────────────────────
 
-interface RecommendedProduct {
+export interface RecommendedProduct {
   id: string;
   title: string;
   slug: string;
@@ -178,9 +178,9 @@ export class AIRecommendationService {
     const viewedProducts =
       viewedIds.length > 0
         ? await this.productRepository.find({
-            where: { id: In(viewedIds) },
-            relations: ['category', 'tags'],
-          })
+          where: { id: In(viewedIds) },
+          relations: ['category', 'tags'],
+        })
         : [];
 
     // Get catalog for AI to choose from
@@ -207,9 +207,9 @@ export class AIRecommendationService {
       context ? `User is looking for: ${context}` : '',
       viewedProducts.length > 0
         ? `Recently viewed: ${viewedProducts
-            .slice(0, 5)
-            .map((p) => `"${p.title}" (${p.type}, $${p.price})`)
-            .join(', ')}`
+          .slice(0, 5)
+          .map((p) => `"${p.title}" (${p.type}, $${p.price})`)
+          .join(', ')}`
         : '',
       profile.preferredCategories?.length > 0
         ? `Preferred categories: ${profile.preferredCategories.join(', ')}`

@@ -17,8 +17,8 @@ import { CreateTemplateLicenseDto } from './dto/create-template-license.dto';
 import { CompatibilityCheckDto } from './dto/compatibility-check.dto';
 import {
   WebTemplate,
-  Framework,
 } from '../../entities/web-template.entity';
+import { Framework } from '../../entities/web-template.enums';
 import { TemplateLicense } from '../../entities/template-license.entity';
 import { TemplateDemo } from '../../entities/template-demo.entity';
 import { DigitalProductTag } from '../../entities/digital-product-tag.entity';
@@ -46,7 +46,7 @@ export class TemplatesService {
     private readonly cacheService: CacheService,
     @InjectRepository(DigitalProductTag)
     private readonly tagRepo: Repository<DigitalProductTag>,
-  ) {}
+  ) { }
 
   // ─── Template CRUD ──────────────────────────────────────────────────
 
@@ -67,7 +67,7 @@ export class TemplatesService {
         meta: {
           total: result.total,
           hasNextPage: result.hasNextPage,
-          nextCursor: result.nextCursor,
+          nextCursor: result.nextCursor || undefined,
         },
       },
     };
@@ -132,7 +132,7 @@ export class TemplatesService {
       throw new ConflictException('Template slug already exists');
     }
 
-    let tags = [];
+    let tags: DigitalProductTag[] = [];
     if (dto.tagIds && dto.tagIds.length > 0) {
       tags = await this.tagRepo.find({ where: { id: In(dto.tagIds) } });
     }
@@ -182,6 +182,12 @@ export class TemplatesService {
     }
 
     const updatedTemplate = await this.templatesRepository.update(id, updateData);
+
+    if (!updatedTemplate) {
+      throw new Error('Failed to update template');
+    }
+
+
 
     // Invalidate templates cache and specific template cache
     await this.cacheService.invalidateByTags([
@@ -392,6 +398,10 @@ export class TemplatesService {
       activationCount: license.activationCount + 1,
     } as any);
 
+    if (!updated) {
+      throw new Error('Failed to update license');
+    }
+
     return {
       status: 'success',
       message: 'License activated successfully',
@@ -408,6 +418,10 @@ export class TemplatesService {
     const updated = await this.templatesRepository.updateLicense(license.id, {
       isActive: false,
     } as any);
+
+    if (!updated) {
+      throw new Error('Failed to update license');
+    }
 
     return {
       status: 'success',
@@ -532,7 +546,7 @@ export class TemplatesService {
 
     if (dto.nodeVersion) {
       filteredItems = filteredItems.filter(
-        (t) => !t.nodeVersion || t.nodeVersion <= dto.nodeVersion,
+        (t) => !t.nodeVersion || t.nodeVersion <= dto.nodeVersion!,
       );
     }
 

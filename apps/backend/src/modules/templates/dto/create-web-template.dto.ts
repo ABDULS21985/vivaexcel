@@ -20,7 +20,7 @@ import {
   LicenseType,
   PackageManager,
   WebTemplateStatus,
-} from '../../../entities/web-template.entity';
+} from '../../../entities/web-template.enums';
 
 export class CreateWebTemplateDto {
   @ApiProperty({ example: 'SaaS Dashboard Pro', maxLength: 255 })

@@ -6,7 +6,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { WebTemplate, LicenseType } from './web-template.entity';
+import { WebTemplate } from './web-template.entity';
+import { LicenseType } from './web-template.enums';
 import { User } from './user.entity';
 
 @Entity('template_licenses')

@@ -13,6 +13,8 @@ import { CouponRedemption } from './entities/coupon-redemption.entity';
 import { FlashSale } from './entities/flash-sale.entity';
 import { BundleDiscount } from './entities/bundle-discount.entity';
 import { LoyaltyTier } from './entities/loyalty-tier.entity';
+import { Product } from '../products/entities/product.entity';
+import { Order } from '../../entities/order.entity';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { LoyaltyTier } from './entities/loyalty-tier.entity';
       FlashSale,
       BundleDiscount,
       LoyaltyTier,
+      Product,
+      Order,
     ]),
   ],
   controllers: [
@@ -33,4 +37,4 @@ import { LoyaltyTier } from './entities/loyalty-tier.entity';
   providers: [PromotionsService, PromotionsRepository],
   exports: [PromotionsService],
 })
-export class PromotionsModule {}
+export class PromotionsModule { }

@@ -71,14 +71,14 @@ function buildReplyTree(replies: DiscussionReply[]): DiscussionReply[] {
 
   // First pass: clone all replies into a map
   for (const reply of replies) {
-    map.set(reply.id, { ...reply, replies: [] });
+    map.set(reply.id, { ...reply, children: [] });
   }
 
   // Second pass: attach children to parents
   for (const reply of replies) {
     const node = map.get(reply.id)!;
     if (reply.parentId && map.has(reply.parentId)) {
-      map.get(reply.parentId)!.replies!.push(node);
+      map.get(reply.parentId)!.children!.push(node);
     } else {
       roots.push(node);
     }

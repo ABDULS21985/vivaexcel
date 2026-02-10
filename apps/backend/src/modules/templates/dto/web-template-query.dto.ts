@@ -16,7 +16,7 @@ import {
   Framework,
   LicenseType,
   WebTemplateStatus,
-} from '../../../entities/web-template.entity';
+} from '../../../entities/web-template.enums';
 
 export class WebTemplateQueryDto extends CursorPaginationDto {
   @ApiPropertyOptional({ description: 'Search by title or description', example: 'dashboard' })
@@ -79,4 +79,44 @@ export class WebTemplateQueryDto extends CursorPaginationDto {
   @IsOptional()
   @IsUUID()
   organizationId?: string;
+  @ApiPropertyOptional({ description: 'Filter by category slug', example: 'dashboard' })
+  @IsOptional()
+  @IsString()
+  categorySlug?: string;
+
+  @ApiPropertyOptional({ description: 'Filter by tag slug', example: 'react' })
+  @IsOptional()
+  @IsString()
+  tagSlug?: string;
+
+  @ApiPropertyOptional({ description: 'Minimum rating', example: 4.5 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  minRating?: number;
+
+  @ApiPropertyOptional({ description: 'Filter by featured status', example: true })
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @ApiPropertyOptional({ description: 'Filter by bestseller status', example: true })
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  isBestseller?: boolean;
+
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'Filter by browser support',
+    example: ['Chrome', 'Firefox'],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @Transform(({ value }) => (typeof value === 'string' ? value.split(',') : value))
+  browserSupport?: string[];
 }
+

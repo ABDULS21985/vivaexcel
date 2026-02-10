@@ -67,16 +67,16 @@ const formVariants = {
     opacity: 0,
     marginTop: 0,
     transition: {
-      height: { duration: 0.25, ease: "easeInOut" },
+      height: { duration: 0.25, ease: "easeInOut" as const },
       opacity: { duration: 0.15 },
     },
   },
   visible: {
-    height: "auto",
+    height: "auto" as const,
     opacity: 1,
     marginTop: 16,
     transition: {
-      height: { duration: 0.25, ease: "easeInOut" },
+      height: { duration: 0.25, ease: "easeInOut" as const },
       opacity: { duration: 0.25, delay: 0.1 },
     },
   },

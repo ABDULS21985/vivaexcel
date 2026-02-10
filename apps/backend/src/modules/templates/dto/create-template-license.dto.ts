@@ -8,7 +8,7 @@ import {
   IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { LicenseType } from '../../../entities/web-template.entity';
+import { LicenseType } from '../../../entities/web-template.enums';
 
 export class CreateTemplateLicenseDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', description: 'ID of the template' })

@@ -58,19 +58,19 @@ const expandVariants = {
     height: 0,
     opacity: 0,
     transition: {
-      height: { duration: 0.3, ease: "easeInOut" },
+      height: { duration: 0.3, ease: "easeInOut" as const },
       opacity: { duration: 0.2 },
     },
   },
   visible: {
-    height: "auto",
+    height: "auto" as const,
     opacity: 1,
     transition: {
-      height: { duration: 0.3, ease: "easeInOut" },
+      height: { duration: 0.3, ease: "easeInOut" as const },
       opacity: { duration: 0.3, delay: 0.1 },
     },
   },
-};
+} as const;
 
 const answerItemVariants = {
   hidden: { opacity: 0, x: -12 },

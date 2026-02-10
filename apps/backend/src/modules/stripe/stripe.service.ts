@@ -220,7 +220,7 @@ export class StripeService {
 
     this.logger.log(`Processing webhook event: ${event.type} (${event.id})`);
 
-    switch (event.type) {
+    switch (event.type as string) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         // Delegate digital product purchases to CheckoutService
@@ -305,7 +305,7 @@ export class StripeService {
       }
 
       case 'transfer.failed': {
-        const transfer = event.data.object as Stripe.Transfer;
+        const transfer = (event as any).data.object as Stripe.Transfer;
         if (transfer.metadata?.type === 'affiliate_payout') {
           await this.affiliateStripeService.handleTransferFailed(transfer);
         } else {
