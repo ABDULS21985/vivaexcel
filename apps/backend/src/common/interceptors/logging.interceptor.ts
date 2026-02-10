@@ -4,32 +4,10 @@ import {
   ExecutionContext,
   CallHandler,
   Logger,
-  Optional,
-  Inject,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Request, Response } from 'express';
-
-/**
- * Interface for metrics service (optional dependency)
- */
-export interface IMetricsService {
-  incrementActiveConnections(): void;
-  decrementActiveConnections(): void;
-  recordHttpRequest(
-    method: string,
-    path: string,
-    statusCode: number,
-    duration: number,
-  ): void;
-  recordApiError(errorType: string, path: string): void;
-}
-
-/**
- * Injection token for metrics service
- */
-export const METRICS_SERVICE = 'METRICS_SERVICE';
 
 /**
  * Interface for request with correlation ID
@@ -57,40 +35,14 @@ export interface LoggingInterceptorOptions {
 /**
  * Request/response logging interceptor.
  *
- * Features:
- * - Logs all HTTP requests with timing
- * - Tracks correlation IDs
- * - Integrates with optional metrics service
- * - Highlights slow requests
- * - Configurable exclusion patterns
- *
- * @example
- * // Apply globally in main.ts
- * ```typescript
- * app.useGlobalInterceptors(new LoggingInterceptor());
- * ```
- *
- * @example
- * // With options
- * ```typescript
- * app.useGlobalInterceptors(
- *   new LoggingInterceptor(null, {
- *     slowRequestThreshold: 1000,
- *     excludePaths: ['/health', /^\/metrics/],
- *   }),
- * );
- * ```
+ * Focuses exclusively on logging. Metrics are handled by PerformanceInterceptor.
  */
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
   private readonly options: Required<LoggingInterceptorOptions>;
 
-  constructor(
-    @Optional() @Inject(METRICS_SERVICE)
-    private readonly metricsService?: IMetricsService,
-    options?: LoggingInterceptorOptions,
-  ) {
+  constructor(options?: LoggingInterceptorOptions) {
     this.options = {
       slowRequestThreshold: options?.slowRequestThreshold ?? 3000,
       excludePaths: options?.excludePaths ?? ['/health', '/metrics'],
@@ -100,12 +52,6 @@ export class LoggingInterceptor implements NestInterceptor {
     };
   }
 
-  /**
-   * Intercepts requests and logs timing information
-   * @param context - Execution context
-   * @param next - Call handler
-   * @returns Observable of the response
-   */
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest<RequestWithCorrelationId>();
@@ -128,9 +74,6 @@ export class LoggingInterceptor implements NestInterceptor {
       userAgent: userAgent.substring(0, 100),
     });
 
-    // Increment active connections if metrics service available
-    this.metricsService?.incrementActiveConnections();
-
     return next.handle().pipe(
       tap({
         next: (responseBody) => {
@@ -145,46 +88,19 @@ export class LoggingInterceptor implements NestInterceptor {
             correlationId,
             responseBody,
           );
-
-          // Record metrics
-          this.metricsService?.recordHttpRequest(
-            method,
-            this.normalizePath(url),
-            statusCode,
-            duration / 1000,
-          );
-          this.metricsService?.decrementActiveConnections();
         },
         error: (error: Error) => {
           const duration = Date.now() - startTime;
           const statusCode = response.statusCode || 500;
 
           this.logError(method, url, statusCode, duration, correlationId, error);
-
-          // Record metrics
-          this.metricsService?.recordHttpRequest(
-            method,
-            this.normalizePath(url),
-            statusCode,
-            duration / 1000,
-          );
-          this.metricsService?.recordApiError(
-            error.constructor.name,
-            this.normalizePath(url),
-          );
-          this.metricsService?.decrementActiveConnections();
         },
       }),
     );
   }
 
-  /**
-   * Checks if path should be excluded from logging
-   * @param url - Request URL
-   * @returns True if path should be excluded
-   */
   private shouldExclude(url: string): boolean {
-    const path = url.split('?')[0]; // Remove query string
+    const path = url.split('?')[0];
     return this.options.excludePaths.some((pattern) => {
       if (typeof pattern === 'string') {
         return path === pattern || path.startsWith(`${pattern}/`);
@@ -193,25 +109,6 @@ export class LoggingInterceptor implements NestInterceptor {
     });
   }
 
-  /**
-   * Normalizes path for metrics (removes dynamic segments)
-   * @param url - Request URL
-   * @returns Normalized path
-   */
-  private normalizePath(url: string): string {
-    const path = url.split('?')[0];
-    // Replace UUIDs and numeric IDs with placeholders
-    return path
-      .replace(
-        /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
-        ':id',
-      )
-      .replace(/\/\d+(?=\/|$)/g, '/:id');
-  }
-
-  /**
-   * Logs successful response
-   */
   private logResponse(
     method: string,
     url: string,
@@ -228,12 +125,10 @@ export class LoggingInterceptor implements NestInterceptor {
       duration,
     };
 
-    // Add truncated response body if enabled
     if (this.options.logResponseBody && responseBody) {
       logData.responseBody = this.truncateBody(responseBody);
     }
 
-    // Determine log level based on status and duration
     const isSlow = duration > this.options.slowRequestThreshold;
     const message = `<-- ${method} ${url} ${statusCode} ${duration}ms${isSlow ? ' [SLOW]' : ''}`;
 
@@ -246,9 +141,6 @@ export class LoggingInterceptor implements NestInterceptor {
     }
   }
 
-  /**
-   * Logs error response
-   */
   private logError(
     method: string,
     url: string,
@@ -271,11 +163,6 @@ export class LoggingInterceptor implements NestInterceptor {
     );
   }
 
-  /**
-   * Truncates body for logging
-   * @param body - Response body
-   * @returns Truncated body string
-   */
   private truncateBody(body: unknown): string {
     try {
       const str = JSON.stringify(body);

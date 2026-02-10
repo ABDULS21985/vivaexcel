@@ -30,6 +30,7 @@ import { MobileBottomNav, MobileTopBar } from "../../components/mobile";
 import { GamificationListener } from "../../components/gamification/gamification-listener";
 import { AIAssistantWidget } from "../../components/ai-assistant";
 import { Toaster } from "sonner";
+import { WebVitalsReporter } from "../../components/web-vitals-reporter";
 import "../globals.css";
 
 // Noto Sans Arabic for RTL support
@@ -200,6 +201,9 @@ export default async function LocaleLayout({ children, params }: Props) {
 
                   {/* Gamification: Achievement & Level-Up notifications */}
                   <GamificationListener />
+
+                  {/* Web Vitals Performance Monitoring */}
+                  <WebVitalsReporter />
 
                   {/* PWA: Service Worker Registration & Install Prompt */}
                   <ServiceWorkerRegister />

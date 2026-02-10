@@ -110,6 +110,8 @@ export const getPinoConfig = (): Params => {
         correlationId: req.headers['x-correlation-id'] || (req as any).id,
         environment: process.env.NODE_ENV || 'development',
         service: process.env.APP_NAME || 'ktblog-backend',
+        userId: (req as any).user?.sub || (req as any).user?.id || undefined,
+        route: (req as any).route?.path || req.url,
       }),
 
       // Don't log health check endpoints
