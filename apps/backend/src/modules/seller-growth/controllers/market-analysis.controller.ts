@@ -54,7 +54,7 @@ export class MarketAnalysisController {
     };
   }
 
-  @Get('benchmarks/:productType/:categoryId?')
+  @Get('benchmarks/:productType{/:categoryId}')
   @ApiOperation({ summary: 'Get specific benchmark' })
   async getBenchmark(
     @Param('productType') productType: DigitalProductType,

@@ -26,10 +26,11 @@ import { Public } from '../../../common/decorators/public.decorator';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { RolesGuard } from '../../../common/guards/roles.guard';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { Role } from '../../../common/constants/roles.constant';
 
 @Controller('videos')
-@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
@@ -121,7 +122,7 @@ export class VideosController {
   @Delete('comments/:id')
   @HttpCode(HttpStatus.OK)
   async deleteComment(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser('userId') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     await this.videosService.deleteComment(userId, id);
@@ -161,7 +162,7 @@ export class VideosController {
   @Post(':id/bookmark')
   @HttpCode(HttpStatus.OK)
   async toggleBookmark(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser('userId') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const data = await this.videosService.toggleBookmark(userId, id);
@@ -171,7 +172,7 @@ export class VideosController {
   @Post(':id/like')
   @HttpCode(HttpStatus.OK)
   async toggleLike(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser('userId') userId: string,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     const data = await this.videosService.toggleLike(userId, id);
@@ -181,7 +182,7 @@ export class VideosController {
   @Post(':slug/comments')
   @HttpCode(HttpStatus.CREATED)
   async addComment(
-    @CurrentUser('sub') userId: string,
+    @CurrentUser('userId') userId: string,
     @Param('slug') slug: string,
     @Body() dto: CreateVideoCommentDto,
   ) {

@@ -7,6 +7,8 @@ import { Request } from 'express';
 export interface JwtUserPayload {
   /** User's unique identifier */
   sub: string;
+  /** User's ID (returned by JWT strategy validate) */
+  userId: string;
   /** User's email address */
   email: string;
   /** User's role */

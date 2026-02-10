@@ -189,7 +189,7 @@ export function GamificationOverview() {
         </div>
 
         {/* Streak Calendar */}
-        <div className="grid grid-cols-14 gap-1.5" aria-label="Streak calendar, last 14 days">
+        <div className="grid grid-cols-[repeat(14,1fr)] gap-1.5" aria-label="Streak calendar, last 14 days">
           {streakDays.map((day) => (
             <div key={day.date} className="flex flex-col items-center gap-1">
               <span className="text-[10px] text-[var(--muted-foreground)]">

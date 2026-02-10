@@ -63,10 +63,10 @@ export function DashboardHero() {
             <img
               src={user.avatar}
               alt=""
-              className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover ring-3 ring-[var(--primary)]/20 group-hover:ring-[var(--primary)]/40 transition-all"
+              className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover ring-2 ring-[var(--primary)]/20 group-hover:ring-[var(--primary)]/40 transition-all"
             />
           ) : (
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--primary)] flex items-center justify-center text-white text-xl md:text-2xl font-bold ring-3 ring-[var(--primary)]/20 group-hover:ring-[var(--primary)]/40 transition-all">
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--primary)] flex items-center justify-center text-white text-xl md:text-2xl font-bold ring-2 ring-[var(--primary)]/20 group-hover:ring-[var(--primary)]/40 transition-all">
               {initials}
             </div>
           )}

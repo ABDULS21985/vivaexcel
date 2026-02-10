@@ -72,9 +72,10 @@ function StatusTimeline({ status }: { status: OrderStatus }) {
   ];
 
   const getStepIndex = (s: OrderStatus) => {
-    if (s === "pending") return 0;
-    if (s === "paid" || s === "processing") return 1;
-    if (s === "delivered" || s === "completed") return 2;
+    const v = s as string;
+    if (v === "pending") return 0;
+    if (v === "paid" || v === "processing") return 1;
+    if (v === "delivered" || v === "completed") return 2;
     return -1;
   };
 
@@ -476,7 +477,7 @@ export default function OrdersPage() {
               <AnimatePresence mode="popLayout">
                 {filteredOrders.map((order, index) => {
                   const isCompleted =
-                    order.status === "completed" || order.status === "delivered";
+                    (order.status as string) === "completed" || (order.status as string) === "delivered";
                   const firstProduct = order.items[0];
 
                   return (

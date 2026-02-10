@@ -1,4 +1,4 @@
-import { onLCP, onFID, onCLS, onFCP, onTTFB, onINP, type Metric } from 'web-vitals';
+import { onLCP, onCLS, onFCP, onTTFB, onINP, type Metric } from 'web-vitals';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api/v1';
 
@@ -55,7 +55,6 @@ export function reportWebVitals(): void {
 
   try {
     onLCP(bufferMetric);
-    onFID(bufferMetric);
     onCLS(bufferMetric);
     onFCP(bufferMetric);
     onTTFB(bufferMetric);

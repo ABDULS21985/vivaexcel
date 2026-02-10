@@ -2706,5 +2706,28 @@
     "signInToSaveDescription": "Create a free account to save your favorite videos.",
     "videoSaved": "Video saved",
     "videoRemoved": "Video removed from saved"
+  },
+  "collab": {
+    "pageTitle": "Collab",
+    "pageDescription": "Join the VivaExcel community. Share insights and connect with professionals.",
+    "whatsHappening": "What's happening?",
+    "post": "Post",
+    "forYou": "For you",
+    "following": "Following",
+    "excel": "Excel",
+    "ai": "AI",
+    "data": "Data",
+    "trendingNow": "Trending Now",
+    "liveNow": "Live Now",
+    "todaysNews": "Today's News",
+    "whatsHappeningTrending": "What's happening",
+    "showMore": "Show more",
+    "subscribePremium": "VivaExcel Premium",
+    "subscribePremiumDesc": "Subscribe to unlock new features and get access to exclusive content.",
+    "subscribe": "Subscribe",
+    "noPosts": "No posts yet",
+    "noPostsDesc": "Be the first to start a conversation in this topic.",
+    "listeners": "listeners",
+    "posts": "posts"
   }
 }
