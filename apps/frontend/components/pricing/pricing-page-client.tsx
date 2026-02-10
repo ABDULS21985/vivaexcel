@@ -202,20 +202,20 @@ export function PricingPageClient() {
       {/* ================================================================= */}
       {/* Hero Section                                                       */}
       {/* ================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-emerald-950 to-teal-900 py-20 sm:py-28">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0F2B6B] via-[#143A8F] to-[#1E4DB7] py-20 sm:py-28">
         {/* Floating orbs */}
         <motion.div
-          className="absolute top-20 left-10 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl"
+          className="absolute top-20 left-10 h-72 w-72 rounded-full bg-[#F59A23]/10 blur-3xl"
           animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-teal-500/10 blur-3xl"
+          className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-blue-400/10 blur-3xl"
           animate={{ x: [0, -25, 0], y: [0, 25, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/5 blur-3xl"
+          className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F59A23]/5 blur-3xl"
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -226,7 +226,7 @@ export function PricingPageClient() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-300"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#F59A23]/30 bg-[#F59A23]/10 px-4 py-1.5 text-sm font-medium text-amber-300"
           >
             <Sparkles className="h-4 w-4" />
             {t("hero.badge")}
@@ -266,7 +266,7 @@ export function PricingPageClient() {
                 key={badge}
                 className="flex items-center gap-2 text-sm text-slate-400"
               >
-                <Check className="h-4 w-4 text-emerald-400" />
+                <Check className="h-4 w-4 text-[#F59A23]" />
                 {t(`hero.trustBadges.${badge}`)}
               </div>
             ))}
@@ -297,7 +297,7 @@ export function PricingPageClient() {
               aria-label="Toggle billing period"
             >
               <motion.div
-                className="absolute top-1 h-6 w-6 rounded-full bg-emerald-500 shadow-md"
+                className="absolute top-1 h-6 w-6 rounded-full bg-[#1E4DB7] shadow-md"
                 animate={{ left: isAnnual ? "calc(100% - 28px)" : "4px" }}
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
               />
@@ -313,7 +313,7 @@ export function PricingPageClient() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                  className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                 >
                   {t("billing.savePercent")}
                 </motion.span>
@@ -340,14 +340,14 @@ export function PricingPageClient() {
                   variants={cardVariants}
                   className={`relative flex flex-col rounded-2xl border p-6 transition-shadow hover:shadow-xl ${
                     isFeatured
-                      ? "border-emerald-500/50 bg-white/80 shadow-lg shadow-emerald-500/10 ring-2 ring-emerald-500 backdrop-blur-xl dark:bg-slate-800/80"
+                      ? "border-[#1E4DB7]/50 bg-white/80 shadow-lg shadow-[#1E4DB7]/10 ring-2 ring-[#1E4DB7] backdrop-blur-xl dark:bg-slate-800/80"
                       : "border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800"
                   }`}
                 >
                   {/* Featured badge */}
                   {isFeatured && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-1 text-xs font-semibold text-white shadow-md">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[#F59A23] px-4 py-1 text-xs font-semibold text-white shadow-md">
                         <Crown className="h-3 w-3" />
                         Most Popular
                       </span>
@@ -359,7 +359,7 @@ export function PricingPageClient() {
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-lg ${
                         isFeatured
-                          ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400"
+                          ? "bg-blue-100 text-[#1E4DB7] dark:bg-blue-900/40 dark:text-blue-400"
                           : "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
                       }`}
                     >
@@ -437,7 +437,7 @@ export function PricingPageClient() {
                         <Check
                           className={`mt-0.5 h-4 w-4 shrink-0 ${
                             isFeatured
-                              ? "text-emerald-500"
+                              ? "text-[#1E4DB7]"
                               : "text-slate-400 dark:text-slate-500"
                           }`}
                         />
@@ -454,7 +454,7 @@ export function PricingPageClient() {
                       isCurrent
                         ? "cursor-default bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-500"
                         : isFeatured
-                          ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md hover:shadow-lg hover:from-emerald-600 hover:to-teal-600"
+                          ? "bg-[#F59A23] text-white shadow-md hover:shadow-lg hover:bg-[#e08b1a]"
                           : "bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
                     }`}
                   >
@@ -485,7 +485,7 @@ export function PricingPageClient() {
             </p>
             <button
               onClick={() => setShowComparison((prev) => !prev)}
-              className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1E4DB7] hover:text-[#143A8F] dark:text-blue-400"
             >
               {showComparison
                 ? t("comparison.hideComparison")
@@ -520,7 +520,7 @@ export function PricingPageClient() {
                             key={plan.slug}
                             className={`px-4 py-3 text-center text-sm font-semibold ${
                               plan.slug === MarketplacePlanSlug.PROFESSIONAL
-                                ? "text-emerald-600 dark:text-emerald-400"
+                                ? "text-[#1E4DB7] dark:text-blue-400"
                                 : "text-slate-900 dark:text-white"
                             }`}
                           >
@@ -544,7 +544,7 @@ export function PricingPageClient() {
                             >
                               {typeof val === "boolean" ? (
                                 val ? (
-                                  <Check className="mx-auto h-5 w-5 text-emerald-500" />
+                                  <Check className="mx-auto h-5 w-5 text-[#1E4DB7]" />
                                 ) : (
                                   <X className="mx-auto h-5 w-5 text-slate-300 dark:text-slate-600" />
                                 )
@@ -627,7 +627,7 @@ export function PricingPageClient() {
       {/* ================================================================= */}
       {/* CTA Banner                                                         */}
       {/* ================================================================= */}
-      <section className="border-t border-slate-200 bg-gradient-to-r from-emerald-600 to-teal-600 py-16 dark:border-slate-700">
+      <section className="border-t border-slate-200 bg-gradient-to-r from-[#1E4DB7] to-[#0F2B6B] py-16 dark:border-slate-700">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -643,7 +643,7 @@ export function PricingPageClient() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mx-auto mt-4 max-w-2xl text-lg text-emerald-100"
+            className="mx-auto mt-4 max-w-2xl text-lg text-blue-100"
           >
             {t("cta.subtitle")}
           </motion.p>
@@ -657,7 +657,7 @@ export function PricingPageClient() {
             {isSubscribed ? (
               <Link
                 href="/account/subscription"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold text-emerald-700 shadow-md transition-shadow hover:shadow-lg"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold text-[#1E4DB7] shadow-md transition-shadow hover:shadow-lg"
               >
                 {t("subscription.manageBilling")}
               </Link>
@@ -666,7 +666,7 @@ export function PricingPageClient() {
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold text-emerald-700 shadow-md transition-shadow hover:shadow-lg"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-sm font-semibold text-[#1E4DB7] shadow-md transition-shadow hover:shadow-lg"
               >
                 {t("cta.button")}
               </button>

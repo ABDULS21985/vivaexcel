@@ -26,9 +26,9 @@ import { DigitalProductPreview } from '../../entities/digital-product-preview.en
     ]),
   ],
   controllers: [
-    DigitalProductsController,
     DigitalProductCategoriesController,
     DigitalProductTagsController,
+    DigitalProductsController,
   ],
   providers: [
     DigitalProductsRepository,

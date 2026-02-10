@@ -14,10 +14,16 @@ export class UserResponseDto {
   email!: string;
 
   @ApiProperty({
-    description: 'User full name',
-    example: 'John Doe',
+    description: 'User first name',
+    example: 'John',
   })
-  name!: string;
+  firstName!: string;
+
+  @ApiProperty({
+    description: 'User last name',
+    example: 'Doe',
+  })
+  lastName!: string;
 
   @ApiProperty({
     description: 'Whether user email is verified',

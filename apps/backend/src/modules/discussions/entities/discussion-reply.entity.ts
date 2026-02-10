@@ -40,7 +40,7 @@ export class DiscussionReply extends BaseEntity {
   @Column({ type: 'int', default: 0, name: 'likes_count' })
   likesCount: number;
 
-  @Column({ name: 'parent_id', nullable: true })
+  @Column({ name: 'parent_id', type: 'varchar', nullable: true })
   parentId: string | null;
 
   @ManyToOne(() => DiscussionReply, (reply) => reply.children, {

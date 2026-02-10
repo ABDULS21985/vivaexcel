@@ -57,7 +57,7 @@ export class AuthService {
     userAgent?: string,
     referralCode?: string,
   ): Promise<AuthResponseDto> {
-    const { email, password, name } = registerDto;
+    const { email, password, firstName, lastName } = registerDto;
 
     // Check if user already exists
     const existingUser = await this.usersService.findByEmail(email);
@@ -72,7 +72,8 @@ export class AuthService {
     const user = await this.usersService.createRaw({
       email,
       password: hashedPassword,
-      name,
+      firstName,
+      lastName,
     });
 
     // Process referral code if provided
@@ -623,7 +624,8 @@ export class AuthService {
     return {
       id: user.id,
       email: user.email,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       emailVerified: user.emailVerified,
       twoFactorEnabled: user.twoFactorEnabled,
       avatarUrl: user.avatarUrl,

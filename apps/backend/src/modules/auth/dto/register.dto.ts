@@ -39,16 +39,30 @@ export class RegisterDto {
   password!: string;
 
   @ApiProperty({
-    description: 'User full name',
-    example: 'John Doe',
+    description: 'User first name',
+    example: 'John',
   })
-  @IsString({ message: 'Name must be a string' })
-  @IsNotEmpty({ message: 'Name is required' })
-  @MinLength(2, { message: 'Name must be at least 2 characters long' })
-  @MaxLength(100, { message: 'Name must not exceed 100 characters' })
+  @IsString({ message: 'First name must be a string' })
+  @IsNotEmpty({ message: 'First name is required' })
+  @MinLength(2, { message: 'First name must be at least 2 characters long' })
+  @MaxLength(50, { message: 'First name must not exceed 50 characters' })
   @Matches(/^[a-zA-Z\s'-]+$/, {
     message:
-      'Name can only contain letters, spaces, hyphens, and apostrophes',
+      'First name can only contain letters, spaces, hyphens, and apostrophes',
   })
-  name!: string;
+  firstName!: string;
+
+  @ApiProperty({
+    description: 'User last name',
+    example: 'Doe',
+  })
+  @IsString({ message: 'Last name must be a string' })
+  @IsNotEmpty({ message: 'Last name is required' })
+  @MinLength(2, { message: 'Last name must be at least 2 characters long' })
+  @MaxLength(50, { message: 'Last name must not exceed 50 characters' })
+  @Matches(/^[a-zA-Z\s'-]+$/, {
+    message:
+      'Last name can only contain letters, spaces, hyphens, and apostrophes',
+  })
+  lastName!: string;
 }

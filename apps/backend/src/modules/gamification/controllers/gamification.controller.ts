@@ -22,9 +22,11 @@ import {
 } from '../dto';
 import { Public } from '../../../common/decorators/public.decorator';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 
 @ApiTags('Gamification')
 @Controller('gamification')
+@UseGuards(JwtAuthGuard)
 export class GamificationController {
   constructor(
     private readonly gamificationService: GamificationService,

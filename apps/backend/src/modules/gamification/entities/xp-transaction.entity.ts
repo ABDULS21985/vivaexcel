@@ -16,7 +16,7 @@ export class XPTransaction extends BaseEntity {
   @Index()
   source!: XPSource;
 
-  @Column({ name: 'reference_id', nullable: true })
+  @Column({ name: 'reference_id', type: 'varchar', nullable: true })
   referenceId!: string | null;
 
   @Column({ type: 'text' })

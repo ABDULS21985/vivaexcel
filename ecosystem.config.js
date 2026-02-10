@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'backend',
+      name: 'viva-backend',
       cwd: './apps/backend',
       script: 'dist/main.js',
       instances: 1,
@@ -10,15 +10,15 @@ module.exports = {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'development',
-        PORT: 3001,
+        PORT: 4001,
       },
       env_production: {
         NODE_ENV: 'production',
-        PORT: 3001,
+        PORT: 4001,
       },
     },
     {
-      name: 'frontend',
+      name: 'viva-frontend',
       cwd: './apps/frontend',
       script: 'npm',
       args: 'run dev -- -p 3000',
@@ -32,7 +32,7 @@ module.exports = {
       },
     },
     {
-      name: 'dashboard',
+      name: 'viva-dashboard',
       cwd: './apps/dashboard',
       script: 'npm',
       args: 'run start -- -p 3002',

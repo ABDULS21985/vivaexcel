@@ -22,10 +22,10 @@ export class Achievement extends BaseEntity {
   @Column({ type: 'enum', enum: AchievementTier })
   tier!: AchievementTier;
 
-  @Column({ name: 'icon_url', nullable: true })
+  @Column({ name: 'icon_url', type: 'varchar', nullable: true })
   iconUrl!: string | null;
 
-  @Column({ name: 'badge_color', length: 7, nullable: true })
+  @Column({ name: 'badge_color', type: 'varchar', length: 7, nullable: true })
   badgeColor!: string | null;
 
   @Column({ type: 'jsonb' })

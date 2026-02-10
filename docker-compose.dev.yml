@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: viva-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ktblog
+      POSTGRES_PASSWORD: ktblog123
+      POSTGRES_DB: ktblog
+    ports:
+      - "5434:5432"
+    volumes:
+      - viva_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ktblog"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: viva-redis
+    restart: unless-stopped
+    ports:
+      - "6381:6379"
+    volumes:
+      - viva_redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  viva_postgres_data:
+  viva_redis_data:

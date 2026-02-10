@@ -204,17 +204,14 @@ export class UsersService {
   async createRaw(data: {
     email: string;
     password: string;
-    name: string;
+    firstName: string;
+    lastName: string;
   }): Promise<User> {
-    const names = data.name.split(' ');
-    const firstName = names[0];
-    const lastName = names.slice(1).join(' ') || 'User';
-
     return this.usersRepository.create({
       email: data.email,
       password: data.password,
-      firstName,
-      lastName,
+      firstName: data.firstName,
+      lastName: data.lastName,
       status: UserStatus.ACTIVE,
     } as any);
   }
