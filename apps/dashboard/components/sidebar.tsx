@@ -100,6 +100,7 @@ const navSections: NavSection[] = [
             { label: "Delivery", href: "/delivery", icon: <Truck className="h-5 w-5" /> },
             { label: "Reviews", href: "/reviews", icon: <Star className="h-5 w-5" /> },
             { label: "Sellers", href: "/sellers", icon: <Store className="h-5 w-5" /> },
+            { label: "Affiliates", href: "/affiliates", icon: <Users className="h-5 w-5" /> },
         ],
     },
     {

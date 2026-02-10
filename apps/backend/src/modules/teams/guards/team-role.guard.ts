@@ -39,18 +39,18 @@ export class TeamRoleGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const userId = request.user?.sub;
-    const teamId = request.params?.teamId;
+    const teamId = request.params?.teamId as string | undefined;
 
     if (!userId || !teamId) {
       throw new ForbiddenException('Missing user or team context');
     }
 
     // Check if member info is already attached (from TeamMembershipGuard)
-    let member = (request as any).teamMember as TeamMember | undefined;
+    let member: TeamMember | undefined = (request as any).teamMember;
     if (!member) {
-      member = await this.memberRepository.findOne({
+      member = (await this.memberRepository.findOne({
         where: { teamId, userId },
-      });
+      })) ?? undefined;
     }
 
     if (!member) {

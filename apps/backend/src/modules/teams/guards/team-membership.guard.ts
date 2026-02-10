@@ -19,7 +19,7 @@ export class TeamMembershipGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const userId = request.user?.sub;
-    const teamId = request.params?.teamId;
+    const teamId = request.params?.teamId as string | undefined;
 
     if (!userId || !teamId) {
       throw new ForbiddenException('Missing user or team context');
