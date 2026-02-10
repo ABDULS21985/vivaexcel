@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, type FormEvent } from "react";
-import Link from "next/link";
 import {
   Camera,
   Globe,
@@ -12,9 +11,7 @@ import {
   EyeOff,
   AlertTriangle,
   X,
-  ArrowLeft,
 } from "lucide-react";
-import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useAuth } from "@/providers/auth-provider";
 import { PasswordStrength } from "@/components/auth/password-strength";
 import { apiClient } from "@/lib/api-client";
@@ -193,17 +190,7 @@ function ProfileContent() {
   }
 
   return (
-    <div className="min-h-screen py-8 md:py-12">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-3xl">
-        {/* Back Link */}
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-6"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Dashboard
-        </Link>
-
+    <div>
         <h1 className="text-2xl md:text-3xl font-bold text-[var(--foreground)] mb-8">
           Profile Settings
         </h1>
@@ -688,15 +675,10 @@ function ProfileContent() {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 }
 
 export default function ProfileSettingsPage() {
-  return (
-    <ProtectedRoute>
-      <ProfileContent />
-    </ProtectedRoute>
-  );
+  return <ProfileContent />;
 }

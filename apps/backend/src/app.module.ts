@@ -70,6 +70,9 @@ import { ApiKeysModule } from './modules/api-keys/api-keys.module';
 import { WebhooksModule } from './modules/webhooks/webhooks.module';
 import { StorefrontApiModule } from './modules/storefront-api/storefront-api.module';
 import { EmbedsModule } from './modules/embeds/embeds.module';
+import { ContributorsModule } from './modules/contributors/contributors.module';
+import { SettingsModule } from './modules/settings/settings.module';
+import { ReadingHistoryModule } from './modules/reading-history/reading-history.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -174,6 +177,9 @@ import { AppService } from './app.service';
     WebhooksModule,
     StorefrontApiModule,
     EmbedsModule,
+    ContributorsModule,
+    SettingsModule,
+    ReadingHistoryModule,
   ],
   controllers: [AppController],
   providers: [

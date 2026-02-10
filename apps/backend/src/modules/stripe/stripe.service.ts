@@ -199,6 +199,38 @@ export class StripeService {
   }
 
   /**
+   * Find a Stripe price by tier name and billing interval.
+   * Matches the product name (case-insensitive) to the tierId
+   * and filters by the recurring interval.
+   */
+  async findPriceByTierAndInterval(
+    tierId: string,
+    interval: 'month' | 'year',
+  ): Promise<string> {
+    const prices = await this.listPrices();
+
+    const match = prices.find((price) => {
+      if (!price.recurring || price.recurring.interval !== interval) {
+        return false;
+      }
+      const product = price.product;
+      if (typeof product === 'object' && 'name' in product) {
+        return product.name.toLowerCase() === tierId.toLowerCase();
+      }
+      return false;
+    });
+
+    if (!match) {
+      throw new BadRequestException(
+        `No Stripe price found for tier "${tierId}" with ${interval}ly billing. ` +
+          'Ensure matching products and prices are configured in your Stripe dashboard.',
+      );
+    }
+
+    return match.id;
+  }
+
+  /**
    * Handle incoming Stripe webhook events
    */
   async handleWebhookEvent(payload: Buffer, signature: string): Promise<void> {

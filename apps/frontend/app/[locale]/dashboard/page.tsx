@@ -11,7 +11,6 @@ import {
   TrendingUp,
   Loader2,
 } from "lucide-react";
-import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useAuth } from "@/providers/auth-provider";
 import { useBookmarks, useRemoveBookmark } from "@/hooks/use-bookmarks";
 import { useReadingHistory, useReadingStats } from "@/hooks/use-reading-history";
@@ -70,8 +69,7 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen py-8 md:py-12">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl">
+    <div>
         {/* Welcome Header */}
         <div className="mb-8 md:mb-12">
           <h1 className="text-2xl md:text-3xl font-bold text-[var(--foreground)] mb-2">
@@ -374,15 +372,10 @@ function DashboardContent() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }
 
 export default function DashboardPage() {
-  return (
-    <ProtectedRoute>
-      <DashboardContent />
-    </ProtectedRoute>
-  );
+  return <DashboardContent />;
 }

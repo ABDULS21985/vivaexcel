@@ -3,7 +3,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { apiGet, apiPost } from "@/lib/api-client";
+import { apiGet, apiPost, apiDelete } from "@/lib/api-client";
 import { useAuth } from "@/providers/auth-provider";
 
 // =============================================================================
@@ -22,7 +22,7 @@ export interface ReadingHistoryEntry {
     slug: string;
     excerpt?: string | null;
     featuredImage?: string | null;
-    readingTime?: number;
+    readingTime?: number | null;
     category?: {
       id: string;
       name: string;
@@ -31,19 +31,45 @@ export interface ReadingHistoryEntry {
   };
 }
 
-interface ReadingHistoryResponse {
-  history: ReadingHistoryEntry[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
-
-interface ReadingStatsResponse {
+export interface ReadingStatsData {
   totalArticlesRead: number;
   totalReadingTime: number;
   streakDays: number;
   thisWeek: number;
+}
+
+// The backend returns ApiResponse-wrapped data:
+// { status, message, data: { history, total, page, pageSize, totalPages } }
+interface ReadingHistoryApiResponse {
+  status: string;
+  message: string;
+  data: {
+    history: ReadingHistoryEntry[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+  // Legacy fields for backward compat with dashboard overview
+  history?: ReadingHistoryEntry[];
+  total?: number;
+}
+
+interface ReadingStatsApiResponse {
+  status: string;
+  message: string;
+  data: ReadingStatsData;
+  // Legacy fallback
+  totalArticlesRead?: number;
+  totalReadingTime?: number;
+  streakDays?: number;
+  thisWeek?: number;
+}
+
+interface TrackReadApiResponse {
+  status: string;
+  message: string;
+  data: { entry: ReadingHistoryEntry | null };
 }
 
 // =============================================================================
@@ -59,6 +85,47 @@ export const readingHistoryKeys = {
 };
 
 // =============================================================================
+// Helpers
+// =============================================================================
+
+export function extractHistory(
+  data: ReadingHistoryApiResponse | undefined
+): ReadingHistoryEntry[] {
+  if (!data) return [];
+  if (data.data?.history) return data.data.history;
+  if (data.history) return data.history;
+  return [];
+}
+
+export function extractHistoryTotal(
+  data: ReadingHistoryApiResponse | undefined
+): number {
+  if (!data) return 0;
+  return data.data?.total ?? data.total ?? 0;
+}
+
+export function extractHistoryPages(
+  data: ReadingHistoryApiResponse | undefined
+): number {
+  if (!data) return 0;
+  return data.data?.totalPages ?? 0;
+}
+
+export function extractStats(
+  data: ReadingStatsApiResponse | undefined
+): ReadingStatsData {
+  if (!data)
+    return { totalArticlesRead: 0, totalReadingTime: 0, streakDays: 0, thisWeek: 0 };
+  if (data.data) return data.data;
+  return {
+    totalArticlesRead: data.totalArticlesRead ?? 0,
+    totalReadingTime: data.totalReadingTime ?? 0,
+    streakDays: data.streakDays ?? 0,
+    thisWeek: data.thisWeek ?? 0,
+  };
+}
+
+// =============================================================================
 // Hooks
 // =============================================================================
 
@@ -71,7 +138,7 @@ export function useReadingHistory(page = 1, pageSize = 20) {
   return useQuery({
     queryKey: readingHistoryKeys.list(page),
     queryFn: () =>
-      apiGet<ReadingHistoryResponse>("/reading-history", { page, pageSize }),
+      apiGet<ReadingHistoryApiResponse>("/reading-history", { page, pageSize }),
     enabled: isAuthenticated,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
@@ -85,7 +152,7 @@ export function useReadingStats() {
 
   return useQuery({
     queryKey: readingHistoryKeys.stats(),
-    queryFn: () => apiGet<ReadingStatsResponse>("/reading-history/stats"),
+    queryFn: () => apiGet<ReadingStatsApiResponse>("/reading-history/stats"),
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -93,7 +160,6 @@ export function useReadingStats() {
 
 /**
  * Track a post as read with a given progress percentage.
- * Called when user scrolls past a reading threshold (e.g., 80%).
  */
 export function useTrackRead() {
   const queryClient = useQueryClient();
@@ -106,13 +172,58 @@ export function useTrackRead() {
       postId: string;
       progress?: number;
     }) => {
-      return apiPost<{ entry: ReadingHistoryEntry }>(
+      return apiPost<TrackReadApiResponse>(
         `/reading-history/${postId}`,
         { progress }
       );
     },
     onSuccess: () => {
-      // Invalidate reading history and stats
+      queryClient.invalidateQueries({
+        queryKey: readingHistoryKeys.lists(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: readingHistoryKeys.stats(),
+      });
+    },
+  });
+}
+
+/**
+ * Remove a single reading history entry.
+ */
+export function useRemoveHistoryEntry() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (entryId: string) => {
+      return apiDelete<{ status: string; message: string }>(
+        `/reading-history/${entryId}`
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: readingHistoryKeys.lists(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: readingHistoryKeys.stats(),
+      });
+    },
+  });
+}
+
+/**
+ * Clear all reading history for the current user.
+ */
+export function useClearReadingHistory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      return apiDelete<{ status: string; message: string }>(
+        "/reading-history"
+      );
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: readingHistoryKeys.lists(),
       });

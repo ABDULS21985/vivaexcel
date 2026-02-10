@@ -51,14 +51,14 @@ const nextConfig: NextConfig = {
         destination: "/blogs",
         permanent: true,
       },
-      // Redirect with locale prefix
+      // Redirect with locale prefix (constrained to actual locale codes)
       {
-        source: "/:locale/blog/:slug",
+        source: "/:locale(en|ar|fr|es|pt)/blog/:slug",
         destination: "/:locale/blogs/:slug",
         permanent: true,
       },
       {
-        source: "/:locale/blog",
+        source: "/:locale(en|ar|fr|es|pt)/blog",
         destination: "/:locale/blogs",
         permanent: true,
       },
@@ -69,7 +69,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/:locale/services/business-process-management",
+        source: "/:locale(en|ar|fr|es|pt)/services/business-process-management",
         destination: "/:locale/services/business-process",
         permanent: true,
       },
@@ -79,7 +79,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/:locale/services/cyber-security",
+        source: "/:locale(en|ar|fr|es|pt)/services/cyber-security",
         destination: "/:locale/services/cybersecurity",
         permanent: true,
       },
@@ -89,7 +89,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/:locale/services/it-consultation",
+        source: "/:locale(en|ar|fr|es|pt)/services/it-consultation",
         destination: "/:locale/services/it-outsourcing",
         permanent: true,
       },

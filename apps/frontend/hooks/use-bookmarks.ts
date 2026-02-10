@@ -1,5 +1,6 @@
 import {
   useQuery,
+  useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -10,36 +11,63 @@ import { useAuth } from "@/providers/auth-provider";
 // Bookmark Types
 // =============================================================================
 
+export interface BookmarkPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  featuredImage?: string | null;
+  readingTime?: number;
+  views?: number;
+  author?: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+    avatar?: string;
+  } | null;
+  category?: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+}
+
 export interface Bookmark {
   id: string;
   postId: string;
   userId: string;
-  post: {
-    id: string;
-    title: string;
-    slug: string;
-    excerpt?: string | null;
-    featuredImage?: string | null;
-    readingTime?: number;
-    category?: {
-      id: string;
-      name: string;
-      slug: string;
-    } | null;
-  };
+  post: BookmarkPost;
   createdAt: string;
 }
 
-interface BookmarksResponse {
-  bookmarks: Bookmark[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+// The backend returns ApiResponse<PaginatedResponse<Bookmark>>:
+// { status, message, data: { items: Bookmark[], meta }, meta }
+interface BookmarksPaginatedResponse {
+  status: string;
+  message: string;
+  data: {
+    items: Bookmark[];
+    meta: {
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      nextCursor?: string;
+      previousCursor?: string;
+    };
+  };
+  meta?: {
+    hasNextPage?: boolean;
+    nextCursor?: string;
+  };
+  // Legacy fields for backward compat with dashboard overview
+  bookmarks?: Bookmark[];
+  total?: number;
 }
 
 interface BookmarkStatusResponse {
-  isBookmarked: boolean;
+  isBookmarked?: boolean;
+  // Backend returns { status, data: { bookmarked } }
+  data?: { bookmarked: boolean };
+  bookmarked?: boolean;
 }
 
 // =============================================================================
@@ -50,8 +78,47 @@ export const bookmarkKeys = {
   all: ["bookmarks"] as const,
   lists: () => [...bookmarkKeys.all, "list"] as const,
   list: (page?: number) => [...bookmarkKeys.lists(), { page }] as const,
+  infinite: () => [...bookmarkKeys.all, "infinite"] as const,
   status: (postId: string) => [...bookmarkKeys.all, "status", postId] as const,
 };
+
+// =============================================================================
+// Helpers
+// =============================================================================
+
+/**
+ * Extract bookmark items from the API response, handling multiple response shapes.
+ */
+export function extractBookmarks(
+  data: BookmarksPaginatedResponse | undefined
+): Bookmark[] {
+  if (!data) return [];
+  // Shape 1: { data: { items: [...] } }
+  if (data.data?.items) return data.data.items;
+  // Shape 2: { bookmarks: [...] }
+  if (data.bookmarks) return data.bookmarks;
+  return [];
+}
+
+/**
+ * Extract hasNextPage from the API response.
+ */
+export function extractHasNextPage(
+  data: BookmarksPaginatedResponse | undefined
+): boolean {
+  if (!data) return false;
+  return data.data?.meta?.hasNextPage ?? data.meta?.hasNextPage ?? false;
+}
+
+/**
+ * Extract nextCursor from the API response.
+ */
+export function extractNextCursor(
+  data: BookmarksPaginatedResponse | undefined
+): string | undefined {
+  if (!data) return undefined;
+  return data.data?.meta?.nextCursor ?? data.meta?.nextCursor;
+}
 
 // =============================================================================
 // Hooks
@@ -66,9 +133,31 @@ export function useBookmarks(page = 1, pageSize = 20) {
   return useQuery({
     queryKey: bookmarkKeys.list(page),
     queryFn: () =>
-      apiGet<BookmarksResponse>("/bookmarks", { page, pageSize }),
+      apiGet<BookmarksPaginatedResponse>("/bookmarks", {
+        limit: pageSize,
+      }),
     enabled: isAuthenticated,
     staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+}
+
+/**
+ * Fetch bookmarks with infinite scroll / cursor pagination.
+ */
+export function useInfiniteBookmarks(pageSize = 12) {
+  const { isAuthenticated } = useAuth();
+
+  return useInfiniteQuery({
+    queryKey: bookmarkKeys.infinite(),
+    queryFn: ({ pageParam }) =>
+      apiGet<BookmarksPaginatedResponse>("/bookmarks", {
+        limit: pageSize,
+        ...(pageParam ? { cursor: pageParam } : {}),
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => extractNextCursor(lastPage),
+    enabled: isAuthenticated,
+    staleTime: 2 * 60 * 1000,
   });
 }
 
@@ -147,6 +236,7 @@ export function useToggleBookmark() {
     onSettled: (_data, _error, { postId }) => {
       queryClient.invalidateQueries({ queryKey: bookmarkKeys.status(postId) });
       queryClient.invalidateQueries({ queryKey: bookmarkKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: bookmarkKeys.infinite() });
     },
   });
 }
@@ -169,6 +259,7 @@ export function useRemoveBookmark() {
       );
       // Refetch bookmark list
       queryClient.invalidateQueries({ queryKey: bookmarkKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: bookmarkKeys.infinite() });
     },
   });
 }

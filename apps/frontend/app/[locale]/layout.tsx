@@ -175,11 +175,10 @@ export default async function LocaleLayout({ children, params }: Props) {
 
                   <CartDrawer />
                   <ComparisonBar />
-                  <MobileTopBar />
                   <BlogNavbar />
                   <main
                     id="main-content"
-                    className="flex-1 pb-16 lg:pb-0"
+                    className="flex-1 pt-16 lg:pt-[72px] pb-16 lg:pb-0"
                     tabIndex={-1}
                     role="main"
                     aria-label="Main content"

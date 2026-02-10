@@ -21,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ReportingService } from '../services/reporting.service';
+import { UserAnalyticsService } from '../services/user-analytics.service';
 import { AnalyticsAggregationService } from '../services/analytics-aggregation.service';
 import { MarketplaceAnalyticsRepository } from '../marketplace-analytics.repository';
 import { AnalyticsQueryDto } from '../dto/analytics-query.dto';
@@ -45,6 +46,7 @@ import {
 export class MarketplaceAnalyticsController {
   constructor(
     private readonly reportingService: ReportingService,
+    private readonly userAnalyticsService: UserAnalyticsService,
     private readonly aggregationService: AnalyticsAggregationService,
     private readonly repository: MarketplaceAnalyticsRepository,
   ) {}
@@ -162,6 +164,104 @@ export class MarketplaceAnalyticsController {
       query.groupBy || ReportGroupBy.DAY,
       AnalyticsScope.SELLER,
       id,
+    );
+  }
+
+  // ──────────────────────────────────────────────
+  //  My Analytics (Authenticated – role-adaptive)
+  // ──────────────────────────────────────────────
+
+  @Get('my/overview')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user analytics overview (seller or buyer, auto-detected)' })
+  @SwaggerResponse({ status: 200, description: 'User analytics overview retrieved' })
+  @ApiQuery({ name: 'period', required: false, enum: AnalyticsPeriod })
+  async getMyOverview(
+    @CurrentUser('sub') userId: string,
+    @Query() query: AnalyticsQueryDto,
+  ) {
+    return this.userAnalyticsService.getMyOverview(
+      userId,
+      query.period || AnalyticsPeriod.THIRTY_DAYS,
+    );
+  }
+
+  @Get('my/revenue')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user revenue/spending time series' })
+  @SwaggerResponse({ status: 200, description: 'Revenue/spending series retrieved' })
+  @ApiQuery({ name: 'period', required: false, enum: AnalyticsPeriod })
+  @ApiQuery({ name: 'groupBy', required: false, enum: ReportGroupBy })
+  async getMyRevenueSeries(
+    @CurrentUser('sub') userId: string,
+    @Query() query: AnalyticsQueryDto,
+  ) {
+    return this.userAnalyticsService.getMyRevenueSeries(
+      userId,
+      query.period || AnalyticsPeriod.THIRTY_DAYS,
+      query.groupBy || ReportGroupBy.DAY,
+    );
+  }
+
+  @Get('my/top-products')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current seller top-performing products' })
+  @SwaggerResponse({ status: 200, description: 'Top products retrieved' })
+  @ApiQuery({ name: 'period', required: false, enum: AnalyticsPeriod })
+  @ApiQuery({ name: 'limit', required: false })
+  async getMyTopProducts(
+    @CurrentUser('sub') userId: string,
+    @Query() query: AnalyticsQueryDto,
+  ) {
+    return this.userAnalyticsService.getMyTopProducts(
+      userId,
+      query.period || AnalyticsPeriod.THIRTY_DAYS,
+      query.limit || 5,
+    );
+  }
+
+  @Get('my/funnel')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current seller conversion funnel' })
+  @SwaggerResponse({ status: 200, description: 'Conversion funnel retrieved' })
+  @ApiQuery({ name: 'period', required: false, enum: AnalyticsPeriod })
+  async getMyConversionFunnel(
+    @CurrentUser('sub') userId: string,
+    @Query() query: AnalyticsQueryDto,
+  ) {
+    return this.userAnalyticsService.getMyConversionFunnel(
+      userId,
+      query.period || AnalyticsPeriod.THIRTY_DAYS,
+    );
+  }
+
+  @Get('my/traffic')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current seller traffic source breakdown' })
+  @SwaggerResponse({ status: 200, description: 'Traffic sources retrieved' })
+  @ApiQuery({ name: 'period', required: false, enum: AnalyticsPeriod })
+  async getMyTrafficSources(
+    @CurrentUser('sub') userId: string,
+    @Query() query: AnalyticsQueryDto,
+  ) {
+    return this.userAnalyticsService.getMyTrafficSources(
+      userId,
+      query.period || AnalyticsPeriod.THIRTY_DAYS,
+    );
+  }
+
+  @Get('my/purchases')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current buyer purchase breakdown and recent orders' })
+  @SwaggerResponse({ status: 200, description: 'Purchase breakdown retrieved' })
+  @ApiQuery({ name: 'period', required: false, enum: AnalyticsPeriod })
+  async getMyPurchaseBreakdown(
+    @CurrentUser('sub') userId: string,
+    @Query() query: AnalyticsQueryDto,
+  ) {
+    return this.userAnalyticsService.getMyPurchaseBreakdown(
+      userId,
+      query.period || AnalyticsPeriod.THIRTY_DAYS,
     );
   }
 

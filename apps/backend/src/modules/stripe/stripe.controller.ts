@@ -60,9 +60,15 @@ export class StripeController {
     // Ensure user has a Stripe customer ID
     const customerId = await this.stripeService.ensureCustomer(user);
 
+    // Resolve tierId + interval to a Stripe price ID
+    const priceId = await this.stripeService.findPriceByTierAndInterval(
+      dto.tierId,
+      dto.interval,
+    );
+
     const session = await this.stripeService.createCheckoutSession(
       customerId,
-      dto.priceId,
+      priceId,
       dto.successUrl,
       dto.cancelUrl,
     );

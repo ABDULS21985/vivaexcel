@@ -1,11 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsUrl, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsUrl, IsOptional, IsIn } from 'class-validator';
 
 export class CreateCheckoutDto {
-  @ApiProperty({ description: 'Stripe Price ID for the subscription plan' })
+  @ApiProperty({ description: 'Tier ID for the subscription plan (e.g. basic, pro, premium)' })
   @IsString()
   @IsNotEmpty()
-  priceId: string;
+  tierId: string;
+
+  @ApiProperty({ description: 'Billing interval', enum: ['month', 'year'] })
+  @IsIn(['month', 'year'])
+  interval: 'month' | 'year';
 
   @ApiProperty({ description: 'URL to redirect to on successful checkout' })
   @IsUrl({ require_tld: false })

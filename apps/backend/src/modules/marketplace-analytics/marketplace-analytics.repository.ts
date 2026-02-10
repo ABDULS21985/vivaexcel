@@ -5,6 +5,10 @@ import { ProductView } from '../../entities/product-view.entity';
 import { ConversionEvent } from '../../entities/conversion-event.entity';
 import { RevenueRecord } from '../../entities/revenue-record.entity';
 import { AnalyticsSnapshot } from '../../entities/analytics-snapshot.entity';
+import { Order, OrderStatus } from '../../entities/order.entity';
+import { OrderItem } from '../../entities/order-item.entity';
+import { User } from '../../entities/user.entity';
+import { DownloadLog } from '../../entities/download-log.entity';
 import {
   AnalyticsScope,
   ConversionEventType,
@@ -107,6 +111,41 @@ export interface FrequentlyBoughtProduct {
   coPurchaseCount: number;
 }
 
+export interface UserOrderSummary {
+  totalSpent: number;
+  orderCount: number;
+  averageOrderValue: number;
+}
+
+export interface SpendingTimeSeriesPoint {
+  period: string;
+  totalSpent: number;
+  orderCount: number;
+}
+
+export interface CategoryBreakdownItem {
+  categoryId: string;
+  categoryName: string;
+  totalSpent: number;
+  itemCount: number;
+  percentage: number;
+}
+
+export interface RecentOrderItem {
+  orderId: string;
+  orderNumber: string;
+  total: number;
+  currency: string;
+  status: string;
+  completedAt: string | null;
+  createdAt: string;
+  items: {
+    productTitle: string;
+    productSlug: string;
+    price: number;
+  }[];
+}
+
 @Injectable()
 export class MarketplaceAnalyticsRepository {
   constructor(
@@ -118,6 +157,14 @@ export class MarketplaceAnalyticsRepository {
     private readonly revenueRecordRepository: Repository<RevenueRecord>,
     @InjectRepository(AnalyticsSnapshot)
     private readonly analyticsSnapshotRepository: Repository<AnalyticsSnapshot>,
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(DownloadLog)
+    private readonly downloadLogRepository: Repository<DownloadLog>,
   ) {}
 
   // ──────────────────────────────────────────────
@@ -852,6 +899,327 @@ export class MarketplaceAnalyticsRepository {
     return results.map((r) => ({
       digitalProductId: r.digitalProductId,
       salesCount: parseInt(r.salesCount, 10) || 0,
+    }));
+  }
+
+  // ──────────────────────────────────────────────
+  //  Buyer analytics — user-scoped queries
+  // ──────────────────────────────────────────────
+
+  async isUserSeller(userId: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'isCreator'],
+    });
+    return user?.isCreator ?? false;
+  }
+
+  async getUserOrderSummary(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<UserOrderSummary> {
+    const result = await this.orderRepository
+      .createQueryBuilder('o')
+      .select('COALESCE(SUM(o.total), 0)', 'totalSpent')
+      .addSelect('COUNT(o.id)', 'orderCount')
+      .where('o.userId = :userId', { userId })
+      .andWhere('o.status = :status', { status: OrderStatus.COMPLETED })
+      .andWhere('o.createdAt >= :startDate', { startDate })
+      .andWhere('o.createdAt < :endDate', { endDate })
+      .getRawOne();
+
+    const totalSpent = parseFloat(result?.totalSpent) || 0;
+    const orderCount = parseInt(result?.orderCount, 10) || 0;
+
+    return {
+      totalSpent,
+      orderCount,
+      averageOrderValue: orderCount > 0
+        ? Math.round((totalSpent / orderCount) * 100) / 100
+        : 0,
+    };
+  }
+
+  async getUserSpendingTimeSeries(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+    groupBy: ReportGroupBy,
+  ): Promise<SpendingTimeSeriesPoint[]> {
+    let dateTrunc: string;
+    switch (groupBy) {
+      case ReportGroupBy.WEEK:
+        dateTrunc = 'week';
+        break;
+      case ReportGroupBy.MONTH:
+        dateTrunc = 'month';
+        break;
+      default:
+        dateTrunc = 'day';
+        break;
+    }
+
+    const results = await this.orderRepository
+      .createQueryBuilder('o')
+      .select(`DATE_TRUNC('${dateTrunc}', o.createdAt)`, 'period')
+      .addSelect('COALESCE(SUM(o.total), 0)', 'totalSpent')
+      .addSelect('COUNT(o.id)', 'orderCount')
+      .where('o.userId = :userId', { userId })
+      .andWhere('o.status = :status', { status: OrderStatus.COMPLETED })
+      .andWhere('o.createdAt >= :startDate', { startDate })
+      .andWhere('o.createdAt < :endDate', { endDate })
+      .groupBy('period')
+      .orderBy('period', 'ASC')
+      .getRawMany();
+
+    return results.map((row) => ({
+      period: row.period instanceof Date ? row.period.toISOString() : String(row.period),
+      totalSpent: parseFloat(row.totalSpent) || 0,
+      orderCount: parseInt(row.orderCount, 10) || 0,
+    }));
+  }
+
+  async getUserCategoryBreakdown(
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<CategoryBreakdownItem[]> {
+    const results = await this.orderItemRepository
+      .createQueryBuilder('oi')
+      .select('dp.category_id', 'categoryId')
+      .addSelect('COALESCE(dpc.name, \'Uncategorized\')', 'categoryName')
+      .addSelect('SUM(oi.price)', 'totalSpent')
+      .addSelect('COUNT(oi.id)', 'itemCount')
+      .innerJoin('orders', 'o', 'o.id = oi.order_id')
+      .innerJoin('digital_products', 'dp', 'dp.id = oi.digital_product_id')
+      .leftJoin('digital_product_categories', 'dpc', 'dpc.id = dp.category_id')
+      .where('o.user_id = :userId', { userId })
+      .andWhere('o.status = :status', { status: OrderStatus.COMPLETED })
+      .andWhere('o.created_at >= :startDate', { startDate })
+      .andWhere('o.created_at < :endDate', { endDate })
+      .groupBy('dp.category_id')
+      .addGroupBy('dpc.name')
+      .orderBy('"totalSpent"', 'DESC')
+      .getRawMany();
+
+    const total = results.reduce((sum, r) => sum + (parseFloat(r.totalSpent) || 0), 0);
+
+    return results.map((row) => ({
+      categoryId: row.categoryId || 'uncategorized',
+      categoryName: row.categoryName || 'Uncategorized',
+      totalSpent: parseFloat(row.totalSpent) || 0,
+      itemCount: parseInt(row.itemCount, 10) || 0,
+      percentage: total > 0
+        ? Math.round((parseFloat(row.totalSpent) / total) * 10000) / 100
+        : 0,
+    }));
+  }
+
+  async getUserRecentOrders(
+    userId: string,
+    limit: number,
+  ): Promise<RecentOrderItem[]> {
+    const orders = await this.orderRepository.find({
+      where: { userId, status: OrderStatus.COMPLETED },
+      order: { createdAt: 'DESC' },
+      take: limit,
+      relations: ['items'],
+    });
+
+    return orders.map((order) => ({
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      total: parseFloat(String(order.total)),
+      currency: order.currency,
+      status: order.status,
+      completedAt: order.completedAt?.toISOString() ?? null,
+      createdAt: order.createdAt.toISOString(),
+      items: (order.items || []).map((item) => ({
+        productTitle: item.productTitle,
+        productSlug: item.productSlug,
+        price: parseFloat(String(item.price)),
+      })),
+    }));
+  }
+
+  async getUserDownloadCount(userId: string): Promise<number> {
+    return this.downloadLogRepository
+      .createQueryBuilder('dl')
+      .where('dl.userId = :userId', { userId })
+      .andWhere('dl.completedSuccessfully = true')
+      .getCount();
+  }
+
+  async getUserProductsOwnedCount(userId: string): Promise<number> {
+    const result = await this.orderItemRepository
+      .createQueryBuilder('oi')
+      .select('COUNT(DISTINCT oi.digitalProductId)', 'count')
+      .innerJoin('orders', 'o', 'o.id = oi.order_id')
+      .where('o.user_id = :userId', { userId })
+      .andWhere('o.status = :status', { status: OrderStatus.COMPLETED })
+      .getRawOne();
+
+    return parseInt(result?.count, 10) || 0;
+  }
+
+  async getSellerProductIds(sellerId: string): Promise<string[]> {
+    const results = await this.productViewRepository.manager
+      .createQueryBuilder()
+      .select('dp.id', 'id')
+      .from('digital_products', 'dp')
+      .where('dp.created_by = :sellerId', { sellerId })
+      .getRawMany();
+
+    return results.map((r) => r.id);
+  }
+
+  async getSellerViewsInPeriod(
+    sellerId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const result = await this.productViewRepository
+      .createQueryBuilder('pv')
+      .innerJoin('digital_products', 'dp', 'dp.id = pv.digital_product_id')
+      .where('dp.created_by = :sellerId', { sellerId })
+      .andWhere('pv.viewedAt >= :startDate', { startDate })
+      .andWhere('pv.viewedAt < :endDate', { endDate })
+      .getCount();
+
+    return result;
+  }
+
+  async getSellerConversionFunnel(
+    sellerId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<FunnelStage[]> {
+    const qb = this.conversionEventRepository
+      .createQueryBuilder('ce')
+      .select('ce.eventType', 'stage')
+      .addSelect('COUNT(ce.id)', 'count')
+      .innerJoin('digital_products', 'dp', 'dp.id = ce.digital_product_id')
+      .where('dp.created_by = :sellerId', { sellerId })
+      .andWhere('ce.occurredAt >= :startDate', { startDate })
+      .andWhere('ce.occurredAt < :endDate', { endDate })
+      .groupBy('ce.eventType');
+
+    const results = await qb.getRawMany();
+
+    const funnelOrder: ConversionEventType[] = [
+      ConversionEventType.VIEW,
+      ConversionEventType.ADD_TO_CART,
+      ConversionEventType.CHECKOUT_STARTED,
+      ConversionEventType.CHECKOUT_COMPLETED,
+      ConversionEventType.DOWNLOAD,
+    ];
+
+    return funnelOrder.map((stage) => {
+      const match = results.find((r) => r.stage === stage);
+      return {
+        stage,
+        count: match ? parseInt(match.count, 10) : 0,
+      };
+    });
+  }
+
+  async getSellerTrafficSources(
+    sellerId: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<TrafficSourceBreakdown[]> {
+    const results = await this.productViewRepository
+      .createQueryBuilder('pv')
+      .select('pv.source', 'source')
+      .addSelect('COUNT(pv.id)', 'count')
+      .innerJoin('digital_products', 'dp', 'dp.id = pv.digital_product_id')
+      .where('dp.created_by = :sellerId', { sellerId })
+      .andWhere('pv.viewedAt >= :startDate', { startDate })
+      .andWhere('pv.viewedAt < :endDate', { endDate })
+      .groupBy('pv.source')
+      .orderBy('count', 'DESC')
+      .getRawMany();
+
+    const total = results.reduce((sum, r) => sum + parseInt(r.count, 10), 0);
+
+    return results.map((row) => {
+      const count = parseInt(row.count, 10);
+      return {
+        source: row.source || 'DIRECT',
+        count,
+        percentage: total > 0 ? Math.round((count / total) * 10000) / 100 : 0,
+      };
+    });
+  }
+
+  async getSellerTopProducts(
+    sellerId: string,
+    startDate: Date,
+    endDate: Date,
+    limit: number,
+  ): Promise<TopProduct[]> {
+    const viewsSubQuery = this.productViewRepository
+      .createQueryBuilder('pv')
+      .select('pv.digitalProductId', 'productId')
+      .addSelect('COUNT(pv.id)', 'viewCount')
+      .where('pv.viewedAt >= :startDate')
+      .andWhere('pv.viewedAt < :endDate')
+      .groupBy('pv.digitalProductId');
+
+    const conversionsSubQuery = this.conversionEventRepository
+      .createQueryBuilder('ce')
+      .select('ce.digitalProductId', 'productId')
+      .addSelect('COUNT(ce.id)', 'conversionCount')
+      .where('ce.occurredAt >= :startDate')
+      .andWhere('ce.occurredAt < :endDate')
+      .andWhere('ce.eventType = :purchaseType')
+      .groupBy('ce.digitalProductId');
+
+    const revenueSubQuery = this.revenueRecordRepository
+      .createQueryBuilder('rr')
+      .select('rr.digitalProductId', 'productId')
+      .addSelect('SUM(rr.grossAmount)', 'totalRevenue')
+      .where('rr.recordedAt >= :startDate')
+      .andWhere('rr.recordedAt < :endDate')
+      .groupBy('rr.digitalProductId');
+
+    const qb = this.productViewRepository.manager
+      .createQueryBuilder()
+      .select('dp.id', 'digitalProductId')
+      .addSelect('dp.title', 'title')
+      .addSelect('COALESCE(v."viewCount", 0)', 'views')
+      .addSelect('COALESCE(c."conversionCount", 0)', 'conversions')
+      .addSelect('COALESCE(r."totalRevenue", 0)', 'revenue')
+      .addSelect(
+        'CASE WHEN COALESCE(v."viewCount", 0) > 0 THEN ROUND(COALESCE(c."conversionCount", 0)::numeric / v."viewCount" * 100, 2) ELSE 0 END',
+        'conversionRate',
+      )
+      .from('digital_products', 'dp')
+      .leftJoin(`(${viewsSubQuery.getQuery()})`, 'v', 'v."productId" = dp.id')
+      .leftJoin(`(${conversionsSubQuery.getQuery()})`, 'c', 'c."productId" = dp.id')
+      .leftJoin(`(${revenueSubQuery.getQuery()})`, 'r', 'r."productId" = dp.id')
+      .setParameters({
+        startDate,
+        endDate,
+        purchaseType: ConversionEventType.CHECKOUT_COMPLETED,
+      })
+      .where('dp.created_by = :sellerId', { sellerId })
+      .andWhere(
+        'COALESCE(v."viewCount", 0) > 0 OR COALESCE(c."conversionCount", 0) > 0 OR COALESCE(r."totalRevenue", 0) > 0',
+      )
+      .orderBy('revenue', 'DESC')
+      .limit(limit);
+
+    const results = await qb.getRawMany();
+
+    return results.map((row) => ({
+      digitalProductId: row.digitalProductId,
+      title: row.title,
+      views: parseInt(row.views, 10) || 0,
+      conversions: parseInt(row.conversions, 10) || 0,
+      revenue: parseFloat(row.revenue) || 0,
+      conversionRate: parseFloat(row.conversionRate) || 0,
     }));
   }
 }

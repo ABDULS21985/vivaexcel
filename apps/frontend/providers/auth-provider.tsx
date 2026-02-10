@@ -49,6 +49,8 @@ export interface User {
   stripeCustomerId?: string;
   subscriptionStatus?: string;
   subscriptionEndDate?: string;
+  emailVerified?: boolean;
+  twoFactorEnabled?: boolean;
   createdAt: string;
 }
 
@@ -80,6 +82,12 @@ interface AuthResponse {
   refreshToken?: string;
 }
 
+interface ApiEnvelope<T> {
+  status: string;
+  data: T;
+  meta?: Record<string, unknown>;
+}
+
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 // Protected route paths that require authentication
@@ -107,8 +115,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       try {
-        const response = await apiClient<{ user: User }>("/auth/me");
-        setUser(response.user);
+        const response = await apiClient<ApiEnvelope<User>>("/auth/me");
+        setUser(response.data);
       } catch {
         // Token is invalid or expired - clear it
         clearTokens();
@@ -135,9 +143,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       window.history.replaceState({}, "", cleanUrl);
 
       // Fetch user data with new token
-      apiClient<{ user: User }>("/auth/me")
+      apiClient<ApiEnvelope<User>>("/auth/me")
         .then((response) => {
-          setUser(response.user);
+          setUser(response.data);
           setIsLoading(false);
         })
         .catch(() => {
@@ -166,12 +174,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const response = await apiPost<AuthResponse>("/auth/login", {
+      const response = await apiPost<ApiEnvelope<AuthResponse>>("/auth/login", {
         email,
         password,
       });
-      setTokens(response.accessToken, response.refreshToken);
-      setUser(response.user);
+      const { accessToken, refreshToken, user: userData } = response.data;
+      setTokens(accessToken, refreshToken);
+      setUser(userData);
       router.push("/dashboard");
     },
     [router]
@@ -203,17 +212,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const register = useCallback(
     async (data: RegisterData) => {
-      const response = await apiPost<AuthResponse>("/auth/register", data);
-      setTokens(response.accessToken, response.refreshToken);
-      setUser(response.user);
+      const response = await apiPost<ApiEnvelope<AuthResponse>>("/auth/register", data);
+      const { accessToken, refreshToken, user: userData } = response.data;
+      setTokens(accessToken, refreshToken);
+      setUser(userData);
       router.push("/dashboard");
     },
     [router]
   );
 
   const updateProfile = useCallback(async (data: Partial<User>) => {
-    const response = await apiPatch<{ user: User }>("/auth/profile", data);
-    setUser(response.user);
+    const response = await apiPatch<ApiEnvelope<User>>("/auth/profile", data);
+    setUser(response.data);
   }, []);
 
   const changePassword = useCallback(
@@ -236,8 +246,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const refreshUser = useCallback(async () => {
     if (!hasToken()) return;
     try {
-      const response = await apiClient<{ user: User }>("/auth/me");
-      setUser(response.user);
+      const response = await apiClient<ApiEnvelope<User>>("/auth/me");
+      setUser(response.data);
     } catch {
       clearTokens();
       setUser(null);
