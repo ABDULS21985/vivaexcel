@@ -30,6 +30,10 @@ export enum DigitalProductPreviewType {
   PDF_PREVIEW = "pdf_preview",
   VIDEO = "video",
   LIVE_DEMO_URL = "live_demo_url",
+  SLIDE_IMAGE = "slide_image",
+  CODE_SNIPPET = "code_snippet",
+  LIVE_SCREENSHOT = "live_screenshot",
+  INTERACTIVE_DEMO = "interactive_demo",
 }
 
 // -----------------------------------------------------------------------------
@@ -77,6 +81,11 @@ export interface DigitalProductPreview {
   url: string;
   thumbnailUrl?: string;
   sortOrder?: number;
+  label?: string;
+  width?: number;
+  height?: number;
+  isWatermarked?: boolean;
+  metadata?: Record<string, unknown>;
 }
 
 export interface DigitalProduct {

@@ -111,10 +111,11 @@ export class ReviewsService {
       );
     });
 
-    // Emit event for aggregation
+    // Emit event for aggregation and gamification
     this.eventEmitter.emit('review.created', {
       productId: dto.digitalProductId,
       reviewId: review.id,
+      userId,
     });
 
     // Invalidate cache

@@ -25,6 +25,7 @@ import { TwoFactorService } from './services/two-factor.service';
 import { GoogleProfile } from './strategies/google.strategy';
 import { GitHubProfile } from './strategies/github.strategy';
 import { UsersService } from '../users/users.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { User } from '../../entities/user.entity';
 
@@ -40,6 +41,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    private readonly eventEmitter: EventEmitter2,
   ) { }
 
 
@@ -175,6 +177,9 @@ export class AuthService {
       ipAddress,
       userAgent,
     );
+
+    // Emit login event for gamification
+    this.eventEmitter.emit('user.login', { userId: fullUser.id });
 
     return this.buildAuthResponse(fullUser, tokens);
   }

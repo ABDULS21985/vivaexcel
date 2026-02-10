@@ -53,6 +53,7 @@ import { PromotionsModule } from './modules/promotions/promotions.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { SellersModule } from './modules/sellers/sellers.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
+import { GamificationModule } from './modules/gamification/gamification.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -140,6 +141,7 @@ import { AppService } from './app.service';
     ReviewsModule,
     SellersModule,
     DeliveryModule,
+    GamificationModule,
   ],
   controllers: [AppController],
   providers: [

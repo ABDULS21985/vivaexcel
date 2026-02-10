@@ -32,6 +32,7 @@ import {
   STORAGE_STRATEGY,
 } from '../media/strategies/storage.interface';
 import { CacheService } from '../../common/cache/cache.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { OrderQueryDto } from './dto/order-query.dto';
 import { PaginatedResponse } from '../../common/interfaces/response.interface';
@@ -68,6 +69,7 @@ export class CheckoutService {
     private readonly storageStrategy: StorageStrategy,
     private readonly cacheService: CacheService,
     private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   // ─── Order Number Generation ────────────────────────────────────────
@@ -398,6 +400,23 @@ export class CheckoutService {
         await this.cacheService.invalidateByTag('admin_orders');
       } catch {
         // Cache invalidation failure is non-critical
+      }
+
+      // Emit gamification events
+      this.eventEmitter.emit('order.completed', {
+        userId,
+        orderId: savedOrder.id,
+        total: Number(total),
+      });
+
+      for (const cartItem of cartItemsWithProducts) {
+        if (cartItem.digitalProduct?.createdBy) {
+          this.eventEmitter.emit('seller.sale_made', {
+            sellerId: cartItem.digitalProduct.createdBy,
+            orderId: savedOrder.id,
+            amount: Number(cartItem.unitPrice),
+          });
+        }
       }
     } catch (error) {
       await queryRunner.rollbackTransaction();
