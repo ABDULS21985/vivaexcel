@@ -26,6 +26,7 @@ import { PageContentWrapper } from "../../components/layout/page-content-wrapper
 import { ServiceWorkerRegister, InstallPrompt } from "../../components/pwa";
 import { MobileBottomNav, MobileTopBar } from "../../components/mobile";
 import { GamificationListener } from "../../components/gamification/gamification-listener";
+import { AIAssistantWidget } from "../../components/ai-assistant";
 import "../globals.css";
 
 // Noto Sans Arabic for RTL support
@@ -189,6 +190,9 @@ export default async function LocaleLayout({ children, params }: Props) {
 
                   {/* Mobile Bottom Navigation — visible only on mobile (<lg) */}
                   <MobileBottomNav />
+
+                  {/* AI Shopping Assistant */}
+                  <AIAssistantWidget />
 
                   {/* Gamification: Achievement & Level-Up notifications */}
                   <GamificationListener />

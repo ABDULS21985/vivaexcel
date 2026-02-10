@@ -41,7 +41,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MembershipModule } from './modules/membership/membership.module';
 import { BookmarksModule } from './modules/bookmarks/bookmarks.module';
-import { SearchModule } from './modules/search/search.module';
+import { SearchEnhancedModule } from './modules/search/search-enhanced.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { DigitalProductsModule } from './modules/digital-products/digital-products.module';
 import { CartModule } from './modules/cart/cart.module';
@@ -59,6 +59,8 @@ import { AffiliatesModule } from './modules/affiliates/affiliates.module';
 import { ReferralsModule } from './modules/referrals/referrals.module';
 import { TeamsModule } from './modules/teams/teams.module';
 import { MarketplaceSubscriptionsModule } from './modules/marketplace-subscriptions/marketplace-subscriptions.module';
+import { RecommendationsModule } from './modules/recommendations/recommendations.module';
+import { AIAssistantModule } from './modules/ai-assistant/ai-assistant.module';
 
 // App controller (for root endpoint)
 import { AppController } from './app.controller';
@@ -134,7 +136,7 @@ import { AppService } from './app.service';
     AiModule,
     MembershipModule,
     BookmarksModule,
-    SearchModule,
+    SearchEnhancedModule,
     AnalyticsModule,
     DigitalProductsModule,
     CartModule,
@@ -152,6 +154,8 @@ import { AppService } from './app.service';
     AffiliatesModule,
     ReferralsModule,
     TeamsModule,
+    RecommendationsModule,
+    AIAssistantModule,
   ],
   controllers: [AppController],
   providers: [

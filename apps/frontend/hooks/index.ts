@@ -25,3 +25,5 @@ export * from "./use-touch-feedback";
 export * from "./use-media-query";
 export * from "./use-auto-cycle";
 export * from "./use-fullscreen";
+export * from "./use-ai-recommendations";
+export * from "./use-smart-search";
